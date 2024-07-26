@@ -5,5 +5,11 @@
   "main": "index.js",
   "repository": "https://github.com/lucky-victory1/nextjs-chakra-blog",
   "author": "Lucky Victory <113092061+lucky-victory1@users.noreply.github.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "bin": {
+    "chakra-exporter": "./chakra-exporter.js"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  }
 }
