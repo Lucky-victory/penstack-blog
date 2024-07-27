@@ -1,4 +1,4 @@
-import { Post } from "@/types"
+import { Post } from "@/src/types"
 import { NextApiRequest } from "next"
 
 export async function GET(req: NextApiRequest) {

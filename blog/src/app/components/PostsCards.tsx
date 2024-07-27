@@ -1,5 +1,5 @@
 'use client'
-import { usePosts } from "@/hooks";
+import { usePosts } from "@/src/hooks";
 import { Box, Flex, Grid, GridItem, Text,Image } from "@chakra-ui/react";
 import {Link} from '@chakra-ui/next-js'
 import {Skeleton} from './ui/Skeleton'

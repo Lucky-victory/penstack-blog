@@ -1,4 +1,4 @@
-import { shortIdGenerator } from "@/utils";
+import { shortIdGenerator } from "@/src/utils";
 import { relations, sql } from "drizzle-orm";
 import { mysqlTable,int, bigint, varchar, longtext, datetime, timestamp, mysqlEnum, text} from "drizzle-orm/mysql-core";
 import { users } from "./users.sql";

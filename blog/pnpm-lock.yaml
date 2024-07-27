@@ -23,9 +23,6 @@ importers:
       '@green-auth/snowflake-unique-id':
         specifier: ^1.0.1
         version: 1.0.1
-      chakra-exporter:
-        specifier: ^1.0.2
-        version: 1.0.2
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
@@ -57,6 +54,9 @@ importers:
       '@types/react-dom':
         specifier: ^18
         version: 18.3.0
+      chakra-next-cli:
+        specifier: ^1.0.3
+        version: 1.0.3
       drizzle-kit:
         specifier: ^0.23.0
         version: 0.23.0
@@ -1315,8 +1315,8 @@ packages:
   caniuse-lite@1.0.30001643:
     resolution: {integrity: sha512-ERgWGNleEilSrHM6iUz/zJNSQTP8Mr21wDWpdgvRwcTXGAq6jMtOUPP4dqFPTdKqZ2wKTdtB+uucZ3MRpAUSmg==}
 
-  chakra-exporter@1.0.2:
-    resolution: {integrity: sha512-AWOwkTqimAvogZCv2vdgHsMSINAydCfruk+oJuL7Ec9oKz9iKdDxgc58wXw3G2yZ2SnMy85HbhEYi89tzUpXaw==}
+  chakra-next-cli@1.0.3:
+    resolution: {integrity: sha512-TmgnKzuYZcagWRmFu7B4LyZzUID9/leNQ0rD8jHZbtqv1b4SWmCBQkb98Y9Ej/jXPtrUls3MCCspVWHJdGKBcA==}
     hasBin: true
 
   chalk@2.4.2:
@@ -4219,7 +4219,7 @@ snapshots:
 
   caniuse-lite@1.0.30001643: {}
 
-  chakra-exporter@1.0.2:
+  chakra-next-cli@1.0.3:
     dependencies:
       commander: 12.1.0
 

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Post } from '@/types';
+import { Post } from '@/src/types';
 
 export function usePosts() {
   const [posts, setPosts] = useState<Post[]>([])
