@@ -41,7 +41,7 @@ const SlashCommand = Extension.create({
 const TextEditor = forwardRef<
   TextEditorHandle,
   {
-    onContentChange: (content: string) => void;
+    onContentChange: (content:{text:string,html?:string,markdown:string}) => void;
     initialValue: string;
     returnMarkdown?: boolean;
   }
@@ -78,8 +78,8 @@ const TextEditor = forwardRef<
   );
 
   const getEditorContent = useCallback(
-    (content: string) => {
-      onContentChange(content);
+    ({text,html,markdown}:{text:string,html?:string,markdown:string}) => {
+      onContentChange({text,html,markdown});
     },
     [onContentChange]
   );
@@ -88,9 +88,9 @@ const TextEditor = forwardRef<
     setEditorContent(editor.getHTML());
     if (returnMarkdown) {
       updateHtml(editor.getHTML());
-      getEditorContent(markdown);
+      getEditorContent({markdown,text:editor.getText().replaceAll('\n\n','\n')});
     } else {
-      getEditorContent(editor.getHTML());
+      getEditorContent({html:editor.getHTML(),text:editor.getText().replaceAll('\n\n','\n'),markdown});
     }
   }
 
