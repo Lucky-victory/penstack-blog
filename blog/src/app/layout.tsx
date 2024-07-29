@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./tiptap.css";
 
 
 export const metadata: Metadata = {
@@ -18,7 +19,11 @@ export default function RootLayout({
   return (
     <html lang='en' className={fonts.rubik.variable}>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+        {children}
+        
+        </Providers>
+
       </body>
     </html>
   )

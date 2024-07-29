@@ -1,5 +1,5 @@
 'use client'
-import { Box, Flex, VStack, Link, Text, Icon, useColorModeValue, Drawer, DrawerContent, useDisclosure, DrawerOverlay, DrawerHeader, DrawerBody, DrawerCloseButton, Input, Avatar, Tooltip } from "@chakra-ui/react"
+import { Box, Flex, VStack, Link, Text, Icon, useColorModeValue, Drawer, DrawerContent, useDisclosure, DrawerOverlay, DrawerHeader, DrawerBody, DrawerCloseButton, Input, Avatar, Tooltip, Stack } from "@chakra-ui/react"
 import { usePathname, useRouter } from "next/navigation"
 import NextLink from "next/link"
 import { FiHome, FiFileText, FiUsers, FiSettings, FiChevronDown, FiMenu, FiSearch, FiChevronLeft, FiChevronRight } from "react-icons/fi"
@@ -38,7 +38,7 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
               color: "blue.600",
             }}
           >
-            {icon && <Icon mr={isMinimized ? "0" : "4"} fontSize="16" as={icon} />}
+            {icon && <Icon mr={isMinimized ? "0" : "4"} fontSize="16"  as={icon} />}
             {!isMinimized && children}
           </Flex>
         </Link>
@@ -51,7 +51,7 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
       bg={useColorModeValue("white", "gray.900")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={isMinimized ? "60px" : { base: "full", md: "300px" }}
+      w={isMinimized ? "var(--dash-sidebar-mini-w)" : { base: "full", md: "var(--dash-sidebar-w)" }}
       pos="fixed"
       h="full"
       {...rest}
@@ -127,7 +127,7 @@ export default function DashLayout({children}:{children:ReactNode}) {
     const toggleMinimized = () => setIsMinimized(!isMinimized)
 
     return (
-        <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+        <Box minH="var(--chakra-vh)" bg={useColorModeValue("gray.100", "gray.900")}>
           <SidebarContent
             onClose={() => onClose}
             display={{ base: "none", md: "block" }}
@@ -152,8 +152,8 @@ export default function DashLayout({children}:{children:ReactNode}) {
           </Drawer>
           {/* mobilenav */}
           <Flex
-            ml={{ base: 0, md: isMinimized ? "60px" : "300px" }}
-            px={{ base: 4, md: 24 }}
+            ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}
+            px={{ base: 4, md: 16 }}
             height="20"
             alignItems="center"
             bg={useColorModeValue("white", "gray.900")}
@@ -172,28 +172,31 @@ export default function DashLayout({children}:{children:ReactNode}) {
               Blog Admin
             </Text>
           </Flex>
+          <Flex flexDir={'column'} h={'var(--chakra-vh)'} >
+
           {/* Dashboard Header */}
           <Flex
-            ml={{ base: 0, md: isMinimized ? "60px" : "300px" }}
-            px={{ base: 4, md: 24 }}
-            height="20"
+            ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}
+            px={{ base: 4, md: 5 }}
+            height="14" flexShrink={0}
             alignItems="center"
             bg={useColorModeValue("white", "gray.900")}
             borderBottomWidth="1px"
             borderBottomColor={useColorModeValue("gray.200", "gray.700")}
             justifyContent="space-between"
-          >
+            >
             <Flex alignItems="center">
               <Icon as={FiSearch} fontSize="20" color="gray.400" />
-              <Input placeholder="Search..." ml="4" variant="outline" />
+              <Input placeholder="Search..." ml="4" variant="unstyled" />
             </Flex>
             <Flex alignItems="center">
               <Avatar size="sm" />
             </Flex>
           </Flex>
-          <Box ml={{ base: 0, md: isMinimized ? "60px" : "300px" }} p="4" maxW="1600px" margin="0 auto">
+          <Box  flex={1}  w={isMinimized? 'calc(100% - var(--dash-sidebar-mini-w))':'calc(100% - var(--dash-sidebar-w))'} px={3} ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}  maxW="1600px" margin="0 auto" overflowY={'auto'} >
             {children}
           </Box>
+            </Flex>
         </Box>
     )
 }

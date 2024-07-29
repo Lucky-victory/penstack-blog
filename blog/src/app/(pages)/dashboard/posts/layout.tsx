@@ -1,9 +1,0 @@
-import { ReactNode } from "react";
-
-export default function PostPageLayout({children}:{children:ReactNode}) {
-    return (
-        <div>
-           {children}
-        </div>
-    )
-}
