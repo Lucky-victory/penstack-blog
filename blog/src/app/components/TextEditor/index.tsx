@@ -7,7 +7,7 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } fro
 import Typography from "@tiptap/extension-typography";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
-import { Box } from "@chakra-ui/react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
 import { MenuBar } from "./MenuBar";
 import { useHTMLToMarkdownConverter } from "@/src/hooks";
 import Suggestion from "@tiptap/suggestion";
@@ -95,8 +95,8 @@ const TextEditor = forwardRef<
   }
 
   return (
-    <Box py={3}>
-      <EditorProvider  
+    <Box p={3} bg={useColorModeValue("white", "gray.900")}>
+      <EditorProvider  editorProps={{'attributes':{class:'tiptap-post-editor'}}}
         enablePasteRules={true}
         onUpdate={({ editor }) => {
           // @ts-ignore
