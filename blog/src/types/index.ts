@@ -1,5 +1,7 @@
 import { InferInsertModel } from 'drizzle-orm'
 import {posts} from '@/src/db/schemas/posts.sql'
+import { Editor } from '@tiptap/react'
+import { IconType } from 'react-icons'
 export interface Post {
     id: number
     title: string
@@ -17,3 +19,10 @@ export type PostToPost =PostInsert & {
    
 }
 export type PostInsert=InferInsertModel<typeof posts>
+export interface EditorActionItem{
+  label:string;
+  action:({editor,open}:{editor?:Editor,open?:()=>void})=>void,
+  icon:IconType;
+  active:(editor:Editor)=>boolean;
+
+}

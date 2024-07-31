@@ -11,6 +11,7 @@ import { Box, useColorModeValue } from "@chakra-ui/react";
 import { MenuBar } from "./MenuBar";
 import { useHTMLToMarkdownConverter } from "@/src/hooks";
 import Suggestion from "@tiptap/suggestion";
+// import WrapperCompExtension from "@/src/lib/editor/extension";
 type TextEditorHandle = {
   resetContent: () => void;
 };
@@ -38,6 +39,22 @@ const SlashCommand = Extension.create({
     ];
   },
 });
+
+const extensions = [
+  StarterKit,
+  Link.configure({
+    HTMLAttributes: {
+      target: "_blank",
+      rel: "noopener noreferrer",
+    },
+    openOnClick: false,
+    autolink: true,
+  }),
+  Typography,
+  Image,
+  TextAlign,
+  Highlight,];
+
 const TextEditor = forwardRef<
   TextEditorHandle,
   {
@@ -49,22 +66,7 @@ const TextEditor = forwardRef<
   const [editorContent, setEditorContent] = useState<string>(initialValue || "");
   const { editor } = useCurrentEditor();
   const { markdown, updateHtml } = useHTMLToMarkdownConverter();
-  const extensions = [
-    StarterKit,
-    Link.configure({
-      HTMLAttributes: {
-        target: "_blank",
-        rel: "noopener noreferrer",
-      },
-      openOnClick: false,
-      autolink: true,
-    }),
-    Typography,
-    Image,
-    TextAlign,
-    Highlight,
-  ];
-
+  
   useImperativeHandle(
     ref,
     () => ({

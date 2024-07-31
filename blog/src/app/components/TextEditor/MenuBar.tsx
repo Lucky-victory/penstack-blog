@@ -18,6 +18,7 @@ import {
     Portal,
     useColorModeValue,
     Button,
+    Tooltip,
   } from "@chakra-ui/react";
   import {Menu,MenuButton,MenuItem,MenuList} from '@/src/app/components/ui/Menu'
   import { Editor, useCurrentEditor } from "@tiptap/react";
@@ -28,14 +29,9 @@ import {
   import {CldUploadButton, CldUploadWidget, type CloudinaryUploadWidgetInfo,type CloudinaryUploadWidgetResults, getCldImageUrl} from 'next-cloudinary'
 import { LuAlignCenter, LuAlignJustify, LuAlignLeft, LuAlignRight, LuBold, LuCornerDownLeft, LuHeading6, LuHighlighter, LuImagePlus, LuItalic, LuLink, LuList, LuListOrdered, LuPilcrow, LuQuote, LuRedo2, LuStrikethrough, LuUndo2,LuHeading1,LuHeading2,LuHeading5,LuHeading3,LuHeading4, LuArrowDown, LuChevronDown } from "react-icons/lu";
 import { IconType } from "react-icons";
+import EditorActionsDropdown from "./EditorActionsDropdown";
   
-export interface EditorActionButton{
-  label:string;
-  action:({editor,open}:{editor?:Editor,open?:()=>void})=>void,
-  icon:IconType;
-  active:boolean;
 
-}
   export const MenuBar = () => {
     const { editor } = useCurrentEditor();
     const initialFocusRef = useRef<any>();
@@ -216,14 +212,7 @@ const extractNonHeadingOrParagraph = () => {
 
 const nonHeadingOrParagraphActions = extractNonHeadingOrParagraph()
 
-const dropdownActions = filterEditorActions(["Paragraph","Heading 1","Heading 2","Heading 3","Bullet List","Insert Image","Ordered List"])
-  const getActiveActionItem=()=>{
-    const activeActionItem = dropdownActions.find(item => item.active)
-    if(activeActionItem){
-      return activeActionItem as {label:string,icon:IconType,action:()=>void,active:boolean}
-    }
-    return dropdownActions[0] as {label:string,icon:IconType,action:()=>void,active:boolean}
-  }
+
 
   
     return (
@@ -240,56 +229,48 @@ const dropdownActions = filterEditorActions(["Paragraph","Heading 1","Heading 2"
         bg={bgColorValue}
         zIndex={2}
       >
-        <Menu>
-          <MenuButton as={Button} {...btnStyles} display={'flex'}>
-            <HStack spacing={2}>
-              {getActiveActionItem() && React.createElement(getActiveActionItem().icon, { size: 20, color: iconColorValue })}
-              <LuChevronDown size={18} />
-            </HStack>
-          </MenuButton>
-          <MenuList rounded={'xl'} px={2} gap={1} display={'flex'} flexDir={'column'}>
-            {dropdownActions?.map((item, index) => (
-              <MenuItem onClick={() => item?.action?.()} color={item?.active ? activeTextColorValue : undefined} bg={item?.active ? 'blue.500' : undefined} key={index} icon={item.icon && React.createElement(item.icon, { size: 20 })} rounded={'xl'}>
-                <Text as={'span'} fontSize={'16px'} fontWeight={500}>{item.label}</Text>
-              </MenuItem>
-            ))}
-          </MenuList>
-        </Menu>
+        <EditorActionsDropdown/>
        {nonHeadingOrParagraphActions.map((item,index)=> 
-       item.label==='Insert Image'? <CldUploadWidget key={index} uploadPreset="post_images" onSuccess={(image: CloudinaryUploadWidgetResults) => {
+       item.label==='Insert Image'? <CldUploadWidget key={index} uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET||"post_images"} onSuccess={(image: CloudinaryUploadWidgetResults) => {
         editor.chain().focus().setImage({ src: getCldImageUrl({ src: (image.info as CloudinaryUploadWidgetInfo).public_id }) }).run();
       }}>
         {({ open }) => {
           return (
-            <IconButton
-              aria-label=""
-              {...btnStyles}
-              variant={editor.isActive("img") ? "solid" : "ghost"}
-              onClick={() => open()}
-            >
-              <LuImagePlus size={20} />
-            </IconButton>
+            <Tooltip label={item.label} hasArrow placement="top" rounded={'lg'}>
+              <IconButton
+                aria-label={item.label} 
+                {...btnStyles}
+                variant={editor.isActive("img") ? "solid" : "ghost"}
+                onClick={() => open()}
+              >
+                <item.icon size={20} />
+              </IconButton>
+            </Tooltip>
           );
         }}
       </CldUploadWidget>
 :
-       <IconButton key={index}
-          aria-label={item.label}
-          {...btnStyles}
-          onClick={() => item?.action()}
-          variant={item.active ? "solid" : "ghost"}
-        >
-          <item.icon size={20} />
-        </IconButton>)}
-      
+       <Tooltip key={index} label={item.label} hasArrow placement="top" rounded={'lg'}>
+         <IconButton 
+            aria-label={item.label}
+            {...btnStyles}
+            onClick={() => item?.action()}
+            variant={item.active ? "solid" : "ghost"}
+          >
+            <item.icon size={20} />
+          </IconButton>
+       </Tooltip>)}      
         <Popover onClose={onClose} onOpen={onOpen} isOpen={isOpen} initialFocusRef={initialFocusRef}>
           <PopoverTrigger>
+            <Tooltip label="Insert Link" hasArrow placement="top" rounded={'lg'}>
+
             <IconButton aria-label="" {...btnStyles} variant={editor.isActive("link") ? "solid" : "ghost"}>
               <LuLink size={20} />
             </IconButton>
+                </Tooltip>
           </PopoverTrigger>
           <Portal>
-            <PopoverContent zIndex={100000} py={4}>
+            <PopoverContent zIndex={10000} py={4}>
               <PopoverArrow />
               <PopoverCloseButton />
               <PopoverHeader fontWeight="bold" border="0">
@@ -302,10 +283,10 @@ const dropdownActions = filterEditorActions(["Paragraph","Heading 1","Heading 2"
                     e.preventDefault();
                     formik.handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
                   }}
-                >
+                  >
                   <Input
-                    name="content"
-                    rounded={"md"}
+                    name="content" 
+                    rounded={"lg"}
                     autoComplete="off"
                     value={formik.values.content}
                     ref={initialFocusRef}
@@ -322,24 +303,30 @@ const dropdownActions = filterEditorActions(["Paragraph","Heading 1","Heading 2"
           </Portal>
         </Popover>
 
+                  <Tooltip label="Undo" hasArrow placement="top" rounded={'lg'}>
+
         <IconButton
           aria-label=""
           {...btnStyles}
           isDisabled={!editor.can().undo()}
           variant={"ghost"}
           onClick={() => editor.chain().focus().undo().run()}
-        >
+          >
           <LuUndo2 size={20} />
         </IconButton>
+          </Tooltip>
+        <Tooltip label="Redo" hasArrow placement="top" rounded={'lg'}>
+
         <IconButton
           aria-label=""
           {...btnStyles}
           isDisabled={!editor.can().redo()}
           variant={"ghost"}
           onClick={() => editor.chain().focus().redo().run()}
-        >
+          >
           <LuRedo2 size={20} />
         </IconButton>
+          </Tooltip>
       </HStack>
     );
   };
