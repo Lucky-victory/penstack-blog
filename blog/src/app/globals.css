@@ -12,3 +12,34 @@
     text-wrap: balance;
   }
 }
+/* Webkit browsers (Chrome, Safari, newer versions of Opera) */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: lightgrey;
+  border-radius: 2px;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: lightgrey transparent;
+}
+
+/* For IE and Edge */
+* {
+  -ms-overflow-style: none;
+}
+
+*::-ms-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*::-ms-scrollbar-thumb {
+  background-color: lightgrey;
+  border-radius: 2px;
+}

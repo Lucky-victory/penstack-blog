@@ -1,16 +1,17 @@
 'use client'
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
-import { BubbleMenu, Editor, EditorProvider, Extension, FloatingMenu, useCurrentEditor } from "@tiptap/react";
+import { Editor, EditorProvider, Extension, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
 import Typography from "@tiptap/extension-typography";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
-import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { MenuBar } from "./MenuBar";
 import { useHTMLToMarkdownConverter } from "@/src/hooks";
 import Suggestion from "@tiptap/suggestion";
+import Placeholder from "@tiptap/extension-placeholder";
 // import WrapperCompExtension from "@/src/lib/editor/extension";
 type TextEditorHandle = {
   resetContent: () => void;
@@ -41,7 +42,18 @@ const SlashCommand = Extension.create({
 });
 
 const extensions = [
-  StarterKit,
+  StarterKit, Placeholder.configure({
+    // Use a placeholder:
+    placeholder: 'Write something …',
+    // Use different placeholders depending on the node type:
+    // placeholder: ({ node }) => {
+    //   if (node.type.name === 'heading') {
+    //     return 'What’s the title?'
+    //   }
+
+    //   return 'Can you add some further context?'
+    // },
+  }),
   Link.configure({
     HTMLAttributes: {
       target: "_blank",
@@ -90,15 +102,14 @@ const TextEditor = forwardRef<
     setEditorContent(editor.getHTML());
     if (returnMarkdown) {
       updateHtml(editor.getHTML());
-      getEditorContent({markdown,text:editor.getText().replaceAll('\n\n','\n')});
+      getEditorContent({markdown,text:editor.getText().replace(/\n+/g, ' ')});
     } else {
-      getEditorContent({html:editor.getHTML(),text:editor.getText().replaceAll('\n\n','\n'),markdown});
-    }
+      getEditorContent({html:editor.getHTML(),text:editor.getText().replace(/\n+/g, ' '),markdown});    }
   }
 
   return (
-    <Box p={3} bg={useColorModeValue("white", "gray.900")}>
-      <EditorProvider  editorProps={{'attributes':{class:'tiptap-post-editor'}}}
+    <Box h={'full'} >
+      <EditorProvider  editorProps={{'attributes':{class:'tiptap-post-editor'}}} 
         enablePasteRules={true}
         onUpdate={({ editor }) => {
           // @ts-ignore
@@ -112,12 +123,12 @@ const TextEditor = forwardRef<
         content={editorContent}
         extensions={extensions}
       >
-        <FloatingMenu editor={null} tippyOptions={{duration:100}}>This is a floating menu</FloatingMenu>
-        <BubbleMenu editor={null} shouldShow={({editor}) => {
+        {/* <FloatingMenu editor={null} tippyOptions={{duration:100}}>This is a floating menu</FloatingMenu> */}
+        {/* <BubbleMenu editor={null} shouldShow={({editor}) => {
           return editor.isActive("paragraph");
 
         }} tippyOptions={{duration:100}}>this is a bubble menu 1</BubbleMenu>
- 
+  */}
       </EditorProvider>
     </Box>
   );

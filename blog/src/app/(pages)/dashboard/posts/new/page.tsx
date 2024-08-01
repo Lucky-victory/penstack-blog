@@ -1,15 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Image from '@tiptap/extension-image'
-import { Box, Button, Input, Select, Tag, VStack, HStack, Textarea, Flex, useColorModeValue, Stack, List, ListItem, Heading, Text, Icon, RadioGroup, Radio, TagCloseButton, TagLabel, InputRightElement, InputGroup} from '@chakra-ui/react'
-import { FiMapPin, FiPlus } from 'react-icons/fi'
-import { BsEye, BsEyeFill, BsFillPinFill, BsPlus } from 'react-icons/bs'
+import { Box, Button, Input, Tag,  Textarea, Flex, useColorModeValue, Stack, List, ListItem, Icon, RadioGroup, Radio, TagCloseButton, TagLabel, InputRightElement, InputGroup,Text,HStack} from '@chakra-ui/react'
+
 import { SectionCard } from '@/src/app/components/Dashboard/SectionCard'
 import {FormLabel,FormControl} from '@/src/app/components/ui/Form'
 import TextEditor from '@/src/app/components/TextEditor'
-import { LuEye, LuPin } from 'react-icons/lu'
+import { LuEye, LuPin,LuPlus,LuCheck } from 'react-icons/lu'
 import { FeaturedImageCard } from '@/src/app/components/Dashboard/FeaturedImageCard'
 import slugify from'slugify'
 import { shortenText, shortIdGenerator } from '@/src/utils'
@@ -54,35 +50,41 @@ const handleContentChange = (content:{html?:string,markdown:string,text:string})
     setPost((prev)=> ({...prev,summary:shortenText(content.text,120),content:content.markdown}))
 
 }
-
+const borderColor = useColorModeValue('gray.200', 'gray.700')
     return (
-        <Flex h='full' gap={3} py={4} overflowY={'auto'}> 
-            <Stack gap={4} width={{ base: '100%' }}>
-                <Box p={3} bg={useColorModeValue("white", "gray.900")}>
+        <Flex h='full' gap={2} py={4} overflowY={'auto'} > 
+            <Stack flex={1}  width={{ base: '100%' }} bg={useColorModeValue('white','gray.900')}  border={'1px'} borderColor={borderColor} rounded={{base:'xl',md:'26px'}} boxShadow={'var(--card-raised)'}>
+                <Box borderBottom={'1px'} borderBottomColor={borderColor} p={1} py={2}>
 
 
-                <Input
-                    placeholder="Post Title"
-                    value={post.title as string }
+                <Input border={'none'} outline={'none'} autoComplete='off'
+                    placeholder="Post title"
+                    value={post.title as string }fontWeight={600}
                     onChange={(e) => setPost((prev)=>({...prev,title:e.target.value}))}
-                
+                 rounded={'none'} _focus={{boxShadow: 'none'}}
+                fontSize={{ base: 'lg', md: '24px' }}
                     />
                     </Box>
                 
                <TextEditor onContentChange={(content) => handleContentChange(content)} initialValue={post.content+''} />
             </Stack>
-            <Stack gap={3} flexShrink={0} width={{ base: '100%', md: '300px' }} overflowY={'auto'} 
+            <Stack gap={3} flexShrink={0} width={{ base: '100%', md: '300px' }} overflowY={'auto'} pr={'1'} 
             >
 
-                <SectionCard title='Publish' footer={
+                <SectionCard title='Publish' header={
                     <>
-                     <Button size={'sm'} flex={1} variant={'outline'}>Save draft</Button>
-                     <Button size={'sm'} flex={1}>Publish</Button>
+                    <HStack> <LuCheck/>
+                    <Text as='span'>Saving...</Text>
+                    </HStack>
+                    </>
+                } footer={
+                    <>
+                     <Button size={'sm'} flex={1} variant={'outline'} rounded={'full'}>Save draft</Button>
+                     <Button size={'sm'} flex={1} rounded={'full'}>Publish</Button>
                    </>
                      
                     }>
                 <Box p={4} pb={0}>
-
 <Stack as={List} fontSize={14} gap={2} >
 <ListItem> <Icon as={LuPin}/> Status: Draft</ListItem>
 <ListItem> <Icon as={LuEye}/> Visibility: Public</ListItem>
@@ -99,14 +101,17 @@ const handleContentChange = (content:{html?:string,markdown:string,text:string})
                     <InputGroup>
                         <Input
                             placeholder="Slug"
-                            value={post.slug}
+                            value={post.slug} autoComplete='off'
                             onChange={(e) => setPost((prev) => ({...prev, slug: e.target.value}))}
                             isDisabled={!isSlugEditable}
-                            onBlur={() => setIsSlugEditable(false)}
+                            onBlur={() => setIsSlugEditable(false)} rounded={'full'} pr={1}
                         />
                         {!isSlugEditable && (
-                            <InputRightElement>
-                                <Button variant={'outline'} size="sm" onClick={() => setIsSlugEditable(true)}>
+                            <InputRightElement bg={'blue.50'} roundedRight={'full'}>
+                                <Button   size={'sm'} 
+                                                variant={'ghost'} 
+                                                fontWeight={500} 
+                                                fontSize={'13px'} roundedRight={'full'} onClick={() => setIsSlugEditable(true)}>
                                     Edit
                                 </Button>
                             </InputRightElement>
@@ -115,7 +120,7 @@ const handleContentChange = (content:{html?:string,markdown:string,text:string})
 
                         <FormControl>
                             <FormLabel>Post summary:</FormLabel>
-                            <Textarea placeholder="summary" value={post.summary as string} onChange={(e) => setPost((prev)=>({...prev,summary:e.target.value}))} maxH={150}/>
+                            <Textarea placeholder="summary" value={post.summary as string} onChange={(e) => setPost((prev)=>({...prev,summary:e.target.value}))} maxH={150} rounded={'lg'}/>
                                 </FormControl>
                         </Stack>
                 </SectionCard>
@@ -129,9 +134,9 @@ const handleContentChange = (content:{html?:string,markdown:string,text:string})
                         ))}
                                     {showCategoryInput && (
                                         <HStack mt={2} align={'center'}>
-                                            <Input
+                                            <Input autoComplete='off'
                                                 placeholder="Enter category name"
-                                                size={'sm'}
+                                                size={'sm'} rounded={'full'}
                                                 value={category}
                                                 onChange={(e) => setCategory(e.target.value)}
                                                 onKeyDown={(e) => {
@@ -146,13 +151,13 @@ const handleContentChange = (content:{html?:string,markdown:string,text:string})
                                                 size={'sm'} 
                                                 variant={'outline'} 
                                                 fontWeight={500} 
-                                                fontSize={'13px'}
+                                                fontSize={'13px'} rounded={'full'}
                                             >
                                                 Add
                                             </Button>
                                         </HStack>
                                     )}
-                                    <Button alignItems={'center'} gap={2} mt={4} onClick={() => setShowCategoryInput(true)} size={'xs'} variant={'outline'}><Icon size={24} as={FiPlus}/> Add new category</Button>
+                                    <Button rounded={'full'} alignItems={'center'} alignSelf='start' gap={2} mt={4} onClick={() => setShowCategoryInput(true)} size={'xs'} variant={'ghost'}><Icon size={24} as={LuPlus}/><Text as='span'> Add new category</Text></Button>
 
                                     </Stack>                        </Box> 
                 </SectionCard>
@@ -176,7 +181,7 @@ const handleContentChange = (content:{html?:string,markdown:string,text:string})
 <Input
   placeholder="Enter tag name"
   size={'sm'}
-  value={tag}
+  value={tag} rounded={'full'}  
   onChange={(e) => setTag(e.target.value)}
   onKeyDown={(e) => {
     if (e.key === 'Enter') {
@@ -184,7 +189,7 @@ const handleContentChange = (content:{html?:string,markdown:string,text:string})
     }
   }}
 />
-<Button isDisabled={!tag} onClick={handleAddTag} size={'sm'} variant={'outline'} fontWeight={500} fontSize={'13px'} >Add</Button>
+<Button rounded={'full'} isDisabled={!tag} onClick={handleAddTag} size={'sm'} variant={'outline'} fontWeight={500} fontSize={'13px'} >Add</Button>
 </HStack>                    </Box>
                 </SectionCard>
                

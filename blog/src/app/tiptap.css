@@ -1,13 +1,22 @@
 .tiptap {
-  margin-top: 1rem;
-  padding: 0.5rem;
+  padding: 1rem;
   padding-bottom: 3rem;
-  border: 1px solid var(--chakra-colors-gray-500);
-  border-radius: 8px;
+  min-height: 300px;
+ flex:1;
 }
+.tiptap:focus{
+  outline: none;
 
+}
 .tiptap > * + * {
-  margin-top: 0.75em;
+  margin-top: 0.5em;
+}
+.tiptap p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
 
 .tiptap-post-editor ul,
@@ -128,7 +137,7 @@
 }
 
 .tiptap mark {
-  background-color: var(--chakra-colors-yellow-200);
+  background-color: yellow;
 }
 
 .tiptap img {

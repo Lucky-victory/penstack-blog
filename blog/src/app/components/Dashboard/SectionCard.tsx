@@ -12,7 +12,7 @@ export function SectionCard({children,header,footer,title}:SectionCardProps) {
     const bgColor = useColorModeValue("white", "gray.900")
 
     return (
-        <Box borderWidth="1px" borderColor={borderColor} bg={bgColor} rounded={"md"}>
+        <Box borderWidth="1px" borderColor={borderColor} bg={bgColor} rounded={"20px"} boxShadow={'var(--card-raised)'} >
             {(header||title) && (
                 <Box borderBottomWidth="1px" px={4} py={2} borderBottomColor={borderColor}>
                     {title && <Text as={'span'} fontSize={'17px'} fontWeight={500}>{title}</Text>}

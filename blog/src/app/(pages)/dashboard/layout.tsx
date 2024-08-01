@@ -175,24 +175,7 @@ export default function DashLayout({children}:{children:ReactNode}) {
           <Flex flexDir={'column'} h={'var(--chakra-vh)'} >
 
           {/* Dashboard Header */}
-          <Flex
-            ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}
-            px={{ base: 4, md: 5 }}
-            height="14" flexShrink={0}
-            alignItems="center"
-            bg={useColorModeValue("white", "gray.900")}
-            borderBottomWidth="1px"
-            borderBottomColor={useColorModeValue("gray.200", "gray.700")}
-            justifyContent="space-between"
-            >
-            <Flex alignItems="center">
-              <Icon as={FiSearch} fontSize="20" color="gray.400" />
-              <Input placeholder="Search..." ml="4" variant="unstyled" />
-            </Flex>
-            <Flex alignItems="center">
-              <Avatar size="sm" />
-            </Flex>
-          </Flex>
+        
           <Box  flex={1}  w={isMinimized? 'calc(100% - var(--dash-sidebar-mini-w))':'calc(100% - var(--dash-sidebar-w))'} px={3} ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}  maxW="1600px" margin="0 auto" overflowY={'auto'} >
             {children}
           </Box>
