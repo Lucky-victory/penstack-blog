@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 import { fonts } from '../lib/fonts'
 import { Providers } from './providers/chakra'
-
+import ReactQueryClient from './providers/react-query'
 export default function RootLayout({
   children,
 }: {
@@ -19,10 +19,12 @@ export default function RootLayout({
   return (
     <html lang='en' className={fonts.rubik.variable}>
       <body>
+        <ReactQueryClient>
         <Providers>
         {children}
         
         </Providers>
+        </ReactQueryClient>
 
       </body>
     </html>

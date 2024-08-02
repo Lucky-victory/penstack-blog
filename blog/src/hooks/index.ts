@@ -1,37 +1,105 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Post } from '@/src/types';
 import TurndownService from "turndown";
+import { useMutation } from '@tanstack/react-query';
+
+export type SaveableValue = string | Record<string, any>;
+
+export interface UseAutoSaveOptions<T extends SaveableValue> {
+  initialValue: T;
+  mutationFn: (value: T) => Promise<any>;
+  debounceTime?: number;
+  onSuccess?: (data: any) => void;
+  onError?: (error: any) => void;
+}
+
+export const useAutoSave = <T extends SaveableValue>({
+  initialValue,
+  mutationFn,
+  debounceTime = 1000,
+  onSuccess,
+  onError
+}: UseAutoSaveOptions<T>) => {
+  const [value, setValue] = useState<T>(initialValue);
+
+  const mutation = useMutation({
+    mutationFn,
+    onSuccess,
+    onError
+  });
+
+  const debouncedSave = useCallback(
+    (() => {
+      let timer: NodeJS.Timeout;
+      return (newValue: T) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          mutation.mutate(newValue);
+        }, debounceTime);
+      };
+    })(),
+    [debounceTime]
+  );
+
+  useEffect(() => {
+    debouncedSave(value);
+  }, [value, debouncedSave]);
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | T
+  ) => {
+    if (typeof event === 'object' && 'target' in event) {
+      const { name, value: inputValue } = event.target;
+      setValue(prev => 
+        typeof prev === 'object' 
+          ? { ...prev, [name]: inputValue } 
+          : inputValue as T
+      );
+    } else {
+      setValue(event);
+    }
+  };
+
+  return { 
+    value, 
+    onChange: handleChange, 
+    isSaving: mutation.isPending,
+    error: mutation.error
+  };
+};
+
 
 export function useHTMLToMarkdownConverter() {
   const [html, setHtml] = useState("");
   const [markdown, setMarkdown] = useState("");
-  const turndownService = new TurndownService();
+  const turndownService = useMemo(() => new TurndownService(), []);
 
   // Add rules to handle specific HTML elements or attributes
-  turndownService.addRule("heading", {
-    filter: ["h1", "h2", "h3", "h4", "h5", "h6"],
-    replacement: function (content, node, options) {
-      const hLevel = +node.nodeName.charAt(1);
-      const hPrefix = "#".repeat(hLevel);
-      return `\n\n${hPrefix} ${content}\n\n`;
-    },
-  });
+  useEffect(() => {
+    turndownService.addRule("heading", {
+      filter: ["h1", "h2", "h3", "h4", "h5", "h6"],
+      replacement: function (content, node, options) {
+        const hLevel = +node.nodeName.charAt(1);
+        const hPrefix = "#".repeat(hLevel);
+        return `\n${hPrefix} ${content}\n`;
+      },
+    });
 
-  turndownService.addRule("paragraph", {
-    filter: "p",
-    replacement: function (content) {
-      return `\n\n${content}\n\n`;
-    },
-  });
+    turndownService.addRule("paragraph", {
+      filter: "p",
+      replacement: function (content) {
+        return `\n${content}\n`;
+      },
+    });
+  }, [turndownService]);
 
   useEffect(() => {
     if (html) {
       setMarkdown(turndownService.turndown(html));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [html]);
+  }, [html, turndownService]);
 
   const updateHtml = useCallback((newHtml: string) => {
     setHtml(newHtml);

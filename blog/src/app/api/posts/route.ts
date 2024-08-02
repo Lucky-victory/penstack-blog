@@ -51,9 +51,9 @@ export async function GET(req: Request) {
 
 }
 export async function POST(req: Request) {
-  const { title, content } = await req.json()
+  const { title, content,summary,slug ,featured_image} = await req.json()
 
-  return new Response(JSON.stringify({ title, content }), {
+  return new Response(JSON.stringify({ title, content,summary ,slug,featured_image }), {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
