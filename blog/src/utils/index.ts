@@ -1,23 +1,27 @@
+import { formatDistanceToNowStrict, format } from 'date-fns';
 import { SnowflakeIdGenerator } from "@green-auth/snowflake-unique-id";
 export const shortIdGenerator = new SnowflakeIdGenerator({
     nodeId:23,sequenceBits:24
 });
 
-export function resolveIPFSURI(
-    ipfsURI: string,
-    addGateWayUrl = true,
-    gatewayUrl = "https://cloudflare-ipfs.com/"
-  ): string {
-    // Check if the URI starts with 'ipfs://'
-    if (ipfsURI.startsWith("ipfs://")) {
-      // Remove 'ipfs://' and return the modified URI
-      const modifiedURI = ipfsURI.replace("ipfs://", "ipfs/");
-      return addGateWayUrl ? gatewayUrl + modifiedURI : modifiedURI;
-    } else {
-      // If the URI doesn't start with 'ipfs://', return as it is
-      return addGateWayUrl ? gatewayUrl + ipfsURI : ipfsURI;
-    }
+
+export function formatDate(date: Date | null | undefined): string {
+  if (!date) return 'Invalid date';
+
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+
+  if (diff < 60000) {
+    return formatDistanceToNowStrict(date, { addSuffix: true, unit: 'second' });
+  } else if (diff < 3600000) {
+    return formatDistanceToNowStrict(date, { addSuffix: true, unit: 'minute' });
+  } else if (diff < 86400000) {
+    return formatDistanceToNowStrict(date, { addSuffix: true, unit: 'hour' });
+  } else {
+    return format(date, 'MMM d yyyy');
   }
+}
+
   export function shortenText(text: string, len = 50) {
     return text?.length > len ? text?.substring(0, len) + "..." : text;
   }

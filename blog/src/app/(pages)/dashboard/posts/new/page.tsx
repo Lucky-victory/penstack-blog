@@ -5,15 +5,17 @@ import { Box, Button, Input, Tag,  Textarea,Spinner, Flex, useColorModeValue, St
 import { SectionCard } from '@/src/app/components/Dashboard/SectionCard'
 import {FormLabel,FormControl} from '@/src/app/components/ui/Form'
 import TextEditor from '@/src/app/components/TextEditor'
-import { LuEye, LuPin,LuPlus,LuCheck } from 'react-icons/lu'
+import { LuEye, LuPin,LuPlus,LuCheck, LuListTodo, LuFileText, LuType } from 'react-icons/lu'
 import { FeaturedImageCard } from '@/src/app/components/Dashboard/FeaturedImageCard'
 import slugify from'slugify'
-import { shortenText, shortIdGenerator } from '@/src/utils'
+import { formatDate, shortenText, shortIdGenerator } from '@/src/utils'
 import { PostInsert } from '@/src/types'
 import { useAutoSave } from '@/src/hooks'
+import DashHeader from '@/src/app/components/Dashboard/Header'
 
+const META_DESCRIPTION_LENGTH = 155
 export default function NewPostPage() {
-    const [title, setTitle] = useState('')
+    const [editorCounts,setEditorCounts] = useState({words:0,characters:0})
     
 const [tag, setTag] = useState('')
 const [category, setCategory] = useState('')
@@ -25,8 +27,8 @@ const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false)
     const [post,setPost] = useState<PostInsert>({
         title:'',
         slug:'',
-        summary:'',
-        content:'',author_id:1,featured_image:'',status:'draft','post_id':''
+        summary:'',visibility:'public',
+        content:'',author_id:1,featured_image:{src:'',alt_text:''},status:'draft','post_id':''
         
     })
     const {value,onChange,isSaving}=useAutoSave({initialValue:post,mutationFn:savePost});
@@ -64,7 +66,7 @@ const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false)
     },[post])
     useEffect(() => {
         if(post.title){
-            const generatedSlug = slugify(post.title, { lower: true, strict: true })+'-'+shortIdGenerator.urlSafeId(6);
+            const generatedSlug = slugify(post.title+'-'+shortIdGenerator.urlSafeId(6), { lower: true, strict: true });
             setPost((prev) => ({...prev, slug: generatedSlug}))
         }
     }, [post.title])
@@ -80,13 +82,27 @@ const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false)
       setTag('')
     }
 const handleContentChange = (content:{html?:string,markdown:string,text:string}) => {
-    setPost((prev)=> ({...prev,summary:shortenText(content.text,120),content:content.markdown}))
+    setPost((prev)=> ({...prev,summary:shortenText(content.text,META_DESCRIPTION_LENGTH),content:content.markdown}))
 
 }
-const borderColor = useColorModeValue('gray.200', 'gray.700')
+const borderColor = useColorModeValue('gray.200', 'gray.700');
+const getEditorCounts=(counts:{words:number,characters:number})=>{
+  
+    setEditorCounts(counts)
+
+}
     return (
-        <Flex h='full' gap={2} py={4} overflowY={'auto'} > 
-            <Stack flex={1}  width={{ base: '100%' }} bg={useColorModeValue('white','gray.900')}  border={'1px'} borderColor={borderColor} rounded={{base:'xl',md:'26px'}} boxShadow={'var(--card-raised)'}>
+        <Box>
+            <DashHeader pos='sticky' top={0} zIndex={10} >
+            <Stack gap={0}>
+                <Text fontSize={'2xl'} fontWeight={600} as='span'>Create Post</Text>
+                <Text fontSize='sm' color={'gray.500'}>Last updated: {formatDate(new Date(Date.now()))} </Text>
+            </Stack>
+        </DashHeader>
+
+
+        <Flex h='full' gap={{base:3,md:4}} py={4} overflowY={'auto'} px={{base:3,md:4}}> 
+            <Stack maxH='400' flex={1} minW={350} pos='sticky' top={0}  width={{ base: '100%' }} bg={useColorModeValue('white','gray.900')}  border={'1px'} borderColor={borderColor} rounded={{base:'xl',md:'26px'}} boxShadow={'var(--card-raised)'}>
                 <Box borderBottom={'1px'} borderBottomColor={borderColor} p={1} py={2}>
 
 
@@ -99,9 +115,10 @@ const borderColor = useColorModeValue('gray.200', 'gray.700')
                     />
                     </Box>
                 
-               <TextEditor onContentChange={(content) => handleContentChange(content)} initialValue={post.content+''} />
+               <TextEditor getCounts={getEditorCounts} onContentChange={(content) => handleContentChange(content)} initialValue={post.content+''} />
             </Stack>
-            <Stack gap={3} flexShrink={0} width={{ base: '100%', md: '300px' }} overflowY={'auto'} pr={'1'} 
+            
+            <Stack gap={3} flexShrink={0} maxW={320} width={{ base: '100%', md: '300px' }} overflowY={'auto'}
             >
 
                 <SectionCard title='Publish' header={
@@ -120,21 +137,43 @@ const borderColor = useColorModeValue('gray.200', 'gray.700')
                      
                     }>
                 <Box p={4} pb={0}>
-<Stack as={List} fontSize={14} gap={2} >
-<ListItem> <Icon as={LuPin}/> Status: Draft</ListItem>
-<ListItem> <Icon as={LuEye}/> Visibility: Public</ListItem>
-
+<Stack as={List} fontSize={14} gap={2}>
+  <ListItem>
+    <HStack>
+      <Text as={'span'} color="gray.500"><Icon as={LuPin} mr={1} />Status:</Text>
+      <Text as={'span'} fontWeight="semibold" textTransform={'capitalize'}>{post.status}</Text>
+    </HStack>
+  </ListItem>
+  <ListItem>
+    <HStack  >
+      <Text as={'span'} color="gray.500"><Icon as={LuEye} mr={1} />Visibility:</Text>
+      <Text as={'span'} fontWeight="semibold" textTransform={'capitalize'}>{post.visibility}</Text>
+    </HStack>
+  </ListItem>
+  <ListItem>
+    <HStack  >
+      <Text as={'span'} color="gray.500"><Icon as={LuFileText} mr={1} />Word count:</Text>
+      <Text as={'span'} fontWeight="semibold">{editorCounts.words}</Text>
+    </HStack>
+  </ListItem>
+  <ListItem>
+    <HStack  >
+      <Text as={'span'} color="gray.500" ><Icon as={LuType} mr={1} />Character count:</Text>
+      <Text as={'span'} fontWeight="semibold">{editorCounts.characters}</Text>
+    </HStack>
+  </ListItem>
 </Stack>
 </Box>
                 </SectionCard>
                 <SectionCard title='SEO'>
                     <Stack p={4}>
+                        <Text  as='span' fontWeight={500}>Featured Image:</Text>
                         <FeaturedImageCard onChange={(imageUrl)=>{
-                            setPost((prev)=>({...prev,featured_image:imageUrl}))
-                        }} imageUrl={post.featured_image}/>
+                            setPost((prev)=>({...prev,featured_image:{src:imageUrl}}))
+                        }} imageUrl={post.featured_image?.src}/>
 
 <FormControl>
-<FormLabel>Post slug:</FormLabel>
+<FormLabel>URL friendly title:</FormLabel>
                     <InputGroup>
                         <Input
                             placeholder="Slug" name='slug'
@@ -158,7 +197,7 @@ const borderColor = useColorModeValue('gray.200', 'gray.700')
                     </InputGroup>                        </FormControl>
 
                         <FormControl>
-                            <FormLabel>Post summary:</FormLabel>
+                            <FormLabel>Meta description:</FormLabel>
                             <Textarea placeholder="summary" name='summary' value={post.summary as string} onChange={(e) => {
                                 
                                 setPost((prev)=>({...prev,summary:e.target.value}))}} maxH={150} rounded={'lg'}/>
@@ -236,5 +275,7 @@ const borderColor = useColorModeValue('gray.200', 'gray.700')
                
                         </Stack>
         </Flex>
+          </Box>
+
     )
 }

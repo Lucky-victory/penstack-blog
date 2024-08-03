@@ -12,6 +12,7 @@ import { MenuBar } from "./MenuBar";
 import { useHTMLToMarkdownConverter } from "@/src/hooks";
 import Suggestion from "@tiptap/suggestion";
 import Placeholder from "@tiptap/extension-placeholder";
+import CharacterCount from "@tiptap/extension-character-count";
 // import WrapperCompExtension from "@/src/lib/editor/extension";
 type TextEditorHandle = {
   resetContent: () => void;
@@ -65,16 +66,16 @@ const extensions = [
   Typography,
   Image,
   TextAlign,
-  Highlight,];
+  Highlight,CharacterCount];
 
 const TextEditor = forwardRef<
   TextEditorHandle,
   {
     onContentChange: (content:{text:string,html?:string,markdown:string}) => void;
     initialValue: string;
-    returnMarkdown?: boolean;
+    returnMarkdown?: boolean;getCounts?:(counts:{words:number,characters:number})=>void
   }
->(({ onContentChange, initialValue, returnMarkdown = true }, ref) => {
+>(({ onContentChange, initialValue, returnMarkdown = true,getCounts}, ref) => {
   const [editorContent, setEditorContent] = useState<string>(initialValue || "");
   const { editor } = useCurrentEditor();
   const { markdown, updateHtml } = useHTMLToMarkdownConverter();
@@ -100,6 +101,10 @@ const TextEditor = forwardRef<
 
   function handleEditorUpdate(editor: Editor) {
     setEditorContent(editor.getHTML());
+    if(getCounts){
+
+      getCounts?.({characters:editor.storage.characterCount.characters(),words:editor.storage.characterCount.words()});
+    }
     if (returnMarkdown) {
       updateHtml(editor.getHTML());
       getEditorContent({markdown,text:editor.getText().replace(/\n+/g, ' ')});
@@ -111,14 +116,9 @@ const TextEditor = forwardRef<
     <Box h={'full'} >
       <EditorProvider  editorProps={{'attributes':{class:'tiptap-post-editor'}}} 
         enablePasteRules={true}
-        onUpdate={({ editor }) => {
-          // @ts-ignore
-          handleEditorUpdate(editor);
-        }}
-        onTransaction={({ editor }) => {
-          // @ts-ignore
-          handleEditorUpdate(editor);
-        }}
+              onUpdate={({ editor }) => {
+                handleEditorUpdate(editor as import('@tiptap/react').Editor);
+              }}       
         slotBefore={<MenuBar />}
         content={editorContent}
         extensions={extensions}

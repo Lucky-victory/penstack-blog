@@ -1,6 +1,6 @@
 import { shortIdGenerator } from "@/src/utils";
 import { relations, sql } from "drizzle-orm";
-import { mysqlTable, int, bigint, varchar, longtext, timestamp, mysqlEnum, text } from "drizzle-orm/mysql-core";
+import { mysqlTable, int, bigint, varchar, longtext, timestamp, mysqlEnum, text, json } from "drizzle-orm/mysql-core";
 import { users } from "./users.sql";
 
 export const posts = mysqlTable('Posts', {
@@ -12,8 +12,9 @@ export const posts = mysqlTable('Posts', {
     slug: varchar('slug', { 'length': 255 }).notNull(),
     status: mysqlEnum('status', ['draft', 'published', 'deleted']).default('draft'),
     author_id: int('author_id').notNull(),
+    visibility: mysqlEnum('visibility', ['public', 'private']).default('public'),
     category_id: int('category_id'),
-    featured_image: varchar('featured_image', { 'length': 255 }),
+    featured_image: json('featured_image').$type<{src:string,alt_text?:string}>(),
     created_at: timestamp('created_at').defaultNow(),
     updated_at: timestamp('updated_at').onUpdateNow()
 })

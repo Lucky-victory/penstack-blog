@@ -1,11 +1,12 @@
 'use client'
-import { Box, Flex, VStack, Link, Text, Icon, useColorModeValue, Drawer, DrawerContent, useDisclosure, DrawerOverlay, DrawerHeader, DrawerBody, DrawerCloseButton, Input, Avatar, Tooltip, Stack } from "@chakra-ui/react"
+import { Box, Flex, VStack,  Text, Icon, useColorModeValue, Drawer, DrawerContent, useDisclosure, DrawerOverlay, DrawerHeader, DrawerBody, DrawerCloseButton, Input, Avatar, Tooltip, Stack, useBreakpointValue } from "@chakra-ui/react"
 import { usePathname, useRouter } from "next/navigation"
-import NextLink from "next/link"
+import {Link} from '@chakra-ui/next-js'
 import { FiHome, FiFileText, FiUsers, FiSettings, FiChevronDown, FiMenu, FiSearch, FiChevronLeft, FiChevronRight } from "react-icons/fi"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ReactNode,ElementType } from "react";
-
+import { LuChevronDown, LuChevronLeft, LuChevronRight, LuFileStack, LuHome, LuSettings, LuUsers } from "react-icons/lu"
+import {Button} from '@/src/app/components/ui/Button'
 const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { onClose: () => void, isMinimized: boolean, toggleMinimized: () => void, [key: string]: any }) => {
 
   const [isPostsOpen, setIsPostsOpen] = useState(false)
@@ -16,21 +17,13 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
     const activeColor = useColorModeValue("blue.600", "blue.300")
 
     return (
-      <Tooltip label={isMinimized ? children : ''} placement="right" hasArrow>
-        <Link
-          as={NextLink}
-          href={href}
-          style={{ textDecoration: "none" }}
-          _focus={{ boxShadow: "none" }}
-          onClick={onClose}
-        >
-          <Flex
-            align="center"
-            p="3"
+      <Tooltip rounded='md' label={isMinimized ? children : ''} placement="right" hasArrow>
+            <Flex
+          
             mx={nested ? "4" : "0"}
             borderRadius="lg"
             role="group"
-            cursor="pointer"
+            // cursor="pointer"
             color={isActive ? activeColor : color}
             bg={isActive ? "blue.100" : "transparent"}
             _hover={{
@@ -38,10 +31,19 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
               color: "blue.600",
             }}
           >
+            <Button as={Link} colorScheme="black"
+           variant='ghost'
+             fontWeight={isActive ? "500" : "400"}
+              href={href} 
+              style={{ textDecoration: "none" }}
+              _focus={{ boxShadow: "none" }}
+              onClick={onClose}
+            >
             {icon && <Icon mr={isMinimized ? "0" : "4"} fontSize="16"  as={icon} />}
             {!isMinimized && children}
+            </Button>
           </Flex>
-        </Link>
+      
       </Tooltip>
     )
   }
@@ -56,14 +58,14 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
       h="full"
       {...rest}
     >
-      <Flex h="20" alignItems="center" mx={isMinimized ? "2" : "8"} justifyContent="space-between">
+      <Flex h="16" alignItems="center" mx={4} justifyContent="space-between">
         {!isMinimized && (
           <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-            Blog Admin
+            BA
           </Text>
         )}
         <Icon
-          as={isMinimized ? FiChevronRight : FiChevronLeft}
+          as={isMinimized ? LuChevronRight : LuChevronLeft}
           onClick={toggleMinimized}
           fontSize="24"
           cursor="pointer"
@@ -71,18 +73,19 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
         />
       </Flex>
       <VStack spacing={2} align="stretch" px={3}>
-        <NavItem icon={FiHome} href="/dashboard">
+        <NavItem icon={LuHome} href="/dashboard">
           Overview
         </NavItem>
         {isMinimized ? (
-          <NavItem icon={FiFileText} href="/dashboard/posts">
+          <NavItem icon={LuFileStack} href="/dashboard/posts">
             Posts
           </NavItem>
         ) : (
           <Box>
             <Flex
               align="center"
-              p="3"
+              py="2"
+              px='3'
               mx="0"
               borderRadius="lg"
               role="group"
@@ -93,9 +96,9 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
                 color: "blue.600",
               }}
             >
-              <Icon mr="4" fontSize="16" as={FiFileText} />
-              <Text flex="1">Posts</Text>
-              <Icon as={FiChevronDown} transition="all .25s ease-in-out" transform={isPostsOpen ? "rotate(180deg)" : ""} />
+              <Icon mr="4" fontSize="16" as={LuFileStack} />
+              <Text flex="1" as={'span'}>Posts</Text>
+              <Icon as={LuChevronDown} transition="all .25s ease-in-out" transform={isPostsOpen ? "rotate(180deg)" : ""} />
             </Flex>
             {isPostsOpen && (
               <VStack spacing={2} align="stretch" mt={2}>
@@ -109,10 +112,10 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
             )}
           </Box>
         )}
-        <NavItem icon={FiUsers} href="/dashboard/users">
+        <NavItem icon={LuUsers} href="/dashboard/users">
           Users
         </NavItem>
-        <NavItem icon={FiSettings} href="/dashboard/settings">
+        <NavItem icon={LuSettings} href="/dashboard/settings">
           Settings
         </NavItem>
       </VStack>
@@ -123,6 +126,18 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
 export default function DashLayout({children}:{children:ReactNode}) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [isMinimized, setIsMinimized] = useState(false)
+    const [windowWidth, setWindowWidth] = useState(0)
+
+    useEffect(() => {
+      const handleResize = () => setWindowWidth(window.innerWidth)
+      handleResize()
+      window.addEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    useEffect(() => {
+      setIsMinimized(windowWidth < 1200)
+    }, [windowWidth])
 
     const toggleMinimized = () => setIsMinimized(!isMinimized)
 
@@ -168,15 +183,15 @@ export default function DashLayout({children}:{children:ReactNode}) {
               fontSize="20"
               cursor="pointer"
             />
-            <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
-              Blog Admin
+            <Text fontSize="2xl" ml="4" fontFamily="monospace" fontWeight="bold">
+              BA
             </Text>
           </Flex>
           <Flex flexDir={'column'} h={'var(--chakra-vh)'} >
 
           {/* Dashboard Header */}
         
-          <Box  flex={1}  w={isMinimized? 'calc(100% - var(--dash-sidebar-mini-w))':'calc(100% - var(--dash-sidebar-w))'} px={3} ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}  maxW="1600px" margin="0 auto" overflowY={'auto'} >
+          <Box  flex={1}  w={{base:'100%',md:isMinimized? 'calc(100% - var(--dash-sidebar-mini-w))':'calc(100% - var(--dash-sidebar-w))'}}  ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}  maxW="1600px" margin="0 auto" overflowY={'auto'} >
             {children}
           </Box>
             </Flex>

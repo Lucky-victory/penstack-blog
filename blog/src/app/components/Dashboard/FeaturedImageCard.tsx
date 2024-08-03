@@ -25,7 +25,7 @@ function handleCldUploadWidgetSuccess(cldUpload: CloudinaryUploadWidgetResults) 
                {isEmpty(imageUrl) &&<Stack justify={'center'} align={'center'} h={'100%'} w={'full'}>
 
                 
-                <Text as='span' color={textColor} fontSize={'14px'} fontWeight={500} textAlign={'center'}>
+                <Text px={2} display={'inline-block'} as='span' color={textColor} fontSize={'14px'} fontWeight={500} textAlign={'center'}>
 No featured image (recommended size: 1200x630)
                </Text>
                </Stack>
