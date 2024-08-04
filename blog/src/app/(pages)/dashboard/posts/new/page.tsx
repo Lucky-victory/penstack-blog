@@ -92,17 +92,17 @@ const getEditorCounts=(counts:{words:number,characters:number})=>{
 
 }
     return (
-        <Box>
+        <Box h='full'  overflowY={'auto'}>
             <DashHeader pos='sticky' top={0} zIndex={10} >
-            <Stack gap={0}>
+            <Stack gap={0} >
                 <Text fontSize={'2xl'} fontWeight={600} as='span'>Create Post</Text>
-                <Text fontSize='sm' color={'gray.500'}>Last updated: {formatDate(new Date(Date.now()))} </Text>
+                <Text as='span' fontSize='sm' color={'gray.500'}>Last updated: {formatDate(new Date(Date.now()))} </Text>
             </Stack>
         </DashHeader>
 
 
-        <Flex h='full' gap={{base:3,md:4}} py={4} overflowY={'auto'} px={{base:3,md:4}}> 
-            <Stack maxH='400' flex={1} minW={350} pos='sticky' top={0}  width={{ base: '100%' }} bg={useColorModeValue('white','gray.900')}  border={'1px'} borderColor={borderColor} rounded={{base:'xl',md:'26px'}} boxShadow={'var(--card-raised)'}>
+        <Flex  gap={{base:3,md:3}} py={4}  px={{base:3,md:3}}> 
+            <Stack maxH='400' flex={1} minW={350} pos='sticky' top={'calc(var(--dash-header-h) + 16px)'}  width={{ base: '100%' }} bg={useColorModeValue('white','gray.900')}  border={'1px'} borderColor={borderColor} rounded={{base:'xl',md:'26px'}} boxShadow={'var(--card-raised)'}>
                 <Box borderBottom={'1px'} borderBottomColor={borderColor} p={1} py={2}>
 
 

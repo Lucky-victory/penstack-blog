@@ -13,7 +13,7 @@ export default function DashHeader({children, isMinimized = false, showUserAvata
         // ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}
         px={{ base: 4, md: 5 }}
         py={2}
-        minH="10"
+        minH="12" maxH={'var(--dash-header-h)'}
         flexShrink={0}
         alignItems="center"
         bg={useColorModeValue("white", "gray.900")}

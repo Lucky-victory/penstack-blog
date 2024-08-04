@@ -95,6 +95,9 @@ importers:
       thirdweb:
         specifier: ^5.41.0
         version: 5.41.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(bufferutil@4.0.8)(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.23.8)
+      tippy.js:
+        specifier: ^6.3.7
+        version: 6.3.7
       turndown:
         specifier: ^7.2.0
         version: 7.2.0
