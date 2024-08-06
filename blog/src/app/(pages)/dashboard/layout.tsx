@@ -1,12 +1,11 @@
 'use client'
-
 import { Box, Flex, VStack, Text, Icon, useColorModeValue, Drawer, DrawerContent, useDisclosure, DrawerOverlay, DrawerHeader, DrawerBody, DrawerCloseButton, Input, Avatar, Tooltip, Stack, useBreakpointValue } from "@chakra-ui/react"
 import { usePathname, useRouter } from "next/navigation"
 import {Link} from '@chakra-ui/next-js'
-import { FiHome, FiFileText, FiUsers, FiSettings, FiChevronDown, FiMenu, FiSearch, FiChevronLeft, FiChevronRight } from "react-icons/fi"
+
 import { useState, useEffect } from "react"
 import { ReactNode,ElementType } from "react";
-import { LuChevronDown, LuChevronLeft, LuChevronRight, LuFileStack, LuHome, LuSettings, LuUsers } from "react-icons/lu"
+import { LuChevronDown, LuChevronLeft, LuChevronRight, LuFileStack, LuHome, LuSettings, LuUsers,LuMenu } from "react-icons/lu"
 import {Button} from '@/src/app/components/ui/Button'
 
 const navItems = [
@@ -26,8 +25,17 @@ const navItems = [
 
 const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { onClose: () => void, isMinimized: boolean, toggleMinimized: () => void, [key: string]: any }) => {
 
-
+  const pathname = usePathname();
   const [openItems, setOpenItems] = useState<string[]>([]);
+
+  useEffect(() => {
+    const activeParent = navItems.find(item => 
+      item.children && item.children.some(child => pathname.startsWith(child.href))
+    );
+    if (activeParent) {
+      setOpenItems(prev => prev.includes(activeParent.href) ? prev : [...prev, activeParent.href]);
+    }
+  }, [pathname]);
 
   const toggleOpen = (href: string) => {
     setOpenItems(prev => 
@@ -36,60 +44,34 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
   };
 
   const NavItem = ({ icon, children, href, nested = false }: { icon?:ElementType, children: ReactNode, href: string, nested?: boolean }) => {
-
-
-
-    const pathname = usePathname();
-    const isActive = pathname === href || pathname.startsWith(`${href}/`);
+    const isActive = pathname === href;
     const color = useColorModeValue("gray.600", "gray.300");
     const activeColor = 'white';
     
     return (
       <Tooltip rounded='md' label={isMinimized ? children : ''} placement="right" hasArrow>
-
-
-
-
-
-
-
-
-
-
-
-
         <Flex
-          ml={nested ? "4" : "0"}
+          // ml={nested ? "4" : "0"}
           borderRadius="lg"
           role="group"
           color={isActive ? activeColor : color}
-          bg={isActive ? "blue.500" : "transparent"}
+          bg={isActive ? 'blue.500' : "transparent"}
           _hover={{
             bg: isActive ? 'blue.700' : "blue.100",
-            color: isActive ? 'white' : "blue.600",
+            color: isActive ?  'white' : "blue.600",
           }}
         >
           <Button as={Link} colorScheme="black"
             variant='ghost'
             fontWeight={isActive ? "500" : "400"}
-            href={href} 
+            size={nested?'sm':'md'}
+            href={href}  w='full' justifyContent={isMinimized?'center':'flex-start'}
             style={{ textDecoration: "none" }}
             _focus={{ boxShadow: "none" }}
             onClick={onClose}
           >
-
-
-
-
-
-
-
-
             {icon && <Icon mr={isMinimized ? "0" : "4"} fontSize="16" as={icon} />}
             {!isMinimized && children}
-
-
-
           </Button>
         </Flex>
       </Tooltip>
@@ -120,43 +102,7 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
           display={{ base: "none", md: "block" }}
         />
       </Flex>
-      <VStack spacing={2} align="stretch" px={3}>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      <VStack spacing={4} align="stretch" px={3}>
         {navItems.map((item, index) => (
           <Box key={index}>
             {isMinimized ? (
@@ -167,26 +113,28 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
               <>
                 {item.children ? (
                   <Box>
-                    <Flex
+                    <Flex pos={'relative'}
                       align="center"
                       py="2"
                       px='4'
                       mx="0"
                       borderRadius="lg"
-                      role="group"
+                      
                       cursor="pointer"
                       onClick={() => toggleOpen(item.href)}
                       _hover={{
-                        bg: "blue.50",
-                        color: "blue.600",
+                        bg:openItems.includes(item.href) ?"blue.700": "blue.50",
+                        color: openItems.includes(item.href) ?'white':"blue.600",
                       }}
+                      bg={item.children.some(child => pathname.startsWith(child.href)) ? "blue.500" : "transparent"}
+                      color={item.children.some(child => pathname.startsWith(child.href)) ? "white" : "inherit"} 
                     >
                       <Icon mr="4" fontSize="16" as={item.icon} />
                       <Text flex="1" as={'span'}>{item.label}</Text>
                       <Icon as={LuChevronDown} transition="all .25s ease-in-out" transform={openItems.includes(item.href) ? "rotate(180deg)" : ""} />
                     </Flex>
                     {openItems.includes(item.href) && (
-                      <VStack spacing={2} align="stretch" mt={2}>
+                      <VStack role="group" spacing={3} align="stretch" p={3} mt={-1} zIndex={1} bg={'gray.100'} roundedBottom={'md'}>
                         {item.children.map((child, childIndex) => (
                           <NavItem key={childIndex} href={child.href} nested>
                             {child.label}
@@ -203,13 +151,6 @@ const SidebarContent = ({ onClose, isMinimized, toggleMinimized, ...rest }: { on
               </>
             )}
           </Box>
-
-
-
-
-
-
-
         ))}
       </VStack>
     </Box>
@@ -271,7 +212,7 @@ export default function DashLayout({children}:{children:ReactNode}) {
             display={{ base: "flex", md: "none" }}
           >
             <Icon
-              as={FiMenu}
+              as={LuMenu}
               onClick={onOpen}
               fontSize="20"
               cursor="pointer"
