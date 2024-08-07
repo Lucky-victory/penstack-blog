@@ -1,9 +1,10 @@
 
-import { ReactNodeViewRenderer,mergeAttributes, Node  } from '@tiptap/react'
+import { ReactNodeViewRenderer,mergeAttributes, Node, Extension, Editor  } from '@tiptap/react'
 
 import Component from '@/src/app/components/TextEditor/Nodes/WrapperComp'
+import Suggestion from '@tiptap/suggestion'
 
-const WrapperCompExtension= Node.create({
+export const WrapperCompExtension= Node.create({
   name: 'reactComponent',
 
   group: 'block',
@@ -34,4 +35,29 @@ draggable: true,
     return ReactNodeViewRenderer(Component)
   },
 })
-export default WrapperCompExtension
+
+export const SlashCommandExtension = Extension.create({
+  name: 'slashCommand',
+
+  addOptions() {
+    return {
+      suggestion: {
+        char: '/',
+        command: ({ editor, range, props }:{ editor: Editor; range: Range; props: any }) => {
+          props.command({ editor, range });
+        },
+      },
+    };
+    
+  },
+
+  addProseMirrorPlugins() {
+    return [
+      Suggestion({
+        editor: this.editor,
+        startOfLine: true,
+        ...this.options.suggestion,
+      }),
+    ];
+  },
+});

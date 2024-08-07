@@ -1,22 +1,40 @@
-import React from 'react'
-import { Box, VStack, Text } from '@chakra-ui/react'
+import React, { useRef } from "react";
+import { VStack, Box, Portal } from "@chakra-ui/react";
+import { Button } from '@/src/app/components/ui/Button';
+import { Editor, Range } from "@tiptap/react";
+import { Menu,MenuButton,MenuList,MenuItem } from '@/src/app/components/ui/Menu';
 
-const CommandList = ({ items, command }) => (
-  <Box bg="white" shadow="md" rounded="md" p={2}>
-    <VStack align="stretch" spacing={1}>
-      {items.map((item, index) => (
-        <Text
-          key={index}
-          cursor="pointer"
-          p={2}
-          _hover={{ bg: 'gray.100' }}
-          onClick={() => command(item)}
-        >
-          {item.title}
-        </Text>
-      ))}
-    </VStack>
-  </Box>
-)
+interface CommandListItem {
+  title: string;
+  command: (props: { editor: Editor; range: Range }) => void;
+}
 
-export default CommandList
+interface SlashCommandListProps {
+  items: CommandListItem[];
+  command: (item: CommandListItem) => void;
+  clientRect: () => DOMRect;isOpen:boolean,onOpen:()=>void,onClose:()=>void
+}
+
+export const SlashCommandList: React.FC<SlashCommandListProps> = ({ items, command, clientRect,isOpen,onOpen,onClose }) => {
+  const rect = clientRect();
+  const ref=useRef(null)
+  return (
+
+    <Menu isOpen={isOpen} onClose={onClose} onOpen={onOpen} placement="bottom-start"  >
+      {/* <MenuButton as={Box} position="absolute" top={`${rect.top + 10}px`} left={`${rect.left}px`} /> */}
+      <MenuList >
+        {items.map((item, index) => (
+          <MenuItem
+            
+            key={index}
+            onClick={() => command(item)}
+          >
+            {item.title}
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>          
+   
+        
+  );
+};

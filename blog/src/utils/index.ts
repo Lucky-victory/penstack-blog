@@ -5,7 +5,9 @@ export const shortIdGenerator = new SnowflakeIdGenerator({
 });
 
 
-export function formatDate(date: Date | null | undefined): string {
+export function formatDate(date: Date): string {
+  console.log({date});
+  
   if (!date) return 'Invalid date';
 
   const now = new Date();

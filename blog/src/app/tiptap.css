@@ -3,6 +3,7 @@
   padding-bottom: 3rem;
   min-height: 300px;
  flex:1;
+ max-height: 100%;
 }
 .tiptap:focus{
   outline: none;
