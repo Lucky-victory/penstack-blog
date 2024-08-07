@@ -11,7 +11,7 @@ const META_DESCRIPTION_LENGTH = 155
 
 export const SidebarContent = ({ 
     post, 
-    setPost, 
+     updatePost, 
     categories, 
     setCategories, 
     tags, 
@@ -21,7 +21,7 @@ export const SidebarContent = ({
   
 }: {
     post: PostInsert;
-    setPost:Dispatch<SetStateAction<PostInsert>>;
+    updatePost:(updates: Partial<PostInsert>) => void;
     categories: { name: string; id?: number }[];
     setCategories:Dispatch<SetStateAction<{ name: string; id?: number }[]>>;
     tags: { name: string }[];
@@ -96,7 +96,7 @@ export const SidebarContent = ({
             <Stack p={4}>
                 <Text  as='span' fontWeight={500}>Featured Image:</Text>
                 <FeaturedImageCard onChange={(imageUrl)=>{
-                    setPost((prev)=>({...prev,featured_image:{src:imageUrl}}))
+                    updatePost({featured_image:{src:imageUrl}})
                 }} imageUrl={post.featured_image?.src}/>
 
         <FormControl>
@@ -107,7 +107,8 @@ export const SidebarContent = ({
                     value={post.slug} autoComplete='off'
                     onChange={(e) => {
                         
-                        setPost((prev) => ({...prev, slug: e.target.value}))}}
+                        updatePost({slug: e.target.value})
+                    }}
                     isDisabled={!isSlugEditable}
                     onBlur={() => setIsSlugEditable(false)} rounded={'full'} pr={1}
                 />
@@ -127,7 +128,7 @@ export const SidebarContent = ({
                     <FormLabel>Meta description:</FormLabel>
                     <Textarea placeholder="summary" name='summary' value={post.summary as string} onChange={(e) => {
                         
-                        setPost((prev)=>({...prev,summary:e.target.value}))}} maxH={150} rounded={'lg'}/>
+                        updatePost({summary:e.target.value})}} maxH={150} rounded={'lg'}/>
                         </FormControl>
                 </Stack>
         </SectionCard>

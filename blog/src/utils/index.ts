@@ -1,14 +1,15 @@
 import { formatDistanceToNowStrict, format } from 'date-fns';
 import { SnowflakeIdGenerator } from "@green-auth/snowflake-unique-id";
 export const shortIdGenerator = new SnowflakeIdGenerator({
-    nodeId:23,sequenceBits:24
+    nodeId:10,sequenceBits:20
 });
 
 
 export function formatDate(date: Date): string {
-  console.log({date});
-  
+
   if (!date) return 'Invalid date';
+try {
+  
 
   const now = new Date();
   const diff = now.getTime() - date.getTime();
@@ -22,6 +23,9 @@ export function formatDate(date: Date): string {
   } else {
     return format(date, 'MMM d yyyy');
   }
+  } catch (error) {
+  return 'Invalid date'
+}
 }
 
   export function shortenText(text: string, len = 50) {

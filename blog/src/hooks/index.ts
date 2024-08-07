@@ -1,3 +1,4 @@
+import {  usePathname, useSearchParams } from 'next/navigation';
 'use client';
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
@@ -23,13 +24,19 @@ export const useAutoSave = <T extends SaveableValue>({
   onError
 }: UseAutoSaveOptions<T>) => {
   const [value, setValue] = useState<T>(initialValue);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
+ 
   const mutation = useMutation({
     mutationFn,
-    onSuccess,
+    onSuccess: (data) => {
+      setLastSaved(new Date());
+      onSuccess?.(data);
+    },
     onError
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSave = useCallback(
     (() => {
       let timer: NodeJS.Timeout;
@@ -58,7 +65,10 @@ export const useAutoSave = <T extends SaveableValue>({
           : inputValue as T
       );
     } else {
-      setValue(event);
+      setValue(prev => 
+          typeof prev === 'object' && typeof event === 'object'
+            ? { ...prev, ...(event as object) } 
+            : event as T);
     }
   };
 
@@ -66,7 +76,7 @@ export const useAutoSave = <T extends SaveableValue>({
     value, 
     onChange: handleChange, 
     isSaving: mutation.isPending,
-    error: mutation.error
+    error: mutation.error,lastSaved
   };
 };
 
@@ -185,4 +195,68 @@ export function useDebounce<T extends string | number | object>(value: T, delay:
     }
   }, [value, delay])
   return debouncedValue
+}
+
+
+type QueryParamValue = string | number | boolean | null;
+
+interface QueryParams {
+  [key: string]: QueryParamValue;
+}
+
+export function useQueryParams<T extends QueryParams>() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [queryParamsValues, setQueryParamsValues] = useState<T>({} as T);
+
+  // Parse search params into an object
+  useEffect(() => {
+    const params: QueryParams = {};
+    searchParams.forEach((value, key) => {
+      params[key] = value;
+    });
+    setQueryParamsValues(params as T);
+  }, [searchParams]);
+
+  // Update a single query parameter
+  const setQueryParam = useCallback(
+    (key: keyof T, value: QueryParamValue) => {
+      const updatedParams = new URLSearchParams(searchParams.toString());
+
+      if (value === null || value === '') {
+        updatedParams.delete(key as string);
+      } else {
+        updatedParams.set(key as string, value.toString());
+      }
+
+      router.push(`${pathname}?${updatedParams.toString()}`);
+    },
+    [pathname, router, searchParams]
+  );
+
+  // Update multiple query parameters at once
+  const setQueryParams = useCallback(
+    (newParams: Partial<T>) => {
+      const updatedParams = new URLSearchParams(searchParams.toString());
+
+      Object.entries(newParams).forEach(([key, value]) => {
+        if (value === null || value === '') {
+          updatedParams.delete(key);
+        } else {
+          updatedParams.set(key, value.toString());
+        }
+      });
+
+      router.push(`${pathname}?${updatedParams.toString()}`);
+    },
+    [pathname, router, searchParams]
+  );
+
+  // Clear all query parameters
+  const clearQueryParams = useCallback(() => {
+    router.push(pathname);
+  }, [pathname, router]);
+
+  return { queryParams: queryParamsValues, setQueryParam, setQueryParams, clearQueryParams };
 }

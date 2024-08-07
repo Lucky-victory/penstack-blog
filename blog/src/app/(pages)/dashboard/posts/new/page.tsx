@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Box, Button, Input, Flex, useColorModeValue, Stack, Text, useDisclosure ,Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton} from '@chakra-ui/react'
 
 import { LuSettings } from 'react-icons/lu'
@@ -20,17 +20,21 @@ export default function NewPostPage() {
  
     const [categories, setCategories] = useState<{name:string,id?:number}[]>([])
     const [tags, setTags] = useState<{name:string}[]>([])
-    const [post,setPost] = useState<PostInsert>({
+  
+    const {value:post,onChange,isSaving,lastSaved}=useAutoSave({initialValue:{
         title:'',
         slug:'',
         summary:'',visibility:'public',
-        content:'',author_id:1,featured_image:{src:'',alt_text:''},status:'draft','post_id':''
+        content:'',featured_image:{src:'',alt_text:''},status:'draft','post_id':'',updated_at:new Date(),
         
-    })
-    const {value,onChange,isSaving}=useAutoSave({initialValue:post,mutationFn:savePost});
+    } as PostInsert,mutationFn:savePost, onSuccess: (savedPost) => {
+    console.log({savedPost});
+  }});
     const { isOpen, onOpen, onClose } = useDisclosure()
-
-   async function savePost() {
+const updatePost = useCallback((updates:Partial<PostInsert>) => {
+  onChange({...post, ...updates});
+},[onChange, post]);
+   async function savePost():Promise<any>{
     
         const response = await fetch('/api/posts', {
             method: 'POST',
@@ -40,40 +44,24 @@ export default function NewPostPage() {
             body: JSON.stringify(post),
         })
         const data = await response.json()
-    
-        console.log(data)
-    }
-    async function fetchCategories() {
-        // const response = await fetch('/api/categories')
-        // const data = await response.json()
-        // setCategories(data.categories)
-    }
-    async function fetchTags() {
-        // const response = await fetch('/api/tags')
-        // const data = await response.json()
-        // setTags(data.tags)
-    }
 
-    
-    useEffect(() => {
-        fetchCategories()
-       
-    }, [])
-    useEffect(()=>{
-        onChange(post)
-    },[post])
+        console.log(data)
+        return data
+    }
+   
     useEffect(() => {
         if(post.title){
             const generatedSlug = slugify(post.title+'-'+shortIdGenerator.urlSafeId(6), { lower: true, strict: true });
-            setPost((prev) => ({...prev, slug: generatedSlug}))
+           updatePost({slug: generatedSlug})
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [post.title])
 
-   
 
-   
+
+
     const handleContentChange = (content:{html?:string,markdown:string,text:string}) => {
-        setPost((prev)=> ({...prev,summary:shortenText(content.text,META_DESCRIPTION_LENGTH),content:content.markdown}))
+        updatePost({summary:shortenText(content.text,META_DESCRIPTION_LENGTH),content:content.markdown})
 
     }
     const borderColor = useColorModeValue('gray.200', 'gray.700');
@@ -86,7 +74,7 @@ export default function NewPostPage() {
             <DashHeader pos='sticky' top={0} zIndex={10} >
             <Stack gap={0} >
                 <Text fontSize={'2xl'} fontWeight={600} as='span'>Create Post</Text>
-                <Text as='span' fontSize='sm' color={'gray.500'}>Last updated: {formatDate(new Date(value.updated_at as Date))} </Text>
+                <Text as='span' fontSize='sm' color={'gray.500'}>Last updated: {post?.updated_at ? formatDate(new Date(post.updated_at as Date)):'Not saved yet'+post.updated_at} </Text>
             </Stack>
             <Button onClick={onOpen} leftIcon={<LuSettings />} display={{ base: 'flex', lg: 'none' }}>Settings</Button>
         </DashHeader>
@@ -100,7 +88,7 @@ export default function NewPostPage() {
                 <Input border={'none'} outline={'none'} autoComplete='off'
                     placeholder="Post title"
                     value={post.title as string }fontWeight={600}
-                    onChange={(e) => setPost((prev)=>({...prev,title:e.target.value}))}
+                    onChange={(e) => updatePost({title:e.target.value})}
                  rounded={'none'} _focus={{boxShadow: 'none'}}
                 fontSize={{ base: 'lg', md: '24px' }}
                     />
@@ -112,7 +100,7 @@ export default function NewPostPage() {
             <Box display={{ base: 'none', lg: 'block' }} maxW={280}>
                <SidebarContent
                             post={post}
-                            setPost={setPost}
+                            updatePost={updatePost}
                             categories={categories}
                             setCategories={setCategories}
                             tags={tags}
@@ -130,7 +118,7 @@ export default function NewPostPage() {
                 <DrawerBody px={2}>
                     <SidebarContent 
                             post={post}
-                            setPost={setPost}
+                            updatePost={updatePost}
                             categories={categories}
                             setCategories={setCategories}
                             tags={tags}

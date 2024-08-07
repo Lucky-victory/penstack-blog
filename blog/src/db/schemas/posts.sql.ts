@@ -11,16 +11,16 @@ export const posts = mysqlTable('Posts', {
     post_id: varchar('post_id', { 'length': 255 }).$defaultFn(() => shortIdGenerator.urlSafeId()),
     slug: varchar('slug', { 'length': 255 }).notNull(),
     status: mysqlEnum('status', ['draft', 'published', 'deleted']).default('draft'),
-    author_id: int('author_id').notNull(),
+    // author_id: int('author_id').notNull(),
     visibility: mysqlEnum('visibility', ['public', 'private']).default('public'),
     category_id: int('category_id'),
     featured_image: json('featured_image').$type<{src:string,alt_text?:string}>(),
     created_at: timestamp('created_at').defaultNow(),
-    updated_at: timestamp('updated_at').onUpdateNow()
+    updated_at: timestamp('updated_at').onUpdateNow().defaultNow()
 })
 
 export const postsRelations = relations(posts, (({ one, many }) => ({
-    authors: many(users),
+    authors: many(postAuthors),
     comments: many(comments),
     category: one(categories, {
         fields: [posts.category_id],
@@ -29,6 +29,21 @@ export const postsRelations = relations(posts, (({ one, many }) => ({
     tags: many(postTags)
 })))
 
+
+export const postAuthors = mysqlTable('PostAuthors', {
+    post_id: bigint('post_id', { mode: 'bigint' }).notNull(),
+    author_id: int('author_id').notNull()
+})
+export const postAuthorsRelations = relations(postAuthors, (({ one }) => ({
+    post: one(posts, {
+        fields: [postAuthors.post_id],
+        references: [posts.id]
+    }),
+    author: one(users, {
+        fields: [postAuthors.author_id],
+        references: [users.id]
+    })
+})))
 export const categories = mysqlTable('Categories', {
     id: int('id').autoincrement().primaryKey(),
     name: varchar('name', { 'length': 100 }).notNull(),
