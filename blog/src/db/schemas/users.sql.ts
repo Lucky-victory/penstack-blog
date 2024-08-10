@@ -13,3 +13,4 @@ export const users=mysqlTable('Users',{
     updated_at:timestamp('updated_at').onUpdateNow(),
     
 })
+

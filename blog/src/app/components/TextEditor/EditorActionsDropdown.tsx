@@ -8,7 +8,7 @@ import { filterEditorActions } from '@/src/lib/editor-actions';
 import { EditorActionItem } from '@/src/types';
 import React from 'react';
 import { CldUploadWidget, CloudinaryUploadWidgetInfo, CloudinaryUploadWidgetResults, getCldImageUrl } from 'next-cloudinary';
-export default function EditorActionsDropdown(){
+export default function EditorActionsDropdown() {
     const iconColorValue = useColorModeValue('gray.500', 'gray.200');
     const activeTextColorValue = useColorModeValue('white', 'white');
     const dropdownActions = filterEditorActions(["Paragraph","Heading 1","Heading 2","Heading 3","Bullet List","Ordered List","Insert Image"])
@@ -23,7 +23,7 @@ export default function EditorActionsDropdown(){
     }
     return <Menu  onClose={()=>{
             console.log('menu closed');
-            
+            alert('hello')
             editor?.chain().focus().run()
           }}>
             <MenuButton   variant={'outline'} as={Button} size='sm' fontSize='medium' display={'flex'} >

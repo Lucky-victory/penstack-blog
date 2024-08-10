@@ -1,10 +1,12 @@
-import {  usePathname, useSearchParams } from 'next/navigation';
 'use client';
+import {  usePathname, useSearchParams } from 'next/navigation';
+import { FormikErrors, useFormik } from 'formik';
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { Post } from '@/src/types';
+import { Post, PostSelect } from '@/src/types';
 import TurndownService from "turndown";
 import { useMutation } from '@tanstack/react-query';
+import debounce from 'lodash/debounce';
 
 export type SaveableValue = string | Record<string, any>;
 
@@ -25,62 +27,120 @@ export const useAutoSave = <T extends SaveableValue>({
 }: UseAutoSaveOptions<T>) => {
   const [value, setValue] = useState<T>(initialValue);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
- 
   const mutation = useMutation({
     mutationFn,
     onSuccess: (data) => {
       setLastSaved(new Date());
+      setValue(prevValue => ({ ...(prevValue as object), ...data }));
       onSuccess?.(data);
     },
-    onError
+    onError: (error, variables) => {
+      setValue(variables); // Revert to the last known good state
+      onError?.(error);
+    }
   });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSave = useCallback(
-    (() => {
-      let timer: NodeJS.Timeout;
-      return (newValue: T) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          mutation.mutate(newValue);
-        }, debounceTime);
-      };
-    })(),
-    [debounceTime]
+    debounce((newValue: T) => {
+      mutation.mutate(newValue);
+    }, debounceTime),
+    [mutation, debounceTime]
   );
 
   useEffect(() => {
-    debouncedSave(value);
-  }, [value, debouncedSave]);
+    if (isInitialized) {
+      debouncedSave(value);
+    } else {
+      setIsInitialized(true);
+    }
+  }, [value, debouncedSave, isInitialized]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | T
   ) => {
     if (typeof event === 'object' && 'target' in event) {
       const { name, value: inputValue } = event.target;
-      setValue(prev => 
-        typeof prev === 'object' 
-          ? { ...prev, [name]: inputValue } 
+      setValue(prev =>
+        typeof prev === 'object'
+          ? { ...prev, [name]: inputValue }
           : inputValue as T
       );
     } else {
-      setValue(prev => 
+      setValue(prev =>
           typeof prev === 'object' && typeof event === 'object'
-            ? { ...prev, ...(event as object) } 
+            ? { ...prev, ...(event as object) }
             : event as T);
     }
   };
-
-  return { 
-    value, 
-    onChange: handleChange, 
+  
+  return {
+    value,
+    onChange: handleChange,
     isSaving: mutation.isPending,
-    error: mutation.error,lastSaved
+    error: mutation.error,
+    lastSaved
   };
 };
 
+// export interface UseAutoSaveOptions<T> {
+//   initialValues: T;
+//   mutationFn: (values: T) => Promise<any>;
+//   debounceTime?: number;
+//   onSuccess?: (data: any) => void;
+//   onError?: (error: any) => void;
+//   validate?: (values: T) => void | object | Promise<FormikErrors<T>>;
+// }
 
+// export const useAutoSave = <T extends object>({
+//   initialValues,
+//   mutationFn,
+//   debounceTime = 1000,
+//   onSuccess,
+//   onError,
+//   validate
+// }: UseAutoSaveOptions<T>) => {
+//   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+//   const mutation = useMutation({
+//     mutationFn,
+//     onSuccess: (data) => {
+//       setLastSaved(new Date());
+//       formik.setValues({ ...formik.values, ...data });
+//       onSuccess?.(data);
+//     },
+//     onError: (error) => {
+//       onError?.(error);
+//     }
+//   });
+
+//   const debouncedSave = useCallback(
+//     debounce((values: T) => {
+//       mutation.mutate(values);
+//     }, debounceTime),
+//     [mutation, debounceTime]
+//   );
+
+//   const formik = useFormik({
+//     initialValues,
+//     validate,
+//     onSubmit: () => {}, // We're not using a submit handler in this case
+//   });
+
+//   useEffect(() => {
+//     if (formik.dirty && !formik.isValidating) {
+//       debouncedSave(formik.values);
+//     }
+//   }, [formik.values, formik.dirty, formik.isValidating, debouncedSave]);
+
+//   return {
+//     ...formik,
+//     isSaving: mutation.isPending,
+//     error: mutation.error,
+//     lastSaved
+//   };
+// };
 export function useHTMLToMarkdownConverter() {
   const [html, setHtml] = useState("");
   const [markdown, setMarkdown] = useState("");
@@ -118,7 +178,7 @@ export function useHTMLToMarkdownConverter() {
   return { markdown, updateHtml };
 }
 export function usePosts() {
-  const [posts, setPosts] = useState<Post[]>([])
+  const [posts, setPosts] = useState<PostSelect[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
   const router = useRouter()
@@ -131,7 +191,9 @@ export function usePosts() {
           throw new Error('Failed to fetch posts')
         }
         const data = await response.json()
-        setPosts(data)
+        console.log({posts:data.posts,p:data.p});
+        
+        setPosts(data.posts)
         setLoading(false)
       } catch (err) {
         setError(err instanceof Error ? err : new Error('An error occurred'))

@@ -1,3 +1,4 @@
+import PostPage from '@/src/app/components/PostPage';
 import type { Metadata, ResolvingMetadata } from 'next'
 import { notFound } from 'next/navigation';
 
@@ -49,9 +50,6 @@ export default async function Page({ params, searchParams }: Props) {
   const post = await getData(params.slug)
 
   return (
-    <article>
-      <h1>{post?.title}</h1>
-      <p>{post?.body}</p>
-    </article>
+   <PostPage/>
   )
 }

@@ -78,42 +78,42 @@
 .tiptap h1 {
   font-size: 2.5rem;
   font-weight: bold;
-  margin-top: 1.5rem;
+  margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
 .tiptap h2 {
   font-size: 2rem;
   font-weight: bold;
-  margin-top: 1.5rem;
+  margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
 .tiptap h3 {
   font-size: 1.75rem;
   font-weight: bold;
-  margin-top: 1.5rem;
+  margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
 .tiptap h4 {
   font-size: 1.5rem;
   font-weight: bold;
-  margin-top: 1.5rem;
+  margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
 .tiptap h5 {
   font-size: 1.25rem;
   font-weight: bold;
-  margin-top: 1.5rem;
+  margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
 .tiptap h6 {
   font-size: 1rem;
   font-weight: bold;
-  margin-top: 1.5rem;
+  margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
@@ -173,7 +173,7 @@
   }
 
   .tiptap mark {
-    background-color: var(--chakra-colors-yellow-700);
+    /* background-color: var(--chakra-colors-yellow-700); */
   }
 
   .tiptap a {

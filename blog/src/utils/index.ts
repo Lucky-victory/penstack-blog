@@ -4,6 +4,17 @@ export const shortIdGenerator = new SnowflakeIdGenerator({
     nodeId:10,sequenceBits:20
 });
 
+export const debounce = <T extends (...args: any[]) => any>(func: T, wait: number): ((...args: Parameters<T>) => void) => {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: Parameters<T>) => {
+    const context = this;
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => func.apply(context, args), wait);
+  };
+};
 
 export function formatDate(date: Date): string {
 
@@ -21,7 +32,7 @@ try {
   } else if (diff < 86400000) {
     return formatDistanceToNowStrict(date, { addSuffix: true, unit: 'hour' });
   } else {
-    return format(date, 'MMM d yyyy');
+    return format(date, 'MMM d, yyyy');
   }
   } catch (error) {
   return 'Invalid date'

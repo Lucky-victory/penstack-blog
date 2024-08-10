@@ -84,11 +84,11 @@ const extensions = [
     placeholder: 'Write something …',
     // Use different placeholders depending on the node type:
     // placeholder: ({ node }) => {
-    //   if (node.type.name === 'heading') {
-    //     return 'What’s the title?'
+    //   if (node.type.name === 'customBlock') {
+    //     return 'Type / to browser actions'
     //   }
 
-    //   return 'Can you add some further context?'
+    //   return 'Write something …'
     // },
   }),
   Link.configure({
@@ -98,75 +98,78 @@ const extensions = [
     },
     openOnClick: false,
     autolink: true,
-  }), SlashCommandExtension.configure({
-      suggestion: {
-        items: () => items,
-        render: () => {
-          let component: ReactRenderer<any>;
-    let popup: Instance<Props>[] | { setProps: (arg0: { getReferenceClientRect: any; }) => void; }[];
-          return {
-            onStart: (props:any) => {
-              component = new ReactRenderer(SlashCommandList, {
-                props:{
-                  ...props,isOpen:isSlashCommandOpen,onClose:onSlashCommandClose,onOpen:onSlashCommandOpen
-                },
-                editor: props.editor
-              });
-              onSlashCommandOpen();
-              if (!props.clientRect) {
-                return;
-              }
-        // popup = tippy('body', {
-        //   getReferenceClientRect: props.clientRect,
-        //   appendTo: () => document.body,
-        //   content: component.element,
-        //   showOnCreate: true,
-        //   interactive: true,
-        //   trigger: 'manual',
-        //   placement: 'bottom-start',
-        // })
-            },
-            onUpdate: (props: any) => {
-              if (component) {
-                component.updateProps({...props,isOpen:isSlashCommandOpen,onClose:onSlashCommandClose,onOpen:onSlashCommandOpen
-              });
-              }
+  }),
+  // SlashCommandExtension.configure({
+  //     suggestion: {
+  //       items: () => items,
+  //       render: () => {
+  //         let component: ReactRenderer<any>;
+  //   let popup: Instance<Props>[] | { setProps: (arg0: { getReferenceClientRect: any; }) => void; }[];
+  //         return {
+  //           onStart: (props:any) => {
+  //             component = new ReactRenderer(SlashCommandList, {
+  //               props:{
+  //                 ...props,isOpen:isSlashCommandOpen,onClose:onSlashCommandClose,onOpen:onSlashCommandOpen
+  //               },
+  //               editor: props.editor
+  //             });
+  //             onSlashCommandOpen();
+  //             if (!props.clientRect) {
+  //               return;
+  //             }
+  //       // popup = tippy('body', {
+  //       //   getReferenceClientRect: props.clientRect,
+  //       //   appendTo: () => document.body,
+  //       //   content: component.element,
+  //       //   showOnCreate: true,
+  //       //   interactive: true,
+  //       //   trigger: 'manual',
+  //       //   placement: 'bottom-start',
+  //       // })
+  //           },
+  //           onUpdate: (props: any) => {
+  //             if (component) {
+  //               component.updateProps({...props,isOpen:isSlashCommandOpen,onClose:onSlashCommandClose,onOpen:onSlashCommandOpen
+  //             });
+  //             }
 
-              if (!props.clientRect) {
-                return;
-              }
+  //             if (!props.clientRect) {
+  //               return;
+  //             }
 
-              if (popup && popup[0]) {
-                popup[0].setProps({
-                  getReferenceClientRect: props.clientRect,
-                });
-              }
-            },
-            onKeyDown: (props: any) => {
-              if (props.event.key === 'Escape') {
-                onSlashCommandClose()
-                if (popup[0] && 'hide' in popup[0]) {
-                  popup[0].hide()
-                }
-                return true
-              }
+  //             if (popup && popup[0]) {
+  //               popup[0].setProps({
+  //                 getReferenceClientRect: props.clientRect,
+  //               });
+  //             }
+  //           },
+  //           onKeyDown: (props: any) => {
+  //             if (props.event.key === 'Escape') {
+  //               onSlashCommandClose()
+  //               if (popup[0] && 'hide' in popup[0]) {
+  //                 popup[0].hide()
+  //               }
+  //               return true
+  //             }
 
-              return component.ref?.onKeyDown(props)
-            },
-            onExit() {
-               onSlashCommandClose()
-                if (popup[0] && 'destroy' in popup[0]) {
-                    popup[0].destroy()
-                }
-                component.destroy()
-            },          };
-        },
-      },
-    }),
+  //             return component.ref?.onKeyDown(props)
+  //           },
+  //           onExit() {
+  //              onSlashCommandClose()
+  //               if (popup[0] && 'destroy' in popup[0]) {
+  //                   popup[0].destroy()
+  //               }
+  //               component.destroy()
+  //           },          };
+  //       },
+  //     },
+  //   }),
   Typography,
   Image,
   TextAlign,
-  Highlight,CharacterCount];
+  Highlight.configure({
+    
+  }),CharacterCount];
 
 
   useImperativeHandle(

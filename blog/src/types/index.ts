@@ -1,4 +1,4 @@
-import { InferInsertModel } from 'drizzle-orm'
+import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
 import {posts} from '@/src/db/schemas/posts.sql'
 import { Editor } from '@tiptap/react'
 import { IconType } from 'react-icons'
@@ -19,6 +19,18 @@ export type PostToPost =PostInsert & {
    
 }
 export type PostInsert=InferInsertModel<typeof posts>
+export type PostSelect = InferSelectModel<typeof posts> & {
+  author: {
+    name: string;
+    avatar: string;
+    username: string;
+  };category?: {
+    id: number;
+    slug: string;
+    name: string;
+  }
+};
+
 export interface EditorActionItem{
   label:string;
   action:({editor,open}:{editor?:Editor,open?:()=>void})=>void,

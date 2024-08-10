@@ -7,10 +7,9 @@ import {FormLabel,FormControl} from '@/src/app/components/ui/Form'
 import { LuEye, LuPin, LuPlus, LuCheck, LuListTodo, LuFileText, LuType, LuSettings } from 'react-icons/lu'
 import { FeaturedImageCard } from '@/src/app/components/Dashboard/FeaturedImageCard'
 import { PostInsert } from '@/src/types'
-const META_DESCRIPTION_LENGTH = 155
 
 export const SidebarContent = ({ 
-    post, 
+    formik,
      updatePost, 
     categories, 
     setCategories, 
@@ -20,7 +19,7 @@ export const SidebarContent = ({
     editorCounts,
   
 }: {
-    post: PostInsert;
+    formik:any,
     updatePost:(updates: Partial<PostInsert>) => void;
     categories: { name: string; id?: number }[];
     setCategories:Dispatch<SetStateAction<{ name: string; id?: number }[]>>;
@@ -68,13 +67,13 @@ export const SidebarContent = ({
           <ListItem>
             <HStack>
               <Text as={'span'} color="gray.500"><Icon as={LuPin} mr={1} />Status:</Text>
-              <Text as={'span'} fontWeight="semibold" textTransform={'capitalize'}>{post.status}</Text>
+              <Text as={'span'} fontWeight="semibold" textTransform={'capitalize'}>{formik.values.status}</Text>
             </HStack>
           </ListItem>
           <ListItem>
-            <HStack  >
+            <HStack >
               <Text as={'span'} color="gray.500"><Icon as={LuEye} mr={1} />Visibility:</Text>
-              <Text as={'span'} fontWeight="semibold" textTransform={'capitalize'}>{post.visibility}</Text>
+              <Text as={'span'} fontWeight="semibold" textTransform={'capitalize'}>{formik.values.visibility}</Text>
             </HStack>
           </ListItem>
           <ListItem>
@@ -95,20 +94,17 @@ export const SidebarContent = ({
         <SectionCard title='SEO'>
             <Stack p={4}>
                 <Text  as='span' fontWeight={500}>Featured Image:</Text>
-                <FeaturedImageCard onChange={(imageUrl)=>{
-                    updatePost({featured_image:{src:imageUrl}})
-                }} imageUrl={post.featured_image?.src}/>
+                <FeaturedImageCard onChange={({imageUrl,altText})=>{
+                    updatePost({featured_image:{src:imageUrl,alt_text:altText}})
+                }} imageUrl={formik.values.featured_image?.src}/>
 
         <FormControl>
         <FormLabel>URL friendly title:</FormLabel>
             <InputGroup>
                 <Input
                     placeholder="Slug" name='slug'
-                    value={post.slug} autoComplete='off'
-                    onChange={(e) => {
-                        
-                        updatePost({slug: e.target.value})
-                    }}
+                    value={formik.values.slug} autoComplete='off'
+                    onChange={formik.handleChange}
                     isDisabled={!isSlugEditable}
                     onBlur={() => setIsSlugEditable(false)} rounded={'full'} pr={1}
                 />
@@ -126,9 +122,7 @@ export const SidebarContent = ({
 
                 <FormControl>
                     <FormLabel>Meta description:</FormLabel>
-                    <Textarea placeholder="summary" name='summary' value={post.summary as string} onChange={(e) => {
-                        
-                        updatePost({summary:e.target.value})}} maxH={150} rounded={'lg'}/>
+                    <Textarea placeholder="summary" name='summary' value={formik.values.summary as string} onChange={formik.handleChange} maxH={150} rounded={'lg'}/>
                         </FormControl>
                 </Stack>
         </SectionCard>

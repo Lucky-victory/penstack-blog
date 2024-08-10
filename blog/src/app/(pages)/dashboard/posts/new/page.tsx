@@ -1,80 +1,116 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Box, Button, Input, Flex, useColorModeValue, Stack, Text, useDisclosure ,Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton} from '@chakra-ui/react'
 
 import { LuSettings } from 'react-icons/lu'
 import TextEditor from '@/src/app/components/TextEditor'
 import slugify from'slugify'
-import { formatDate, shortenText, shortIdGenerator } from '@/src/utils'
+import { debounce, formatDate, shortenText, shortIdGenerator } from '@/src/utils'
 import { PostInsert } from '@/src/types'
-import { useAutoSave } from '@/src/hooks'
+import { useAutoSave, useQueryParams } from '@/src/hooks'
 import DashHeader from '@/src/app/components/Dashboard/Header'
 import { SidebarContent } from '@/src/app/components/Dashboard/NewPostPageSidebar'
+import { useFormik } from 'formik'
+// import { debounce } from 'lodash'
 
 const META_DESCRIPTION_LENGTH = 155
 
 
 export default function NewPostPage() {
     const [editorCounts,setEditorCounts] = useState({words:0,characters:0})
-    
- 
-    const [categories, setCategories] = useState<{name:string,id?:number}[]>([])
-    const [tags, setTags] = useState<{name:string}[]>([])
-  
-    const {value:post,onChange,isSaving,lastSaved}=useAutoSave({initialValue:{
+    const [isSaving,setIsSaving] = useState(false)
+    const {queryParams,setQueryParam}=useQueryParams();
+    // console.log({queryParams});
+    const randomNum=useMemo(()=>shortIdGenerator.bigIntId().substring(6,12),[])
+    const formik=useFormik({initialValues:{
         title:'',
         slug:'',
         summary:'',visibility:'public',
         content:'',featured_image:{src:'',alt_text:''},status:'draft','post_id':'',updated_at:new Date(),
-        
-    } as PostInsert,mutationFn:savePost, onSuccess: (savedPost) => {
-    console.log({savedPost});
-  }});
-    const { isOpen, onOpen, onClose } = useDisclosure()
-const updatePost = useCallback((updates:Partial<PostInsert>) => {
-  onChange({...post, ...updates});
-},[onChange, post]);
-   async function savePost():Promise<any>{
-    
-        const response = await fetch('/api/posts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(post),
-        })
-        const data = await response.json()
 
-        console.log(data)
-        return data
-    }
-   
+    } as PostInsert,onSubmit:async (values) => {
+        const {title,slug,summary,visibility,content,featured_image,status,post_id,updated_at} = values
+        const post:PostInsert = {
+            title,
+            slug,
+            summary,
+            visibility,
+            content,
+            featured_image,
+            status,
+            post_id,
+            updated_at,author_id:4,
+        }
+        console.log({post})
+    },
+
+    })
+ 
+    const [categories, setCategories] = useState<{name:string,id?:number}[]>([])
+    const [tags, setTags] = useState<{name:string}[]>([])
+  
+    const { isOpen, onOpen, onClose } = useDisclosure()
+const updatePost = (updates:Partial<PostInsert>) => formik.setValues({...formik.values,...updates});
+
+  
     useEffect(() => {
-        if(post.title){
-            const generatedSlug = slugify(post.title+'-'+shortIdGenerator.urlSafeId(6), { lower: true, strict: true });
-           updatePost({slug: generatedSlug})
+        if((formik.values?.title as string)?.length >0 && (formik.values?.title as string)?.length <= 60){
+            const generatedSlug = slugify(formik.values.title+'-'+randomNum, { lower: true, strict: true });
+          updatePost({slug:generatedSlug})
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [post.title])
+    }, [formik.values.title])
 
 
 
 
     const handleContentChange = (content:{html?:string,markdown:string,text:string}) => {
-        updatePost({summary:shortenText(content.text,META_DESCRIPTION_LENGTH),content:content.markdown})
-
-    }
+        updatePost({content:content.markdown})
+        if(content.text.length <= META_DESCRIPTION_LENGTH){
+            updatePost({summary:content.text})
+            // formik.setFieldValue('summary',shortenText(content.text,META_DESCRIPTION_LENGTH))
+        }
+// formik.setFieldValue('content',content.markdown);
+}
     const borderColor = useColorModeValue('gray.200', 'gray.700');
     const getEditorCounts=(counts:{words:number,characters:number})=>{
         setEditorCounts(counts)
     }
+ const debouncedSavePost = useCallback(
+  debounce(async () => {
+    setIsSaving(true);
+    try {
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formik.values),
+      });
+      const data = await response.json();
+      console.log({ data });
+      setIsSaving(false);
+      formik.setValues({ ...data });
+      return data;
+    } catch (error) {
+      setIsSaving(false);
+      return null;
+    }
+  }, 1000),
+  []
+);
 
+useEffect(()=>{
+console.log({...formik.values}); 
+// debouncedSavePost();
+
+},[debouncedSavePost, formik.values])
     return (
         <Box h='full'  overflowY={'auto'}>
             <DashHeader pos='sticky' top={0} zIndex={10} >
             <Stack gap={0} >
                 <Text fontSize={'2xl'} fontWeight={600} as='span'>Create Post</Text>
-                <Text as='span' fontSize='sm' color={'gray.500'}>Last updated: {post?.updated_at ? formatDate(new Date(post.updated_at as Date)):'Not saved yet'+post.updated_at} </Text>
+                <Text as='span' fontSize='sm' color={'gray.500'}>Last updated: {formik?.values.updated_at ? formatDate(new Date(formik.values.updated_at as Date)):'Not saved yet'+formik.values.updated_at} </Text>
             </Stack>
             <Button onClick={onOpen} leftIcon={<LuSettings />} display={{ base: 'flex', lg: 'none' }}>Settings</Button>
         </DashHeader>
@@ -86,20 +122,20 @@ const updatePost = useCallback((updates:Partial<PostInsert>) => {
 
 
                 <Input border={'none'} outline={'none'} autoComplete='off'
-                    placeholder="Post title"
-                    value={post.title as string }fontWeight={600}
-                    onChange={(e) => updatePost({title:e.target.value})}
+                    placeholder="Awesome title" name={'title'}
+                    value={formik.values.title as string} fontWeight={600}
+                    onChange={formik.handleChange}
                  rounded={'none'} _focus={{boxShadow: 'none'}}
                 fontSize={{ base: 'lg', md: '24px' }}
                     />
                     </Box>
                 
-               <TextEditor getCounts={getEditorCounts} onContentChange={(content) => handleContentChange(content)} initialValue={post.content+''} />
+               <TextEditor getCounts={getEditorCounts} onContentChange={(content) => handleContentChange(content)} initialValue={formik.values.content+''} />
             </Stack>
             
             <Box display={{ base: 'none', lg: 'block' }} maxW={280}>
                <SidebarContent
-                            post={post}
+                           formik={formik}
                             updatePost={updatePost}
                             categories={categories}
                             setCategories={setCategories}
@@ -117,7 +153,7 @@ const updatePost = useCallback((updates:Partial<PostInsert>) => {
                 <DrawerHeader>Post Settings</DrawerHeader>
                 <DrawerBody px={2}>
                     <SidebarContent 
-                            post={post}
+                        formik={formik}
                             updatePost={updatePost}
                             categories={categories}
                             setCategories={setCategories}
