@@ -5,7 +5,7 @@ import Component from '@/src/app/components/TextEditor/Nodes/WrapperComp'
 import Suggestion from '@tiptap/suggestion'
 
 export const WrapperCompExtension= Node.create({
-  name: 'reactComponent',
+  name: 'BlgImageBlock',
 
   group: 'block',
 
@@ -14,7 +14,7 @@ draggable: true,
   parseHTML() {
     return [
       {
-        tag: 'react-component',
+        tag: 'blg-image-block',
       },
     ]
   },
@@ -28,7 +28,7 @@ draggable: true,
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['react-component', mergeAttributes(HTMLAttributes), 0]
+    return ['blg-image-block', mergeAttributes(HTMLAttributes), 0]
   },
 
   addNodeView() {

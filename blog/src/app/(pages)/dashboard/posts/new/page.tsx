@@ -9,9 +9,10 @@ import { debounce, formatDate, shortenText, shortIdGenerator } from '@/src/utils
 import { PostInsert } from '@/src/types'
 import { useAutoSave, useQueryParams } from '@/src/hooks'
 import DashHeader from '@/src/app/components/Dashboard/Header'
-import { SidebarContent } from '@/src/app/components/Dashboard/NewPostPageSidebar'
+import { SidebarContent } from '@/src/app/components/Dashboard/NewPostPage/Sidebar'
 import { useFormik } from 'formik'
-// import { debounce } from 'lodash'
+import { TitleInput } from '@/src/app/components/Dashboard/NewPostPage/TitleInput'
+
 
 const META_DESCRIPTION_LENGTH = 155
 
@@ -21,7 +22,7 @@ export default function NewPostPage() {
     const [isSaving,setIsSaving] = useState(false)
     const {queryParams,setQueryParam}=useQueryParams();
     // console.log({queryParams});
-    const randomNum=useMemo(()=>shortIdGenerator.bigIntId().substring(6,12),[])
+    const randomNumId=useMemo(()=>shortIdGenerator.bigIntId().substring(6,12),[])
     const formik=useFormik({initialValues:{
         title:'',
         slug:'',
@@ -42,9 +43,26 @@ export default function NewPostPage() {
             updated_at,author_id:4,
         }
         console.log({post})
-    },
 
-    })
+  try {
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+      const data = await response.json();
+      console.log({ data });
+      formik.setValues({ ...data });
+      setIsSaving(false);
+      return data;
+    } catch (error) {
+      setIsSaving(false);
+      return null;
+    }
+    }
+})
  
     const [categories, setCategories] = useState<{name:string,id?:number}[]>([])
     const [tags, setTags] = useState<{name:string}[]>([])
@@ -55,56 +73,36 @@ const updatePost = (updates:Partial<PostInsert>) => formik.setValues({...formik.
   
     useEffect(() => {
         if((formik.values?.title as string)?.length >0 && (formik.values?.title as string)?.length <= 60){
-            const generatedSlug = slugify(formik.values.title+'-'+randomNum, { lower: true, strict: true });
+            const generatedSlug = slugify(formik.values.title+'-'+randomNumId, { lower: true, strict: true });
           updatePost({slug:generatedSlug})
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formik.values.title])
 
 
+console.log('debugging...');
 
 
     const handleContentChange = (content:{html?:string,markdown:string,text:string}) => {
         updatePost({content:content.markdown})
         if(content.text.length <= META_DESCRIPTION_LENGTH){
             updatePost({summary:content.text})
-            // formik.setFieldValue('summary',shortenText(content.text,META_DESCRIPTION_LENGTH))
-        }
-// formik.setFieldValue('content',content.markdown);
+ }
+
 }
     const borderColor = useColorModeValue('gray.200', 'gray.700');
     const getEditorCounts=(counts:{words:number,characters:number})=>{
         setEditorCounts(counts)
     }
- const debouncedSavePost = useCallback(
-  debounce(async () => {
-    setIsSaving(true);
-    try {
-      const response = await fetch('/api/posts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formik.values),
-      });
-      const data = await response.json();
-      console.log({ data });
-      setIsSaving(false);
-      formik.setValues({ ...data });
-      return data;
-    } catch (error) {
-      setIsSaving(false);
-      return null;
-    }
-  }, 1000),
-  []
-);
+
+ 
+ 
 
 useEffect(()=>{
 console.log({...formik.values}); 
 // debouncedSavePost();
-
-},[debouncedSavePost, formik.values])
+//  formik.handleSubmit()
+},[formik.values])
     return (
         <Box h='full'  overflowY={'auto'}>
             <DashHeader pos='sticky' top={0} zIndex={10} >
@@ -118,18 +116,8 @@ console.log({...formik.values});
 
         <Flex  gap={3} py={4}  px={3}> 
             <Stack maxH={'calc(var(--chakra-vh) - (var(--dash-header-h) + 32px))'}  flex={1} minW={350} pos='sticky' top={'calc(var(--dash-header-h) + 16px)'}  width={{ base: '100%' }} bg={useColorModeValue('white','gray.900')}  border={'1px'} borderColor={borderColor} rounded={{base:'xl',md:'26px'}} boxShadow={'var(--card-raised)'}>
-                <Box borderBottom={'1px'} borderBottomColor={borderColor} p={1} py={2}>
-
-
-                <Input border={'none'} outline={'none'} autoComplete='off'
-                    placeholder="Awesome title" name={'title'}
-                    value={formik.values.title as string} fontWeight={600}
-                    onChange={formik.handleChange}
-                 rounded={'none'} _focus={{boxShadow: 'none'}}
-                fontSize={{ base: 'lg', md: '24px' }}
-                    />
-                    </Box>
                 
+                <TitleInput formik={formik}/>
                <TextEditor getCounts={getEditorCounts} onContentChange={(content) => handleContentChange(content)} initialValue={formik.values.content+''} />
             </Stack>
             

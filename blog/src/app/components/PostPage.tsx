@@ -62,7 +62,7 @@ const PostPage: React.FC = () => {
   }
 
   return (
-    <Flex alignItems={'flex-start'} py={8} pr={3} pos={'relative'} direction={{base:'column',md:'row'}} flexWrap={{base:'wrap',md:'nowrap'}} gap={{base:5,md:0}}>
+    <Flex alignItems={'flex-start'} py={8} pr={3} pos={'relative'} direction={{base:'column',lg:'row'}} flexWrap={{base:'wrap',lg:'nowrap'}} gap={{base:5,lg:0}}>
 
     <Container maxW="5xl" px={{base:3,sm:4}} >
       <Box minH={300} bg={useColorModeValue('gray.300','gray.700')}   rounded={{base:20,md:24}}>
@@ -138,9 +138,9 @@ const PostPage: React.FC = () => {
         </Box>
       </Box>
     </Container>
-    <Box pos={'sticky'} top={8} px={{base:3,md:0}} >
-<Heading as="h2" size="lg"mb={4}>Related Posts</Heading>
-    <PostsCards maxW={{base:'auto',md:'300'}}/>
+    <Box pos={'sticky'} top={8} px={{base:3,lg:0}} >
+<Heading as="h2" size="lg" mb={4}>Related Posts</Heading>
+    <PostsCards maxW={{base:'auto',lg:'300'}}/>
     </Box>
             </Flex>
   )

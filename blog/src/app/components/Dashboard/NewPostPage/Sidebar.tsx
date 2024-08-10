@@ -5,7 +5,7 @@ import { Box, Button, Input, Tag, Textarea, Spinner, Flex, useColorModeValue, St
 import { SectionCard } from '@/src/app/components/Dashboard/SectionCard'
 import {FormLabel,FormControl} from '@/src/app/components/ui/Form'
 import { LuEye, LuPin, LuPlus, LuCheck, LuListTodo, LuFileText, LuType, LuSettings } from 'react-icons/lu'
-import { FeaturedImageCard } from '@/src/app/components/Dashboard/FeaturedImageCard'
+import { FeaturedImageCard } from '@/src/app/components/Dashboard/NewPostPage/FeaturedImageCard'
 import { PostInsert } from '@/src/types'
 
 export const SidebarContent = ({ 

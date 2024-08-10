@@ -5,11 +5,13 @@ import { LuHand } from 'react-icons/lu'
 
 const WrapperComponent = () => {
   return (
-    <NodeViewWrapper className="react-component" >
+    <NodeViewWrapper className="blg-image-block" >
         <Flex>
         <IconButton aria-label='drag' data-drag-handle variant={'ghost'} size={'xs'}><LuHand/></IconButton>
 
-      <NodeViewContent className="content is-editable" />
+      <NodeViewContent className="content">
+
+      </NodeViewContent>
       </Flex>
     </NodeViewWrapper>
   )
