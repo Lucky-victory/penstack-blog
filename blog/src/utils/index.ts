@@ -1,5 +1,49 @@
 import { formatDistanceToNowStrict, format } from 'date-fns';
 import { SnowflakeIdGenerator } from "@green-auth/snowflake-unique-id";
+
+type DatePart = 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
+
+interface ConversionResult {
+  dateFormat: string;
+  postSlug: string;
+}
+
+const formatMap: Record<DatePart, string> = {
+  year: 'yyyy',
+  month: 'MM',
+  day: 'dd',
+  hour: 'HH',
+  minute: 'mm',
+  second: 'ss'
+};
+
+export function convertToDateFnsFormatAndSlug(input: string): ConversionResult {
+  // Split the input by either '-' or '/'
+  const parts = input.split(/[-/]/);
+  const slug = parts.pop()?.replace(/%(\w+)%/g,'$1') || '';  // Extract the last part as slug
+  
+  const dateFormatParts = parts.join('-');  // Rejoin the remaining parts with '-'
+  
+  const dateFormat = dateFormatParts.replace(/%(\w+)%/g, (match, part: string) => {
+    const datePart = part.toLowerCase() as DatePart;
+    return formatMap[datePart] || match;
+  });
+
+  // Preserve the original separators in the dateFormat
+  const originalSeparators = input.match(/[-/]/g) || [];
+  let formattedDate = dateFormat;
+  originalSeparators.forEach((separator, index) => {
+    formattedDate = formattedDate.replace('-', separator)
+  });
+
+  return {
+    dateFormat: formattedDate,
+    postSlug: slug
+  };
+}
+
+
+
 export const shortIdGenerator = new SnowflakeIdGenerator({
     nodeId:10,sequenceBits:20
 });

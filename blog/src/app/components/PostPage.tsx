@@ -4,6 +4,8 @@ import { Box, Container, Heading,HStack,Stack,VStack, Text, Flex, Avatar, Tag, I
 import { format } from 'date-fns'
 import {LuBookmark, LuBookmarkPlus, LuShare} from 'react-icons/lu';
 import { PostsCards } from './PostsCards';
+import { usePost } from '@/src/hooks';
+import { PostSelect } from '@/src/types';
 interface Author {
   name: string
   avatar: string
@@ -35,32 +37,8 @@ interface Post {
   tags: string[]
 }
 
-const PostPage: React.FC = () => {
-  const post: Post = {
-    id: 1,
-    title: "Introduction to TypeScript",
-    summary: 'TypeScript is a typed superset of JavaScript that compiles to plain JavaScript',
-    content: "TypeScript is a typed superset of JavaScript that compiles to plain JavaScript with a type system. It is a superset of JavaScript, which means that all JavaScript code is also valid TypeScript code. TypeScript adds optional static typing to JavaScript, which helps catch errors at compile time and improves code readability and maintainability.",
-    author: {
-      name: "Alice Johnson",
-      avatar: "https://example.com/avatars/alice.jpg",
-      username: "alicej"
-    },
-    category: {
-      name: "Programming",
-      slug: "programming",
-      id: 1
-    },
-    published_at: "2023-06-01",
-    created_at: "2023-06-01",
-    updated_at: "2023-06-01",
-    featured_image: {
-      src: "https://picsum.photos/800/400?random=3",
-      alt_text: ''
-    },
-    tags: ["TypeScript", "JavaScript", "Programming", "Web Development"]
-  }
-
+const PostPage: React.FC<any> = (post) => {
+ 
   return (
     <Flex alignItems={'flex-start'} py={8} pr={3} pos={'relative'} direction={{base:'column',lg:'row'}} flexWrap={{base:'wrap',lg:'nowrap'}} gap={{base:5,lg:0}}>
 
@@ -68,8 +46,8 @@ const PostPage: React.FC = () => {
       <Box minH={300} bg={useColorModeValue('gray.300','gray.700')}   rounded={{base:20,md:24}}>
 
        <ChakraImage
-          src={post.featured_image.src}
-          alt={post.featured_image.alt_text || ''}
+          src={(post.featured_image!)?.src}
+          alt={(post.featured_image!)?.alt_text || ''}
           w="full"
           h="auto"
           minH={'300px'} objectFit={'cover'}
@@ -93,22 +71,23 @@ const PostPage: React.FC = () => {
             </VStack>
       <Box as="article" > 
         <HStack my={4}  gap={{base:5,md:8}} >
-        
-           <Text as="span" color="gray.500" fontWeight="semibold">{post.category.name}</Text>
+        {post?.category &&
+           <Text as="span" color="gray.500" fontWeight="semibold">{post?.category?.name}</Text>
+        }
           
           <Text color="gray.500">
-            {format(new Date(post.updated_at), 'MMMM d, yyyy')}
+            {format(new Date(post.updated_at as Date), 'MMMM d, yyyy')}
           </Text>
         </HStack>
         <Box as="header" mb={8}>
           <Heading as="h1" size="2xl" mb={4}>{post.title}</Heading>
-          <Flex flexWrap="wrap" gap={2} mb={4}>
+          {/* <Flex flexWrap="wrap" gap={2} mb={4}>
             {post?.tags && post?.tags?.map((tag, index) => (
               <Tag key={index} bg={"gray.200"} color="gray.700" size="sm" >
                 #{tag}
               </Tag>
             ))}
-          </Flex>
+          </Flex> */}
         </Box>
         
        
@@ -116,7 +95,7 @@ const PostPage: React.FC = () => {
         <Box className="prose" maxW="none">
 
           <Text fontSize="xl" fontWeight="semibold" mb={4} color="gray.600">{post.summary}</Text>
-          <Box dangerouslySetInnerHTML={{ __html: post.content }} />
+          <Box dangerouslySetInnerHTML={{ __html: post.content as string}} />
           
         </Box>
         

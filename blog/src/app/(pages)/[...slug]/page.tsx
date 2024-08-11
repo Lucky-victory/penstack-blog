@@ -1,27 +1,11 @@
-import {db }from '@/src/db';
-export const dynamic = 'force-dynamic'
+import PostPage from '@/src/app/components/PostPage';
+import type { Metadata, ResolvingMetadata } from 'next'
+import { notFound } from 'next/navigation';
 
-export async function GET(req: Request) {
-  try { 
-const _posts=await db.query.posts.findMany({
-  with:{category:{
-    columns:{
-      name:true,
-      slug:true,
-      id:true,
-    }
-  },
-   'author':{'columns':{
-    name:true,
-    avatar:true,
-    'username':true,
-    
-   }},
-  },
-})
-
-
-  const posts= [
+// This function fetches data from an API or database
+async function getData(slug: string) {
+  
+   const posts= [
     {
       id: 1,
       title: "Introduction to TypeScript",
@@ -86,25 +70,50 @@ const _posts=await db.query.posts.findMany({
       featured_image:{src:"https://picsum.photos/800/400?random=3",alt_text:''}
     }
   ]
-
-  return new Response(JSON.stringify({posts,p:_posts}), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-}catch(error){
-
-  }
-
+    return posts.find(post => post.slug === slug) || notFound()
+    
+ 
+ 
 }
-export async function POST(req: Request) {
-  const { title, content,summary,slug ,featured_image} = await req.json()
 
-  return new Response(JSON.stringify({ title, content,summary ,slug,featured_image,updated_at: new Date()}), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
+type Props = {
+  params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+ 
+  const slug = params.slug
+  const postSlug=slug[slug.length-1]
+  console.log({slug,postSlug});
+
+  const post = await getData(postSlug)
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || []
+
+  return {
+    title: post?.title,
+    description: post?.summary,
+    openGraph: {
+      images: [
+        post?.featured_image?.src ||
+        'https://picsum.photos/1200/630',
+        ...previousImages
+      ],
     },
-  })
+  }
+}
+
+export default async function Page({ params, searchParams }: Props) {
+   const slug = params.slug
+  const postSlug=slug[slug.length-1]
+  const post = await getData(postSlug)
+
+  return (
+   <PostPage {...post} />
+  )
 }

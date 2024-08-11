@@ -1,10 +1,11 @@
 import { PostSelect } from "@/src/types"
-import { formatDate } from "@/src/utils"
+import { convertToDateFnsFormatAndSlug, formatDate } from "@/src/utils"
 import { Link } from "@chakra-ui/next-js"
 import { Box, Flex, GridItem, HStack, Image, LinkBox, LinkOverlay, Tag, Text, useColorModeValue } from "@chakra-ui/react"
 
 import {Skeleton,SkeletonCircle,SkeletonText} from './ui/Skeleton'
 import { Avatar } from "./ui/Avatar";
+import { format } from "date-fns"
 
 export function PostCardLoader(){
     return (
@@ -24,7 +25,10 @@ export function PostCardLoader(){
           </GridItem>
     )
 }
-export default function PostCard({loading,post}:{loading:boolean,post:PostSelect}){
+export default function PostCard({post,slugPattern}:{loading?:boolean,slugPattern?:string;post:PostSelect}){
+const _slugPattern=convertToDateFnsFormatAndSlug(slugPattern ||'%month%-%day%-%slug%')
+console.log({_slugPattern});
+
     const bgColor=useColorModeValue('white','gray.900')
     return ( <GridItem as={LinkBox} bg={bgColor} key={post.id} borderWidth={1} rounded={'24'} transition={'0.2s ease-in'} overflow="hidden" _hover={{
             boxShadow: '0 0 0 4px var(--chakra-colors-blue-500)',
@@ -41,7 +45,7 @@ export default function PostCard({loading,post}:{loading:boolean,post:PostSelect
      </Box>
           
             <Box p={4}>
-              <Link href={`/author/${post.id}`} _hover={{ textDecoration: 'none' }}>
+              <Link href={`/author/${post.slug}`} _hover={{ textDecoration: 'none' }}>
               <Flex alignItems="center" mb={2}>
                 <Avatar src={post?.author?.avatar} name={post?.author?.name} size="sm" mr={2} />
                 <Text fontWeight="bold">{post?.author?.name}</Text>
@@ -51,7 +55,7 @@ export default function PostCard({loading,post}:{loading:boolean,post:PostSelect
                 {post?.published_at?formatDate(new Date(post?.published_at)):formatDate(new Date(post?.updated_at as Date))}
               </Text>
 
-              <LinkOverlay href={`/posts/${post.id}`} _hover={{ textDecoration: 'none' }}>
+              <LinkOverlay href={`/${format(new Date(post.updated_at as Date),_slugPattern.dateFormat)}/${post.slug}`} _hover={{ textDecoration: 'none' }}>
                 <Text fontSize="xl" fontWeight="semibold" mb={2}>
                   {post.title}
                 </Text>
