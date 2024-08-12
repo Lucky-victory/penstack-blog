@@ -5,7 +5,8 @@ import {Link} from '@chakra-ui/next-js'
 import {Skeleton,SkeletonCircle,SkeletonText} from './ui/Skeleton'
 import { Avatar } from "./ui/Avatar";
 import { formatDate } from "@/src/utils";
-import PostCard, { PostCardLoader } from "./PostCard";
+import PostCard from "./PostCard";
+import { PostCardLoader } from "./PostCardLoader";
 export function PostsCards({maxW}:{maxW?:string|number|Record<any,any>}){
 const bgColor=useColorModeValue('white','gray.900')
 const {loading,posts}=usePosts()

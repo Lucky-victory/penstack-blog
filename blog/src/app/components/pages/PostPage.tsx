@@ -1,11 +1,13 @@
 'use client'
-import React from 'react'
-import { Box, Container, Heading,HStack,Stack,VStack, Text, Flex, Avatar, Tag, Image as ChakraImage, useColorModeValue,IconButton } from '@chakra-ui/react'
+import React, { useEffect, useState } from 'react'
+import { Box, Container, Heading,HStack,Stack,VStack, Text, Flex, Avatar, Tag, Image as ChakraImage, useColorModeValue,IconButton} from '@chakra-ui/react'
 import { format } from 'date-fns'
 import {LuBookmark, LuBookmarkPlus, LuShare} from 'react-icons/lu';
-import { PostsCards } from './PostsCards';
+import { PostsCards } from '../PostsCards';
 import { usePost } from '@/src/hooks';
 import { PostSelect } from '@/src/types';
+import {Skeleton} from '@/src/app/components/ui/Skeleton'
+
 interface Author {
   name: string
   avatar: string
@@ -37,13 +39,22 @@ interface Post {
   tags: string[]
 }
 
-const PostPage: React.FC<any> = (post) => {
- 
+const PostPage: React.FC<{post:PostSelect}> = ({post}) => {
+  const postContentBg=useColorModeValue('white','gray.900')
+  const imageWrapBg=useColorModeValue('gray.300','gray.700')
+const [isLoading,setIsLoading]=useState(true);
+useEffect(()=>{
+if(post){
+  setIsLoading(false)
+}
+},[post])
   return (
     <Flex alignItems={'flex-start'} py={8} pr={3} pos={'relative'} direction={{base:'column',lg:'row'}} flexWrap={{base:'wrap',lg:'nowrap'}} gap={{base:5,lg:0}}>
 
     <Container maxW="5xl" px={{base:3,sm:4}} >
-      <Box minH={300} bg={useColorModeValue('gray.300','gray.700')}   rounded={{base:20,md:24}}>
+      <Skeleton isLoaded={!isLoading} rounded={{base:20,md:24}}>
+
+      <Box minH={300} bg={imageWrapBg}   rounded={{base:20,md:24}}>
 
        <ChakraImage
           src={(post.featured_image!)?.src}
@@ -54,18 +65,21 @@ const PostPage: React.FC<any> = (post) => {
           rounded={{base:20,md:24}}
           />
           </Box>
+          </Skeleton>
         <Box mt={-24} pos={'relative'} px={{base:3,md:3,lg:5}} zIndex={2}> 
-          <Box bg={useColorModeValue('white','gray.900')} rounded={{base:20,md:24}} p={{base:4,md:5,lg:6}} >
+          <Skeleton minH={300} isLoaded={!isLoading}   rounded={{base:20,md:24}} startColor='white' endColor='gray.400'>
 
-          <Flex gap={{base:4,md:6}} justifyContent={'space-between'} >
-            <VStack shadow={{base:'lg',md:'none'}} gap={{base:8,md:12}} pos={{base:'fixed',md:'relative'}} top={'50%'} transform={{base:'translateY(-50%)',md:'none'}} left={0} h={{base:'auto',md:'100%'}} bg={useColorModeValue('white','gray.900')} roundedRight={{base:20,md:0}} p={{base:3,md:0}} >
+          <Box bg={postContentBg} rounded={{base:20,md:24}} p={{base:4,md:5,lg:6}} >
+
+          <Flex gap={{base:4,md:6}} >
+            <VStack shadow={{base:'lg',md:'none'}} gap={{base:8,md:12}} pos={{base:'fixed',md:'relative'}} top={'50%'} transform={{base:'translateY(-50%)',md:'none'}} left={0} h={{base:'auto',md:'100%'}} bg={postContentBg} roundedRight={{base:20,md:0}} p={{base:3,md:0}} >
 
             <VStack mt={{base:4,md:12}} gap={4}>
               <IconButton icon={<LuBookmark/>} variant={'outline'}  rounded={'full'} aria-label='bookmark this post'/>
               <IconButton icon={<LuShare/>}  variant={'outline'} rounded={'full'} aria-label='share this post'/>
             </VStack>
             <Box as={Flex} flexDir={'column'} alignItems={'center'} fontSize={{base:'small',md:'medium',lg:'large'}} >
-              <Text  as='span' fontWeight={'bold'} fontSize={'100%'}>21,000</Text>
+              <Text  as='span' fontWeight={'bold'} fontSize={'100%'}>{post?.views}</Text>
               <Text as='span' fontSize={'90%'}>views</Text>
             </Box>
             </VStack>
@@ -75,7 +89,7 @@ const PostPage: React.FC<any> = (post) => {
            <Text as="span" color="gray.500" fontWeight="semibold">{post?.category?.name}</Text>
         }
           
-          <Text color="gray.500">
+          <Text color="gray.500" as='span'>
             {format(new Date(post.updated_at as Date), 'MMMM d, yyyy')}
           </Text>
         </HStack>
@@ -103,8 +117,10 @@ const PostPage: React.FC<any> = (post) => {
       </Box>
       </Flex>
             </Box>
+          </Skeleton>
       </Box>
-    <Box mt={-10} pos={'relative'} px={{base:5,md:6}} pt={10} bg={useColorModeValue('gray.300','gray.700')} rounded={{base:20,md:24}}>
+
+    <Box mt={-10} pos={'relative'} px={{base:5,md:6}} pt={10} bg={imageWrapBg} rounded={{base:20,md:24}}>
       <Box p={{base:4,md:5}} > 
 
          <Flex alignItems="center" mb={4}>

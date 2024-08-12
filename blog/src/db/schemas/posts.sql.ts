@@ -4,7 +4,7 @@ import { mysqlTable, int, bigint, varchar, longtext, timestamp, mysqlEnum, text,
 import { users } from "./users.sql";
 
 export const posts = mysqlTable('Posts', {
-    id: bigint('id', { 'mode': 'bigint' }).autoincrement().primaryKey(),
+    id: int('id').autoincrement().primaryKey(),
     title: varchar('title', { 'length': 255 }).default('No title'),
     content: longtext('content'),
     summary: varchar('summary', { 'length': 255 }),
@@ -14,6 +14,7 @@ export const posts = mysqlTable('Posts', {
     author_id: int('author_id').notNull(),
     visibility: mysqlEnum('visibility', ['public', 'private']).default('public'),
     category_id: int('category_id'),
+    views:int('views').default(0),
     featured_image: json('featured_image').$type<{src:string,alt_text?:string}>(),
     created_at: timestamp('created_at').defaultNow(),
     published_at: timestamp('published_at').generatedAlwaysAs(sql`(
@@ -64,7 +65,7 @@ export const tagsRelations = relations(tags, (({ one, many }) => ({
 })))
 
 export const postTags = mysqlTable('PostTags', {
-    post_id: bigint('post_id', { mode: 'bigint' }).notNull(),
+    post_id: int('post_id').notNull(),
     tag_id: int('tag_id').notNull()
 })
 
@@ -80,9 +81,9 @@ export const postTagsRelations = relations(postTags, (({ one }) => ({
 })))
 
 export const comments = mysqlTable('Comments', {
-    id: bigint('id', { mode: 'bigint' }).autoincrement().primaryKey(),
+    id: int('id').autoincrement().primaryKey(),
     content: text('content'),
-    post_id: bigint('post_id', { mode: 'bigint' }).notNull(),
+    post_id: int('post_id').notNull(),
     author_id: int('author_id').notNull(),
     created_at: timestamp('created_at').defaultNow(),
     updated_at: timestamp('updated_at').onUpdateNow()
@@ -101,9 +102,9 @@ export const commentsRelations = relations(comments, (({ one, many }) => ({
 })))
 
 export const replies = mysqlTable('Replies', {
-    id: bigint('id', { mode: 'bigint' }).autoincrement().primaryKey(),
+    id: int('id').autoincrement().primaryKey(),
     content: text('content'),
-    comment_id: bigint('comment_id', { mode: 'bigint' }).notNull(),
+    comment_id: int('comment_id').notNull(),
     author_id: int('author_id').notNull(),
     created_at: timestamp('created_at').defaultNow(),
     updated_at: timestamp('updated_at').onUpdateNow()

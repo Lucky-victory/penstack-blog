@@ -205,7 +205,7 @@ const extensions = [
   }
 
   return (
-    <Box h={'full'} >
+    <Box h={'full'} minH={300}>
       <EditorProvider   editorProps={{'attributes':{class:'tiptap-post-editor'}}} 
         enablePasteRules={true}
               onUpdate={({ editor }) => {

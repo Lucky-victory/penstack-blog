@@ -7,27 +7,10 @@ import {Skeleton,SkeletonCircle,SkeletonText} from './ui/Skeleton'
 import { Avatar } from "./ui/Avatar";
 import { format } from "date-fns"
 
-export function PostCardLoader(){
-    return (
-           <GridItem rounded={'24'} overflow={'hidden'} borderWidth={1} borderColor={'gray.300'}>
-            <Skeleton height="200px" />
-            <Box p={4}>
 
-            <HStack>
-
-              <SkeletonCircle size="10" /> 
-<SkeletonText w={24}  noOfLines={1} rounded={'full'}/>
-            </HStack>
-            <SkeletonText my={3} w={120} noOfLines={1}  rounded={'full'}/>
-<SkeletonText mt="4" noOfLines={4} spacing="3"  rounded={'full'}/>
-            </Box>
-            
-          </GridItem>
-    )
-}
 export default function PostCard({post,slugPattern}:{loading?:boolean,slugPattern?:string;post:PostSelect}){
-const _slugPattern=convertToDateFnsFormatAndSlug(slugPattern ||'%month%-%day%-%slug%')
-console.log({_slugPattern});
+const _slugPattern=convertToDateFnsFormatAndSlug(slugPattern ||'%year%-%month%-%day%-%slug%')
+
 
     const bgColor=useColorModeValue('white','gray.900')
     return ( <GridItem as={LinkBox} bg={bgColor} key={post.id} borderWidth={1} rounded={'24'} transition={'0.2s ease-in'} overflow="hidden" _hover={{

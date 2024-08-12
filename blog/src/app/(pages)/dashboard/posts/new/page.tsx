@@ -26,7 +26,7 @@ export default function NewPostPage() {
     const formik=useFormik({initialValues:{
         title:'',
         slug:'',
-        summary:'',visibility:'public',
+        summary:'',visibility:'public',author_id:4,
         content:'',featured_image:{src:'',alt_text:''},status:'draft','post_id':'',updated_at:new Date(),
 
     } as PostInsert,onSubmit:async (values) => {
@@ -40,7 +40,7 @@ export default function NewPostPage() {
             featured_image,
             status,
             post_id,
-            updated_at,author_id:4,
+          author_id:4,
         }
         console.log({post})
 
@@ -110,12 +110,15 @@ console.log({...formik.values});
                 <Text fontSize={'2xl'} fontWeight={600} as='span'>Create Post</Text>
                 <Text as='span' fontSize='sm' color={'gray.500'}>Last updated: {formik?.values.updated_at ? formatDate(new Date(formik.values.updated_at as Date)):'Not saved yet'+formik.values.updated_at} </Text>
             </Stack>
-            <Button onClick={onOpen} leftIcon={<LuSettings />} display={{ base: 'flex', lg: 'none' }}>Settings</Button>
+            <Button variant={'outline'} gap={2} size={'sm'} rounded={'full'} onClick={onOpen} display={{ base: 'flex', lg: 'none' }} ><LuSettings /><Text hideBelow={'md'}>
+                Post Settings
+                </Text>
+                </Button>
         </DashHeader>
 
 
-        <Flex  gap={3} py={4}  px={3}> 
-            <Stack maxH={'calc(var(--chakra-vh) - (var(--dash-header-h) + 32px))'}  flex={1} minW={350} pos='sticky' top={'calc(var(--dash-header-h) + 16px)'}  width={{ base: '100%' }} bg={useColorModeValue('white','gray.900')}  border={'1px'} borderColor={borderColor} rounded={{base:'xl',md:'26px'}} boxShadow={'var(--card-raised)'}>
+        <Flex  gap={3} py={4}  px={3} minH={'100%'}> 
+            <Stack minH={'100%'} maxH={'calc(var(--chakra-vh) - (var(--dash-header-h) + 32px))'}  flex={1} minW={350} pos='sticky' top={'calc(var(--dash-header-h) + 16px)'}  width={{ base: '100%' }} bg={useColorModeValue('white','gray.900')}  border={'1px'} borderColor={borderColor} rounded={{base:'xl',md:'26px'}} boxShadow={'var(--card-raised)'}>
                 
                 <TitleInput formik={formik}/>
                <TextEditor getCounts={getEditorCounts} onContentChange={(content) => handleContentChange(content)} initialValue={formik.values.content+''} />
@@ -128,7 +131,15 @@ console.log({...formik.values});
                             categories={categories}
                             setCategories={setCategories}
                             tags={tags}
-                            setTags={setTags}
+                            setTags={setTags} onPublish={()=>{
+                                updatePost({status:'published'});
+                                formik.handleSubmit()
+                            }} 
+                            onDraft={()=>{
+                                updatePost({status:'draft'});
+                                formik.handleSubmit()
+
+                            }}
                             isSaving={isSaving}
                             editorCounts={editorCounts}                />
             </Box>
@@ -148,7 +159,15 @@ console.log({...formik.values});
                             tags={tags}
                             setTags={setTags}
                             isSaving={isSaving}
-                            editorCounts={editorCounts}                   />
+                            editorCounts={editorCounts}  onPublish={()=>{
+                                updatePost({status:'published'});
+                                formik.handleSubmit()
+                            }} 
+                            onDraft={()=>{
+                                updatePost({status:'draft'});
+                                formik.handleSubmit()
+
+                            }}                 />
                 </DrawerBody>
             </DrawerContent>
         </Drawer>

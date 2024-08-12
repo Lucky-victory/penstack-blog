@@ -1,7 +1,9 @@
 import {db }from '@/src/db';
-export const dynamic = 'force-dynamic'
+import { posts } from '@/src/db/schemas';
+import { eq } from 'drizzle-orm';
+import { NextRequest,NextResponse } from 'next/server';
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try { 
 const _posts=await db.query.posts.findMany({
   with:{category:{
@@ -87,24 +89,31 @@ const _posts=await db.query.posts.findMany({
     }
   ]
 
-  return new Response(JSON.stringify({posts,p:_posts}), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-}catch(error){
-
+  return NextResponse.json({posts:_posts})
+}catch(error:any){
+return NextResponse.json({error:error?.message})
   }
 
 }
-export async function POST(req: Request) {
-  const { title, content,summary,slug ,featured_image} = await req.json()
-
-  return new Response(JSON.stringify({ title, content,summary ,slug,featured_image,updated_at: new Date()}), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+export async function POST(req: NextRequest) {
+  const { title, content,summary,slug ,featured_image,status,author_id,visibility,category_id} = await req.json()
+  const post=await db.transaction(async (tx) => {
+    const [insertResponse] = await tx.insert(posts).values({
+      title,
+      content,
+      summary,
+      slug,
+      featured_image,
+      author_id,
+    status,
+      visibility,
+      category_id,
+    })
+   return await tx.query.posts.findFirst({
+      where: eq(posts.id, insertResponse.insertId),
+    })
+  
   })
+  
+  return NextResponse.json(post)
 }

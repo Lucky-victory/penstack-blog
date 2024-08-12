@@ -17,11 +17,13 @@ export const SidebarContent = ({
     setTags, 
     isSaving, 
     editorCounts,
-  
+  onPublish=()=>{},onDraft=()=>{}
 }: {
     formik:any,
     updatePost:(updates: Partial<PostInsert>) => void;
     categories: { name: string; id?: number }[];
+    onPublish:()=>void;
+    onDraft?:()=>void;
     setCategories:Dispatch<SetStateAction<{ name: string; id?: number }[]>>;
     tags: { name: string }[];
     setTags:Dispatch<SetStateAction<{ name: string }[]>>;
@@ -57,8 +59,12 @@ export const SidebarContent = ({
             </>
         } footer={
             <>
-             <Button size={'sm'} flex={1} variant={'outline'} rounded={'full'}>Save draft</Button>
-             <Button size={'sm'} flex={1} rounded={'full'}>Publish</Button>
+             <Button size={'sm'} flex={1} variant={'outline'} rounded={'full'} onClick={()=>{
+                onDraft?.()
+             }}>Save draft</Button>
+             <Button size={'sm'} flex={1} rounded={'full'} onClick={()=>{
+                onPublish?.()
+             }}>Publish</Button>
            </>
              
             }>
