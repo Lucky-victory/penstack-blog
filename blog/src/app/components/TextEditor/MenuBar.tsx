@@ -72,9 +72,9 @@ export const MenuBar = () => {
     },
   });
 
-  const borderColorValue = useColorModeValue("gray.200", "gray.800");
+  const borderColorValue = useColorModeValue("gray.300", "gray.800");
   const bgColorValue = useColorModeValue("white", "gray.800");
-  const borderBottomColorValue = useColorModeValue("gray.200", "gray.900");
+  const borderBottomColorValue = useColorModeValue("gray.300", "gray.900");
 
   if (!editor) {
     return <></>;

@@ -39,7 +39,7 @@ export default function NewPostPage() {
   const [editorCounts, setEditorCounts] = useState({ words: 0, characters: 0 });
   const [isSaving, setIsSaving] = useState(false);
   const { queryParams, setQueryParam } = useQueryParams();
-  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const borderColor = useColorModeValue("gray.300", "gray.700");
 
   // console.log({queryParams});
   const randomNumId = useMemo(
@@ -82,7 +82,6 @@ export default function NewPostPage() {
         post_id,
         author_id: 4,
       };
-      console.log({ post });
 
       try {
         const response = await fetch("/api/posts", {
@@ -126,8 +125,6 @@ export default function NewPostPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values.title]);
-
-  console.log("debugging...");
 
   const handleContentChange = (content: {
     html?: string;
@@ -175,26 +172,27 @@ export default function NewPostPage() {
         </Button>
       </DashHeader>
 
-      <Flex gap={3} py={4} px={3}>
+      <Flex gap={3} py={4} px={{ base: 2, md: 3 }}>
         <Stack
           minH={"100%"}
-          maxH={"calc(var(--chakra-vh) - (var(--dash-header-h) + 32px))"}
+          h={"calc(var(--chakra-vh) - (var(--dash-header-h) + 32px))"}
           flex={1}
-          minW={350}
+          minW={{ base: 300, md: 350 }}
           pos="sticky"
           top={"calc(var(--dash-header-h) + 16px)"}
           width={{ base: "100%" }}
           bg={useColorModeValue("white", "gray.900")}
           border={"1px"}
           borderColor={borderColor}
-          rounded={{ base: "xl", md: "26px" }}
+          overflowY={"hidden"}
+          rounded={"26px"}
           boxShadow={"var(--card-raised)"}
         >
           <TitleInput formik={formik} />
           <TextEditor
             getCounts={getEditorCounts}
             onContentChange={(content) => handleContentChange(content)}
-            initialValue={formik.values.content + ""}
+            initialValue={formik.values.content || ""}
           />
         </Stack>
 
