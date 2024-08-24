@@ -16,6 +16,7 @@ export const CustomImageBlockExtension = Node.create({
       alt: {
         default: null,
       },
+     
     }
   },
 
