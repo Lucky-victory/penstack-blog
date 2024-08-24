@@ -49,6 +49,9 @@ if(post){
 }
 },[post])
   return (
+    <>
+    {post &&
+    
     <Flex alignItems={'flex-start'} py={8} pr={3} pos={'relative'} direction={{base:'column',lg:'row'}} flexWrap={{base:'wrap',lg:'nowrap'}} gap={{base:5,lg:0}}>
 
     <Container maxW="5xl" px={{base:3,sm:4}} >
@@ -138,7 +141,8 @@ if(post){
     <PostsCards maxW={{base:'auto',lg:'300'}}/>
     </Box>
             </Flex>
-  )
+ }
+    </> )
 }
 
 

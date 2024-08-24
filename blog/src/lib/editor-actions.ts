@@ -116,7 +116,12 @@ export const editorButtonActions: EditorActionItem[] = [
       action: ({ open }) => open?.(),
       icon: LuImagePlus,
       active:(editor) =>editor.isActive("img"),
-    },
+    },{
+  label: "Image Block",
+  action: ({ editor }) => editor?.chain().focus().insertContent('<blog-image-block></blog-image-block>').run(),
+  icon: LuImagePlus,
+  active: (editor) => editor.isActive("BlogImageBlock"),
+},
   ];
   export  const filterEditorActions = (labels: string[], pick: boolean = true) => {
     const actionMap = new Map(editorButtonActions.map(action => [action.label, action]));

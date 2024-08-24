@@ -3,7 +3,7 @@ import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import { Editor, EditorProvider, Extension, ReactRenderer, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from "react";
 import Typography from "@tiptap/extension-typography";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
@@ -16,7 +16,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
 import { SlashCommandExtension } from "@/src/lib/editor/extension";
 import tippy, { Instance, Props } from "tippy.js";
-// import WrapperCompExtension from "@/src/lib/editor/extension";
+import {CustomImageBlockExtension} from "@/src/lib/editor/extensions/ImageBlock";
 type TextEditorHandle = {
   resetContent: () => void;
 };
@@ -78,7 +78,7 @@ const {isOpen:isSlashCommandOpen,onOpen:onSlashCommandOpen,onClose:onSlashComman
     },
   ];
 
-const extensions = [
+const extensions = useMemo(()=>[
   StarterKit, Placeholder.configure({
     // Use a placeholder:
     placeholder: 'Write something …',
@@ -169,7 +169,7 @@ const extensions = [
   TextAlign,
   Highlight.configure({
     
-  }),CharacterCount];
+  }),CharacterCount,CustomImageBlockExtension],[]);
 
 
   useImperativeHandle(

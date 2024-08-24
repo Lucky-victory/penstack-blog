@@ -22,9 +22,7 @@ export default function EditorActionsDropdown() {
       return dropdownActions[0] as EditorActionItem
     }
     return <Menu  onClose={()=>{
-            console.log('menu closed');
-            alert('hello')
-            editor?.chain().focus().run()
+         editor?.commands.focus()
           }}>
             <MenuButton   variant={'outline'} as={Button} size='sm' fontSize='medium' display={'flex'} >
               <HStack spacing={1}>

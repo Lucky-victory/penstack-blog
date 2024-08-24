@@ -21,6 +21,8 @@ export default function NewPostPage() {
     const [editorCounts,setEditorCounts] = useState({words:0,characters:0})
     const [isSaving,setIsSaving] = useState(false)
     const {queryParams,setQueryParam}=useQueryParams();
+    const borderColor = useColorModeValue('gray.200', 'gray.700');
+
     // console.log({queryParams});
     const randomNumId=useMemo(()=>shortIdGenerator.bigIntId().substring(6,12),[])
     const formik=useFormik({initialValues:{
@@ -84,13 +86,13 @@ console.log('debugging...');
 
 
     const handleContentChange = (content:{html?:string,markdown:string,text:string}) => {
+        console.log(content,{values:formik.values})
         updatePost({content:content.markdown})
         if(content.text.length <= META_DESCRIPTION_LENGTH){
             updatePost({summary:content.text})
  }
 
 }
-    const borderColor = useColorModeValue('gray.200', 'gray.700');
     const getEditorCounts=(counts:{words:number,characters:number})=>{
         setEditorCounts(counts)
     }
