@@ -131,7 +131,9 @@ export default function NewPostPage() {
     markdown: string;
     text: string;
   }) => {
-    updatePost({ content: content.html });
+    console.log(content);
+
+    updatePost({ content: content.markdown });
     if (content.text.length <= META_DESCRIPTION_LENGTH) {
       updatePost({ summary: content.text });
     }

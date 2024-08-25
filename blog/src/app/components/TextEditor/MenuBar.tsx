@@ -138,7 +138,7 @@ export const MenuBar = () => {
                     aria-label={item.label}
                     {...btnStyles}
                     variant={editor.isActive("img") ? "solid" : "ghost"}
-                    onClick={() => item.action({ open })}
+                    onClick={() => item.command({ open })}
                   >
                     <item.icon size={20} />
                   </IconButton>
@@ -158,9 +158,7 @@ export const MenuBar = () => {
               aria-label={item.label}
               {...btnStyles}
               onClick={() => {
-                console.log(item.label + ":" + item.active(editor));
-
-                item?.action({ editor });
+                item?.command({ editor });
               }}
               variant={item.active(editor) ? "solid" : "ghost"}
             >
