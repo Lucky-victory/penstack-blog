@@ -5,6 +5,7 @@
   flex: 1;
   max-height: 100%;
   overflow-y: auto;
+  background-color: #f0f8ff;
 }
 .tiptap:focus {
   outline: none;

@@ -1,13 +1,13 @@
-import { ReactNodeViewRenderer, mergeAttributes, Node } from '@tiptap/react'
-import ImageBlockComponent from '@/src/app/components/TextEditor/Nodes/ImageBlock'
+import { ReactNodeViewRenderer, mergeAttributes, Node } from "@tiptap/react";
+import ImageBlockComponent from "@/src/app/components/TextEditor/Nodes/ImageBlock";
 import { CldUploadWidget } from "next-cloudinary";
 
 export const CustomImageBlockExtension = Node.create({
-  name: 'BlogImageBlock',
-  group: 'block',
-  content: 'inline*',
+  name: "BlogImageBlock",
+  group: "block",
+  content: "inline*",
   draggable: true,
-  
+  isolating: true,
   addAttributes() {
     return {
       src: {
@@ -16,23 +16,22 @@ export const CustomImageBlockExtension = Node.create({
       alt: {
         default: null,
       },
-     
-    }
+    };
   },
 
   parseHTML() {
     return [
       {
-        tag: 'blog-image-block',
+        tag: "blog-image-block",
       },
-    ]
+    ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['blog-image-block', mergeAttributes(HTMLAttributes)]
+    return ["blog-image-block", mergeAttributes(HTMLAttributes)];
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(ImageBlockComponent)
+    return ReactNodeViewRenderer(ImageBlockComponent);
   },
-})
+});

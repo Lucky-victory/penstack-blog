@@ -157,7 +157,11 @@ export const MenuBar = () => {
             <IconButton
               aria-label={item.label}
               {...btnStyles}
-              onClick={() => item?.action({ editor })}
+              onClick={() => {
+                console.log(item.label + ":" + item.active(editor));
+
+                item?.action({ editor });
+              }}
               variant={item.active(editor) ? "solid" : "ghost"}
             >
               <item.icon size={20} />

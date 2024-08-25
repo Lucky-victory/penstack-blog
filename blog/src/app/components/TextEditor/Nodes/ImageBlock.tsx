@@ -20,13 +20,16 @@ import {
   Flex,
   Tooltip,
   SliderMark,
+  Text,
+  Icon,
 } from "@chakra-ui/react";
-import { LuPilcrow } from "react-icons/lu";
 import {
-  AiOutlineAlignLeft,
-  AiOutlineAlignCenter,
-  AiOutlineAlignRight,
-} from "react-icons/ai";
+  LuAlignCenter,
+  LuAlignLeft,
+  LuAlignRight,
+  LuPilcrow,
+  LuUpload,
+} from "react-icons/lu";
 
 const ImageBlockComponent = ({
   node,
@@ -37,8 +40,9 @@ const ImageBlockComponent = ({
 }) => {
   const [imageWidth, setImageWidth] = useState(100);
   const [imageAlign, setImageAlign] = useState("center");
-  const [showTooltip, setShowTooltip] = React.useState(false);
-  const bgColor = useColorModeValue("gray.100", "gray.700");
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [showActions, setShowActions] = useState(false);
+  const bgColor = useColorModeValue("white", "black");
   const uploadBgColor = useColorModeValue("gray.300", "gray.700");
 
   function handleCldUploadWidgetSuccess(
@@ -59,110 +63,144 @@ const ImageBlockComponent = ({
     // updateAttributes({ align });
   }
 
-  console.log({ node });
   return (
-    <NodeViewWrapper className="cursor-auto">
-      <Box contentEditable={false}>
-        <HStack
-          mx={"auto"}
-          bg={bgColor}
-          p={2}
-          borderRadius={"2xl"}
-          maxW={450}
-          // justifyContent={"space-between"}
-        >
-          <HStack>
-            <IconButton
-              aria-label="Align Left"
-              size={"sm"}
-              icon={<AiOutlineAlignLeft />}
-              onClick={() => handleAlignChange("flex-start")}
-            />
-            <IconButton
-              aria-label="Align Center"
-              size={"sm"}
-              icon={<AiOutlineAlignCenter />}
-              onClick={() => handleAlignChange("center")}
-            />
-            <IconButton
-              aria-label="Align Right"
-              size={"sm"}
-              icon={<AiOutlineAlignRight />}
-              onClick={() => handleAlignChange("flex-end")}
-            />
-
-            <Slider
-              aria-label="image-width-slider"
-              defaultValue={100}
-              min={25}
-              minW={100}
-              max={100}
-              onChange={handleSliderChange}
-              onMouseEnter={() => setShowTooltip(true)}
-              onMouseLeave={() => setShowTooltip(false)}
-            >
-              <SliderMark value={25}>25%</SliderMark>
-              <SliderMark value={100}>100%</SliderMark>
-              <SliderTrack>
-                <SliderFilledTrack />
-              </SliderTrack>
-              <Tooltip
-                bg="blue.600"
-                hasArrow
-                rounded={"md"}
-                placement="top"
-                isOpen={showTooltip}
-                label={`${imageWidth}%`}
-              >
-                <SliderThumb />
-              </Tooltip>
-            </Slider>
-          </HStack>
-        </HStack>
-        <Flex
-          w={"full"}
-          style={{
-            justifyContent: imageAlign,
-          }}
+    <>
+      <NodeViewWrapper>
+        <Box
+          contentEditable={false}
+          style={{ margin: "2rem 0" }}
+          onMouseEnter={() => setShowActions(true)}
+          onMouseLeave={() => setShowActions(false)}
         >
           {node.attrs.src && (
             <>
-              <Image
-                src={node.attrs.src}
-                alt={node.attrs.alt || ""}
+              {showActions && (
+                <HStack
+                  pos={"absolute"}
+                  top={-1}
+                  left={"50%"}
+                  transform={"translateX(-50%)"}
+                  mx={"auto"}
+                  bg={bgColor}
+                  py={2}
+                  px={5}
+                  w={"full"}
+                  borderRadius={"2xl"}
+                  maxW={450}
+                  justify={"center"}
+                  mb={2}
+                  boxShadow={"lg"}
+                >
+                  <IconButton
+                    aria-label="Align Left"
+                    size={"sm"}
+                    variant={imageAlign === "flex-start" ? "solid" : "ghost"}
+                    icon={<LuAlignLeft />}
+                    onClick={() => handleAlignChange("flex-start")}
+                  />
+                  <IconButton
+                    aria-label="Align Center"
+                    size={"sm"}
+                    variant={imageAlign === "center" ? "solid" : "ghost"}
+                    icon={<LuAlignCenter />}
+                    onClick={() => handleAlignChange("center")}
+                  />
+                  <IconButton
+                    aria-label="Align Right"
+                    size={"sm"}
+                    variant={imageAlign === "flex-end" ? "solid" : "ghost"}
+                    icon={<LuAlignRight />}
+                    onClick={() => handleAlignChange("flex-end")}
+                  />
+
+                  <Slider
+                    aria-label="image-width-slider"
+                    defaultValue={100}
+                    min={25}
+                    ml={3}
+                    pl={3}
+                    w={130}
+                    max={100}
+                    onChange={handleSliderChange}
+                    onMouseEnter={() => setShowTooltip(true)}
+                    onMouseLeave={() => setShowTooltip(false)}
+                  >
+                    <SliderMark mt={"3px"} value={25} fontSize={"x-small"}>
+                      25%
+                    </SliderMark>
+                    <SliderMark mt={"3px"} value={100} fontSize={"x-small"}>
+                      100%
+                    </SliderMark>
+                    <SliderTrack>
+                      <SliderFilledTrack />
+                    </SliderTrack>
+                    <Tooltip
+                      bg="blue.600"
+                      hasArrow
+                      rounded={"md"}
+                      placement="top"
+                      isOpen={showTooltip}
+                      label={`${imageWidth}%`}
+                    >
+                      <SliderThumb />
+                    </Tooltip>
+                  </Slider>
+                </HStack>
+              )}
+              <Flex
+                w={"full"}
                 style={{
-                  width: `${imageWidth}%`,
+                  justifyContent: imageAlign,
                 }}
-              />
+              >
+                <Image
+                  src={node.attrs.src}
+                  alt={node.attrs.alt || ""}
+                  style={{
+                    width: `${imageWidth}%`,
+                  }}
+                />
+              </Flex>
             </>
           )}
-        </Flex>
-        {!node.attrs.src && (
-          <Flex
-            minH={150}
-            border={1}
-            borderStyle={"dashed"}
-            borderColor={"gray.400"}
-            rounded={"lg"}
-            p={4}
-            justify={"center"}
-            align={"center"}
-            bg={uploadBgColor}
-          >
-            <CldUploadWidget
-              uploadPreset="post_images"
-              onSuccess={handleCldUploadWidgetSuccess}
+          {!node.attrs.src && (
+            <Flex
+              h={{ base: 200, lg: 250 }}
+              rounded={"xl"}
+              p={6}
+              justify={"center"}
+              mx={"auto"}
+              maxW={500}
+              align={"center"}
+              bgGradient="linear(to-r, green.200, pink.500)"
+              backdropFilter={"blur(8px)"}
+              flexDirection={"column"}
+              gap={4}
             >
-              {({ open }) => (
-                <Button rounded={"full"} onClick={() => open()}>
-                  Upload Image
-                </Button>
-              )}
-            </CldUploadWidget>
-          </Flex>
-        )}
-      </Box>
-    </NodeViewWrapper>
+              <Text fontSize={"sm"} color={"gray.600"} textAlign={"center"}>
+                Enhance your content with visuals. Upload an image to make your
+                post more engaging.
+              </Text>
+              <CldUploadWidget
+                uploadPreset="post_images"
+                onSuccess={handleCldUploadWidgetSuccess}
+              >
+                {({ open }) => (
+                  <Button
+                    rounded={"full"}
+                    onClick={() => open()}
+                    colorScheme={"blue"}
+                    leftIcon={<Icon as={LuUpload} />}
+                  >
+                    Upload Image
+                  </Button>
+                )}
+              </CldUploadWidget>
+            </Flex>
+          )}
+        </Box>
+      </NodeViewWrapper>
+    </>
   );
 };
 export default ImageBlockComponent;

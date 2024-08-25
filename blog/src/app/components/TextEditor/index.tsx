@@ -167,7 +167,7 @@ const TextEditor = forwardRef<
           openOnClick: false,
           autolink: true,
         }),
-       
+
         Typography,
         Image,
         TextAlign,
@@ -233,6 +233,7 @@ const TextEditor = forwardRef<
         h={"full"}
         overflowY={"auto"}
         minH={300}
+        bg={useColorModeValue("#f0f8ff", "gray.700")}
         maxH={"full"}
       >
         <EditorProvider
