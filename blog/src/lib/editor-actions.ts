@@ -150,10 +150,10 @@ export const editorButtonActions: EditorActionItem[] = [
       editor
         ?.chain()
         .focus()
-        .insertContent("<blog-image-block></blog-image-block>")
+        .insertContent("<custom-image-block></custom-image-block>")
         .run(),
     icon: LuImagePlus,
-    active: (editor) => editor.isActive("BlogImageBlock"),
+    active: (editor) => editor.isActive("CustomImageBlock"),
   },
 ];
 export const filterEditorActions = (labels: string[], pick: boolean = true) => {

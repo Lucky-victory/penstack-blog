@@ -1,9 +1,8 @@
 import { ReactNodeViewRenderer, mergeAttributes, Node } from "@tiptap/react";
 import ImageBlockComponent from "@/src/app/components/TextEditor/Nodes/ImageBlock";
-import { CldUploadWidget } from "next-cloudinary";
 
 export const CustomImageBlockExtension = Node.create({
-  name: "BlogImageBlock",
+  name: "CustomImageBlock",
   group: "block",
   content: "inline*",
   draggable: true,
@@ -22,13 +21,13 @@ export const CustomImageBlockExtension = Node.create({
   parseHTML() {
     return [
       {
-        tag: "blog-image-block",
+        tag: "custom-image-block",
       },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["blog-image-block", mergeAttributes(HTMLAttributes)];
+    return ["custom-image-block", mergeAttributes(HTMLAttributes)];
   },
 
   addNodeView() {

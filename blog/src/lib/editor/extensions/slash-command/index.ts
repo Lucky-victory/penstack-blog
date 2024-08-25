@@ -19,7 +19,7 @@ export const SlashCommandExtension = Extension.create({
           range: Range;
           props: any;
         }) => {
-          props.insertCommand({ editor, range });
+          props.command({ editor, range });
         },
       },
     };

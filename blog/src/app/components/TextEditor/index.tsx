@@ -28,14 +28,16 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { MenuBar } from "./MenuBar";
-import { SlashCommandList } from "./CommandList";
+import { SlashCommandList } from "./extensions/CommandList";
 import { useHTMLToMarkdownConverter } from "@/src/hooks";
 import Suggestion, { SuggestionProps } from "@tiptap/suggestion";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
-import { SlashCommandExtension } from "@/src/lib/editor/extension";
+import { SlashCommandExtension } from "@/src/lib/editor/extensions/slash-command";
 import tippy, { Instance, Props } from "tippy.js";
-import { CustomImageBlockExtension } from "@/src/lib/editor/extensions/ImageBlock";
+import { CustomImageBlockExtension } from "@/src/lib/editor/extensions/Image-block";
+import slashSuggestions from "@/src/lib/editor/extensions/slash-command/suggestion";
+import { LuCode2, LuHeading1, LuList } from "react-icons/lu";
 type TextEditorHandle = {
   resetContent: () => void;
 };
@@ -103,6 +105,7 @@ const TextEditor = forwardRef<
     const items = [
       {
         title: "Heading 1",
+        icon: LuHeading1,
         command: ({
           editor,
           range,
@@ -120,6 +123,7 @@ const TextEditor = forwardRef<
       },
       {
         title: "Bullet List",
+        icon: LuList,
         command: ({
           editor,
           range,
@@ -132,6 +136,7 @@ const TextEditor = forwardRef<
       },
       {
         title: "Code Block",
+        icon: LuCode2,
         command: ({
           editor,
           range,
@@ -144,39 +149,34 @@ const TextEditor = forwardRef<
       },
     ];
 
-    const extensions = useMemo(
-      () => [
-        StarterKit,
-        Placeholder.configure({
-          // Use a placeholder:
-          placeholder: "Write something …",
-          // Use different placeholders depending on the node type:
-          // placeholder: ({ node }) => {
-          //   if (node.type.name === 'customBlock') {
-          //     return 'Type / to browser actions'
-          //   }
+    const extensions = [
+      StarterKit,
+      Placeholder.configure({
+        // Use a placeholder:
+        // placeholder: "Write something …",
+        // Use different placeholders depending on the node type:
+        placeholder: "Type / to browser actions",
+      }),
+      Link.configure({
+        HTMLAttributes: {
+          target: "_blank",
+          rel: "noopener noreferrer",
+        },
+        openOnClick: false,
+        autolink: true,
+      }),
 
-          //   return 'Write something …'
-          // },
-        }),
-        Link.configure({
-          HTMLAttributes: {
-            target: "_blank",
-            rel: "noopener noreferrer",
-          },
-          openOnClick: false,
-          autolink: true,
-        }),
-
-        Typography,
-        Image,
-        TextAlign,
-        Highlight.configure({}),
-        CharacterCount,
-        CustomImageBlockExtension,
-      ],
-      []
-    );
+      Typography,
+      Image,
+      TextAlign,
+      Highlight.configure({}),
+      CharacterCount,
+      CustomImageBlockExtension,
+      SlashCommandExtension.configure({
+        // items:items,
+        suggestion: slashSuggestions(items),
+      }),
+    ];
 
     useImperativeHandle(
       ref,
