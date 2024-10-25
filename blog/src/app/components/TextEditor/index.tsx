@@ -56,7 +56,9 @@ const TextEditor = forwardRef<
 
       Typography,
       Image,
-      TextAlign,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
       Highlight.configure({}),
       CharacterCount,
     ];
