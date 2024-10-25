@@ -42,6 +42,7 @@ export default function EditorActionsDropdown() {
   };
   return (
     <Menu
+      isLazy
       onClose={() => {
         editor?.commands.focus();
       }}
