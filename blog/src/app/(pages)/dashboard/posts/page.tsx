@@ -1,8 +1,5 @@
+import PostsDashboard from "@/src/app/components/pages/Dashboard/AllPosts";
 
 export default function DashPostsPage() {
-    return (
-        <div>
-            <h1>Posts</h1>
-        </div>
-    )
+  return <PostsDashboard />;
 }
