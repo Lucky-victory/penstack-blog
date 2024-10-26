@@ -23,10 +23,11 @@ import slugify from "slugify";
 import {
   debounce,
   formatDate,
+  nullToEmptyString,
   shortenText,
   shortIdGenerator,
 } from "@/src/utils";
-import { PostInsert } from "@/src/types";
+import { PostInsert, PostSelect } from "@/src/types";
 import { useAutoSave, useQueryParams } from "@/src/hooks";
 import DashHeader from "@/src/app/components/Dashboard/Header";
 import { SidebarContent } from "@/src/app/components/Dashboard/NewPostPage/Sidebar";
@@ -35,8 +36,9 @@ import { TitleInput } from "@/src/app/components/Dashboard/NewPostPage/TitleInpu
 
 const META_DESCRIPTION_LENGTH = 155;
 
-export default function NewPostPage() {
+export default function NewPostPage({ post }: { post: PostSelect }) {
   const [editorCounts, setEditorCounts] = useState({ words: 0, characters: 0 });
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(post.updated_at);
   const [isSaving, setIsSaving] = useState(false);
   const { queryParams, setQueryParam } = useQueryParams();
   const borderColor = useColorModeValue("gray.300", "gray.700");
@@ -46,20 +48,10 @@ export default function NewPostPage() {
     () => shortIdGenerator.bigIntId().substring(6, 12),
     []
   );
+  const { author, ...postWithoutAuthor } = nullToEmptyString(post);
   const formik = useFormik({
     enableReinitialize: true,
-    initialValues: {
-      title: "",
-      slug: "",
-      summary: "",
-      visibility: "public",
-      author_id: 4,
-      content: "",
-      featured_image: { src: "", alt_text: "" },
-      status: "draft",
-      post_id: "",
-      updated_at: new Date(),
-    } as PostInsert,
+    initialValues: postWithoutAuthor as PostInsert,
     onSubmit: async (values) => {
       setIsSaving(true);
       const {
@@ -73,7 +65,8 @@ export default function NewPostPage() {
         post_id,
         updated_at,
       } = values;
-      const post: PostInsert = {
+
+      const postToSave: PostInsert = {
         title,
         slug,
         summary,
@@ -86,16 +79,17 @@ export default function NewPostPage() {
       };
 
       try {
-        const response = await fetch("/api/posts", {
-          method: "POST",
+        const response = await fetch("/api/posts/" + post_id, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify(postToSave),
         });
         const data = await response.json();
         console.log({ data });
-        formik.setValues({ ...data });
+        setLastUpdate(data?.lastUpdate);
+        // formik.setValues({ ...data });
         setIsSaving(false);
         return data;
       } catch (error) {
@@ -147,7 +141,7 @@ export default function NewPostPage() {
   useEffect(() => {
     console.log({ ...formik.values });
     // debouncedSavePost();
-    //  formik.handleSubmit()
+    formik.handleSubmit();
   }, [formik.values]);
   return (
     <Box h="full" overflowY={"auto"}>
@@ -158,9 +152,9 @@ export default function NewPostPage() {
           </Text>
           <Text as="span" fontSize="sm" color={"gray.500"}>
             Last updated:{" "}
-            {formik?.values.updated_at
-              ? formatDate(new Date(formik.values.updated_at as Date))
-              : "Not saved yet" + formik.values.updated_at}{" "}
+            {lastUpdate
+              ? formatDate(new Date(lastUpdate as Date))
+              : "Not saved yet"}
           </Text>
         </Stack>
         <Button

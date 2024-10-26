@@ -1,7 +1,7 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
 import { PostInsert, PostSelect } from "@/src/types";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
       where: status === "all" ? undefined : eq(posts.status, status),
       offset: offset,
       limit: limit,
-
+      orderBy: [desc(posts.created_at)],
       with: {
         category: {
           columns: {
@@ -135,7 +135,9 @@ export async function POST(req: NextRequest) {
     author_id,
     visibility,
     category_id,
+    post_id,
   } = await req.json();
+
   const post = await db.transaction(async (tx) => {
     const [insertResponse] = await tx.insert(posts).values({
       title,
