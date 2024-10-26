@@ -32,6 +32,7 @@ import {
   InputGroup,
   InputLeftAddon,
   Spinner,
+  HStack,
 } from "@chakra-ui/react";
 import {
   EditIcon,
@@ -53,27 +54,8 @@ const PostsDashboard = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedPost, setSelectedPost] = useState<PostSelect | null>(null);
   const [filteredPosts, setFilteredPosts] = useState<PostSelect[]>([]);
-  const { posts, loading } = usePosts();
+  const { posts, loading, refetchPosts } = usePosts({ status: "all" });
   const router = useRouter();
-  // Simulated fetch posts function
-  const fetchPosts = async () => {
-    try {
-      // Replace with actual API call
-      const response = await fetch("/api/posts");
-      const data = await response.json();
-      //   setPosts(data.posts);
-      //   setLoading(false);
-    } catch (error: any) {
-      toast({
-        title: "Error fetching posts",
-        description: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-      //   setLoading(false);
-    }
-  };
 
   const handleEdit = (post: PostSelect) => {
     // Implement edit navigation
@@ -87,7 +69,6 @@ const PostsDashboard = () => {
 
   const confirmDelete = async () => {
     try {
-      // Replace with actual API call
       await fetch(`/api/posts/${selectedPost?.id}`, {
         method: "DELETE",
       });
@@ -99,7 +80,7 @@ const PostsDashboard = () => {
         isClosable: true,
       });
 
-      fetchPosts();
+      refetchPosts();
       onClose();
     } catch (error: any) {
       toast({
@@ -145,12 +126,13 @@ const PostsDashboard = () => {
         mb={8}
         bg={"white"}
         p={4}
-        rounded={"md"}
+        rounded={{ base: 20, md: 24 }}
       >
         <Heading size="lg">Posts</Heading>
         <Button
           leftIcon={<AddIcon />}
           colorScheme="blue"
+          rounded={"full"}
           onClick={() => (window.location.href = "/dashboard/posts/new")}
         >
           New Post
@@ -160,16 +142,17 @@ const PostsDashboard = () => {
       <Stack
         bg={"white"}
         p={4}
-        rounded={"md"}
+        rounded={{ base: 20, md: 24 }}
         direction={{ base: "column", md: "row" }}
         spacing={4}
         mb={6}
       >
-        <InputGroup>
-          <InputLeftAddon>
+        <InputGroup rounded={"full"}>
+          <InputLeftAddon roundedLeft={"full"}>
             <SearchIcon />
           </InputLeftAddon>
           <Input
+            rounded={"full"}
             placeholder="Search posts..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -178,6 +161,7 @@ const PostsDashboard = () => {
         </InputGroup>
         <Select
           value={statusFilter}
+          rounded={"full"}
           onChange={(e) => setStatusFilter(e.target.value)}
           maxW={{ md: "300px" }}
         >
@@ -188,7 +172,13 @@ const PostsDashboard = () => {
         </Select>
       </Stack>
 
-      <Box overflowX="auto" bg={"white"} p={4} rounded={"md"}>
+      <Box
+        maxH={600}
+        overflow="auto"
+        bg={"white"}
+        p={4}
+        rounded={{ base: 20, md: 24 }}
+      >
         <Table variant="simple">
           <Thead>
             <Tr>
@@ -202,7 +192,8 @@ const PostsDashboard = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {posts &&
+            {filteredPosts &&
+              filteredPosts.length > 0 &&
               filteredPosts?.map((post) => (
                 <Tr key={post.id}>
                   <Td>
@@ -212,7 +203,11 @@ const PostsDashboard = () => {
                     </Flex>
                   </Td>
                   <Td>
-                    <Badge colorScheme={getStatusColor(post.status as string)}>
+                    <Badge
+                      rounded={"full"}
+                      px={2}
+                      colorScheme={getStatusColor(post.status as string)}
+                    >
                       {post.status}
                     </Badge>
                   </Td>
@@ -261,13 +256,13 @@ const PostsDashboard = () => {
         </Table>
 
         {loading && (
-          <Flex justify="center" my={8}>
+          <HStack my={8} justify={"center"}>
             <Spinner />
             <Text>Loading posts...</Text>
-          </Flex>
+          </HStack>
         )}
 
-        {!loading && filteredPosts.length === 0 && (
+        {!loading && posts?.length === 0 && filteredPosts?.length === 0 && (
           <Flex justify="center" my={8}>
             <Text>No posts found</Text>
           </Flex>

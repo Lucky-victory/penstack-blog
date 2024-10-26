@@ -113,3 +113,63 @@ export function formatPostPermalink(
 
   return `/${prefix}/${post.slug}`;
 }
+type QueryParamValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | Array<string | number | boolean>;
+type QueryParamObject = {
+  [key: string]: QueryParamValue | QueryParamObject;
+};
+
+/**
+ * Converts an object into a URL-encoded query string
+ * @param params - Object to convert into query parameters
+ * @param prefix - Optional prefix for nested objects
+ * @returns URL-encoded query string
+ *
+ * @example
+ * const params = {
+ *   name: "John Doe",
+ *   age: 30,
+ *   filters: {
+ *     active: true,
+ *     roles: ["admin", "user"]
+ *   }
+ * };
+ * objectToQueryParams(params);
+ * // Returns: "name=John%20Doe&age=30&filters[active]=true&filters[roles][]=admin&filters[roles][]=user"
+ */
+export function objectToQueryParams(
+  params: QueryParamObject,
+  prefix: string = ""
+): string {
+  return Object.entries(params)
+    .filter(([_, value]) => value !== undefined && value !== null)
+    .map(([key, value]) => {
+      const currentKey = prefix ? `${prefix}[${key}]` : key;
+
+      if (Array.isArray(value)) {
+        return value
+          .map(
+            (item) =>
+              `${encodeURIComponent(currentKey)}[]=${encodeURIComponent(
+                String(item)
+              )}`
+          )
+          .join("&");
+      }
+
+      if (typeof value === "object") {
+        return objectToQueryParams(value as QueryParamObject, currentKey);
+      }
+
+      return `${encodeURIComponent(currentKey)}=${encodeURIComponent(
+        String(value)
+      )}`;
+    })
+    .filter(Boolean)
+    .join("&");
+}

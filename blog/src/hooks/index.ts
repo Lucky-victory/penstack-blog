@@ -1,12 +1,13 @@
-'use client';
-import {  usePathname, useSearchParams } from 'next/navigation';
-import { FormikErrors, useFormik } from 'formik';
-import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
-import { Post, PostSelect } from '@/src/types';
+"use client";
+import { usePathname, useSearchParams } from "next/navigation";
+import { FormikErrors, useFormik } from "formik";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { Post, PostInsert, PostSelect } from "@/src/types";
 import TurndownService from "turndown";
-import { useMutation } from '@tanstack/react-query';
-import debounce from 'lodash/debounce';
+import { useMutation } from "@tanstack/react-query";
+import debounce from "lodash/debounce";
+import { objectToQueryParams } from "../utils";
 
 export type SaveableValue = string | Record<string, any>;
 
@@ -23,7 +24,7 @@ export const useAutoSave = <T extends SaveableValue>({
   mutationFn,
   debounceTime = 1000,
   onSuccess,
-  onError
+  onError,
 }: UseAutoSaveOptions<T>) => {
   const [value, setValue] = useState<T>(initialValue);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
@@ -33,13 +34,13 @@ export const useAutoSave = <T extends SaveableValue>({
     mutationFn,
     onSuccess: (data) => {
       setLastSaved(new Date());
-      setValue(prevValue => ({ ...(prevValue as object), ...data }));
+      setValue((prevValue) => ({ ...(prevValue as object), ...data }));
       onSuccess?.(data);
     },
     onError: (error, variables) => {
       setValue(variables); // Revert to the last known good state
       onError?.(error);
-    }
+    },
   });
 
   const debouncedSave = useCallback(
@@ -60,27 +61,28 @@ export const useAutoSave = <T extends SaveableValue>({
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | T
   ) => {
-    if (typeof event === 'object' && 'target' in event) {
+    if (typeof event === "object" && "target" in event) {
       const { name, value: inputValue } = event.target;
-      setValue(prev =>
-        typeof prev === 'object'
+      setValue((prev) =>
+        typeof prev === "object"
           ? { ...prev, [name]: inputValue }
-          : inputValue as T
+          : (inputValue as T)
       );
     } else {
-      setValue(prev =>
-          typeof prev === 'object' && typeof event === 'object'
-            ? { ...prev, ...(event as object) }
-            : event as T);
+      setValue((prev) =>
+        typeof prev === "object" && typeof event === "object"
+          ? { ...prev, ...(event as object) }
+          : (event as T)
+      );
     }
   };
-  
+
   return {
     value,
     onChange: handleChange,
     isSaving: mutation.isPending,
     error: mutation.error,
-    lastSaved
+    lastSaved,
   };
 };
 
@@ -177,88 +179,93 @@ export function useHTMLToMarkdownConverter() {
 
   return { markdown, updateHtml };
 }
-export function usePosts() {
-  const [posts, setPosts] = useState<PostSelect[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
-  const router = useRouter()
+export function usePosts({
+  status = "published",
+  limit = 10,
+  page = 1,
+}: {
+  status?: PostInsert["status"] | "all";
+  limit?: number;
+  page?: number;
+} = {}) {
+  const [posts, setPosts] = useState<PostSelect[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    async function fetchPosts() {
-      try {
-        const response = await fetch('/api/posts')
-        if (!response.ok) {
-          throw new Error('Failed to fetch posts')
-        }
-        const data = await response.json()
-        console.log({posts:data.posts,p:data.p});
-        
-        setPosts(data.posts)
-        setLoading(false)
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error('An error occurred'))
-        setLoading(false)
+  const fetchPosts = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `/api/posts?${objectToQueryParams({ status, limit, page })}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts");
       }
+      const data = await response.json();
+
+      setPosts(data.posts);
+      setLoading(false);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error("An error occurred"));
+      setLoading(false);
     }
+  }, []);
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
-    fetchPosts()
-  }, [])
+  const refetchPosts = async () => {
+    await fetchPosts();
+  };
 
-  const refreshPosts = () => {
-    setLoading(true)
-    router.refresh()
-  }
-
-  return { posts, loading, error, refreshPosts }
+  return { posts, loading, error, refetchPosts };
 }
 
 export function usePost(slug: string) {
-  const [post, setPost] = useState<Post | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
-  const router = useRouter()
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    async function fetchPost() {
-      try {
-        const response = await fetch(`/api/posts/${slug}`)
-        if (!response.ok) {
-          throw new Error('Failed to fetch post')
-        }
-        const data = await response.json()
-        setPost(data)
-        setLoading(false)
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error('An error occurred'))
-        setLoading(false)
+  async function fetchPost() {
+    try {
+      const response = await fetch(`/api/posts/${slug}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch post");
       }
+      const data = await response.json();
+      setPost(data);
+      setLoading(false);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error("An error occurred"));
+      setLoading(false);
     }
-
-    fetchPost()
-  }, [slug])
-
-  const refreshPost = () => {
-    setLoading(true)
-    router.refresh()
   }
 
-  return { post, loading, error, refreshPost }
+  useEffect(() => {
+    fetchPost();
+  }, [slug]);
+
+  const refetchPost = async () => {
+    await fetchPost();
+  };
+
+  return { post, loading, error, refetchPost };
 }
 
-
-export function useDebounce<T extends string | number | object>(value: T, delay: number) {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+export function useDebounce<T extends string | number | object>(
+  value: T,
+  delay: number
+) {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
+      setDebouncedValue(value);
+    }, delay);
     return () => {
-      clearTimeout(handler)
-    }
-  }, [value, delay])
-  return debouncedValue
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+  return debouncedValue;
 }
-
 
 type QueryParamValue = string | number | boolean | null;
 
@@ -286,7 +293,7 @@ export function useQueryParams<T extends QueryParams>() {
     (key: keyof T, value: QueryParamValue) => {
       const updatedParams = new URLSearchParams(searchParams.toString());
 
-      if (value === null || value === '') {
+      if (value === null || value === "") {
         updatedParams.delete(key as string);
       } else {
         updatedParams.set(key as string, value.toString());
@@ -303,7 +310,7 @@ export function useQueryParams<T extends QueryParams>() {
       const updatedParams = new URLSearchParams(searchParams.toString());
 
       Object.entries(newParams).forEach(([key, value]) => {
-        if (value === null || value === '') {
+        if (value === null || value === "") {
           updatedParams.delete(key);
         } else {
           updatedParams.set(key, value.toString());
@@ -320,5 +327,10 @@ export function useQueryParams<T extends QueryParams>() {
     router.push(pathname);
   }, [pathname, router]);
 
-  return { queryParams: queryParamsValues, setQueryParam, setQueryParams, clearQueryParams };
+  return {
+    queryParams: queryParamsValues,
+    setQueryParam,
+    setQueryParams,
+    clearQueryParams,
+  };
 }
