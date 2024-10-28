@@ -33,8 +33,10 @@ import DashHeader from "@/src/app/components/Dashboard/Header";
 import { SidebarContent } from "@/src/app/components/Dashboard/NewPostPage/Sidebar";
 import { useFormik } from "formik";
 import { TitleInput } from "@/src/app/components/Dashboard/NewPostPage/TitleInput";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Loader from "../../Loader";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const META_DESCRIPTION_LENGTH = 155;
 
@@ -58,21 +60,29 @@ export function PostEditor({ post }: { post: PostSelect }) {
   const [lastUpdate, setLastUpdate] = useState<Date | null>(
     post?.updated_at as Date
   );
-  const [isSaving, setIsSaving] = useState(false);
-  const { queryParams, setQueryParam } = useQueryParams();
   const borderColor = useColorModeValue("gray.300", "gray.700");
 
-  // console.log({queryParams});
   const randomNumId = useMemo(
     () => shortIdGenerator.bigIntId().substring(6, 12),
     []
   );
+  const {
+    mutate,
+    data,
+    isPending: isSaving,
+  } = useMutation({
+    mutationFn: async (values: PostInsert) => {
+      const response = await axios.put<{
+        message: string;
+        lastUpdate: string | Date;
+      }>("/api/posts/" + values?.post_id, values);
+      return response.data;
+    },
+  });
   const { author, ...postWithoutAuthor } = nullToEmptyString(post!);
   const formik = useFormik({
-    enableReinitialize: true,
     initialValues: postWithoutAuthor as PostInsert,
     onSubmit: async (values) => {
-      setIsSaving(true);
       const {
         title,
         slug,
@@ -98,22 +108,9 @@ export function PostEditor({ post }: { post: PostSelect }) {
       };
 
       try {
-        const response = await fetch("/api/posts/" + post_id, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(postToSave),
-        });
-        const data = await response.json();
-        console.log({ data });
-        setLastUpdate(data?.lastUpdate);
-
-        setIsSaving(false);
-        return data;
+        mutate(postToSave), setLastUpdate(data?.lastUpdate as Date);
       } catch (error) {
-        setIsSaving(false);
-        return null;
+        console.error("Error saving post:", error);
       }
     },
   });
@@ -160,7 +157,6 @@ export function PostEditor({ post }: { post: PostSelect }) {
   };
 
   useEffect(() => {
-    console.log({ ...formik.values });
     // debouncedSavePost();
     formik.handleSubmit();
   }, [formik.values]);

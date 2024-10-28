@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Post, PostInsert, PostSelect } from "@/src/types";
 import TurndownService from "turndown";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import debounce from "lodash/debounce";
 import { objectToQueryParams } from "../utils";
 import axios from "axios";
@@ -189,61 +189,50 @@ export function usePosts({
   limit?: number;
   page?: number;
 } = {}) {
-  const [posts, setPosts] = useState<PostSelect[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchPosts = useCallback(async () => {
-    try {
-      const response = await fetch(
+  const {
+    data: posts,
+    isLoading: loading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["post", status, limit, page],
+    queryFn: async () => {
+      const { data } = await axios.get<{ data: PostSelect[] }>(
         `/api/posts?${objectToQueryParams({ status, limit, page })}`
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch posts");
-      }
-      const data = await response.json();
-
-      setPosts(data.posts);
-      setLoading(false);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error("An error occurred"));
-      setLoading(false);
-    }
-  }, []);
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+      return data.data;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
   const refetchPosts = async () => {
-    await fetchPosts();
+    await refetch();
   };
 
   return { posts, loading, error, refetchPosts };
 }
 
 export function usePost(slug: string) {
-  const [post, setPost] = useState<PostSelect | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  async function fetchPost() {
-    try {
-      const { data } = await axios.get(`/api/posts/${slug}`);
-
-      setPost(data.data);
-      setLoading(false);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error("An error occurred"));
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    (async () => await fetchPost())();
-  }, [slug]);
+  const {
+    data: post,
+    isLoading: loading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["post", slug],
+    queryFn: async () => {
+      const { data } = await axios.get<{ data: PostSelect }>(
+        `/api/posts/${slug}`
+      );
+      return data.data;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
   const refetchPost = async () => {
-    await fetchPost();
+    await refetch();
   };
 
   return { post, loading, error, refetchPost };
