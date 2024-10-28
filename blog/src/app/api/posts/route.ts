@@ -38,9 +38,15 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ posts: _posts });
+    return NextResponse.json({
+      data: _posts,
+      message: "All posts fetched successfully",
+    });
   } catch (error: any) {
-    return NextResponse.json({ error: error?.message });
+    return NextResponse.json({
+      error: error?.message,
+      message: "Something went wrong... could not fetch posts",
+    });
   }
 }
 export async function POST(req: NextRequest) {
@@ -57,22 +63,32 @@ export async function POST(req: NextRequest) {
     post_id,
   } = await req.json();
 
-  const post = await db.transaction(async (tx) => {
-    const [insertResponse] = await tx.insert(posts).values({
-      title,
-      content,
-      summary,
-      slug,
-      featured_image,
-      author_id,
-      status,
-      visibility,
-      category_id,
+  try {
+    const post = await db.transaction(async (tx) => {
+      const [insertResponse] = await tx.insert(posts).values({
+        title,
+        content,
+        summary,
+        slug,
+        featured_image,
+        author_id,
+        status,
+        visibility,
+        category_id,
+      });
+      return await tx.query.posts.findFirst({
+        where: eq(posts.id, insertResponse.insertId),
+      });
     });
-    return await tx.query.posts.findFirst({
-      where: eq(posts.id, insertResponse.insertId),
-    });
-  });
 
-  return NextResponse.json(post);
+    return NextResponse.json({
+      data: post,
+      message: "Post created successfully",
+    });
+  } catch (error: any) {
+    return NextResponse.json({
+      error: error?.message,
+      message: "Error creating post",
+    });
+  }
 }
