@@ -8,6 +8,7 @@ import TurndownService from "turndown";
 import { useMutation } from "@tanstack/react-query";
 import debounce from "lodash/debounce";
 import { objectToQueryParams } from "../utils";
+import axios from "axios";
 
 export type SaveableValue = string | Record<string, any>;
 
@@ -221,18 +222,15 @@ export function usePosts({
 }
 
 export function usePost(slug: string) {
-  const [post, setPost] = useState<Post | null>(null);
+  const [post, setPost] = useState<PostSelect | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   async function fetchPost() {
     try {
-      const response = await fetch(`/api/posts/${slug}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch post");
-      }
-      const data = await response.json();
-      setPost(data);
+      const { data } = await axios.get(`/api/posts/${slug}`);
+
+      setPost(data.data);
       setLoading(false);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("An error occurred"));
@@ -241,7 +239,7 @@ export function usePost(slug: string) {
   }
 
   useEffect(() => {
-    fetchPost();
+    (async () => await fetchPost())();
   }, [slug]);
 
   const refetchPost = async () => {

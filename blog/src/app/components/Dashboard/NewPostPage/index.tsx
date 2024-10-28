@@ -28,17 +28,36 @@ import {
   shortIdGenerator,
 } from "@/src/utils";
 import { PostInsert, PostSelect } from "@/src/types";
-import { useAutoSave, useQueryParams } from "@/src/hooks";
+import { useAutoSave, usePost, useQueryParams } from "@/src/hooks";
 import DashHeader from "@/src/app/components/Dashboard/Header";
 import { SidebarContent } from "@/src/app/components/Dashboard/NewPostPage/Sidebar";
 import { useFormik } from "formik";
 import { TitleInput } from "@/src/app/components/Dashboard/NewPostPage/TitleInput";
+import { useParams, useRouter } from "next/navigation";
+import Loader from "../../Loader";
 
 const META_DESCRIPTION_LENGTH = 155;
 
-export default function NewPostPage({ post }: { post: PostSelect }) {
+export default function NewPostPage() {
+  const postId = useParams().postId as string;
+  const { post, loading } = usePost(postId);
+
+  console.log({ post, postId });
+
+  if (loading || !post) {
+    return (
+      <Stack h={"full"} align={"center"} justify={"center"}>
+        <Loader />
+      </Stack>
+    );
+  }
+  return <PostEditor post={post!} />;
+}
+export function PostEditor({ post }: { post: PostSelect }) {
   const [editorCounts, setEditorCounts] = useState({ words: 0, characters: 0 });
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(post.updated_at);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(
+    post?.updated_at as Date
+  );
   const [isSaving, setIsSaving] = useState(false);
   const { queryParams, setQueryParam } = useQueryParams();
   const borderColor = useColorModeValue("gray.300", "gray.700");
@@ -48,7 +67,7 @@ export default function NewPostPage({ post }: { post: PostSelect }) {
     () => shortIdGenerator.bigIntId().substring(6, 12),
     []
   );
-  const { author, ...postWithoutAuthor } = nullToEmptyString(post);
+  const { author, ...postWithoutAuthor } = nullToEmptyString(post!);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: postWithoutAuthor as PostInsert,
@@ -89,7 +108,7 @@ export default function NewPostPage({ post }: { post: PostSelect }) {
         const data = await response.json();
         console.log({ data });
         setLastUpdate(data?.lastUpdate);
-        // formik.setValues({ ...data });
+
         setIsSaving(false);
         return data;
       } catch (error) {
@@ -105,8 +124,11 @@ export default function NewPostPage({ post }: { post: PostSelect }) {
   const [tags, setTags] = useState<{ name: string }[]>([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const updatePost = (updates: Partial<PostInsert>) =>
-    formik.setValues({ ...formik.values, ...updates });
+  const updatePost = useCallback(
+    (updates: Partial<PostInsert>) =>
+      formik.setValues({ ...formik.values, ...updates }),
+    []
+  );
 
   useEffect(() => {
     if (
@@ -119,8 +141,7 @@ export default function NewPostPage({ post }: { post: PostSelect }) {
       });
       updatePost({ slug: generatedSlug });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formik.values.title]);
+  }, [formik.values.title, randomNumId, updatePost]);
 
   const handleContentChange = (content: {
     html?: string;

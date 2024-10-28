@@ -1,4 +1,4 @@
-import NewPostPage from "@/src/app/components/Dashboard/NewPostPage";
+import { ClientNewPostRedirect } from "@/src/app/components/Dashboard/ClientNewPostRedirect";
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
 import { PostSelect } from "@/src/types";
@@ -12,13 +12,14 @@ export default async function DashboardNewPostPage() {
     slug: "untitled-" + shortId,
     author_id: 4,
   };
-  let createdPost: PostSelect;
+
+  let createdPost: PostSelect | null = null;
+
   try {
     createdPost = (await db.transaction(async (tx) => {
       const [insertResponse] = await tx.insert(posts).values(newPost);
       return await tx.query.posts.findFirst({
         where: eq(posts.id, insertResponse.insertId),
-        
         with: {
           author: {
             columns: {
@@ -30,10 +31,14 @@ export default async function DashboardNewPostPage() {
         },
       });
     })) as PostSelect;
-  } catch (error) {}
-  return (
-    <>
-      <NewPostPage post={createdPost!} />
-    </>
-  );
+  } catch (error) {
+    console.error("Failed to create post:", error);
+  }
+  console.log({ createdPost });
+
+  if (!createdPost) {
+    return <div>Failed to create post</div>;
+  }
+
+  return <ClientNewPostRedirect postId={createdPost.post_id as string} />;
 }
