@@ -11,6 +11,7 @@ CREATE TABLE `Categories` (
 CREATE TABLE `Comments` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`content` text,
+	`status` enum('approved','pending','disapproved','deleted') DEFAULT 'pending',
 	`post_id` int NOT NULL,
 	`author_id` int NOT NULL,
 	`created_at` timestamp DEFAULT (now()),
@@ -53,6 +54,7 @@ CREATE TABLE `Posts` (
 CREATE TABLE `Replies` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`content` text,
+	`status` enum('approved','pending','disapproved','deleted') DEFAULT 'pending',
 	`comment_id` int NOT NULL,
 	`author_id` int NOT NULL,
 	`created_at` timestamp DEFAULT (now()),
@@ -74,7 +76,8 @@ CREATE TABLE `Permissions` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(50) NOT NULL,
 	`description` varchar(255),
-	CONSTRAINT `Permissions_id` PRIMARY KEY(`id`)
+	CONSTRAINT `Permissions_id` PRIMARY KEY(`id`),
+	CONSTRAINT `Permissions_name_unique` UNIQUE(`name`)
 );
 --> statement-breakpoint
 CREATE TABLE `RolePermissions` (
@@ -88,7 +91,8 @@ CREATE TABLE `Roles` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(50) NOT NULL,
 	`description` varchar(255),
-	CONSTRAINT `Roles_id` PRIMARY KEY(`id`)
+	CONSTRAINT `Roles_id` PRIMARY KEY(`id`),
+	CONSTRAINT `Roles_name_unique` UNIQUE(`name`)
 );
 --> statement-breakpoint
 CREATE TABLE `Users` (

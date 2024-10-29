@@ -104,6 +104,12 @@ export const postTagsRelations = relations(postTags, ({ one }) => ({
 export const comments = mysqlTable("Comments", {
   id: int("id").autoincrement().primaryKey(),
   content: text("content"),
+  status: mysqlEnum("status", [
+    "approved",
+    "pending",
+    "disapproved",
+    "deleted",
+  ]).default("pending"),
   post_id: int("post_id").notNull(),
   author_id: int("author_id").notNull(),
   created_at: timestamp("created_at").defaultNow(),
@@ -125,6 +131,13 @@ export const commentsRelations = relations(comments, ({ one, many }) => ({
 export const replies = mysqlTable("Replies", {
   id: int("id").autoincrement().primaryKey(),
   content: text("content"),
+  status: mysqlEnum("status", [
+    "approved",
+    "pending",
+    "disapproved",
+    "deleted",
+  ]).default("pending"),
+
   comment_id: int("comment_id").notNull(),
   author_id: int("author_id").notNull(),
   created_at: timestamp("created_at").defaultNow(),

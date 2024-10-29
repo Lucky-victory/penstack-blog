@@ -11,7 +11,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:gen": "drizzle-kit generate",
     "db:create": "node -r dotenv/config scripts/create-db.mjs",
-    "db:seeds": "node -r dotenv/config scripts/create-seed-roles.mjs",
+    "db:seeds": "node -r dotenv/config scripts/seed.mjs",
     "db:init": "node -r dotenv/config scripts/init-db.mjs"
   },
   "dependencies": {
@@ -71,6 +71,7 @@
     "lodash": "^4.17.21",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

@@ -27,14 +27,14 @@ export const users = mysqlTable("Users", {
 
 export const roles = mysqlTable("Roles", {
   id: int("id").autoincrement().primaryKey(),
-  name: varchar("name", { length: 50 }).notNull(),
-  description: varchar("description",{length:255}),
+  name: varchar("name", { length: 50 }).notNull().unique(),
+  description: varchar("description", { length: 255 }),
 });
 
 export const permissions = mysqlTable("Permissions", {
   id: int("id").autoincrement().primaryKey(),
-  name: varchar("name", { length: 50 }).notNull(),
-  description: varchar("description",{length:255}),
+  name: varchar("name", { length: 50 }).notNull().unique(),
+  description: varchar("description", { length: 255 }),
 });
 
 export const rolePermissions = mysqlTable("RolePermissions", {

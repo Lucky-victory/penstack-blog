@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "7c6a4561-95fb-405d-a46f-96e82df317e2",
+  "id": "d4ac19ac-ce5f-4c4d-8b11-cfaf65ebd6b5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "Categories": {
@@ -80,6 +80,14 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('approved','pending','disapproved','deleted')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'pending'"
         },
         "post_id": {
           "name": "post_id",
@@ -317,6 +325,14 @@
           "notNull": false,
           "autoincrement": false
         },
+        "status": {
+          "name": "status",
+          "type": "enum('approved','pending','disapproved','deleted')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
         "comment_id": {
           "name": "comment_id",
           "type": "int",
@@ -455,7 +471,14 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "Permissions_name_unique": {
+          "name": "Permissions_name_unique",
+          "columns": [
+            "name"
+          ]
+        }
+      }
     },
     "RolePermissions": {
       "name": "RolePermissions",
@@ -529,7 +552,14 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "Roles_name_unique": {
+          "name": "Roles_name_unique",
+          "columns": [
+            "name"
+          ]
+        }
+      }
     },
     "Users": {
       "name": "Users",
