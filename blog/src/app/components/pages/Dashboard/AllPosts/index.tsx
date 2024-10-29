@@ -115,7 +115,9 @@ const PostsDashboard = () => {
         statusFilter === "all" || post.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-    setFilteredPosts(filteredPosts);
+    if (filteredPosts && filteredPosts?.length > 0) {
+      setFilteredPosts(() => [...filteredPosts!]);
+    }
   }, [posts, searchTerm, statusFilter]);
 
   return (
@@ -139,135 +141,141 @@ const PostsDashboard = () => {
         </Button>
       </Flex>
 
-      <Stack
-        bg={"white"}
-        p={4}
-        rounded={{ base: 20, md: 24 }}
-        direction={{ base: "column", md: "row" }}
-        spacing={4}
-        mb={6}
-      >
-        <InputGroup rounded={"full"}>
-          <InputLeftAddon roundedLeft={"full"}>
-            <SearchIcon />
-          </InputLeftAddon>
-          <Input
-            rounded={"full"}
-            placeholder="Search posts..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            maxW={{ md: "320px" }}
-          />
-        </InputGroup>
-        <Select
-          value={statusFilter}
-          rounded={"full"}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          maxW={{ md: "300px" }}
-        >
-          <option value="all">All Status</option>
-          <option value="published">Published</option>
-          <option value="draft">Draft</option>
-          <option value="deleted">Deleted</option>
-        </Select>
-      </Stack>
+      {filteredPosts && filteredPosts.length > 0 && (
+        <>
+          <Stack
+            bg={"white"}
+            p={4}
+            rounded={{ base: 20, md: 24 }}
+            direction={{ base: "column", md: "row" }}
+            spacing={4}
+            mb={6}
+          >
+            <InputGroup rounded={"full"}>
+              <InputLeftAddon roundedLeft={"full"}>
+                <SearchIcon />
+              </InputLeftAddon>
+              <Input
+                rounded={"full"}
+                placeholder="Search posts..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                maxW={{ md: "320px" }}
+              />
+            </InputGroup>
+            <Select
+              value={statusFilter}
+              rounded={"full"}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              maxW={{ md: "300px" }}
+            >
+              <option value="all">All Status</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+              <option value="deleted">Deleted</option>
+            </Select>
+          </Stack>
 
-      <Box
-        maxH={600}
-        overflow="auto"
-        bg={"white"}
-        p={4}
-        rounded={{ base: 20, md: 24 }}
-      >
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Title</Th>
-              <Th>Status</Th>
-              <Th>Category</Th>
-              <Th>Author</Th>
-              <Th>Published Date</Th>
-              <Th>Views</Th>
-              <Th>Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {filteredPosts &&
-              filteredPosts.length > 0 &&
-              filteredPosts?.map((post) => (
-                <Tr key={post.id}>
-                  <Td>
-                    <Flex align="center">
-                      {getVisibilityIcon(post.visibility)}
-                      <Text ml={2}>{post.title}</Text>
-                    </Flex>
-                  </Td>
-                  <Td>
-                    <Badge
-                      rounded={"full"}
-                      px={2}
-                      colorScheme={getStatusColor(post.status as string)}
-                    >
-                      {post.status}
-                    </Badge>
-                  </Td>
-                  <Td>{post.category?.name || "-"}</Td>
-                  <Td>{post.author?.name}</Td>
-                  <Td>
-                    {post.published_at
-                      ? new Date(post.published_at).toLocaleDateString()
-                      : "-"}
-                  </Td>
-                  <Td>{post.views}</Td>
-                  <Td>
-                    <Menu>
-                      <MenuButton
-                        as={IconButton}
-                        icon={<ChevronDownIcon />}
-                        variant="ghost"
-                        size="sm"
-                      />
-                      <MenuList>
-                        <MenuItem
-                          icon={<ViewIcon />}
-                          onClick={() => router.push(formatPostPermalink(post))}
-                        >
-                          View
-                        </MenuItem>
-                        <MenuItem
-                          icon={<EditIcon />}
-                          onClick={() => handleEdit(post)}
-                        >
-                          Edit
-                        </MenuItem>
-                        <MenuItem
-                          icon={<DeleteIcon />}
-                          onClick={() => handleDelete(post)}
-                          color="red.500"
-                        >
-                          Delete
-                        </MenuItem>
-                      </MenuList>
-                    </Menu>
-                  </Td>
+          <Box
+            maxH={600}
+            overflow="auto"
+            bg={"white"}
+            p={4}
+            rounded={{ base: 20, md: 24 }}
+          >
+            <Table variant="simple">
+              <Thead>
+                <Tr>
+                  <Th>Title</Th>
+                  <Th>Status</Th>
+                  <Th>Category</Th>
+                  <Th>Author</Th>
+                  <Th>Published Date</Th>
+                  <Th>Views</Th>
+                  <Th>Actions</Th>
                 </Tr>
-              ))}
-          </Tbody>
-        </Table>
+              </Thead>
+              <Tbody>
+                {filteredPosts &&
+                  filteredPosts.length > 0 &&
+                  filteredPosts?.map((post) => (
+                    <Tr key={post.id}>
+                      <Td>
+                        <Flex align="center">
+                          {getVisibilityIcon(post.visibility)}
+                          <Text ml={2}>{post.title}</Text>
+                        </Flex>
+                      </Td>
+                      <Td>
+                        <Badge
+                          rounded={"full"}
+                          px={2}
+                          colorScheme={getStatusColor(post.status as string)}
+                        >
+                          {post.status}
+                        </Badge>
+                      </Td>
+                      <Td>{post.category?.name || "-"}</Td>
+                      <Td>{post.author?.name}</Td>
+                      <Td>
+                        {post.published_at
+                          ? new Date(post.published_at).toLocaleDateString()
+                          : "-"}
+                      </Td>
+                      <Td>{post.views}</Td>
+                      <Td>
+                        <Menu>
+                          <MenuButton
+                            as={IconButton}
+                            icon={<ChevronDownIcon />}
+                            variant="ghost"
+                            size="sm"
+                          />
+                          <MenuList>
+                            <MenuItem
+                              icon={<ViewIcon />}
+                              onClick={() =>
+                                router.push(formatPostPermalink(post))
+                              }
+                            >
+                              View
+                            </MenuItem>
+                            <MenuItem
+                              icon={<EditIcon />}
+                              onClick={() => handleEdit(post)}
+                            >
+                              Edit
+                            </MenuItem>
+                            <MenuItem
+                              icon={<DeleteIcon />}
+                              onClick={() => handleDelete(post)}
+                              color="red.500"
+                            >
+                              Delete
+                            </MenuItem>
+                          </MenuList>
+                        </Menu>
+                      </Td>
+                    </Tr>
+                  ))}
+              </Tbody>
+            </Table>
 
-        {loading && (
-          <HStack my={8} justify={"center"}>
-            <Spinner />
-            <Text>Loading posts...</Text>
-          </HStack>
-        )}
+            {loading && (
+              <HStack my={8} justify={"center"}>
+                <Spinner />
+                <Text>Loading posts...</Text>
+              </HStack>
+            )}
 
-        {!loading && posts?.length === 0 && filteredPosts?.length === 0 && (
-          <Flex justify="center" my={8}>
-            <Text>No posts found</Text>
-          </Flex>
-        )}
-      </Box>
+            {!loading && posts?.length === 0 && filteredPosts?.length === 0 && (
+              <Flex justify="center" my={8}>
+                <Text>No posts found</Text>
+              </Flex>
+            )}
+          </Box>
+        </>
+      )}
 
       {/* Delete Confirmation Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>

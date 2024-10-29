@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   Box,
   Button,
@@ -147,7 +147,7 @@ export function PostEditor({ post }: { post: PostSelect }) {
   }) => {
     console.log(content);
 
-    updatePost({ content: content.markdown });
+    updatePost({ content: content.html });
     if (content.text.length <= META_DESCRIPTION_LENGTH) {
       updatePost({ summary: content.text });
     }
@@ -155,10 +155,12 @@ export function PostEditor({ post }: { post: PostSelect }) {
   const getEditorCounts = (counts: { words: number; characters: number }) => {
     setEditorCounts(counts);
   };
+  const debouncedSubmit = useRef(
+    debounce(() => formik.handleSubmit(), 300) // 300ms debounce
+  ).current;
 
   useEffect(() => {
-    // debouncedSavePost();
-    formik.handleSubmit();
+    debouncedSubmit();
   }, [formik.values]);
   return (
     <Box h="full" overflowY={"auto"}>

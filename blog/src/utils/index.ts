@@ -212,6 +212,9 @@ type InputObject = {
 export function nullToEmptyString<T extends InputObject>(obj: T): T {
   return Object.entries(obj).reduce((acc, [key, value]) => {
     let transformedValue: any;
+    if (key === "featured_image") {
+      return acc;
+    }
 
     if (value === null) {
       transformedValue = "";

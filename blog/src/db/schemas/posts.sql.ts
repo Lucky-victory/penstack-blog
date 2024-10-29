@@ -18,10 +18,12 @@ export const posts = mysqlTable("Posts", {
   title: varchar("title", { length: 255 }).default("Untitled"),
   content: longtext("content"),
   summary: varchar("summary", { length: 255 }),
+  meta_description: varchar("meta_description", { length: 255 }),
+  meta_title: varchar("meta_title", { length: 150 }),
   post_id: varchar("post_id", { length: 255 }).$defaultFn(() =>
     shortIdGenerator.urlSafeId()
   ),
-  slug: varchar("slug", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
   status: mysqlEnum("status", ["draft", "published", "deleted"]).default(
     "draft"
   ),
