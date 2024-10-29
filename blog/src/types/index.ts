@@ -2,6 +2,7 @@ import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { posts } from "@/src/db/schemas/posts.sql";
 import { Editor } from "@tiptap/react";
 import { IconType } from "react-icons";
+import { permissions } from "../db/schemas";
 export interface Post {
   id: number;
   title: string;
@@ -18,6 +19,8 @@ export type PostToPost = PostInsert & {
   tags: string[];
 };
 export type PostInsert = InferInsertModel<typeof posts>;
+type Permissions = InferInsertModel<typeof permissions>;
+export type TPermissions = Permissions["name"];
 export type PostSelect = InferSelectModel<typeof posts> & {
   author: {
     name: string;

@@ -33,7 +33,26 @@ export const roles = mysqlTable("Roles", {
 
 export const permissions = mysqlTable("Permissions", {
   id: int("id").autoincrement().primaryKey(),
-  name: varchar("name", { length: 50 }).notNull().unique(),
+  name: varchar("name", {
+    length: 50,
+    enum: [
+      "posts:create",
+      "posts:edit",
+      "posts:delete",
+      "posts:publish",
+      "posts:read",
+      "users:read",
+      "users:write",
+      "users:delete",
+      "roles:read",
+      "roles:write",
+      "roles:delete",
+      "comments:create",
+      "comments:moderate",
+    ],
+  })
+    .notNull()
+    .unique(),
   description: varchar("description", { length: 255 }),
 });
 

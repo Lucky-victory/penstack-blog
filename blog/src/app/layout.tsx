@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 import { fonts } from "../lib/fonts";
 import { Providers } from "../providers/chakra";
 import ReactQueryClient from "../providers/react-query";
+import AuthProvider from "../providers/auth";
 export default function RootLayout({
   children,
 }: {
@@ -18,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={fonts.rubik.variable}>
       <body>
-        <ReactQueryClient>
-          <Providers>{children}</Providers>
-        </ReactQueryClient>
+        <AuthProvider>
+          <ReactQueryClient>
+            <Providers>{children}</Providers>
+          </ReactQueryClient>
+        </AuthProvider>
       </body>
     </html>
   );
