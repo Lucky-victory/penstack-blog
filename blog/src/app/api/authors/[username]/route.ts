@@ -38,6 +38,7 @@ export async function GET(
     });
   } catch (error: any) {
     return NextResponse.json({
+      data: null,
       error: error?.message,
       message: "Something went wrong... could not fetch user",
     });

@@ -10,6 +10,9 @@ export async function POST(req: Request) {
       message: "User created successfully",
     });
   } catch (error) {
-    return NextResponse.json({ error: "Error creating user" }, { status: 500 });
+    return NextResponse.json(
+      { data: null, error: "Error creating user" },
+      { status: 500 }
+    );
   }
 }

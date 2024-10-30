@@ -4,14 +4,20 @@ import { posts, users } from "@/src/db/schemas";
 import { PostSelect } from "@/src/types";
 import { shortIdGenerator } from "@/src/utils";
 import { eq } from "drizzle-orm";
+import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 
+export const metadata: Metadata = {
+  title: "Dashboard | New Post",
+};
 export default async function DashboardNewPostPage() {
   const shortId = shortIdGenerator.bigIntId().substring(6, 12);
   let createdPost: PostSelect | null = null;
   try {
-    await getServerSession().then(async (session) => {
-      console.log(session);
+    createdPost = await getServerSession().then(async (session) => {
+      if (!session?.user?.email) {
+        throw new Error("No user session found");
+      }
       const user = await db.query.users.findFirst({
         where: eq(users.email, session?.user?.email as string),
       });
@@ -36,6 +42,7 @@ export default async function DashboardNewPostPage() {
           },
         });
       })) as PostSelect;
+      return createdPost;
     });
   } catch (error) {
     console.error("Failed to create post:", error);

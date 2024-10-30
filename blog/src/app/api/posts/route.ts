@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (error: any) {
     return NextResponse.json({
+      data: null,
       error: error?.message,
       message: "Something went wrong... could not fetch posts",
     });
@@ -88,6 +89,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: any) {
     return NextResponse.json({
+      data: null,
       error: error?.message,
       message: "Error creating post",
     });

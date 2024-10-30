@@ -7,22 +7,29 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { slugOrPostId: string } }
 ) {
-  const { slugOrPostId } = params;
+  try {
+    const { slugOrPostId } = params;
 
-  const post = await db.query.posts.findFirst({
-    where: or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),
-  });
+    const post = await db.query.posts.findFirst({
+      where: or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),
+    });
 
-  if (!post)
+    if (!post)
+      return NextResponse.json(
+        { data: null, message: "Post not found" },
+        { status: 404 }
+      );
+
+    return NextResponse.json({
+      data: post,
+      message: "Post retrieved successfully",
+    });
+  } catch (error: any) {
     return NextResponse.json(
-      { data: null, message: "Post not found" },
-      { status: 404 }
+      { data: null, error: "Error retrieving post" },
+      { status: 500 }
     );
-
-  return NextResponse.json({
-    data: post,
-    message: "Post retrieved successfully",
-  });
+  }
 }
 
 export async function PUT(
@@ -61,7 +68,7 @@ export async function PUT(
     console.log("Error", error);
 
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { data: null, error: "Internal Server Error" },
       { status: 500 }
     );
   }

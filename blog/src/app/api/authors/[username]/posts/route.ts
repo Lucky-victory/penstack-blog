@@ -72,6 +72,7 @@ export async function GET(
   } catch (error: any) {
     return NextResponse.json({
       error: error?.message,
+      data: null,
       message: "Something went wrong... could not fetch posts",
     });
   }

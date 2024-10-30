@@ -11,9 +11,26 @@ export async function GET(
   try {
     const category = await db.query.categories.findFirst({
       where: eq(categories.id, id),
+      with: {
+        posts: {
+          with: {
+            author: {
+              columns: {
+                name: true,
+                username: true,
+                id: true,
+                avatar: true,
+              },
+            },
+          },
+        },
+      },
     });
 
-    return NextResponse.json({ data: category });
+    return NextResponse.json({
+      data: category,
+      message: "Category Posts fetched successfully",
+    });
   } catch (error: any) {
     return NextResponse.json(
       { data: null, error: error?.message, message: "Something went wrong..." },

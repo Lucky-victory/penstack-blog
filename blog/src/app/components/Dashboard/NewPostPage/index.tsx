@@ -21,7 +21,7 @@ import { LuSettings } from "react-icons/lu";
 import TextEditor from "@/src/app/components/TextEditor";
 import slugify from "slugify";
 import {
-  debounce,
+  // debounce,
   formatDate,
   nullToEmptyString,
   shortenText,
@@ -37,14 +37,13 @@ import { useParams } from "next/navigation";
 import Loader from "../../Loader";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { debounce } from "lodash";
 
 const META_DESCRIPTION_LENGTH = 155;
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
   const { post, loading } = usePost(postId);
-
-  console.log({ post, postId });
 
   if (loading || !post) {
     return (
@@ -137,7 +136,7 @@ export function PostEditor({ post }: { post: PostSelect }) {
       });
       updatePost({ slug: generatedSlug });
     }
-  }, [formik.values.title, randomNumId, updatePost]);
+  }, [formik.values.title, randomNumId]);
 
   const handleContentChange = (content: {
     html?: string;
@@ -155,11 +154,17 @@ export function PostEditor({ post }: { post: PostSelect }) {
     setEditorCounts(counts);
   };
   const debouncedSubmit = useRef(
-    debounce(() => formik.handleSubmit(), 300) // 300ms debounce
+    debounce(() => {
+      formik.handleSubmit();
+    }, 500) // 500ms debounce
   ).current;
 
   useEffect(() => {
     debouncedSubmit();
+
+    return () => {
+      debouncedSubmit.cancel();
+    };
   }, [formik.values]);
   return (
     <Box h="full" overflowY={"auto"}>
@@ -204,7 +209,27 @@ export function PostEditor({ post }: { post: PostSelect }) {
           rounded={"26px"}
           boxShadow={"var(--card-raised)"}
         >
-          <TitleInput formik={formik} />
+          {/* <TitleInput formik={formik} /> */}
+          <Box
+            borderBottom={"1px"}
+            borderBottomColor={borderColor}
+            p={1}
+            py={2}
+          >
+            <Input
+              border={"none"}
+              outline={"none"}
+              autoComplete="off"
+              placeholder="Awesome title"
+              name={"title"}
+              value={formik.values.title as string}
+              fontWeight={600}
+              onChange={(e) => updatePost({ title: e.target.value })}
+              rounded={"none"}
+              _focus={{ boxShadow: "none" }}
+              fontSize={{ base: "lg", md: "24px" }}
+            />
+          </Box>
           <TextEditor
             getCounts={getEditorCounts}
             onContentChange={(content) => handleContentChange(content)}

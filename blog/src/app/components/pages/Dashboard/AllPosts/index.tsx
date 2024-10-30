@@ -54,11 +54,13 @@ const PostsDashboard = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedPost, setSelectedPost] = useState<PostSelect | null>(null);
   const [filteredPosts, setFilteredPosts] = useState<PostSelect[]>([]);
-  const { posts, loading, refetchPosts } = usePosts({ status: "all" });
+  const { posts, loading, refetchPosts } = usePosts({
+    status: "all",
+    limit: 20,
+  });
   const router = useRouter();
 
   const handleEdit = (post: PostSelect) => {
-    // Implement edit navigation
     router.push(`/dashboard/posts/edit/${post.post_id}`);
   };
 

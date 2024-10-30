@@ -327,7 +327,8 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               bg={imageWrapBg}
               rounded={{ base: 20, md: 24 }}
             >
-              <Box p={{ base: 4, md: 5 }}>
+              <VStack align={"start"} px={{ base: 2, md: 3 }} py={4}>
+                <Heading size="md">About the Author</Heading>
                 <Flex alignItems="center" mb={4}>
                   <Avatar
                     src={post.author.avatar}
@@ -341,7 +342,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                     </Text>
                   </Box>
                 </Flex>
-              </Box>
+              </VStack>
             </Box>
             <Box h={"2px"} bg={"gray.100"} my={5} />
           </Container>
