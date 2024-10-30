@@ -26,7 +26,13 @@ export const Newsletter = () => {
   };
 
   return (
-    <Box bg={bgColor} borderRadius="3xl" p={{ base: 4, md: 8 }} mb={12}>
+    <Box
+      bg={bgColor}
+      borderRadius="3xl"
+      p={{ base: 4, md: 8 }}
+      mb={12}
+      shadow={"md"}
+    >
       <VStack maxW="2xl" mx="auto" spacing={4}>
         <Heading size="lg">Subscribe to My Newsletter</Heading>
         <Text color={textColor}>
@@ -38,7 +44,7 @@ export const Newsletter = () => {
           borderRadius="2xl"
           w={"full"}
           p={{ base: 5, md: 8 }}
-          mb={12}
+          mb={8}
         >
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <Flex

@@ -37,7 +37,7 @@ export function PostsCards({
             <PostCardLoader key={index} />
           ))
         : posts?.map((post) => (
-            <PostCard key={post.id} post={post} loading={loading} />
+            <PostCard key={post.id} post={post}  />
           ))}
     </Grid>
   );

@@ -22,9 +22,7 @@ export default function PostCard({
   post,
   showAuthor = true,
 }: {
-  loading?: boolean;
   showAuthor?: boolean;
-  slugPattern?: string;
   post: PostSelect;
 }) {
   const borderColor = useColorModeValue("gray.200", "gray.700");
@@ -44,7 +42,7 @@ export default function PostCard({
     >
       <Box position="relative">
         <Image
-          src={post.featured_image?.src}
+          src={post.featured_image?.src ?? "https://picsum.photos/500/400"}
           alt={post.featured_image?.alt_text}
           objectFit="cover"
           height="200"

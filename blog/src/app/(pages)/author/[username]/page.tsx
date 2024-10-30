@@ -13,7 +13,7 @@ export default function MainAuthorPage({
 
   return (
     <>
-      <AuthorPage />
+      <AuthorPage username={username} />
     </>
   );
 }

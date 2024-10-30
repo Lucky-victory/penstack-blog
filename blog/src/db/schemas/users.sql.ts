@@ -15,6 +15,7 @@ export const users = mysqlTable("Users", {
   email: varchar("email", { length: 255 }).notNull(),
   password: varchar("password", { length: 255 }),
   bio: varchar("bio", { length: 255 }),
+  // title: varchar("title", { length: 100 }),
   username: varchar("username", { length: 255 }),
   avatar: varchar("avatar", { length: 255 }),
   // social_id: int("social_id"),
