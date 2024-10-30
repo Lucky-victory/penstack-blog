@@ -1,14 +1,11 @@
 import { PostSelect } from "@/src/types";
-import {
-  convertToDateFnsFormatAndSlug,
-  formatDate,
-  formatPostPermalink,
-} from "@/src/utils";
+import { formatDate, formatPostPermalink } from "@/src/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Box,
-  Flex,
-  GridItem,
+  Card,
+  CardBody,
+  Heading,
   HStack,
   Image,
   LinkBox,
@@ -16,33 +13,34 @@ import {
   Tag,
   Text,
   useColorModeValue,
+  VStack,
 } from "@chakra-ui/react";
 
-import { Skeleton, SkeletonCircle, SkeletonText } from "./ui/Skeleton";
 import { Avatar } from "./ui/Avatar";
-import { format } from "date-fns";
 
 export default function PostCard({
   post,
-  slugPattern,
+  showAuthor = true,
 }: {
   loading?: boolean;
+  showAuthor?: boolean;
   slugPattern?: string;
   post: PostSelect;
 }) {
-  const bgColor = useColorModeValue("white", "gray.900");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const textColor = useColorModeValue("gray.600", "gray.300");
+
+  const bgColor = useColorModeValue("white", "gray.800");
   return (
-    <GridItem
+    <Card
       as={LinkBox}
-      bg={bgColor}
       key={post.id}
-      borderWidth={1}
-      rounded={"24"}
-      transition={"0.2s ease-in"}
+      borderWidth="1px"
+      borderColor={borderColor}
+      borderRadius="3xl"
       overflow="hidden"
-      _hover={{
-        boxShadow: "0 0 0 4px var(--chakra-colors-blue-500)",
-      }}
+      transition="all 0.2s"
+      _hover={{ boxShadow: "0 0 0 4px var(--chakra-colors-blue-500)" }}
     >
       <Box position="relative">
         <Image
@@ -52,43 +50,60 @@ export default function PostCard({
           height="200"
           width="full"
         />
-        <Box position="absolute" top={3} right={3}>
-          {post?.category && (
-            <Tag size="md" colorScheme="blue" borderRadius="full">
-              {post.category?.name}
+        {post?.category && post?.category?.name && (
+          <Box position="absolute" top={3} right={3}>
+            <Tag
+              size="md"
+              top={3}
+              right={3}
+              colorScheme="blue"
+              bg={"blue.500"}
+              color={"white"}
+              borderRadius="full"
+              px={3}
+              py={1}
+            >
+              {post?.category?.name}
             </Tag>
+          </Box>
+        )}
+      </Box>
+      <CardBody>
+        <VStack align={"start"} spacing={2}>
+          <LinkOverlay
+            href={formatPostPermalink(post)}
+            _hover={{ textDecoration: "none" }}
+          >
+            <Heading size={"md"}>{post.title}</Heading>
+          </LinkOverlay>
+          {showAuthor && (
+            <Link href={`/author/${post.author?.username}`}>
+              <HStack gap={3} display={"inline-flex"}>
+                <Avatar
+                  src={post?.author?.avatar}
+                  name={post?.author?.name}
+                  size="sm"
+                />
+                <Text fontWeight="bold" as={"span"}>
+                  {post?.author?.name}
+                </Text>
+              </HStack>
+            </Link>
           )}
-        </Box>
-      </Box>
-
-      <Box p={4}>
-        <Link href={`/author/${post.slug}`} _hover={{ textDecoration: "none" }}>
-          <Flex alignItems="center" mb={2}>
-            <Avatar
-              src={post?.author?.avatar}
-              name={post?.author?.name}
-              size="sm"
-              mr={2}
-            />
-            <Text fontWeight="bold">{post?.author?.name}</Text>
-          </Flex>
-        </Link>
-        <Text fontSize="sm" color="gray.500" mb={2}>
-          {post?.published_at
-            ? formatDate(new Date(post?.published_at))
-            : formatDate(new Date(post?.updated_at as Date))}
-        </Text>
-
-        <LinkOverlay
-          href={formatPostPermalink(post)}
-          _hover={{ textDecoration: "none" }}
-        >
-          <Text fontSize="xl" fontWeight="semibold" mb={2}>
-            {post.title}
+          <Text fontSize="sm" as={"span"} color="gray.500">
+            {post?.published_at
+              ? formatDate(new Date(post?.published_at))
+              : formatDate(new Date(post?.updated_at as Date))}
           </Text>
-        </LinkOverlay>
-        <Text noOfLines={3}>{post.content}</Text>
-      </Box>
-    </GridItem>
+          <Text noOfLines={3} color={textColor}>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa
+            delectus culpa, neque sint dignissimos atque nulla qui cum obcaecati
+            voluptatibus?
+            {post.summary ? post.summary : post.content}
+          </Text>
+        </VStack>
+      </CardBody>
+    </Card>
   );
 }
+// TODO: fix the card being longer than the other

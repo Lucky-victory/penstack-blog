@@ -1,6 +1,7 @@
 import { formatDistanceToNowStrict, format } from "date-fns";
 import { SnowflakeIdGenerator } from "@green-auth/snowflake-unique-id";
 import { PostSelect } from "../types";
+import { type NextRequest } from "next/server";
 
 type DatePart = "year" | "month" | "day" | "hour" | "minute" | "second";
 
@@ -104,7 +105,9 @@ export function formatPostPermalink(
 ) {
   if (includeSlugPattern) {
     return `/${prefix}/${format(
-      new Date(post.updated_at as Date),
+      new Date(
+        post?.published_at ? post?.published_at : (post?.updated_at as Date)
+      ),
       convertToDateFnsFormatAndSlug(
         slugPattern || "%year%/%month%/%day%/%slug%"
       ).dateFormat
@@ -238,4 +241,9 @@ export function nullToEmptyString<T extends InputObject>(obj: T): T {
       [key]: transformedValue,
     };
   }, {} as NonNullable<T>);
+}
+export function getServerSearchParams<T extends object>(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const params = Object.fromEntries(searchParams);
+  return params as T;
 }

@@ -29,7 +29,7 @@ export function PostsCards({
   return (
     <Grid
       templateColumns="repeat(auto-fill, minmax(300px, 1fr))"
-      gap={{ base: 4, lg: 5 }}
+      gap={{ base: 5, md: 6, lg: 8 }}
       maxW={{ base: "100%", lg: (maxW as string | number) || "auto" }}
     >
       {loading

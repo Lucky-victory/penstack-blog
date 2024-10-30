@@ -1,23 +1,49 @@
 import { db } from "@/src/db";
-import { posts } from "@/src/db/schemas";
-import { PostInsert, PostSelect } from "@/src/types";
+import { posts, users } from "@/src/db/schemas";
+import { PostSelect } from "@/src/types";
 import { getServerSearchParams } from "@/src/utils";
 import { desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { username: string } }
+) {
   const searchParams = getServerSearchParams<{
     status: NonNullable<PostSelect["status"]> | "all";
     limit: number;
     page: number;
-    username: string;
   }>(req);
-
+  const { username } = params;
   try {
     const { status = "published", limit = 10, page = 1 } = searchParams;
+    if (!username)
+      return NextResponse.json(
+        {
+          data: null,
+          message: "No 'username' provided",
+        },
+        { status: 400 }
+      );
+
+    const user = await db.query.users.findFirst({
+      where: eq(users.username, username.toLowerCase()),
+    });
+    if (!user)
+      return NextResponse.json(
+        {
+          data: null,
+          message: "User not found",
+        },
+        { status: 404 }
+      );
+
     const offset = limit * (page - 1);
     const _posts = await db.query.posts.findMany({
-      where: status === "all" ? undefined : eq(posts.status, status),
+      where:
+        status === "all"
+          ? eq(posts.author_id, user?.id)
+          : eq(posts.status, status),
       offset: offset,
       limit: limit,
       orderBy: [desc(posts.updated_at), desc(posts?.published_at)],
@@ -47,49 +73,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       error: error?.message,
       message: "Something went wrong... could not fetch posts",
-    });
-  }
-}
-export async function POST(req: NextRequest) {
-  const {
-    title,
-    content,
-    summary,
-    slug,
-    featured_image,
-    status,
-    author_id,
-    visibility,
-    category_id,
-    post_id,
-  } = await req.json();
-
-  try {
-    const post = await db.transaction(async (tx) => {
-      const [insertResponse] = await tx.insert(posts).values({
-        title,
-        content,
-        summary,
-        slug,
-        featured_image,
-        author_id,
-        status,
-        visibility,
-        category_id,
-      });
-      return await tx.query.posts.findFirst({
-        where: eq(posts.id, insertResponse.insertId),
-      });
-    });
-
-    return NextResponse.json({
-      data: post,
-      message: "Post created successfully",
-    });
-  } catch (error: any) {
-    return NextResponse.json({
-      error: error?.message,
-      message: "Error creating post",
     });
   }
 }

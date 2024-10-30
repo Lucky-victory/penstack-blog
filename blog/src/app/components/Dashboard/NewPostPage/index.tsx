@@ -92,10 +92,9 @@ export function PostEditor({ post }: { post: PostSelect }) {
         featured_image,
         status,
         post_id,
-        updated_at,
       } = values;
 
-      const postToSave: PostInsert = {
+      const postToSave: Partial<PostInsert> = {
         title,
         slug,
         summary,
@@ -104,11 +103,11 @@ export function PostEditor({ post }: { post: PostSelect }) {
         featured_image,
         status,
         post_id,
-        author_id: 4,
       };
 
       try {
-        mutate(postToSave), setLastUpdate(data?.lastUpdate as Date);
+        mutate(postToSave as PostInsert),
+          setLastUpdate(data?.lastUpdate as Date);
       } catch (error) {
         console.error("Error saving post:", error);
       }

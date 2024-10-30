@@ -2,18 +2,8 @@ import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { posts } from "@/src/db/schemas/posts.sql";
 import { Editor } from "@tiptap/react";
 import { IconType } from "react-icons";
-import { permissions } from "../db/schemas";
-export interface Post {
-  id: number;
-  title: string;
-  content: string;
-  author: {
-    name: string;
-    avatar: string;
-  };
-  date: string;
-  image: string;
-}
+import { permissions, users } from "../db/schemas";
+export type UserSelect = InferSelectModel<typeof users>;
 export type PostToPost = PostInsert & {
   categories: string[];
   tags: string[];

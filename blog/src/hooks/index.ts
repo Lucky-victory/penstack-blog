@@ -3,9 +3,9 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { FormikErrors, useFormik } from "formik";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Post, PostInsert, PostSelect } from "@/src/types";
+import { PostInsert, PostSelect, UserSelect } from "@/src/types";
 import TurndownService from "turndown";
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import debounce from "lodash/debounce";
 import { objectToQueryParams } from "../utils";
 import axios from "axios";
@@ -59,28 +59,8 @@ export const useAutoSave = <T extends SaveableValue>({
     }
   }, [value, debouncedSave, isInitialized]);
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | T
-  ) => {
-    if (typeof event === "object" && "target" in event) {
-      const { name, value: inputValue } = event.target;
-      setValue((prev) =>
-        typeof prev === "object"
-          ? { ...prev, [name]: inputValue }
-          : (inputValue as T)
-      );
-    } else {
-      setValue((prev) =>
-        typeof prev === "object" && typeof event === "object"
-          ? { ...prev, ...(event as object) }
-          : (event as T)
-      );
-    }
-  };
-
   return {
     value,
-    onChange: handleChange,
     isSaving: mutation.isPending,
     error: mutation.error,
     lastSaved,
@@ -196,10 +176,68 @@ export function usePosts({
     error,
     refetch,
   } = useQuery({
-    queryKey: ["post", status, limit, page],
+    queryKey: ["posts", status, limit, page],
     queryFn: async () => {
       const { data } = await axios.get<{ data: PostSelect[] }>(
         `/api/posts?${objectToQueryParams({ status, limit, page })}`
+      );
+      return data.data;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  const refetchPosts = async () => {
+    await refetch();
+  };
+
+  return { posts, loading, error, refetchPosts };
+}
+export function useAuthor(username: string) {
+  const {
+    data: author,
+    isLoading: loading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["AUTHOR", username],
+    queryFn: async () => {
+      const { data } = await axios.get<{ data: UserSelect }>(
+        `/api/authors/${username}`
+      );
+      return data.data;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  return { author, loading, isError, error, refetch };
+}
+export function useAuthorPosts({
+  status = "published",
+  username,
+  limit = 10,
+  page = 1,
+}: {
+  status?: PostInsert["status"] | "all";
+  limit?: number;
+  page?: number;
+  username: string;
+}) {
+  const {
+    data: posts,
+    isLoading: loading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["POSTS", status, limit, page, username],
+    queryFn: async () => {
+      const { data } = await axios.get<{ data: PostSelect[] }>(
+        `/api/authors/${username}/posts?${objectToQueryParams({
+          status,
+          limit,
+          page,
+        })}`
       );
       return data.data;
     },
@@ -221,7 +259,7 @@ export function usePost(slug: string) {
     error,
     refetch,
   } = useQuery({
-    queryKey: ["post", slug],
+    queryKey: ["POST", slug],
     queryFn: async () => {
       const { data } = await axios.get<{ data: PostSelect }>(
         `/api/posts/${slug}`
