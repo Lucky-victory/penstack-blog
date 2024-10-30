@@ -12,6 +12,34 @@ export async function GET(
 
     const post = await db.query.posts.findFirst({
       where: or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),
+      with: {
+        category: {
+          columns: {
+            name: true,
+            slug: true,
+            id: true,
+          },
+        },
+        author: {
+          columns: {
+            name: true,
+            username: true,
+            id: true,
+            avatar: true,
+          },
+        },
+        tags: {
+          with: {
+            tag: {
+              columns: {
+                name: true,
+                slug: true,
+                id: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!post)
