@@ -54,6 +54,8 @@ export const permissions = mysqlTable("Permissions", {
       "roles:delete",
       "comments:create",
       "comments:moderate",
+      "auth:register",
+      "auth:login",
     ],
   })
     .notNull()

@@ -38,6 +38,10 @@ async function main() {
         name: "subscriber",
         description: "Can only view content",
       },
+      {
+        name: "public",
+        description: "Default role for non-authenticated users",
+      },
     ];
     console.log("Creating roles...");
     const createdRolesIds = await Promise.all(
@@ -50,8 +54,14 @@ async function main() {
       })
     );
 
-    const [adminRole, editorRole, authorRole, contributorRole, subscriberRole] =
-      createdRolesIds;
+    const [
+      adminRole,
+      editorRole,
+      authorRole,
+      contributorRole,
+      subscriberRole,
+      publicRole,
+    ] = createdRolesIds;
 
     console.log("Roles created:", {
       adminRole,
@@ -59,6 +69,7 @@ async function main() {
       authorRole,
       contributorRole,
       subscriberRole,
+      publicRole,
     });
 
     // 2. Create blog-specific permissions
@@ -77,6 +88,8 @@ async function main() {
       { name: "roles:delete", description: "Can delete roles" },
       { name: "comments:create", description: "Can create comments" },
       { name: "comments:moderate", description: "Can moderate comments" },
+      { name: "auth:register", description: "Can register a new account" },
+      { name: "auth:login", description: "Can login to existing account" },
     ];
 
     const createdPermissions = await Promise.all(
@@ -128,6 +141,7 @@ async function main() {
       "posts:read",
       "comments:create",
       "comments:moderate",
+      "auth:login",
     ]);
 
     // Author permissions
@@ -136,6 +150,7 @@ async function main() {
       "posts:edit",
       "posts:read",
       "comments:create",
+      "auth:login",
     ]);
 
     // Contributor permissions
@@ -143,14 +158,21 @@ async function main() {
       "posts:create",
       "posts:read",
       "comments:create",
+      "auth:login",
     ]);
 
     // Subscriber permissions
     await assignPermissionsToRole(subscriberRole, [
       "posts:read",
       "comments:create",
+      "auth:login",
     ]);
-
+    // Public permissions
+    await assignPermissionsToRole(publicRole, [
+      "posts:read",
+      "auth:register",
+      "auth:login",
+    ]);
     // 4. Create default admin user
     console.log("Creating admin user...");
     const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
@@ -166,8 +188,17 @@ async function main() {
 
     if (!existingAdmin) {
       const [result] = await db.query(
-        "INSERT INTO Users (name, email, password, username, role_id, auth_type) VALUES (?, ?, ?, ?, ?, ?)",
-        ["Admin", adminEmail, hashedPassword, "admin", adminRole, "local"]
+        "INSERT INTO Users (name, email, password, username, role_id, auth_type,title,bio) VALUES (?, ?, ?, ?, ?, ?,?,?)",
+        [
+          "Super Admin",
+          adminEmail,
+          hashedPassword,
+          "admin",
+          adminRole,
+          "local",
+          "Chief Editor",
+          "I am the Chief Editor of this blog. I am responsible for overseeing the editorial content and ensuring the quality and accuracy of the articles.",
+        ]
       );
       const [[adminUser]] = await db.query("SELECT * FROM users WHERE id = ?", [
         result.insertId,
@@ -181,6 +212,8 @@ async function main() {
   } catch (error) {
     console.error("❌ Error during seed:", error);
     throw error;
+  } finally {
+    await db.end();
   }
 }
 
