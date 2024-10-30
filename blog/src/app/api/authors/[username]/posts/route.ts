@@ -48,6 +48,13 @@ export async function GET(
       limit: limit,
       orderBy: [desc(posts.updated_at), desc(posts?.published_at)],
       with: {
+        featured_image: {
+          columns: {
+            url: true,
+            caption: true,
+            alt_text: true,
+          },
+        },
         category: {
           columns: {
             name: true,

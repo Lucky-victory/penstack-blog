@@ -7,7 +7,7 @@ import {
   postViewStats,
 } from "../db/schemas";
 
-const trackPostView = async ({
+export const trackPostView = async ({
   postId,
   userId,
   ipAddress,
@@ -16,8 +16,24 @@ const trackPostView = async ({
   sessionId,
   deviceInfo,
   location,
+}: {
+  postId: number;
+  userId?: number;
+  ipAddress: string;
+  userAgent: string;
+  referrer: string;
+  sessionId: string;
+  deviceInfo: {
+    type: string;
+    browser: string;
+    os: string;
+  };
+  location: {
+    country: string;
+    region: string;
+    city: string;
+  };
 }) => {
-  // 1. Record basic view
   await db.insert(postViews).values({
     post_id: postId,
     user_id: userId,
@@ -26,7 +42,6 @@ const trackPostView = async ({
     referrer: referrer,
   });
 
-  // 2. Update or create analytics record
   await db.insert(postViewAnalytics).values({
     post_id: postId,
     user_id: userId,
@@ -39,7 +54,6 @@ const trackPostView = async ({
     city: location.city,
   });
 
-  // 3. Update active viewers
   await db
     .insert(activePostViewers)
     .values({
@@ -54,7 +68,6 @@ const trackPostView = async ({
   // 4. Update daily stats (you might want to do this in a background job)
   await updateDailyStats(postId);
 };
-
 const updateDailyStats = async (postId: number) => {
   const today = new Date().toISOString().split("T")[0];
 
