@@ -12,7 +12,18 @@ export async function GET(
 
     const post = await db.query.posts.findFirst({
       where: or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),
+      columns: {
+        author_id: false,
+      },
       with: {
+        featured_image: {
+          columns: {
+            url: true,
+            alt_text: true,
+            id: true,
+            caption: true,
+          },
+        },
         category: {
           columns: {
             name: true,
@@ -24,7 +35,7 @@ export async function GET(
           columns: {
             name: true,
             username: true,
-            id: true,
+
             avatar: true,
           },
         },
@@ -47,9 +58,10 @@ export async function GET(
         { data: null, message: "Post not found" },
         { status: 404 }
       );
+    const tags = post.tags.length > 0 ? post.tags.map((t) => t.tag) : [];
 
     return NextResponse.json({
-      data: post,
+      data: { ...post, tags },
       message: "Post retrieved successfully",
     });
   } catch (error: any) {

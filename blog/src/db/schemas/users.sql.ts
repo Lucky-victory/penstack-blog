@@ -15,13 +15,16 @@ export const users = mysqlTable("Users", {
   email: varchar("email", { length: 255 }).notNull(),
   password: varchar("password", { length: 255 }),
   bio: varchar("bio", { length: 255 }),
-  // title: varchar("title", { length: 100 }),
+  title: varchar("title", { length: 100 }),
   username: varchar("username", { length: 255 }),
   avatar: varchar("avatar", { length: 255 }),
-  // social_id: int("social_id"),
-  auth_type: mysqlEnum("auth_type", ["local", "google", "github"]).default(
-    "local"
-  ),
+  social_id: int("social_id"),
+  auth_type: mysqlEnum("auth_type", [
+    "local",
+    "google",
+    "github",
+    "facebook",
+  ]).default("local"),
   role_id: int("role_id").notNull(),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").onUpdateNow(),
@@ -91,15 +94,15 @@ export const userSocials = mysqlTable("UserSocials", {
   user_id: int("user_id").notNull(),
   github: varchar("github", { length: 100 }),
   facebook: varchar("facebook", { length: 100 }),
-  email: varchar("github", { length: 100 }),
+  email: varchar("email", { length: 100 }),
   website: varchar("website", { length: 100 }),
 });
 export const UserRelations = relations(users, ({ many, one }) => ({
   posts: many(posts),
-  // socials: one(userSocials, {
-  //   fields: [users.social_id],
-  //   references: [userSocials.id],
-  // }),
+  socials: one(userSocials, {
+    fields: [users.social_id],
+    references: [userSocials.id],
+  }),
   role: one(roles, {
     fields: [users.role_id],
     references: [roles.id],

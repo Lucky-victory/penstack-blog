@@ -14,6 +14,14 @@ export async function GET(
       with: {
         posts: {
           with: {
+            featured_image: {
+              columns: {
+                url: true,
+                id: true,
+                caption: true,
+                alt_text: true,
+              },
+            },
             author: {
               columns: {
                 name: true,

@@ -63,7 +63,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             <Box minH={300} rounded={{ base: 20, md: 24 }}>
               <ChakraImage
                 src={
-                  post.featured_image!?.src ?? "https://picsum.photos/1200/600"
+                  post.featured_image!?.url ?? "https://picsum.photos/1200/600"
                 }
                 alt={post.featured_image!?.alt_text || ""}
                 w="full"

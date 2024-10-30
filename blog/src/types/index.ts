@@ -12,6 +12,11 @@ export type PostInsert = InferInsertModel<typeof posts>;
 type Permissions = InferInsertModel<typeof permissions>;
 export type TPermissions = Permissions["name"];
 export type PostSelect = InferSelectModel<typeof posts> & {
+  featured_image: {
+    url: string;
+    alt_text?: string;
+    caption?: string;
+  } | null;
   author: {
     name: string;
     avatar: string;
@@ -22,6 +27,11 @@ export type PostSelect = InferSelectModel<typeof posts> & {
     slug: string;
     name: string;
   };
+  tags?: Array<{
+    id: number;
+    slug: string;
+    name: string;
+  }> | null;
 };
 
 export interface EditorActionItem {

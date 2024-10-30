@@ -10,16 +10,17 @@ import {
   mysqlEnum,
   text,
   json,
+  boolean,
 } from "drizzle-orm/mysql-core";
 import { users } from "./users.sql";
+import { medias } from "./media.sql";
 
 export const posts = mysqlTable("Posts", {
   id: int("id").autoincrement().primaryKey(),
   title: varchar("title", { length: 255 }).default("Untitled"),
   content: longtext("content"),
   summary: varchar("summary", { length: 255 }),
-  meta_description: varchar("meta_description", { length: 255 }),
-  meta_title: varchar("meta_title", { length: 150 }),
+  seo_meta_id: int("meta_id"),
   post_id: varchar("post_id", { length: 255 }).$defaultFn(() =>
     shortIdGenerator.urlSafeId()
   ),
@@ -31,10 +32,11 @@ export const posts = mysqlTable("Posts", {
   visibility: mysqlEnum("visibility", ["public", "private"]).default("public"),
   category_id: int("category_id"),
   views: int("views").default(0),
-  featured_image: json("featured_image").$type<{
-    src: string;
-    alt_text?: string;
-  }>(),
+  is_sticky: boolean("is_sticky").default(false), // For pinned posts
+  excerpt: text("excerpt"),
+  reading_time: int("reading_time"),
+  allow_comments: boolean("allow_comments").default(true),
+  featured_image_id: int("featured_image_id"),
   created_at: timestamp("created_at").defaultNow(),
   published_at: timestamp("published_at").generatedAlwaysAs(
     sql`(
@@ -53,6 +55,14 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
     fields: [posts.author_id],
     references: [users.id],
   }),
+  meta: one(postSeoMeta, {
+    fields: [posts.seo_meta_id],
+    references: [postSeoMeta.post_id],
+  }),
+  featured_image: one(medias, {
+    fields: [posts.featured_image_id],
+    references: [medias.id],
+  }),
   comments: many(comments),
   category: one(categories, {
     fields: [posts.category_id],
@@ -60,7 +70,18 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
   }),
   tags: many(postTags),
 }));
-
+export const postSeoMeta = mysqlTable("PostSeoMeta", {
+  id: int("id").primaryKey().autoincrement(),
+  post_id: int("post_id").notNull(),
+  title: varchar("title", { length: 150 }),
+  description: varchar("description", { length: 255 }),
+});
+export const postMetaRelations = relations(postSeoMeta, ({ one }) => ({
+  post: one(posts, {
+    fields: [postSeoMeta.post_id],
+    references: [posts.id],
+  }),
+}));
 export const categories = mysqlTable("Categories", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
