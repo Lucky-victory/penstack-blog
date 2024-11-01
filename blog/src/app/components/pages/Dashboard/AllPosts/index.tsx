@@ -33,6 +33,9 @@ import {
   InputLeftAddon,
   Spinner,
   HStack,
+  Card,
+  CardBody,
+  VStack,
 } from "@chakra-ui/react";
 import {
   EditIcon,
@@ -124,30 +127,24 @@ const PostsDashboard = () => {
 
   return (
     <Box p={8}>
-      <Flex
-        justify="space-between"
-        align="center"
-        mb={8}
-        bg={"white"}
-        p={4}
-        rounded={{ base: 20, md: 24 }}
-      >
-        <Heading size="lg">Posts</Heading>
-        <Button
-          leftIcon={<AddIcon />}
-          colorScheme="blue"
-          rounded={"full"}
-          onClick={() => (window.location.href = "/dashboard/posts/new")}
-        >
-          New Post
-        </Button>
-      </Flex>
-
-      {filteredPosts && filteredPosts.length > 0 && (
-        <>
+      <Card rounded={{ base: 20, md: 24 }} mb={8}>
+        <CardBody>
+          <HStack justify="space-between" align="center" bg={"white"}>
+            <Heading size="lg">Posts</Heading>
+            <Button
+              leftIcon={<AddIcon />}
+              colorScheme="blue"
+              rounded={"full"}
+              onClick={() => (window.location.href = "/dashboard/posts/new")}
+            >
+              New Post
+            </Button>
+          </HStack>
+        </CardBody>
+      </Card>
+      <Card rounded={{ base: 20, md: 24 }} mb={8}>
+        <CardBody>
           <Stack
-            bg={"white"}
-            p={4}
             rounded={{ base: 20, md: 24 }}
             direction={{ base: "column", md: "row" }}
             spacing={4}
@@ -158,6 +155,7 @@ const PostsDashboard = () => {
                 <SearchIcon />
               </InputLeftAddon>
               <Input
+                disabled={!posts?.length}
                 rounded={"full"}
                 placeholder="Search posts..."
                 value={searchTerm}
@@ -167,6 +165,7 @@ const PostsDashboard = () => {
             </InputGroup>
             <Select
               value={statusFilter}
+              disabled={!posts?.length}
               rounded={"full"}
               onChange={(e) => setStatusFilter(e.target.value)}
               maxW={{ md: "300px" }}
@@ -177,108 +176,121 @@ const PostsDashboard = () => {
               <option value="deleted">Deleted</option>
             </Select>
           </Stack>
-
-          <Box
-            maxH={600}
-            overflow="auto"
-            bg={"white"}
-            p={4}
-            rounded={{ base: 20, md: 24 }}
-          >
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th>Title</Th>
-                  <Th>Status</Th>
-                  <Th>Category</Th>
-                  <Th>Author</Th>
-                  <Th>Published Date</Th>
-                  <Th>Views</Th>
-                  <Th>Actions</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filteredPosts &&
-                  filteredPosts.length > 0 &&
-                  filteredPosts?.map((post) => (
-                    <Tr key={post.id}>
-                      <Td>
-                        <Flex align="center">
-                          {getVisibilityIcon(post.visibility)}
-                          <Text ml={2}>{post.title}</Text>
-                        </Flex>
-                      </Td>
-                      <Td>
-                        <Badge
-                          rounded={"full"}
-                          px={2}
-                          colorScheme={getStatusColor(post.status as string)}
-                        >
-                          {post.status}
-                        </Badge>
-                      </Td>
-                      <Td>{post.category?.name || "-"}</Td>
-                      <Td>{post.author?.name}</Td>
-                      <Td>
-                        {post.published_at
-                          ? new Date(post.published_at).toLocaleDateString()
-                          : "-"}
-                      </Td>
-                      <Td>{post.views}</Td>
-                      <Td>
-                        <Menu>
-                          <MenuButton
-                            as={IconButton}
-                            icon={<ChevronDownIcon />}
-                            variant="ghost"
-                            size="sm"
-                          />
-                          <MenuList>
-                            <MenuItem
-                              icon={<ViewIcon />}
-                              onClick={() =>
-                                router.push(formatPostPermalink(post))
-                              }
-                            >
-                              View
-                            </MenuItem>
-                            <MenuItem
-                              icon={<EditIcon />}
-                              onClick={() => handleEdit(post)}
-                            >
-                              Edit
-                            </MenuItem>
-                            <MenuItem
-                              icon={<DeleteIcon />}
-                              onClick={() => handleDelete(post)}
-                              color="red.500"
-                            >
-                              Delete
-                            </MenuItem>
-                          </MenuList>
-                        </Menu>
-                      </Td>
+          {filteredPosts && filteredPosts.length > 0 && (
+            <>
+              <Box
+                maxH={600}
+                overflow="auto"
+                bg={"white"}
+                p={4}
+                rounded={{ base: 20, md: 24 }}
+              >
+                <Table variant="simple">
+                  <Thead>
+                    <Tr>
+                      <Th>Title</Th>
+                      <Th>Status</Th>
+                      <Th>Category</Th>
+                      <Th>Author</Th>
+                      <Th>Published Date</Th>
+                      <Th>Views</Th>
+                      <Th>Actions</Th>
                     </Tr>
-                  ))}
-              </Tbody>
-            </Table>
+                  </Thead>
+                  <Tbody>
+                    {filteredPosts &&
+                      filteredPosts.length > 0 &&
+                      filteredPosts?.map((post) => (
+                        <Tr key={post.id}>
+                          <Td>
+                            <Flex align="center">
+                              {getVisibilityIcon(post.visibility)}
+                              <Text ml={2}>{post.title}</Text>
+                            </Flex>
+                          </Td>
+                          <Td>
+                            <Badge
+                              rounded={"full"}
+                              px={2}
+                              colorScheme={getStatusColor(
+                                post.status as string
+                              )}
+                            >
+                              {post.status}
+                            </Badge>
+                          </Td>
+                          <Td>{post.category?.name || "-"}</Td>
+                          <Td>{post.author?.name}</Td>
+                          <Td>
+                            {post.published_at
+                              ? new Date(post.published_at).toLocaleDateString()
+                              : "-"}
+                          </Td>
+                          <Td>{post.views}</Td>
+                          <Td>
+                            <Menu>
+                              <MenuButton
+                                as={IconButton}
+                                icon={<ChevronDownIcon />}
+                                variant="ghost"
+                                size="sm"
+                              />
+                              <MenuList>
+                                <MenuItem
+                                  icon={<ViewIcon />}
+                                  onClick={() =>
+                                    router.push(formatPostPermalink(post))
+                                  }
+                                >
+                                  View
+                                </MenuItem>
+                                <MenuItem
+                                  icon={<EditIcon />}
+                                  onClick={() => handleEdit(post)}
+                                >
+                                  Edit
+                                </MenuItem>
+                                <MenuItem
+                                  icon={<DeleteIcon />}
+                                  onClick={() => handleDelete(post)}
+                                  color="red.500"
+                                >
+                                  Delete
+                                </MenuItem>
+                              </MenuList>
+                            </Menu>
+                          </Td>
+                        </Tr>
+                      ))}
+                  </Tbody>
+                </Table>
 
-            {loading && (
-              <HStack my={8} justify={"center"}>
-                <Spinner />
-                <Text>Loading posts...</Text>
-              </HStack>
-            )}
+                {loading && (
+                  <HStack my={8} justify={"center"}>
+                    <Spinner />
+                    <Text>Loading posts...</Text>
+                  </HStack>
+                )}
 
-            {!loading && posts?.length === 0 && filteredPosts?.length === 0 && (
-              <Flex justify="center" my={8}>
-                <Text>No posts found</Text>
-              </Flex>
-            )}
-          </Box>
-        </>
-      )}
-
+                {!loading &&
+                  posts?.length === 0 &&
+                  filteredPosts?.length === 0 && (
+                    <Flex justify="center" my={8}>
+                      <Text>No posts found</Text>
+                    </Flex>
+                  )}
+              </Box>
+            </>
+          )}
+          {!loading && !filteredPosts.length && (
+            <VStack justify={"center"} h={"200"}>
+              <Text color={"gray.400"} fontWeight={500}>
+                No posts yet
+              </Text>
+            </VStack>
+          )}
+        </CardBody>
+      </Card>
       {/* Delete Confirmation Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
