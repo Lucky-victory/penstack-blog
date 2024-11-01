@@ -49,6 +49,7 @@ import { usePosts } from "@/src/hooks";
 import { PostSelect } from "@/src/types";
 import { useRouter } from "next/navigation";
 import { formatPostPermalink } from "@/src/utils";
+import Loader from "../../../Loader";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -129,7 +130,7 @@ const PostsDashboard = () => {
     <Box p={8}>
       <Card rounded={{ base: 20, md: 24 }} mb={8}>
         <CardBody>
-          <HStack justify="space-between" align="center" bg={"white"}>
+          <HStack justify="space-between" align="center">
             <Heading size="lg">Posts</Heading>
             <Button
               leftIcon={<AddIcon />}
@@ -176,6 +177,11 @@ const PostsDashboard = () => {
               <option value="deleted">Deleted</option>
             </Select>
           </Stack>
+          {loading && (
+            <VStack>
+              <Loader />
+            </VStack>
+          )}
           {filteredPosts && filteredPosts.length > 0 && (
             <>
               <Box

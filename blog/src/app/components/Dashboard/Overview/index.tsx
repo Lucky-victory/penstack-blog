@@ -1,35 +1,19 @@
 "use client";
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Button,
-  Card,
-  CardBody,
-  Flex,
   Grid,
-  Heading,
   HStack,
   Icon,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Stack,
   Text,
-  useColorMode,
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 import {
-  LuArrowUp,
   LuFileStack,
-  LuGroup,
   LuMessageCircle,
-  LuStickyNote,
   LuTrendingDown,
   LuTrendingUp,
-  LuTriangle,
-  LuUserCheck,
   LuUserPlus2,
   LuUsers2,
 } from "react-icons/lu";
@@ -131,7 +115,7 @@ export default function Overview() {
         <OverviewCard
           color="blue"
           label="Posts"
-          icon={LuArrowUp}
+          icon={LuFileStack}
           value="12"
           isUp
           growthCount={5}

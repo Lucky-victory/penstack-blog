@@ -65,8 +65,8 @@ const samplePosts = [
   },
 ];
 export default function MostPopularPosts() {
-  const { posts: p, loading } = usePosts();
-  const posts = samplePosts;
+  const { posts = [], loading } = usePosts();
+
   return (
     <Card minH={200} rounded={"20px"}>
       <CardHeader>
