@@ -232,7 +232,7 @@ const PostsDashboard = () => {
                               ? new Date(post.published_at).toLocaleDateString()
                               : "-"}
                           </Td>
-                          <Td>{post.views}</Td>
+                          <Td>{post?.views?.count}</Td>
                           <Td>
                             <Menu>
                               <MenuButton

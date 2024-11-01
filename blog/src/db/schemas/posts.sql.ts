@@ -11,51 +11,64 @@ import {
   text,
   json,
   boolean,
+  uniqueIndex,
 } from "drizzle-orm/mysql-core";
 import { users } from "./users.sql";
 import { medias } from "./media.sql";
+import { postViews } from "./posts-analytics.sql";
+import { postReactions } from "./posts-reactions.sql";
 
-export const posts = mysqlTable("Posts", {
-  id: int("id").autoincrement().primaryKey(),
-  title: varchar("title", { length: 255 }).default("Untitled"),
-  content: longtext("content"),
-  summary: varchar("summary", { length: 255 }),
-  seo_meta_id: int("meta_id"),
-  post_id: varchar("post_id", { length: 255 }).$defaultFn(() =>
-    shortIdGenerator.urlSafeId()
-  ),
-  slug: varchar("slug", { length: 255 }).notNull().unique(),
-  status: mysqlEnum("status", ["draft", "published", "deleted"]).default(
-    "draft"
-  ),
-  author_id: int("author_id").notNull(),
-  visibility: mysqlEnum("visibility", ["public", "private"]).default("public"),
-  category_id: int("category_id"),
-  views: int("views").default(0),
-  is_sticky: boolean("is_sticky").default(false), // For pinned posts
-  excerpt: text("excerpt"),
-  reading_time: int("reading_time"),
-  allow_comments: boolean("allow_comments").default(true),
-  featured_image_id: int("featured_image_id"),
-  created_at: timestamp("created_at").defaultNow(),
-  published_at: timestamp("published_at").generatedAlwaysAs(
-    sql`(
+export const posts = mysqlTable(
+  "Posts",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    title: varchar("title", { length: 255 }).default("Untitled"),
+    content: longtext("content"),
+    summary: varchar("summary", { length: 255 }),
+    seo_meta_id: int("meta_id"),
+    post_id: varchar("post_id", { length: 255 }).$defaultFn(() =>
+      shortIdGenerator.urlSafeId()
+    ),
+    slug: varchar("slug", { length: 255 }).notNull().unique(),
+    status: mysqlEnum("status", ["draft", "published", "deleted"]).default(
+      "draft"
+    ),
+    author_id: int("author_id").notNull(),
+    visibility: mysqlEnum("visibility", ["public", "private"]).default(
+      "public"
+    ),
+    category_id: int("category_id"),
+    is_sticky: boolean("is_sticky").default(false), // For pinned posts
+    reading_time: int("reading_time"),
+    allow_comments: boolean("allow_comments").default(true),
+    featured_image_id: int("featured_image_id"),
+    created_at: timestamp("created_at").defaultNow(),
+    published_at: timestamp("published_at").generatedAlwaysAs(
+      sql`(
         CASE 
             WHEN status = 'published' THEN updated_at
             ELSE NULL
         END
     )`,
-    { mode: "stored" }
-  ),
-  updated_at: timestamp("updated_at").onUpdateNow().defaultNow(),
-});
+      { mode: "stored" }
+    ),
+    updated_at: timestamp("updated_at").onUpdateNow().defaultNow(),
+  },
+  (table) => {
+    return {
+      uniqueIndex: uniqueIndex("slug_unique_index").on(table.slug),
+    };
+  }
+);
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
   author: one(users, {
     fields: [posts.author_id],
     references: [users.id],
   }),
-  meta: one(postSeoMeta, {
+  views: many(postViews),
+  reactions: many(postReactions),
+  seoMeta: one(postSeoMeta, {
     fields: [posts.seo_meta_id],
     references: [postSeoMeta.post_id],
   }),
@@ -74,6 +87,7 @@ export const postSeoMeta = mysqlTable("PostSeoMeta", {
   id: int("id").primaryKey().autoincrement(),
   post_id: int("post_id").notNull(),
   title: varchar("title", { length: 150 }),
+  canonical_url: varchar("canonical_url", { length: 255 }),
   description: varchar("description", { length: 255 }),
 });
 export const postMetaRelations = relations(postSeoMeta, ({ one }) => ({

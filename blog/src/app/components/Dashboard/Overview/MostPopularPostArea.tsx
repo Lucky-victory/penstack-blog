@@ -104,7 +104,7 @@ export default function MostPopularPosts() {
                   </HStack>
                   <HStack fontSize={"small"} color={"gray.400"}>
                     <LuEye />
-                    <Text>{post.views} views</Text>
+                    <Text>{post?.views?.count} views</Text>
                   </HStack>
                 </Stack>
                 <HStack>

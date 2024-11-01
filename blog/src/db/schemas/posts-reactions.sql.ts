@@ -4,11 +4,7 @@ import {
   timestamp,
   varchar,
   boolean,
-  unique,
 } from "drizzle-orm/mysql-core";
-import { relations } from "drizzle-orm";
-import { users } from "./users.sql";
-import { posts } from "./posts.sql";
 
 export const reactionTypes = mysqlTable("ReactionTypes", {
   id: int("id").autoincrement().primaryKey(),

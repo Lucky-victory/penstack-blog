@@ -25,8 +25,8 @@ export const trackPostView = async ({
   sessionId: string;
   deviceInfo: {
     type: string;
-    browser: string;
-    os: string;
+    browser?: string;
+    os?: string;
   };
   location: {
     country: string;

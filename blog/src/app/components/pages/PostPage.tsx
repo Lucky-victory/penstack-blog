@@ -120,7 +120,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                       fontSize={{ base: "small", md: "medium", lg: "large" }}
                     >
                       <Text as="span" fontWeight={"bold"} fontSize={"100%"}>
-                        {post?.views}
+                        {post?.views?.count}
                       </Text>
                       <Text as="span" fontSize={"90%"}>
                         views

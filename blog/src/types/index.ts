@@ -12,6 +12,9 @@ export type PostInsert = InferInsertModel<typeof posts>;
 type Permissions = InferInsertModel<typeof permissions>;
 export type TPermissions = Permissions["name"];
 export type PostSelect = InferSelectModel<typeof posts> & {
+  views: {
+    count: number;
+  };
   featured_image: {
     url: string;
     alt_text?: string;
