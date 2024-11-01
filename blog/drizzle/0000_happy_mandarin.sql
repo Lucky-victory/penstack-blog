@@ -2,7 +2,7 @@ CREATE TABLE `Medias` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`url` varchar(255) NOT NULL,
-	`type` varchar(100),
+	`type` varchar(100) NOT NULL,
 	`size` int NOT NULL,
 	`mime_type` varchar(100),
 	`caption` varchar(255),
@@ -122,6 +122,7 @@ CREATE TABLE `PostSeoMeta` (
 	`id` int AUTO_INCREMENT NOT NULL,
 	`post_id` int NOT NULL,
 	`title` varchar(150),
+	`canonical_url` varchar(255),
 	`description` varchar(255),
 	CONSTRAINT `PostSeoMeta_id` PRIMARY KEY(`id`)
 );
@@ -143,9 +144,7 @@ CREATE TABLE `Posts` (
 	`author_id` int NOT NULL,
 	`visibility` enum('public','private') DEFAULT 'public',
 	`category_id` int,
-	`views` int DEFAULT 0,
 	`is_sticky` boolean DEFAULT false,
-	`excerpt` text,
 	`reading_time` int,
 	`allow_comments` boolean DEFAULT true,
 	`featured_image_id` int,
@@ -158,7 +157,8 @@ CREATE TABLE `Posts` (
     )) STORED,
 	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `Posts_id` PRIMARY KEY(`id`),
-	CONSTRAINT `Posts_slug_unique` UNIQUE(`slug`)
+	CONSTRAINT `Posts_slug_unique` UNIQUE(`slug`),
+	CONSTRAINT `slug_unique_index` UNIQUE(`slug`)
 );
 --> statement-breakpoint
 CREATE TABLE `Replies` (

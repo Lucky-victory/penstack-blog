@@ -17,6 +17,55 @@ async function main() {
   try {
     console.log("🌱 Starting seed...");
 
+    console.log("Creating categories...");
+    await db.query(
+      "INSERT INTO Categories (name,slug) VALUES (?,?) ON DUPLICATE KEY UPDATE name = VALUES(name), slug = VALUES(slug)",
+      ["Uncategorized", "uncategorized"]
+    );
+
+    console.log("✅Categories created");
+
+    console.log("Creating tags...");
+    const seedTags = [
+      {
+        name: "React",
+        slug: "react",
+      },
+      {
+        name: "Next.JS",
+        slug: "next-js",
+      },
+      {
+        name: "NodeJS",
+        slug: "node-js",
+      },
+      {
+        name: "Beginner",
+        slug: "beginner",
+      },
+      {
+        name: "Javascript",
+        slug: "javascript",
+      },
+      {
+        name: "Typescript",
+        slug: "typescript",
+      },
+    ];
+    await Promise.all(
+      seedTags.map(async (tag) => {
+        const [result] = await db.query(
+          "INSERT INTO Tags (name,slug) VALUES (?,?) ON DUPLICATE KEY UPDATE name = VALUES(name), slug = VALUES(slug)",
+          [tag.name, tag.slug]
+        );
+        return {
+          id: result.insertId,
+          name: tag.name,
+          slug: tag.slug,
+        };
+      })
+    );
+    console.log("✅Tags created");
     const seedRoles = [
       {
         description: "Full access to all features",
@@ -106,7 +155,7 @@ async function main() {
       })
     );
 
-    console.log("Permissions created");
+    console.log("✅ Permissions created");
 
     // 3. Assign role-specific permissions
     console.log("Assigning permissions to roles...");
@@ -203,7 +252,7 @@ async function main() {
       const [[adminUser]] = await db.query("SELECT * FROM users WHERE id = ?", [
         result.insertId,
       ]);
-      console.log("Admin user created:", adminUser);
+      console.log("✅ Admin user created:", adminUser);
     } else {
       console.log("Admin user already exists");
     }

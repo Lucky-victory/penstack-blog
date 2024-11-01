@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "e759c42f-a897-4c4a-9995-9e2c63db1f41",
+  "id": "5eeaac57-0e53-4dfb-a527-36b300e36023",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "Medias": {
@@ -32,7 +32,7 @@
           "name": "type",
           "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "size": {
@@ -771,6 +771,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "canonical_url": {
+          "name": "canonical_url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "description": {
           "name": "description",
           "type": "varchar(255)",
@@ -897,14 +904,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "views": {
-          "name": "views",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": 0
-        },
         "is_sticky": {
           "name": "is_sticky",
           "type": "boolean",
@@ -912,13 +911,6 @@
           "notNull": false,
           "autoincrement": false,
           "default": false
-        },
-        "excerpt": {
-          "name": "excerpt",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         },
         "reading_time": {
           "name": "reading_time",
@@ -971,7 +963,15 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "slug_unique_index": {
+          "name": "slug_unique_index",
+          "columns": [
+            "slug"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "Posts_id": {
