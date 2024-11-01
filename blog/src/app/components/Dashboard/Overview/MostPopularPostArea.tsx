@@ -65,8 +65,8 @@ const samplePosts = [
   },
 ];
 export default function MostPopularPosts() {
-  const { posts = samplePosts, loading } = usePosts();
-
+  const { posts: p, loading } = usePosts();
+  const posts = samplePosts;
   return (
     <Card minH={200} rounded={"20px"}>
       <CardHeader>
@@ -88,7 +88,11 @@ export default function MostPopularPosts() {
         {!loading && posts && posts?.length > 0 && (
           <Stack gap={1} divider={<StackDivider />}>
             {posts.map((post, index) => (
-              <HStack key={post.id} justify={"space-between"}>
+              <HStack
+                key={post.id}
+                justify={"space-between"}
+                divider={<StackDivider />}
+              >
                 <Stack key={post.id} justify={"space-between"}>
                   <HStack>
                     <Heading size={"sm"} noOfLines={1}>
