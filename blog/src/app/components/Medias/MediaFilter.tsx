@@ -1,6 +1,6 @@
 import React from "react";
 import { LuSearch } from "react-icons/lu";
-import { Input } from "@chakra-ui/react";
+import { Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
 import { FilterParams, MediaType } from "@/src/types";
 
@@ -15,16 +15,20 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
 }) => {
   return (
     <div className="space-y-4">
-      <div className="relative">
-        <LuSearch className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+      <InputGroup>
+        <InputLeftAddon roundedLeft={"full"}>
+          <LuSearch />
+        </InputLeftAddon>
         <Input
+          roundedRight={"full"}
           placeholder="Search media..."
           className="pl-10"
           onChange={(e) => onFilterChange({ search: e.target.value })}
         />
-      </div>
+      </InputGroup>
       <div className="flex gap-4">
         <Select
+          rounded={"full"}
           onChange={(e) =>
             onFilterChange({
               type: e.target.value ? [e.target.value as MediaType] : undefined,
@@ -40,6 +44,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
         </Select>
 
         <Select
+          rounded={"full"}
           onChange={(e) =>
             onFilterChange({ folder: e.target.value || undefined })
           }
@@ -53,6 +58,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
         </Select>
 
         <Select
+          rounded={"full"}
           onChange={(e) => {
             const value = e.target.value;
             if (!value) return;

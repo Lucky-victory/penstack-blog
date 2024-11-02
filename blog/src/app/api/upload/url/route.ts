@@ -3,6 +3,7 @@ import { uploadFromUrl } from "@/src/lib/cloudinary";
 import { db } from "@/src/db";
 import { medias } from "@/src/db/schemas";
 import { eq } from "drizzle-orm";
+import { determineFileType } from "@/src/utils/upload";
 
 export async function POST(request: Request) {
   try {
@@ -45,16 +46,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
-function determineFileType(
-  arg0: string
-):
-  | import("drizzle-orm").SQL<unknown>
-  | "audio"
-  | "image"
-  | "video"
-  | "pdf"
-  | "doc"
-  | import("drizzle-orm").Placeholder<string, any> {
-  throw new Error("Function not implemented.");
 }

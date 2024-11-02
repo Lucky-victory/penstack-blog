@@ -1,6 +1,6 @@
 import { MediaType } from "../types";
 
-function determineFileType(format: string): MediaType {
+export function determineFileType(format: string): MediaType {
   const imageFormats = ["jpg", "jpeg", "png", "gif", "webp"];
   const videoFormats = ["mp4", "webm", "mov"];
   const audioFormats = ["mp3", "wav", "ogg"];

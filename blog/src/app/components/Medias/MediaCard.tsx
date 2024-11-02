@@ -6,7 +6,7 @@ import {
   LuFileAudio,
   LuFileText,
 } from "react-icons/lu";
-import { Card, CardBody, CardFooter } from "@chakra-ui/react";
+import { Box, Card, CardBody, CardFooter } from "@chakra-ui/react";
 import { formatBytes } from "@/src/utils";
 import { Image } from "@chakra-ui/react";
 import { MediaResponse } from "@/src/types";
@@ -38,20 +38,30 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   };
 
   const handleClick = () => {
+    console.log(media);
+
     onSelect?.(media);
   };
+  console.log(selected);
 
   return (
     <Card
+      rounded={{ base: 20, md: 24 }}
+      boxShadow={selected ? "outline" : "none"}
+      _hover={
+        selected
+          ? {}
+          : {
+              boxShadow: "lg",
+            }
+      }
       className={`
         cursor-pointer transition-all duration-200
-        ${selected ? "ring-2 ring-blue-500" : ""}
-        hover:shadow-lg
       `}
       onClick={handleClick}
     >
       <CardBody className="p-2">
-        {media.type === "image" ? (
+        {media.type === "image" && (
           <div className="aspect-square rounded-md overflow-hidden">
             <Image
               src={media.url}
@@ -59,7 +69,18 @@ export const MediaCard: React.FC<MediaCardProps> = ({
               className="w-full h-full object-cover"
             />
           </div>
-        ) : (
+        )}
+        {media.type === "video" && (
+          <div className="aspect-square rounded-md overflow-hidden">
+            <Box
+              as="video"
+              controls
+              src={media.url}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+        {media.type !== "video" && media.type !== "image" && (
           <div className="aspect-square rounded-md bg-gray-100 flex items-center justify-center">
             {getIcon()}
           </div>

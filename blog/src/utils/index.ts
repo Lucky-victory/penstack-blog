@@ -250,5 +250,5 @@ export function getServerSearchParams<T extends object>(req: NextRequest) {
 
 export function formatBytes(bytes: number) {
   if (!bytes || typeof bytes !== "number") return 0;
-  return (bytes / 1024 / 1024).toFixed(1) + " MB";
+  return (bytes / 1024 / 1024).toFixed(2) + " MB";
 }

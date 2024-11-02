@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/src/db";
 import { medias } from "@/src/db/schemas";
-import { and, like, desc, asc, eq, inArray, sql } from "drizzle-orm";
+import { and, like, desc, asc, eq, inArray, sql, ilike } from "drizzle-orm";
 import { MediaType } from "@/src/types";
 
 export async function GET(request: Request) {
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     // Build where conditions
     const whereConditions = [];
     if (search) {
-      whereConditions.push(like(medias.name, `%${search}%`));
+      whereConditions.push(ilike(medias.name, `%${search}%`));
     }
     if (type.length > 0) {
       whereConditions.push(inArray(medias.type, type as MediaType[]));

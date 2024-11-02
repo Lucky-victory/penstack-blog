@@ -3,6 +3,7 @@ import { db } from "@/src/db"; // Your database connection
 import { medias } from "@/src/db/schemas"; // Your schema
 import { MediaType } from "@/src/types";
 import { eq } from "drizzle-orm";
+import { determineFileType } from "@/src/utils/upload";
 
 export async function POST(request: Request) {
   try {
@@ -31,21 +32,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json(result);
   } catch (error) {
+    console.log(error);
+
     return NextResponse.json(
       { error: "Failed to save media data" },
       { status: 500 }
     );
   }
-}
-function determineFileType(
-  arg0: any
-):
-  | import("drizzle-orm").SQL<unknown>
-  | "audio"
-  | "image"
-  | "video"
-  | "pdf"
-  | "doc"
-  | import("drizzle-orm").Placeholder<string, any> {
-  throw new Error("Function not implemented.");
 }
