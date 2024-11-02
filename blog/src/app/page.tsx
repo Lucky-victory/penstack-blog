@@ -1,6 +1,7 @@
 "use client";
 
 import { FileUpload, FileUrlUpload } from "./components/FileUpload";
+import { MediaLibrary } from "./components/Medias/MediaLibrary";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
           console.log("url:", media);
         }}
       />
+      <MediaLibrary />
     </main>
   );
 }

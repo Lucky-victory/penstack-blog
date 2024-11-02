@@ -51,3 +51,22 @@ export interface EditorActionItem {
   icon: IconType;
   active: (editor: Editor) => boolean;
 }
+export interface FilterParams {
+  type?: MediaType[];
+  folder?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: "created_at" | "name" | "size";
+  sortOrder?: "asc" | "desc";
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
