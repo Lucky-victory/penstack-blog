@@ -2,12 +2,15 @@ import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { posts } from "@/src/db/schemas/posts.sql";
 import { Editor } from "@tiptap/react";
 import { IconType } from "react-icons";
-import { permissions, users } from "../db/schemas";
+import { medias, permissions, users } from "../db/schemas";
 export type UserSelect = InferSelectModel<typeof users>;
 export type PostToPost = PostInsert & {
   categories: string[];
   tags: string[];
 };
+export type MediaInsert = InferInsertModel<typeof medias>;
+export type MediaType = MediaInsert["type"];
+export type MediaResponse = InferSelectModel<typeof medias>;
 export type PostInsert = InferInsertModel<typeof posts>;
 type Permissions = InferInsertModel<typeof permissions>;
 export type TPermissions = Permissions["name"];

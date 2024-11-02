@@ -1,10 +1,15 @@
-import { Button, Flex } from "@chakra-ui/react";
-import Image from "next/image";
+"use client";
 
-export default async function Home() {
+import { FileUpload } from "./components/FileUpload";
+
+export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Button>hello</Button>
+      <FileUpload
+        onUploadComplete={(media) => {
+          console.log({ media });
+        }}
+      />
     </main>
   );
 }
