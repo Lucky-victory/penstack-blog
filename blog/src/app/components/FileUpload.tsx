@@ -163,6 +163,10 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
       toast({ title: "Uploaded successfully" });
     } catch (err) {
       setError("Failed to upload from URL. Please try again.");
+      toast({
+        title: "Failed to upload from URL. Please try again.",
+        status: "error",
+      });
       console.error("Upload error:", err);
     } finally {
       setUploading(false);
@@ -221,8 +225,6 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
           )}
         </Button>
       </form>
-
-      {error && <Toast title={error} />}
     </div>
   );
 };
