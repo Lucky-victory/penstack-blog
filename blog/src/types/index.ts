@@ -8,6 +8,11 @@ export type PostToPost = PostInsert & {
   categories: string[];
   tags: string[];
 };
+export interface UrlUploadProps {
+  url: string;
+  folder?: string;
+  filename?: string;
+}
 export type MediaInsert = InferInsertModel<typeof medias>;
 export type MediaType = MediaInsert["type"];
 export type MediaResponse = InferSelectModel<typeof medias>;

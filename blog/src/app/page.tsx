@@ -1,6 +1,6 @@
 "use client";
 
-import { FileUpload } from "./components/FileUpload";
+import { FileUpload, FileUrlUpload } from "./components/FileUpload";
 
 export default function Home() {
   return (
@@ -8,6 +8,11 @@ export default function Home() {
       <FileUpload
         onUploadComplete={(media) => {
           console.log({ media });
+        }}
+      />
+      <FileUrlUpload
+        onUploadComplete={(media) => {
+          console.log("url:", media);
         }}
       />
     </main>
