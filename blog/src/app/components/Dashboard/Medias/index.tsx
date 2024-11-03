@@ -15,17 +15,19 @@ import {
 } from "@chakra-ui/react";
 import { FileUpload, FileUrlUpload } from "../../FileUpload";
 import { MediaLibrary } from "./MediaLibrary";
-import { MediaResponse } from "@/src/types";
+import { FilterParams, MediaResponse } from "@/src/types";
 
 interface MediasComponentProps {
   multiple?: boolean;
   maxSelection?: number;
+  defaultFilters?: Partial<FilterParams>;
   onSelect?: (media: MediaResponse | MediaResponse[]) => void;
 }
 export default function Medias({
   multiple = true,
   onSelect,
   maxSelection,
+  defaultFilters = {},
 }: MediasComponentProps) {
   const dividerBgColor = useColorModeValue("white", "gray.900");
   return (
@@ -40,6 +42,7 @@ export default function Medias({
           <TabPanel>
             <MediaLibrary
               multiple={multiple}
+              defaultFilters={defaultFilters}
               maxSelection={maxSelection}
               onSelect={(selectedMedia) => {
                 onSelect?.(selectedMedia);

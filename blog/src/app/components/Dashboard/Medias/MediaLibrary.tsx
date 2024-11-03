@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { MediaCard } from "./MediaCard";
 import { MediaFilter } from "./MediaFilter";
-import { Box, Button, Grid, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Grid,
+  HStack,
+  IconButton,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import {
   LuChevronLeft,
   LuChevronRight,
   LuChevronsLeft,
   LuChevronsRight,
-  LuLoader2,
-  LuTrash,
   LuTrash2,
 } from "react-icons/lu";
 import { useDebounce } from "@/src/hooks";
@@ -127,7 +133,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       {!loading && media && media?.data?.length === 0 && (
         <VStack justify={"center"} py={12}>
           <Text color={"gray.400"} fontWeight={500}>
-            No media found
+            No medias found
           </Text>
         </VStack>
       )}
@@ -137,10 +143,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             rounded={{ base: 20, md: 24 }}
             bg={"gray.100"}
             p={{ base: 3, md: 4 }}
-            templateColumns={{
-              // base: "1fr",
-              sm: "repeat(auto-fit, minmax(200px, 1fr))",
-            }}
+            templateColumns={"repeat(auto-fit, minmax(200px, 1fr))"}
             gap={{ base: 3, md: 4 }}
           >
             {media?.data.map((item) => (
@@ -153,15 +156,17 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             ))}
           </Grid>
           <HStack spacing={2} justify={"center"}>
-            <Button
+            <IconButton
+              aria-label="First page"
               rounded={"full"}
               variant="outline"
               onClick={() => setFilters((prev) => ({ ...prev, page: 1 }))}
               isDisabled={loading || media?.meta.page === 1}
             >
               <LuChevronsLeft className="h-4 w-4" />
-            </Button>
-            <Button
+            </IconButton>
+            <IconButton
+              aria-label="previous page"
               rounded={"full"}
               variant="outline"
               onClick={() =>
@@ -173,12 +178,13 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               isDisabled={loading || media?.meta.page === 1}
             >
               <LuChevronLeft className="h-4 w-4" />
-            </Button>
+            </IconButton>
             <Text>
               Page {media?.meta.page} of {media?.meta.totalPages}
             </Text>
-            <Button
+            <IconButton
               rounded={"full"}
+              aria-label="next page"
               variant="outline"
               onClick={() =>
                 setFilters((prev) => ({
@@ -191,10 +197,11 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               }
             >
               <LuChevronRight className="h-4 w-4" />
-            </Button>
-            <Button
+            </IconButton>
+            <IconButton
               rounded={"full"}
               variant="outline"
+              aria-label="last page"
               onClick={() =>
                 setFilters((prev) => ({
                   ...prev,
@@ -206,7 +213,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               }
             >
               <LuChevronsRight className="h-4 w-4" />
-            </Button>
+            </IconButton>
           </HStack>{" "}
         </>
       )}

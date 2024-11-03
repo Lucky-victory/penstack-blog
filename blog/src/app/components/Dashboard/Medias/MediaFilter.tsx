@@ -11,6 +11,7 @@ interface MediaFilterProps {
 
 export const MediaFilter: React.FC<MediaFilterProps> = ({
   onFilterChange,
+
   folders,
 }) => {
   return (
@@ -35,12 +36,14 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
             })
           }
         >
-          <option value="">All types</option>
-          <option value="image">Images</option>
-          <option value="video">Videos</option>
-          <option value="audio">Audio</option>
-          <option value="pdf">PDF</option>
-          <option value="doc">Documents</option>
+          <>
+            <option value="">All types</option>
+            <option value="image">Images</option>
+            <option value="video">Videos</option>
+            <option value="audio">Audio</option>
+            <option value="pdf">PDF</option>
+            <option value="doc">Documents</option>
+          </>
         </Select>
 
         <Select
