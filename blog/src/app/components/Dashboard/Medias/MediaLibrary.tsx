@@ -130,7 +130,8 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             bg={"gray.100"}
             p={{ base: 3, md: 4 }}
             templateColumns={{
-              base: "repeat(2, minmax(0, 1fr))",
+              base: "1fr",
+              sm: "repeat(2, minmax(0, 1fr))",
               md: "repeat(3, minmax(0, 1fr))",
               lg: "repeat(4, minmax(0, 1fr))",
               xl: "repeat(5, minmax(0, 1fr))",
@@ -164,12 +165,27 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       )}
 
       {multiple && selectedMedia.length > 0 && (
-        <Box className="sticky bottom-0 left-0 right-0 p-4 bg-white border-t shadow-lg">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <Box
+          bottom={"env(safe-area-inset-bottom,0px)"}
+          className="sticky left-0 right-0 p-4 bg-white border-t shadow-lg"
+          roundedTop={"lg"}
+        >
+          <HStack
+            direction={{ base: "column", md: "row" }}
+            maxW={"7xl"}
+            mx={"auto"}
+            justify={"space-between"}
+          >
             {(!maxSelection || maxSelection > 1) && (
               <Text>{selectedMedia.length} items selected</Text>
             )}
-            <HStack gap={4} flex={1} justify={"end"}>
+            <HStack
+              gap={4}
+              flex={1}
+              justify={"end"}
+              align={"stretch"}
+              wrap={"wrap"}
+            >
               <Button
                 rounded={"full"}
                 onClick={() => setSelectedMedia([])}
@@ -186,7 +202,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                 Confirm Selection
               </Button>
             </HStack>
-          </div>
+          </HStack>
         </Box>
       )}
     </Box>

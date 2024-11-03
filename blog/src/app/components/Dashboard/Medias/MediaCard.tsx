@@ -38,11 +38,8 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   };
 
   const handleClick = () => {
-    console.log(media);
-
     onSelect?.(media);
   };
-  console.log(selected);
 
   return (
     <Card

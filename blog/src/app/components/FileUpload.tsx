@@ -5,6 +5,7 @@ import { LuLink, LuLoader2, LuUpload } from "react-icons/lu";
 import { MediaResponse } from "@/src/types";
 import axios from "axios";
 import {
+  Box,
   Button,
   FormControl,
   FormLabel,
@@ -37,7 +38,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 }) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const toast = useToast({
+    position: "top",
+    status: "success",
+    duration: 3000,
+    isClosable: true,
+  });
   const getSignature = async () => {
     const response = await fetch(`/api/upload/signature?folder=${folder}`);
     return response.json();
@@ -80,9 +86,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           const savedMedia = await saveToDatabase(cloudinaryData);
           onUploadComplete?.(savedMedia);
         }
+        toast({
+          title: "Media uploaded successfully",
+        });
       } catch (err) {
-        setError("Failed to upload file. Please try again.");
+        toast({
+          title: "Failed to upload file. Please try again.",
+          status: "error",
+        });
         console.error("Upload error:", err);
+        setError("Failed to upload file. Please try again.");
       } finally {
         setUploading(false);
       }
@@ -100,8 +113,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   });
 
   return (
-    <div className="w-full mx-auto h-full">
-      <div
+    <Box mx={"auto"} h={"full"} w={"full"}>
+      <VStack
+        minH={"400"}
+        justify={"center"}
         {...getRootProps()}
         className={`
           border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
@@ -127,10 +142,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             </>
           )}
         </div>
-      </div>
-
-      {error && <Toast title={error} />}
-    </div>
+      </VStack>
+    </Box>
   );
 };
 
@@ -143,7 +156,12 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
   folder = "uploads",
   onUploadComplete,
 }) => {
-  const toast = useToast({ position: "top", status: "success",duration:3000,isClosable:true });
+  const toast = useToast({
+    position: "top",
+    status: "success",
+    duration: 3000,
+    isClosable: true,
+  });
   const [url, setUrl] = useState("");
   const [filename, setFilename] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -186,11 +204,7 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
     <div className="w-full max-w-xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormControl isRequired>
-          <FormLabel
-            htmlFor="url"
-            fontSize={"small"}
-            color="'gray.700"
-          >
+          <FormLabel htmlFor="url" fontSize={"small"} color="'gray.700">
             Image URL
           </FormLabel>
           <Input
@@ -200,7 +214,7 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://example.com/image.jpg"
-            disabled={uploading}
+            isDisabled={uploading}
             required
           />
         </FormControl>
@@ -216,14 +230,14 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
             value={filename}
             onChange={(e) => setFilename(e.target.value)}
             placeholder="custom-filename"
-            disabled={uploading}
+            isDisabled={uploading}
           />
         </FormControl>
 
         <Button
           rounded={"full"}
           type="submit"
-          disabled={uploading || !url}
+          isDisabled={uploading || !url}
           className="w-full"
         >
           {uploading ? (

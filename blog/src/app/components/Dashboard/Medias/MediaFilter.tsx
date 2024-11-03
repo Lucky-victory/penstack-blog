@@ -15,7 +15,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
 }) => {
   return (
     <HStack gap={4} wrap={"wrap"} justify={"space-between"}>
-      <InputGroup>
+      <InputGroup maxW={500}>
         <InputLeftAddon roundedLeft={"full"}>
           <LuSearch />
         </InputLeftAddon>
@@ -26,7 +26,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
           onChange={(e) => onFilterChange({ search: e.target.value })}
         />
       </InputGroup>
-      <HStack gap={4}>
+      <HStack gap={4} wrap={{ base: "wrap", md: "nowrap" }}>
         <Select
           rounded={"full"}
           onChange={(e) =>
