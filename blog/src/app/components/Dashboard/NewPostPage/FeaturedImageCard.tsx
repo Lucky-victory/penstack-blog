@@ -20,7 +20,7 @@ export const FeaturedImageCard = ({
   image,
   onChange,
 }: {
-  image: Partial<MediaResponse>;
+  image: { url: string; alt_text?: string; caption?: string } | null;
   onChange: (imageId: number | null) => void;
 }) => {
   const borderColor = useColorModeValue("gray.400", "gray.700");

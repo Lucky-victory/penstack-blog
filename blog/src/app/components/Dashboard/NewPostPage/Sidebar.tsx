@@ -43,7 +43,7 @@ import {
   LuSettings,
 } from "react-icons/lu";
 import { FeaturedImageCard } from "@/src/app/components/Dashboard/NewPostPage/FeaturedImageCard";
-import { PostInsert } from "@/src/types";
+import { PostInsert, PostSelect } from "@/src/types";
 import { useFormik } from "formik";
 
 export const SidebarContent = ({
@@ -58,7 +58,7 @@ export const SidebarContent = ({
   onPublish = () => {},
   onDraft = () => {},
 }: {
-  formik: ReturnType<typeof useFormik<PostInsert>> 
+  formik: ReturnType<typeof useFormik<PostSelect>>;
   updatePost: (updates: Partial<PostInsert>) => void;
   categories: { name: string; id?: number }[];
   onPublish: () => void;
@@ -202,12 +202,12 @@ export const SidebarContent = ({
             Featured Image:
           </Text>
           <FeaturedImageCard
-            onChange={({ imageUrl, altText }) => {
+            onChange={(imageId) => {
               updatePost({
-                featured_image: { src: imageUrl, alt_text: altText },
+                featured_image_id: imageId,
               });
             }}
-            imageUrl={formik.values.featured_image?.src}
+            image={formik.values.featured_image}
           />
 
           <FormControl>

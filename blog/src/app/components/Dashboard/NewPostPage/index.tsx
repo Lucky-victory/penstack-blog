@@ -81,7 +81,7 @@ export function PostEditor({ post }: { post: PostSelect }) {
   const { author, ...postWithoutAuthor } = nullToEmptyString(post!);
   const formik = useFormik({
     enableReinitialize: true,
-    initialValues: postWithoutAuthor as PostInsert,
+    initialValues: postWithoutAuthor as PostSelect,
     onSubmit: async (values) => {
       const {
         title,
