@@ -17,6 +17,7 @@ import {
   LuChevronDown,
   LuChevronLeft,
   LuChevronRight,
+  LuFileImage,
   LuFileStack,
   LuHome,
   LuSettings,
@@ -36,6 +37,7 @@ const navItems = [
     ],
   },
   { icon: LuUsers, label: "Users", href: "/dashboard/users" },
+  { icon: LuFileImage, label: "Media", href: "/dashboard/media" },
   { icon: LuSettings, label: "Settings", href: "/dashboard/settings" },
 ];
 

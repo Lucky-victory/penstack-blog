@@ -6,7 +6,7 @@ import { LuLoader2, LuTrash, LuTrash2 } from "react-icons/lu";
 import { useDebounce } from "@/src/hooks";
 import { FilterParams, MediaResponse, PaginatedResponse } from "@/src/types";
 import axios from "axios";
-import Loader from "../Loader";
+import Loader from "../../Loader";
 
 interface MediaLibraryProps {
   onSelect?: (media: MediaResponse | MediaResponse[]) => void;
@@ -166,7 +166,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       {multiple && selectedMedia.length > 0 && (
         <Box className="sticky bottom-0 left-0 right-0 p-4 bg-white border-t shadow-lg">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
-            {maxSelection && maxSelection > 1 && (
+            {(!maxSelection || maxSelection > 1) && (
               <Text>{selectedMedia.length} items selected</Text>
             )}
             <HStack gap={4} flex={1} justify={"end"}>

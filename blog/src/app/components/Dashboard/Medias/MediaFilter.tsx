@@ -1,6 +1,6 @@
 import React from "react";
 import { LuSearch } from "react-icons/lu";
-import { Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
+import { HStack, Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
 import { FilterParams, MediaType } from "@/src/types";
 
@@ -14,7 +14,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
   folders,
 }) => {
   return (
-    <div className="space-y-4">
+    <HStack gap={4} wrap={"wrap"} justify={"space-between"}>
       <InputGroup>
         <InputLeftAddon roundedLeft={"full"}>
           <LuSearch />
@@ -26,7 +26,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
           onChange={(e) => onFilterChange({ search: e.target.value })}
         />
       </InputGroup>
-      <div className="flex gap-4">
+      <HStack gap={4}>
         <Select
           rounded={"full"}
           onChange={(e) =>
@@ -76,7 +76,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
           <option value="size-desc">Largest first</option>
           <option value="size-asc">Smallest first</option>
         </Select>
-      </div>
-    </div>
+      </HStack>
+    </HStack>
   );
 };

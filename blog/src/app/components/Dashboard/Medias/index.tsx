@@ -1,3 +1,4 @@
+"use client";
 import {
   AbsoluteCenter,
   Box,
@@ -12,7 +13,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { FileUpload, FileUrlUpload } from "../FileUpload";
+import { FileUpload, FileUrlUpload } from "../../FileUpload";
 import { MediaLibrary } from "./MediaLibrary";
 import { MediaResponse } from "@/src/types";
 
@@ -24,16 +25,16 @@ interface MediasComponentProps {
 export default function Medias({
   multiple = true,
   onSelect,
-  maxSelection = 1,
+  maxSelection,
 }: MediasComponentProps) {
   const dividerBgColor = useColorModeValue("white", "gray.900");
   return (
-    <>
-      <Tabs isLazy>
+    <Box py={6} px={{ base: 4, md: 5 }} bg={dividerBgColor} minH={"100vh"}>
+      <Tabs isLazy h={"full"} bg={"red"}>
         <TabList>
           <Tab>Media Library</Tab>
           <Tab>Upload Media</Tab>
-          <TabIndicator />
+          <Tab>Upload from URL</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -48,16 +49,15 @@ export default function Medias({
           <TabPanel>
             <Stack gap={4}>
               <FileUpload />
-              <Box pos={"relative"} h={"1px"} bg={"gray.300"}>
-                <AbsoluteCenter bg={dividerBgColor} px={2}>
-                  <Text>or</Text>
-                </AbsoluteCenter>
-              </Box>
-              <FileUrlUpload />
             </Stack>
+          </TabPanel>
+          <TabPanel>
+            <Box py={4}>
+              <FileUrlUpload />
+            </Box>
           </TabPanel>
         </TabPanels>
       </Tabs>
-    </>
+    </Box>
   );
 }

@@ -4,7 +4,16 @@ import { useDropzone } from "react-dropzone";
 import { LuLink, LuLoader2, LuUpload } from "react-icons/lu";
 import { MediaResponse } from "@/src/types";
 import axios from "axios";
-import { Button, Input, Toast, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Toast,
+  useToast,
+  VStack,
+} from "@chakra-ui/react";
 
 interface FileUploadProps {
   folder?: string;
@@ -91,7 +100,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   });
 
   return (
-    <div className="w-full max-w-xl mx-auto">
+    <div className="w-full mx-auto h-full">
       <div
         {...getRootProps()}
         className={`
@@ -104,10 +113,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         <input {...getInputProps()} />
         <div className="flex flex-col items-center gap-2">
           {uploading ? (
-            <>
+            <VStack>
               <LuLoader2 className="h-8 w-8 animate-spin text-blue-500" />
               <p>Uploading...</p>
-            </>
+            </VStack>
           ) : (
             <>
               <LuUpload className="h-8 w-8 text-gray-400" />
@@ -134,7 +143,7 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
   folder = "uploads",
   onUploadComplete,
 }) => {
-  const toast = useToast({ position: "top", status: "success" });
+  const toast = useToast({ position: "top", status: "success",duration:3000,isClosable:true });
   const [url, setUrl] = useState("");
   const [filename, setFilename] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -176,15 +185,17 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
   return (
     <div className="w-full max-w-xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
+        <FormControl isRequired>
+          <FormLabel
             htmlFor="url"
-            className="block text-sm font-medium text-gray-700"
+            fontSize={"small"}
+            color="'gray.700"
           >
             Image URL
-          </label>
+          </FormLabel>
           <Input
             id="url"
+            rounded={"full"}
             type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -192,16 +203,14 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
             disabled={uploading}
             required
           />
-        </div>
+        </FormControl>
 
-        <div>
-          <label
-            htmlFor="filename"
-            className="block text-sm font-medium text-gray-700"
-          >
+        <FormControl>
+          <FormLabel fontSize={"small"} htmlFor="filename" color="'gray.700">
             Custom Filename (optional)
-          </label>
+          </FormLabel>
           <Input
+            rounded={"full"}
             id="filename"
             type="text"
             value={filename}
@@ -209,9 +218,14 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
             placeholder="custom-filename"
             disabled={uploading}
           />
-        </div>
+        </FormControl>
 
-        <Button type="submit" disabled={uploading || !url} className="w-full">
+        <Button
+          rounded={"full"}
+          type="submit"
+          disabled={uploading || !url}
+          className="w-full"
+        >
           {uploading ? (
             <>
               <LuLoader2 className="mr-2 h-4 w-4 animate-spin" />

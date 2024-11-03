@@ -1,7 +1,7 @@
 "use client";
 
 import { FileUrlUpload } from "./components/FileUpload";
-import Medias from "./components/Medias";
+import Medias from "./components/Dashboard/Medias";
 
 export default function Home() {
   return (
