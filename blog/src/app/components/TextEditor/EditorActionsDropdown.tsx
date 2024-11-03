@@ -27,7 +27,7 @@ export default function EditorActionsDropdown() {
     "Heading 3",
     "Bullet List",
     "Ordered List",
-    "Insert Image",
+    "Insert Media",
   ]);
   const { editor: _editor } = useCurrentEditor();
   const editor = _editor as Editor;
@@ -71,7 +71,7 @@ export default function EditorActionsDropdown() {
         flexDir={"column"}
       >
         {dropdownActions?.map((item, index) =>
-          item.label === "Insert Image" ? (
+          item.label === "Insert Media" ? (
             <CldUploadWidget
               key={index}
               uploadPreset={

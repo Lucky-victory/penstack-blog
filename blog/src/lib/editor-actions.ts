@@ -140,7 +140,7 @@ export const editorButtonActions: EditorActionItem[] = [
     active: (editor) => editor.isActive("blockquote"),
   },
   {
-    label: "Insert Image",
+    label: "Insert Media",
     command: ({ open }) => open?.(),
     icon: LuImagePlus,
     active: (editor) => editor.isActive("img"),

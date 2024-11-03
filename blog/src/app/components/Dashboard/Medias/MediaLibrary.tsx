@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import { MediaCard } from "./MediaCard";
 import { MediaFilter } from "./MediaFilter";
 import { Box, Button, Grid, HStack, Text, VStack } from "@chakra-ui/react";
-import { LuLoader2, LuTrash, LuTrash2 } from "react-icons/lu";
+import {
+  LuChevronLeft,
+  LuChevronRight,
+  LuChevronsLeft,
+  LuChevronsRight,
+  LuLoader2,
+  LuTrash,
+  LuTrash2,
+} from "react-icons/lu";
 import { useDebounce } from "@/src/hooks";
 import { FilterParams, MediaResponse, PaginatedResponse } from "@/src/types";
 import axios from "axios";
@@ -130,11 +138,8 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             bg={"gray.100"}
             p={{ base: 3, md: 4 }}
             templateColumns={{
-              base: "1fr",
-              sm: "repeat(2, minmax(0, 1fr))",
-              md: "repeat(3, minmax(0, 1fr))",
-              lg: "repeat(4, minmax(0, 1fr))",
-              xl: "repeat(5, minmax(0, 1fr))",
+              // base: "1fr",
+              sm: "repeat(auto-fit, minmax(200px, 1fr))",
             }}
             gap={{ base: 3, md: 4 }}
           >
@@ -147,20 +152,62 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               />
             ))}
           </Grid>
-
-          {media && media.meta.page < media.meta.totalPages && (
-            <div className="flex justify-center">
-              <Button
-                rounded={"full"}
-                variant="outline"
-                onClick={handleLoadMore}
-                disabled={loading}
-              >
-                {loading && <LuLoader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Load More
-              </Button>
-            </div>
-          )}
+          <HStack spacing={2} justify={"center"}>
+            <Button
+              rounded={"full"}
+              variant="outline"
+              onClick={() => setFilters((prev) => ({ ...prev, page: 1 }))}
+              isDisabled={loading || media?.meta.page === 1}
+            >
+              <LuChevronsLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              rounded={"full"}
+              variant="outline"
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  page: prev.page ? prev.page - 1 : 1,
+                }))
+              }
+              isDisabled={loading || media?.meta.page === 1}
+            >
+              <LuChevronLeft className="h-4 w-4" />
+            </Button>
+            <Text>
+              Page {media?.meta.page} of {media?.meta.totalPages}
+            </Text>
+            <Button
+              rounded={"full"}
+              variant="outline"
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  page: prev.page ? prev.page + 1 : 2,
+                }))
+              }
+              isDisabled={
+                loading || media?.meta.page === media?.meta.totalPages
+              }
+            >
+              <LuChevronRight className="h-4 w-4" />
+            </Button>
+            <Button
+              rounded={"full"}
+              variant="outline"
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  page: media?.meta.totalPages,
+                }))
+              }
+              isDisabled={
+                loading || media?.meta.page === media?.meta.totalPages
+              }
+            >
+              <LuChevronsRight className="h-4 w-4" />
+            </Button>
+          </HStack>{" "}
         </>
       )}
 

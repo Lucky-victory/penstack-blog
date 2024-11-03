@@ -7,8 +7,6 @@ import {
   Portal,
   useColorModeValue,
   Tooltip,
-} from "@chakra-ui/react";
-import {
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -16,24 +14,35 @@ import {
   PopoverBody,
   PopoverArrow,
   PopoverCloseButton,
-} from "@/src/app/components/ui/Popover";
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalOverlay,
+  Heading,
+  Box,
+} from "@chakra-ui/react";
+
 import { useCurrentEditor } from "@tiptap/react";
 import { useFormik } from "formik";
 import isEmpty from "just-is-empty";
 import React, { FormEvent, useRef } from "react";
 
-import {
-  CldUploadWidget,
-  type CloudinaryUploadWidgetInfo,
-  type CloudinaryUploadWidgetResults,
-  getCldImageUrl,
-} from "next-cloudinary";
 import { LuCornerDownLeft, LuLink, LuRedo2, LuUndo2 } from "react-icons/lu";
-import EditorActionsDropdown from "./EditorActionsDropdown";
+import EditorActionsDropdown from "../EditorActionsDropdown";
 import { filterEditorActions } from "@/src/lib/editor-actions";
+import Medias from "../../Dashboard/Medias";
+import { MediaResponse } from "@/src/types";
+import { MediaInsert } from "./MediaInsert";
 
 export const MenuBar = () => {
   const { editor } = useCurrentEditor();
+  const {
+    isOpen: isMediaModalOpen,
+    onClose: onMediaModalClose,
+    onOpen: onMediaModalOpen,
+  } = useDisclosure();
   const initialFocusRef = useRef<any>();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const btnStyles = {
@@ -108,44 +117,20 @@ export const MenuBar = () => {
     >
       <EditorActionsDropdown />
       {nonHeadingOrParagraphActions.map((item, index) =>
-        item.label === "Insert Image" ? (
-          <CldUploadWidget
-            key={index}
-            uploadPreset={
-              process.env.NEXT_PUBLIC_CLOUDINARY_PRESET || "post_images"
-            }
-            onSuccess={(image: CloudinaryUploadWidgetResults) => {
-              editor
-                .chain()
-                .focus()
-                .setImage({
-                  src: getCldImageUrl({
-                    src: (image.info as CloudinaryUploadWidgetInfo).public_id,
-                  }),
-                })
-                .run();
-            }}
-          >
-            {({ open }) => {
-              return (
-                <Tooltip
-                  label={item.label}
-                  hasArrow
-                  placement="top"
-                  rounded={"lg"}
-                >
-                  <IconButton
-                    aria-label={item.label}
-                    {...btnStyles}
-                    variant={editor.isActive("img") ? "solid" : "ghost"}
-                    onClick={() => item.command({ open })}
-                  >
-                    <item.icon size={20} />
-                  </IconButton>
-                </Tooltip>
-              );
-            }}
-          </CldUploadWidget>
+        item.label === "Insert Media" ? (
+          <Box key={index}>
+            <Tooltip label={item.label} hasArrow placement="top" rounded={"lg"}>
+              <IconButton
+                aria-label={item.label}
+                {...btnStyles}
+                variant={editor.isActive("img") ? "solid" : "ghost"}
+                onClick={() => item.command({ open: onMediaModalOpen })}
+              >
+                <item.icon size={20} />
+              </IconButton>
+            </Tooltip>
+            <MediaInsert editor={editor} isOpen={isMediaModalOpen} onClose={onMediaModalClose}/>
+          </Box>
         ) : (
           <Tooltip
             key={index}

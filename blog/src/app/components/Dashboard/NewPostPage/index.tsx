@@ -89,7 +89,7 @@ export function PostEditor({ post }: { post: PostSelect }) {
         summary,
         visibility,
         content,
-        featured_image_id,
+        featured_image_id = null,
         status,
         post_id,
       } = values;
