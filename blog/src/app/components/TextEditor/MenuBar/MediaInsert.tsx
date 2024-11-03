@@ -20,13 +20,13 @@ interface MediaInsertProps {
   defaultFilters?: Partial<FilterParams>;
 }
 
-export const MediaInsert = ({
+export const MediaInsert :FC<PropsWithChildren<MediaInsertProps>>= ({
   editor,
   isOpen,
   onClose,
-  maxSelection,
+  maxSelection,children,
   defaultFilters = {},
-}: MediaInsertProps) => {
+}) => {
   return (
     <>
       <MediaModal isOpen={isOpen} onClose={onClose}>
@@ -61,6 +61,7 @@ export const MediaInsert = ({
           }}
         />
       </MediaModal>
+      {children}
     </>
   );
 };
