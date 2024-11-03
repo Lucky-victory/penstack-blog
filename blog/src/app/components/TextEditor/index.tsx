@@ -75,7 +75,6 @@ const TextEditor = forwardRef<
           editor?.commands?.clearContent();
         },
       }),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       [initialValue]
     );
 
@@ -95,7 +94,8 @@ const TextEditor = forwardRef<
     );
 
     function handleEditorUpdate(editor: Editor) {
-      setEditorContent(editor.getHTML());
+      const html = editor.getHTML();
+      setEditorContent(html);
       if (getCounts) {
         getCounts?.({
           characters: editor.storage.characterCount.characters(),
@@ -103,10 +103,10 @@ const TextEditor = forwardRef<
         });
       }
 
-      updateHtml(editor.getHTML());
+      const markdown = updateHtml(html);
 
       getEditorContent({
-        html: editor.getHTML(),
+        html: html,
         text: editor.getText().replace(/\n+/g, " "),
         markdown,
       });
@@ -129,14 +129,7 @@ const TextEditor = forwardRef<
           slotBefore={<MenuBar />}
           content={editorContent}
           extensions={extensions}
-        >
-          {/* <FloatingMenu editor={null} tippyOptions={{duration:100}}>This is a floating menu</FloatingMenu> */}
-          {/* <BubbleMenu editor={null} shouldShow={({editor}) => {
-          return editor.isActive("paragraph");
-
-        }} tippyOptions={{duration:100}}>this is a bubble menu 1</BubbleMenu>
-  */}
-        </EditorProvider>
+        ></EditorProvider>
       </Stack>
     );
   }

@@ -38,6 +38,7 @@ import Loader from "../../Loader";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { debounce } from "lodash";
+import { encode } from "html-entities";
 
 const META_DESCRIPTION_LENGTH = 155;
 
@@ -146,7 +147,8 @@ export function PostEditor({ post }: { post: PostSelect }) {
   }) => {
     console.log(content);
 
-    updatePost({ content: content.html });
+    updatePost({ content: encode(content.html) });
+
     if (content.text.length <= META_DESCRIPTION_LENGTH) {
       updatePost({ summary: content.text });
     }
@@ -161,6 +163,8 @@ export function PostEditor({ post }: { post: PostSelect }) {
   ).current;
 
   useEffect(() => {
+    console.log("formik.values", formik.values);
+
     debouncedSubmit();
 
     return () => {

@@ -67,63 +67,7 @@ export const useAutoSave = <T extends SaveableValue>({
   };
 };
 
-// export interface UseAutoSaveOptions<T> {
-//   initialValues: T;
-//   mutationFn: (values: T) => Promise<any>;
-//   debounceTime?: number;
-//   onSuccess?: (data: any) => void;
-//   onError?: (error: any) => void;
-//   validate?: (values: T) => void | object | Promise<FormikErrors<T>>;
-// }
 
-// export const useAutoSave = <T extends object>({
-//   initialValues,
-//   mutationFn,
-//   debounceTime = 1000,
-//   onSuccess,
-//   onError,
-//   validate
-// }: UseAutoSaveOptions<T>) => {
-//   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-
-//   const mutation = useMutation({
-//     mutationFn,
-//     onSuccess: (data) => {
-//       setLastSaved(new Date());
-//       formik.setValues({ ...formik.values, ...data });
-//       onSuccess?.(data);
-//     },
-//     onError: (error) => {
-//       onError?.(error);
-//     }
-//   });
-
-//   const debouncedSave = useCallback(
-//     debounce((values: T) => {
-//       mutation.mutate(values);
-//     }, debounceTime),
-//     [mutation, debounceTime]
-//   );
-
-//   const formik = useFormik({
-//     initialValues,
-//     validate,
-//     onSubmit: () => {}, // We're not using a submit handler in this case
-//   });
-
-//   useEffect(() => {
-//     if (formik.dirty && !formik.isValidating) {
-//       debouncedSave(formik.values);
-//     }
-//   }, [formik.values, formik.dirty, formik.isValidating, debouncedSave]);
-
-//   return {
-//     ...formik,
-//     isSaving: mutation.isPending,
-//     error: mutation.error,
-//     lastSaved
-//   };
-// };
 export function useHTMLToMarkdownConverter() {
   const [html, setHtml] = useState("");
   const [markdown, setMarkdown] = useState("");
@@ -156,6 +100,7 @@ export function useHTMLToMarkdownConverter() {
 
   const updateHtml = useCallback((newHtml: string) => {
     setHtml(newHtml);
+    return turndownService.turndown(newHtml);
   }, []);
 
   return { markdown, updateHtml };

@@ -1,5 +1,5 @@
 // TableOfContents.ts
-import { Node, mergeAttributes } from "@tiptap/core";
+import { JSONContent, Node, mergeAttributes } from "@tiptap/core";
 
 export interface TableOfContentsOptions {
   maxLevel: number;
@@ -25,6 +25,7 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
   group: "block",
   atom: true,
   draggable: true,
+  content: "block+",
 
   addOptions() {
     return {
@@ -78,7 +79,6 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
             const stack: HeadingItem[] = [];
 
             headings.forEach((heading) => {
-              // Remove all items from stack that are of higher or same level
               while (
                 stack.length > 0 &&
                 stack[stack.length - 1].level >= heading.level
@@ -87,10 +87,8 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
               }
 
               if (stack.length === 0) {
-                // This is a top-level heading
                 root.push(heading);
               } else {
-                // This is a sub-heading
                 const parent = stack[stack.length - 1];
                 if (!parent.items) {
                   parent.items = [];
@@ -106,49 +104,49 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
 
           const nestedHeadings = buildNestedHeadings(flatHeadings);
 
-          // Create HTML content from nested structure
-          const createTocHTML = (items: HeadingItem[]): string => {
-            if (!items.length) return "";
+          // Create nested bullet list nodes
+          const createTocContent = (items: HeadingItem[]): JSONContent[] => {
+            if (!items.length) return [];
 
-            return `<ul>${items
-              .map(
-                (item) => `
-                <li>
-                  <a href="#${item.id}">${item.text}</a>
-                  ${item.items ? createTocHTML(item.items) : ""}
-                </li>
-              `
-              )
-              .join("")}</ul>`;
+            return [
+              {
+                type: "bulletList",
+                content: items.map((item) => ({
+                  type: "listItem",
+                  content: [
+                    {
+                      type: "paragraph",
+                      content: [
+                        {
+                          type: "text",
+                          text: item.text,
+                          marks: [
+                            {
+                              type: "link",
+                              attrs: { href: `#${item.id}` },
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ...(item.items && item.items.length
+                      ? createTocContent(item.items)
+                      : []),
+                  ],
+                })),
+              },
+            ];
           };
-
-          const tocHtml = createTocHTML(nestedHeadings);
 
           return commands.insertContent({
             type: this.name,
-            attrs: {
-              "data-type": "table-of-contents",
-            },
             content: [
               {
-                type: "paragraph",
-                content: [
-                  {
-                    type: "text",
-                    text: "Table of Contents",
-                    marks: [{ type: "bold" }],
-                  },
-                ],
+                type: "heading",
+                attrs: { level: 2 },
+                content: [{ type: "text", text: "Table of Contents" }],
               },
-              {
-                type: "paragraph",
-                content: [
-                  {
-                    type: "html",
-                    text: tocHtml,
-                  },
-                ],
-              },
+              ...createTocContent(nestedHeadings),
             ],
           });
         },

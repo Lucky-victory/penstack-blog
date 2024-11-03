@@ -234,7 +234,17 @@ export const MenuBar = () => {
       </Tooltip>
       <Button
         onClick={() => {
-          editor.chain().focus().insertTableOfContents().run();
+          editor
+            .chain()
+            .focus()
+            .setMedia({
+              src: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1352&q=80",
+              alt: "A random image",
+              title: "A random image",
+              width: 600,
+              height: 400,
+            })
+            .run();
         }}
       >
         add media
