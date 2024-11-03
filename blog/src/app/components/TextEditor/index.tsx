@@ -12,6 +12,8 @@ import { MenuBar } from "./MenuBar";
 import { useHTMLToMarkdownConverter } from "@/src/hooks";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
+import { TableOfContents } from "@/src/lib/editor/extensions/toc";
+import { Media } from "@/src/lib/editor/extensions/media";
 type TextEditorHandle = {
   resetContent: () => void;
 };
@@ -61,6 +63,8 @@ const TextEditor = forwardRef<
       }),
       Highlight.configure({}),
       CharacterCount,
+      TableOfContents,
+      Media,
     ];
 
     useImperativeHandle(

@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    font-family: var(--font-rubik)
+    font-family: var(--font-rubik);
   }
 }
 @layer utilities {
@@ -43,218 +43,294 @@
   background-color: lightgrey;
   border-radius: 2px;
 }
-    .loader-pl {
-      width: 6em;
-      height: 6em;
-    }
+.loader-pl {
+  width: 6em;
+  height: 6em;
+}
 
-    .loader-pl__ring {
-      animation: loaderRingA 2s linear infinite;
-    }
+.loader-pl__ring {
+  animation: loaderRingA 2s linear infinite;
+}
 
-    .loader-pl__ring--a {
-      stroke: #f42f25;
-    }
+.loader-pl__ring--a {
+  stroke: #f42f25;
+}
 
-    .loader-pl__ring--b {
-      animation-name: loaderRingB;
-      stroke: #f49725;
-    }
+.loader-pl__ring--b {
+  animation-name: loaderRingB;
+  stroke: #f49725;
+}
 
-    .loader-pl__ring--c {
-      animation-name: ringC;
-      stroke: #255ff4;
-    }
+.loader-pl__ring--c {
+  animation-name: ringC;
+  stroke: #255ff4;
+}
 
-    .loader-pl__ring--d {
-      animation-name: ringD;
-      stroke: #f42582;
-    }
+.loader-pl__ring--d {
+  animation-name: ringD;
+  stroke: #f42582;
+}
 
-    /* Animations */
-    @keyframes loaderRingA {
-      from,
-      4% {
-        stroke-dasharray: 0 660;
-        stroke-width: 20;
-        stroke-dashoffset: -330;
-      }
+/* Animations */
+@keyframes loaderRingA {
+  from,
+  4% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
 
-      12% {
-        stroke-dasharray: 60 600;
-        stroke-width: 30;
-        stroke-dashoffset: -335;
-      }
+  12% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -335;
+  }
 
-      32% {
-        stroke-dasharray: 60 600;
-        stroke-width: 30;
-        stroke-dashoffset: -595;
-      }
+  32% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -595;
+  }
 
-      40%,
-      54% {
-        stroke-dasharray: 0 660;
-        stroke-width: 20;
-        stroke-dashoffset: -660;
-      }
+  40%,
+  54% {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -660;
+  }
 
-      62% {
-        stroke-dasharray: 60 600;
-        stroke-width: 30;
-        stroke-dashoffset: -665;
-      }
+  62% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -665;
+  }
 
-      82% {
-        stroke-dasharray: 60 600;
-        stroke-width: 30;
-        stroke-dashoffset: -925;
-      }
+  82% {
+    stroke-dasharray: 60 600;
+    stroke-width: 30;
+    stroke-dashoffset: -925;
+  }
 
-      90%,
-      to {
-        stroke-dasharray: 0 660;
-        stroke-width: 20;
-        stroke-dashoffset: -990;
-      }
-    }
+  90%,
+  to {
+    stroke-dasharray: 0 660;
+    stroke-width: 20;
+    stroke-dashoffset: -990;
+  }
+}
 
-    @keyframes loaderRingB {
-      from,
-      12% {
-        stroke-dasharray: 0 220;
-        stroke-width: 20;
-        stroke-dashoffset: -110;
-      }
+@keyframes loaderRingB {
+  from,
+  12% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -110;
+  }
 
-      20% {
-        stroke-dasharray: 20 200;
-        stroke-width: 30;
-        stroke-dashoffset: -115;
-      }
+  20% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -115;
+  }
 
-      40% {
-        stroke-dasharray: 20 200;
-        stroke-width: 30;
-        stroke-dashoffset: -195;
-      }
+  40% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -195;
+  }
 
-      48%,
-      62% {
-        stroke-dasharray: 0 220;
-        stroke-width: 20;
-        stroke-dashoffset: -220;
-      }
+  48%,
+  62% {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
 
-      70% {
-        stroke-dasharray: 20 200;
-        stroke-width: 30;
-        stroke-dashoffset: -225;
-      }
+  70% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
 
-      90% {
-        stroke-dasharray: 20 200;
-        stroke-width: 30;
-        stroke-dashoffset: -305;
-      }
+  90% {
+    stroke-dasharray: 20 200;
+    stroke-width: 30;
+    stroke-dashoffset: -305;
+  }
 
-      98%,
-      to {
-        stroke-dasharray: 0 220;
-        stroke-width: 20;
-        stroke-dashoffset: -330;
-      }
-    }
+  98%,
+  to {
+    stroke-dasharray: 0 220;
+    stroke-width: 20;
+    stroke-dashoffset: -330;
+  }
+}
 
-    @keyframes ringC {
-      from {
-        stroke-dasharray: 0 440;
-        stroke-width: 20;
-        stroke-dashoffset: 0;
-      }
+@keyframes ringC {
+  from {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
 
-      8% {
-        stroke-dasharray: 40 400;
-        stroke-width: 30;
-        stroke-dashoffset: -5;
-      }
+  8% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
 
-      28% {
-        stroke-dasharray: 40 400;
-        stroke-width: 30;
-        stroke-dashoffset: -175;
-      }
+  28% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
 
-      36%,
-      58% {
-        stroke-dasharray: 0 440;
-        stroke-width: 20;
-        stroke-dashoffset: -220;
-      }
+  36%,
+  58% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
 
-      66% {
-        stroke-dasharray: 40 400;
-        stroke-width: 30;
-        stroke-dashoffset: -225;
-      }
+  66% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
 
-      86% {
-        stroke-dasharray: 40 400;
-        stroke-width: 30;
-        stroke-dashoffset: -395;
-      }
+  86% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
 
-      94%,
-      to {
-        stroke-dasharray: 0 440;
-        stroke-width: 20;
-        stroke-dashoffset: -440;
-      }
-    }
+  94%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
+}
 
-    @keyframes ringD {
-      from,
-      8% {
-        stroke-dasharray: 0 440;
-        stroke-width: 20;
-        stroke-dashoffset: 0;
-      }
+@keyframes ringD {
+  from,
+  8% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: 0;
+  }
 
-      16% {
-        stroke-dasharray: 40 400;
-        stroke-width: 30;
-        stroke-dashoffset: -5;
-      }
+  16% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -5;
+  }
 
-      36% {
-        stroke-dasharray: 40 400;
-        stroke-width: 30;
-        stroke-dashoffset: -175;
-      }
+  36% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -175;
+  }
 
-      44%,
-      50% {
-        stroke-dasharray: 0 440;
-        stroke-width: 20;
-        stroke-dashoffset: -220;
-      }
+  44%,
+  50% {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -220;
+  }
 
-      58% {
-        stroke-dasharray: 40 400;
-        stroke-width: 30;
-        stroke-dashoffset: -225;
-      }
+  58% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -225;
+  }
 
-      78% {
-        stroke-dasharray: 40 400;
-        stroke-width: 30;
-        stroke-dashoffset: -395;
-      }
+  78% {
+    stroke-dasharray: 40 400;
+    stroke-width: 30;
+    stroke-dashoffset: -395;
+  }
 
-      86%,
-      to {
-        stroke-dasharray: 0 440;
-        stroke-width: 20;
-        stroke-dashoffset: -440;
-      }
-    }
+  86%,
+  to {
+    stroke-dasharray: 0 440;
+    stroke-width: 20;
+    stroke-dashoffset: -440;
+  }
+}
+.react-resizable {
+  position: relative;
+  width: 100%;
+}
+.react-resizable.selected {
+  box-shadow: 0 0 0 2px #2351c4;
+  border-radius: 0.5rem;
+}
+.react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iMWVtIiBoZWlnaHQ9IjFlbSI+DQogIDxkZWZzPg0KICAgIDxmaWx0ZXIgaWQ9ImRyb3BTaGFkb3ciPg0KICAgICAgPGZlRHJvcFNoYWRvdyBkeD0iLTMiIGR5PSItMyIgc3RkRGV2aWF0aW9uPSI1IiBmbG9vZC1jb2xvcj0iIzFlMTkxOSIgZmxvb2Qtb3BhY2l0eT0iMC41Ii8+DQogICAgICA8ZmVEcm9wU2hhZG93IGR4PSIzIiBkeT0iMyIgc3RkRGV2aWF0aW9uPSI1IiBmbG9vZC1jb2xvcj0iIzFlMTkxOSIgZmxvb2Qtb3BhY2l0eT0iMC41Ii8+DQogICAgPC9maWx0ZXI+DQogIDwvZGVmcz4NCiAgPGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiByPSIyNDgiIGZpbGw9IiNmZmYiIGZpbHRlcj0idXJsKCNkcm9wU2hhZG93KSIvPg0KPC9zdmc+DQo=);
+  background-position: bottom right;
+  padding: 0 3px 3px 0;
+}
+.react-resizable-handle-sw {
+  bottom: 0;
+  left: -10px;
+  cursor: sw-resize;
+  /* transform: rotate(45deg); */
+  bottom: -10px;
+  /* transform: rotate(90deg); */
+}
+.react-resizable-handle-se {
+  bottom: -10px;
+  right: -10px;
+  cursor: se-resize;
+}
+.react-resizable-handle-nw {
+  top: -10px;
+  left: -10px;
+  cursor: nw-resize;
+  /* transform: rotate(180deg); */
+}
+.react-resizable-handle-ne {
+  top: -10px;
+  right: -10px;
+  cursor: ne-resize;
+  /* transform: rotate(270deg); */
+}
+.react-resizable-handle-w,
+.react-resizable-handle-e {
+  top: 50%;
+  margin-top: -10px;
+  cursor: ew-resize;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4NCiAgPGRlZnM+DQogICAgPGZpbHRlciBpZD0ic2hhZG93Ij4NCiAgICAgIDxmZURyb3BTaGFkb3cgZHg9IjAiIGR5PSItOCIgc3RkRGV2aWF0aW9uPSI0IiBmbG9vZC1jb2xvcj0iIzAwMDAwMCIgZmxvb2Qtb3BhY2l0eT0iMC4zIi8+DQogICAgICA8ZmVEcm9wU2hhZG93IGR4PSIwIiBkeT0iOCIgc3RkRGV2aWF0aW9uPSI0IiBmbG9vZC1jb2xvcj0iIzAwMDAwMCIgZmxvb2Qtb3BhY2l0eT0iMC4zIi8+DQogICAgPC9maWx0ZXI+DQogIDwvZGVmcz4NCiAgPHJlY3QgeD0iNjQiIHk9IjIyNCIgd2lkdGg9IjM4NCIgaGVpZ2h0PSI2NCIgcng9IjMyIiByeT0iMzIiIGZpbGw9IiNmZmYiIGZpbHRlcj0idXJsKCNzaGFkb3cpIi8+DQo8L3N2Zz4=);
+  transform: rotate(90deg) scale(2);
+}
+.react-resizable-handle-w {
+  left: -14px;
+  /* transform: rotate(135deg); */
+}
+.react-resizable-handle-e {
+  right: -7.2px;
+  /* transform: rotate(315deg); */
+}
+.react-resizable-handle-n,
+.react-resizable-handle-s {
+  left: 50%;
+  margin-left: -10px;
+  cursor: ns-resize;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4NCiAgPGRlZnM+DQogICAgPGZpbHRlciBpZD0ic2hhZG93Ij4NCiAgICAgIDxmZURyb3BTaGFkb3cgZHg9IjAiIGR5PSItOCIgc3RkRGV2aWF0aW9uPSI0IiBmbG9vZC1jb2xvcj0iIzAwMDAwMCIgZmxvb2Qtb3BhY2l0eT0iMC4zIi8+DQogICAgICA8ZmVEcm9wU2hhZG93IGR4PSIwIiBkeT0iOCIgc3RkRGV2aWF0aW9uPSI0IiBmbG9vZC1jb2xvcj0iIzAwMDAwMCIgZmxvb2Qtb3BhY2l0eT0iMC4zIi8+DQogICAgPC9maWx0ZXI+DQogIDwvZGVmcz4NCiAgPHJlY3QgeD0iNjQiIHk9IjIyNCIgd2lkdGg9IjM4NCIgaGVpZ2h0PSI2NCIgcng9IjMyIiByeT0iMzIiIGZpbGw9IiNmZmYiIGZpbHRlcj0idXJsKCNzaGFkb3cpIi8+DQo8L3N2Zz4=);
+  transform: scale(2);
+}
+.react-resizable-handle-n {
+  top: -8px;
+  /* transform: rotate(225deg); */
+}
+.react-resizable-handle-s {
+  bottom: -14px;
+  /* transform: rotate(45deg); */
+}
