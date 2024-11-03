@@ -260,7 +260,7 @@
 }
 .react-resizable {
   position: relative;
-  width: 100%;
+
 }
 .react-resizable.selected {
   box-shadow: 0 0 0 2px #2351c4;
