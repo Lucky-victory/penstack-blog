@@ -22,6 +22,16 @@ export async function GET(req: NextRequest) {
       limit: limit,
       orderBy: [desc(posts.updated_at), desc(posts?.published_at)],
       with: {
+        views: {
+          columns: { id: true },
+        },
+        featured_image: {
+          columns: {
+            url: true,
+            alt_text: true,
+            caption: true,
+          },
+        },
         category: {
           columns: {
             name: true,
@@ -38,9 +48,16 @@ export async function GET(req: NextRequest) {
         },
       },
     });
-
+    const transformedPosts = _posts.map((post) => {
+      const { views, ...postWithoutViews } = post;
+      const viewsCount = views.length;
+      return {
+        ...postWithoutViews,
+        views: { count: viewsCount },
+      };
+    });
     return NextResponse.json({
-      data: _posts,
+      data: transformedPosts,
       message: "All posts fetched successfully",
     });
   } catch (error: any) {

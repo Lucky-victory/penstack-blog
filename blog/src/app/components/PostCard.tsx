@@ -42,7 +42,10 @@ export default function PostCard({
     >
       <Box position="relative">
         <Image
-          src={post.featured_image?.src ?? "https://picsum.photos/500/400"}
+          src={
+            (post.featured_image?.url as string) ||
+            "https://picsum.photos/500/400"
+          }
           alt={post.featured_image?.alt_text}
           objectFit="cover"
           height="200"

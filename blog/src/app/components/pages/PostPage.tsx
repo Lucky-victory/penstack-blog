@@ -76,7 +76,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             </Box>
 
             <Box
-              mt={{ base: -20, md: -24 }}
+              mt={{ base: -16, md: -20 }}
               pos={"relative"}
               px={{ base: 2, sm: 3, md: 3, lg: 5 }}
               zIndex={2}

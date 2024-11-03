@@ -7,21 +7,14 @@ import { postViews } from "@/src/db/schemas";
 import { sql } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { headers } from "next/headers";
+
 async function getData(slug: string, fromMetadata: boolean = false) {
   try {
-    const headersList = headers();
-    const session = await getServerSession();
-    const referrer = headersList.get("referer") || "";
-    const userAgent = headersList.get("user-agent") || "";
-
     const post = await db.query.posts.findFirst({
       where: (posts, { eq }) => eq(posts.slug, slug),
       with: {
         views: {
-          columns: {},
-          extras: {
-            count: sql<number>`COUNT(*)`.as("count"),
-          },
+          columns: { id: true },
         },
         featured_image: {
           columns: {
@@ -58,19 +51,18 @@ async function getData(slug: string, fromMetadata: boolean = false) {
       },
     });
     const tags = post?.tags?.length ? post?.tags.map((t) => t.tag) : [];
-    if (!post) return notFound();
-    if (!fromMetadata) {
-      await db.insert(postViews).values({
-        viewed_at: sql`NOW()`,
-        user_agent: userAgent,
-        post_id: post?.id,
-        user_id: session?.user?.id,
-        referrer: referrer,
-      });
-    }
+    console.log(post);
+    const viewsCount = post?.views?.length;
 
-    return { ...post, tags };
+    if (!post) return notFound();
+
+    const transformedPost = { ...post, tags, views: { count: viewsCount } };
+    console.log(transformedPost);
+
+    return transformedPost;
   } catch (error) {
+    console.log(error);
+
     return null;
   }
 }
@@ -106,9 +98,20 @@ export async function generateMetadata(
 }
 
 export default async function Page({ params, searchParams }: Props) {
+  const headersL = await headers();
+  const session = await getServerSession();
+  const referrer = headersL.get("referer") || "";
+  const userAgent = headersL.get("user-agent") || "";
   const slug = params.slug;
   const postSlug = slug[slug.length - 1];
   const post = await getData(postSlug);
+  await db.insert(postViews).values({
+    viewed_at: sql`NOW()`,
+    user_agent: userAgent,
+    post_id: post?.id as number,
+    user_id: session?.user?.id as number,
+    referrer: referrer,
+  });
 
   return <PostPage post={post as any} />;
 }
