@@ -57,7 +57,9 @@ export const SidebarContent = ({
   editorCounts,
   onPublish = () => {},
   onDraft = () => {},
+  isSubmitting,
 }: {
+  isSubmitting?: boolean;
   formik: ReturnType<typeof useFormik<PostSelect>>;
   updatePost: (updates: Partial<PostInsert>) => void;
   categories: { name: string; id?: number }[];
@@ -128,6 +130,9 @@ export const SidebarContent = ({
              }}>Save draft</Button> */}
             <Button
               size={"sm"}
+              isDisabled={isSubmitting}
+              isLoading={isSubmitting}
+              loadingText={"publishing..."}
               flex={1}
               rounded={"full"}
               onClick={() => {

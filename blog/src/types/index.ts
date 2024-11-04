@@ -28,11 +28,7 @@ export type PostSelect = InferSelectModel<typeof posts> & {
     alt_text?: string;
     caption?: string;
   } | null;
-  author: {
-    name: string;
-    avatar: string;
-    username: string;
-  };
+  author: { id: number; name: string; avatar: string; username: string };
   category?: {
     id: number;
     slug: string;

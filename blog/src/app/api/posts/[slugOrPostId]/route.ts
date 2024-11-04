@@ -34,7 +34,7 @@ export async function GET(
         author: {
           columns: {
             name: true,
-            username: true,
+            username: true,id:true,
 
             avatar: true,
           },

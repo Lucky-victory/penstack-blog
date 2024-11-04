@@ -1,36 +1,43 @@
-"use client";
-import Highlight from "@tiptap/extension-highlight";
-import TextAlign from "@tiptap/extension-text-align";
+import {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from "react";
 import { Editor, EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
+import Highlight from "@tiptap/extension-highlight";
+import TextAlign from "@tiptap/extension-text-align";
 import Typography from "@tiptap/extension-typography";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import CharacterCount from "@tiptap/extension-character-count";
 import { Stack, useColorModeValue } from "@chakra-ui/react";
 import { MenuBar } from "./MenuBar";
 import { useHTMLToMarkdownConverter } from "@/src/hooks";
-import Placeholder from "@tiptap/extension-placeholder";
-import CharacterCount from "@tiptap/extension-character-count";
 import { TableOfContents } from "@/src/lib/editor/extensions/toc";
 import { Media } from "@/src/lib/editor/extensions/media";
-type TextEditorHandle = {
+
+export type TextEditorHandle = {
   resetContent: () => void;
+  getContent: () => string;
+  setContent: (content: string) => void;
 };
 
-const TextEditor = forwardRef<
-  TextEditorHandle,
-  {
-    onContentChange: (content: {
-      text: string;
-      html?: string;
-      markdown: string;
-    }) => void;
-    initialValue: string;
-    returnMarkdown?: boolean;
-    getCounts?: (counts: { words: number; characters: number }) => void;
-  }
->(
+type TextEditorProps = {
+  onContentChange: (content: {
+    text: string;
+    html?: string;
+    markdown: string;
+  }) => void;
+  initialValue: string;
+  returnMarkdown?: boolean;
+  getCounts?: (counts: { words: number; characters: number }) => void;
+};
+
+const TextEditor = forwardRef<TextEditorHandle, TextEditorProps>(
   (
     { onContentChange, initialValue, returnMarkdown = true, getCounts },
     ref
@@ -44,7 +51,6 @@ const TextEditor = forwardRef<
     const extensions = [
       StarterKit,
       Placeholder.configure({
-        // Use a placeholder:
         placeholder: "Write something …",
       }),
       Link.configure({
@@ -55,13 +61,12 @@ const TextEditor = forwardRef<
         openOnClick: false,
         autolink: true,
       }),
-
       Typography,
       Image,
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
-      Highlight.configure({}),
+      Highlight,
       CharacterCount,
       TableOfContents,
       Media,
@@ -72,64 +77,63 @@ const TextEditor = forwardRef<
       () => ({
         resetContent: () => {
           setEditorContent(initialValue || "");
-          editor?.commands?.clearContent();
+          editor?.commands?.setContent(initialValue || "");
+        },
+        getContent: () => editor?.getHTML() || "",
+        setContent: (content: string) => {
+          setEditorContent(content);
+          editor?.commands?.setContent(content);
         },
       }),
-      [initialValue]
+      [editor, initialValue]
     );
 
-    const getEditorContent = useCallback(
-      ({
-        text,
-        html,
-        markdown,
-      }: {
-        text: string;
-        html?: string;
-        markdown: string;
-      }) => {
-        onContentChange({ text, html, markdown });
-      },
-      [onContentChange]
-    );
-
-    function handleEditorUpdate(editor: Editor) {
-      const html = editor.getHTML();
-      setEditorContent(html);
-      if (getCounts) {
-        getCounts?.({
-          characters: editor.storage.characterCount.characters(),
-          words: editor.storage.characterCount.words(),
-        });
+    useEffect(() => {
+      if (initialValue !== editorContent) {
+        setEditorContent(initialValue);
       }
+    }, [initialValue]);
 
-      const markdown = updateHtml(html);
+    const handleEditorUpdate = useCallback(
+      (editor: Editor) => {
+        const html = editor.getHTML();
+        setEditorContent(html);
 
-      getEditorContent({
-        html: html,
-        text: editor.getText().replace(/\n+/g, " "),
-        markdown,
-      });
-    }
+        if (getCounts) {
+          getCounts({
+            characters: editor.storage.characterCount.characters(),
+            words: editor.storage.characterCount.words(),
+          });
+        }
+
+        const markdown = updateHtml(html);
+        onContentChange({
+          html,
+          text: editor.getText().replace(/\n+/g, " "),
+          markdown,
+        });
+      },
+      [getCounts, onContentChange, updateHtml]
+    );
 
     return (
       <Stack
-        h={"full"}
-        overflowY={"auto"}
+        h="full"
+        overflowY="auto"
         minH={300}
         bg={useColorModeValue("#f0f8ff", "gray.700")}
-        maxH={"full"}
+        maxH="full"
       >
         <EditorProvider
           editorProps={{ attributes: { class: "tiptap-post-editor" } }}
           enablePasteRules={true}
           onUpdate={({ editor }) => {
-            handleEditorUpdate(editor as import("@tiptap/react").Editor);
+            handleEditorUpdate(editor as Editor);
           }}
           slotBefore={<MenuBar />}
           content={editorContent}
           extensions={extensions}
-        ></EditorProvider>
+        />
       </Stack>
     );
   }

@@ -328,7 +328,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               rounded={{ base: 20, md: 24 }}
             >
               <VStack align={"start"} px={{ base: 2, md: 3 }} py={4}>
-                <Heading size="md">About the Author</Heading>
+                <Heading size="md">Written By</Heading>
                 <Flex alignItems="center" mb={4}>
                   <Avatar
                     src={post.author.avatar}

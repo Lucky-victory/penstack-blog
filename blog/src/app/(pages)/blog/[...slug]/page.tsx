@@ -54,7 +54,7 @@ async function getData(slug: string, fromMetadata: boolean = false) {
     console.log(post);
     const viewsCount = post?.views?.length;
 
-    if (!post) return notFound();
+    if (!post) return null;
 
     const transformedPost = { ...post, tags, views: { count: viewsCount } };
     console.log(transformedPost);
@@ -80,6 +80,7 @@ export async function generateMetadata(
   const postSlug = slug[slug.length - 1];
 
   const post = await getData(postSlug, true);
+  if (!post) return notFound();
 
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
@@ -105,6 +106,7 @@ export default async function Page({ params, searchParams }: Props) {
   const slug = params.slug;
   const postSlug = slug[slug.length - 1];
   const post = await getData(postSlug);
+  if (!post) return notFound();
   await db.insert(postViews).values({
     viewed_at: sql`NOW()`,
     user_agent: userAgent,
