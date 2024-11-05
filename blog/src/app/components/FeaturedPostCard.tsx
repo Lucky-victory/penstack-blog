@@ -1,5 +1,5 @@
 import { useFeaturedPost } from "@/src/hooks/useFeaturedPost";
-import { formatPostPermalink } from "@/src/utils";
+import { formatPostPermalink, nativeFormatDate } from "@/src/utils";
 import {
   Avatar,
   Box,
@@ -9,15 +9,17 @@ import {
   Image,
   LinkBox,
   LinkOverlay,
+  Stack,
   Tag,
   Text,
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
+import Loader from "./Loader";
+import { Link } from "@chakra-ui/next-js";
 
 export default function FeaturedPostCard() {
-  const { featuredPost } = useFeaturedPost();
-  const bgColor = useColorModeValue("gray.50", "gray.900");
+  const { featuredPost, loading } = useFeaturedPost();
   const cardBgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
@@ -30,25 +32,29 @@ export default function FeaturedPostCard() {
         overflow="hidden"
         borderWidth="1px"
         borderColor={borderColor}
+        boxShadow={"md"}
         transition="all 0.2s"
         _hover={{ boxShadow: "lg" }}
+        minH={400}
       >
+        {loading && (
+          <VStack justify={"center"} height={"400"}>
+            <Loader />
+          </VStack>
+        )}
         {featuredPost && (
           <Grid
-            templateColumns={{ base: "1fr", lg: "2fr 2fr" }}
+            templateColumns={{ base: "1fr", lg: "3fr 2fr" }}
             gap={6}
             shadow="md"
             p={4}
-            minH={400}
+            minH={450}
           >
-            <Box
-              position="relative"
-              height={{ base: "300px", md: 400, lg: "auto" }}
-            >
+            <Box position="relative" height={{ base: "300px", md: "auto" }}>
               <Image
                 rounded="2xl"
-                src={featuredPost.featured_image.url}
-                alt={featuredPost.featured_image.alt_text}
+                src={featuredPost?.featured_image?.url}
+                alt={featuredPost?.featured_image?.alt_text}
                 className="w-full h-full object-cover"
               />
             </Box>
@@ -76,38 +82,32 @@ export default function FeaturedPostCard() {
                 )}
                 <LinkOverlay href={formatPostPermalink(featuredPost)}>
                   <Heading size="2xl" mb={4}>
-                    {featuredPost.title}
+                    {featuredPost.title} lorem ipsum dolor sit amet
                   </Heading>
                 </LinkOverlay>
                 <Text color={textColor} fontSize="lg">
-                  {featuredPost.summary}
+                  {featuredPost.summary} another summary lorem ipsum dolor
                 </Text>
               </VStack>
-              <HStack
-                spacing={4}
-                mt={4}
-                bg={"gray.100"}
-                w={"full"}
-                rounded={"xl"}
-                p={3}
-              >
-                <Avatar
-                  borderRadius={"md"}
-                  boxSize={"42px"}
-                  src={featuredPost.author?.avatar}
-                  name={featuredPost.author?.name}
-                />
-                <VStack align="start" spacing={0}>
-                  <Text fontWeight="bold">{featuredPost.author.name}</Text>
-                  <Text color={textColor} fontSize="sm">
-                    {new Date(featuredPost.published_at).toLocaleDateString(
-                      "en-US",
-                      {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      }
-                    )}
+              <HStack spacing={2}>
+                <Link href={`/author/${featuredPost.author?.username}`}>
+                  <Avatar
+                    src={featuredPost?.author?.avatar}
+                    name={featuredPost?.author?.name}
+                    borderRadius="md"
+                    boxSize="42px"
+                  />
+                </Link>
+                <VStack spacing={0} align="start">
+                  <Link href={`/author/${featuredPost.author?.username}`}>
+                    <Text fontWeight="medium" fontSize="sm">
+                      {featuredPost?.author?.name}
+                    </Text>
+                  </Link>
+                  <Text fontSize="xs" color="gray.500">
+                    {featuredPost?.published_at
+                      ? nativeFormatDate(featuredPost.published_at)
+                      : nativeFormatDate(featuredPost.updated_at as Date)}
                   </Text>
                 </VStack>
               </HStack>

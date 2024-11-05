@@ -252,3 +252,11 @@ export function formatBytes(bytes: number) {
   if (!bytes || typeof bytes !== "number") return 0;
   return (bytes / 1024 / 1024).toFixed(2) + " MB";
 }
+
+export const nativeFormatDate = (date: string | Date) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};

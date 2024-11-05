@@ -1,5 +1,5 @@
 import { PostSelect } from "@/src/types";
-import { formatPostPermalink } from "@/src/utils";
+import { formatPostPermalink, nativeFormatDate } from "@/src/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Avatar,
@@ -29,14 +29,6 @@ export default function NewPostCard({
 }) {
   const bgColor = useColorModeValue("white", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.200");
-
-  const formatDate = (date: string | Date) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
 
   return (
     <Stack
@@ -115,8 +107,8 @@ export default function NewPostCard({
                   </Link>
                   <Text fontSize="xs" color="gray.500">
                     {post?.published_at
-                      ? formatDate(post.published_at)
-                      : formatDate(post.updated_at as Date)}
+                      ? nativeFormatDate(post.published_at)
+                      : nativeFormatDate(post.updated_at as Date)}
                   </Text>
                 </VStack>
               </HStack>
