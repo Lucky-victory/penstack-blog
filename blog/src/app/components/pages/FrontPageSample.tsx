@@ -1,23 +1,8 @@
 "use client";
 import React from "react";
-import {
-  Box,
-  Grid,
-  Heading,
-  Badge,
-  SimpleGrid,
-  VStack,
-  Text,
-  LinkOverlay,
-  Tag,
-  Image,
-  LinkBox,
-  useColorModeValue,
-  HStack,
-  Avatar,
-} from "@chakra-ui/react";
+import { Box, Grid, Heading, Badge } from "@chakra-ui/react";
 import NewPostCard from "../NewPostCard";
-import { formatPostPermalink } from "@/src/utils";
+import FeaturedPostCard from "../FeaturedPostCard";
 
 const LatestNews = () => {
   const news = [
@@ -145,81 +130,10 @@ const LatestNews = () => {
       updated_at: "2023-06-03",
     },
   ];
-  const featuredPost = news[0];
-  const bgColor = useColorModeValue("gray.50", "gray.900");
-  const cardBgColor = useColorModeValue("white", "gray.800");
-  const borderColor = useColorModeValue("gray.200", "gray.700");
-  const textColor = useColorModeValue("gray.600", "gray.300");
 
   return (
     <Box maxW="7xl" mx="auto" px={4} py={8} bg={"gray.100"}>
-      <LinkBox mb={12}>
-        <Box
-          bg={cardBgColor}
-          borderRadius="3xl"
-          overflow="hidden"
-          borderWidth="1px"
-          borderColor={borderColor}
-          transition="all 0.2s"
-          _hover={{ boxShadow: "lg" }}
-        >
-          <Grid templateColumns={{ base: "1fr", lg: "2fr 2fr" }} gap={6}>
-            <Box
-              position="relative"
-              height={{ base: "300px", md: 400, lg: "auto" }}
-            >
-              <Image
-                src={featuredPost.featured_image.url}
-                alt={featuredPost.featured_image.alt_text}
-                className="w-full h-full object-cover"
-              />
-            </Box>
-            <VStack align="start" spacing={4} p={6} justify="center">
-              <Tag
-                size="md"
-                colorScheme="blue"
-                borderRadius="md"
-                px={3}
-                py={1}
-                bg={"blue.50"}
-                color={"blue.500"}
-                textTransform={"uppercase"}
-              >
-                {featuredPost.category.name}
-              </Tag>
-              <LinkOverlay href={formatPostPermalink(featuredPost)}>
-                <Heading size="2xl" mb={4}>
-                  {featuredPost.title}
-                </Heading>
-              </LinkOverlay>
-              <Text color={textColor} fontSize="lg">
-                {featuredPost.summary}
-              </Text>
-              <HStack spacing={4} mt={4}>
-                <Avatar
-                  borderRadius={"md"}
-                  boxSize={"42px"}
-                  src={featuredPost.author?.avatar}
-                  name={featuredPost.author?.name}
-                />
-                <VStack align="start" spacing={0}>
-                  <Text fontWeight="bold">{featuredPost.author.name}</Text>
-                  <Text color={textColor} fontSize="sm">
-                    {new Date(featuredPost.published_at).toLocaleDateString(
-                      "en-US",
-                      {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      }
-                    )}
-                  </Text>
-                </VStack>
-              </HStack>
-            </VStack>
-          </Grid>
-        </Box>
-      </LinkBox>
+      <FeaturedPostCard />
       <Heading mb={8} size="lg">
         Latest News
       </Heading>
