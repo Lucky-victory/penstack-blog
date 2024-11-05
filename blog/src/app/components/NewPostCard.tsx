@@ -1,4 +1,5 @@
 import { PostSelect } from "@/src/types";
+import { formatPostPermalink } from "@/src/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Avatar,
@@ -45,27 +46,12 @@ export default function NewPostCard({
       position="relative"
       shadow="md"
       p={3}
+      transition="all 0.2s"
+      _hover={{ transform: "translateY(-4px)", boxShadow: "lg" }}
       spacing={4}
       as={LinkBox}
     >
       <Box pos="relative" h="200px">
-        {post?.category && post?.category?.name && (
-          <Box position="absolute" top={3} right={3} zIndex={1}>
-            <Tag
-              size="md"
-              colorScheme="blue"
-              bg="white"
-              color="blue.500"
-              borderRadius="full"
-              px={3}
-              py={1}
-              ring={1}
-              ringColor="blue.500"
-            >
-              {post.category.name}
-            </Tag>
-          </Box>
-        )}
         <Image
           src={post.featured_image?.url || "https://picsum.photos/500/400"}
           alt={post.featured_image?.alt_text || (post.title as string)}
@@ -75,10 +61,25 @@ export default function NewPostCard({
           rounded="2xl"
         />
       </Box>
-
+      {post?.category && post?.category?.name && (
+        <Box>
+          <Tag
+            size="md"
+            colorScheme="blue"
+            borderRadius="md"
+            px={3}
+            py={1}
+            bg={"blue.50"}
+            color={"blue.500"}
+            textTransform={"uppercase"}
+          >
+            {post.category.name}
+          </Tag>
+        </Box>
+      )}
       <VStack align="stretch" flex={1} justify="space-between" spacing={2}>
         <Box p={2}>
-          <LinkOverlay href={`/post/${post.title}`}>
+          <LinkOverlay href={formatPostPermalink(post)}>
             <Heading size="md" noOfLines={2} mb={2}>
               {post.title}
             </Heading>
