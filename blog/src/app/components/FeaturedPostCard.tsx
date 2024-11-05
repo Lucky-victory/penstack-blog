@@ -21,7 +21,7 @@ import { Link } from "@chakra-ui/next-js";
 export default function FeaturedPostCard() {
   const { featuredPost, loading } = useFeaturedPost();
   const cardBgColor = useColorModeValue("white", "gray.800");
-  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const borderColor = useColorModeValue("gray.300", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
 
   return (
@@ -29,8 +29,7 @@ export default function FeaturedPostCard() {
       <Box
         bg={cardBgColor}
         borderRadius="3xl"
-        overflow="hidden"
-        borderWidth="1px"
+        borderWidth={1}
         borderColor={borderColor}
         boxShadow={"md"}
         transition="all 0.2s"
@@ -46,7 +45,6 @@ export default function FeaturedPostCard() {
           <Grid
             templateColumns={{ base: "1fr", lg: "3fr 2fr" }}
             gap={6}
-            shadow="md"
             p={4}
             minH={450}
           >

@@ -4,6 +4,7 @@ import { Box, Grid, Heading, Badge } from "@chakra-ui/react";
 import NewPostCard from "../NewPostCard";
 import FeaturedPostCard from "../FeaturedPostCard";
 import { usePosts } from "@/src/hooks";
+import { NewPostsCards } from "../NewPostCards";
 
 const FrontPage = () => {
   const { posts } = usePosts();
@@ -27,7 +28,7 @@ const FrontPage = () => {
             <NewPostCard key={index} post={item as any} />
           ))}
       </Grid>
-
+      <NewPostsCards />
       <Box
         mt={8}
         p={6}

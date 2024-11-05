@@ -2,8 +2,9 @@
 import { usePosts } from "@/src/hooks";
 import { Grid, useColorModeValue } from "@chakra-ui/react";
 import PostCard from "./PostCard";
-import { PostCardLoader } from "./PostCardLoader";
-export function PostsCards({
+import { NewPostCardLoader } from "./NewPostCardLoader";
+import NewPostCard from "./NewPostCard";
+export function NewPostsCards({
   maxW,
 }: {
   maxW?: string | number | Record<any, any>;
@@ -18,9 +19,9 @@ export function PostsCards({
     >
       {loading
         ? Array.from({ length: 4 }).map((_, index) => (
-            <PostCardLoader key={index} />
+            <NewPostCardLoader key={index} />
           ))
-        : posts?.map((post) => <PostCard key={post.id} post={post} />)}
+        : posts?.map((post) => <NewPostCard key={post.id} post={post} />)}
     </Grid>
   );
 }

@@ -170,7 +170,7 @@ const FrontPage = () => {
             width="full"
           >
             {recentPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
+              <PostCard key={post.id} post={post as any} />
             ))}
           </Grid>
         </VStack>

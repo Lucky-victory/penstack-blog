@@ -34,6 +34,8 @@ export default function NewPostCard({
     <Stack
       borderRadius="2xl"
       overflow="hidden"
+      borderWidth={1}
+      borderColor={"gray.300"}
       bg={bgColor}
       position="relative"
       shadow="md"
