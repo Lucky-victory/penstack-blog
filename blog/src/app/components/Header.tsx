@@ -70,7 +70,7 @@ const Header = () => {
         "rgba(26, 32, 44, 0.8)"
       )}
     >
-      <Container maxW="7xl" py={4}>
+      <Container maxW="1400" py={4}>
         <HStack justify="space-between" align="center">
           {/* Logo */}
           <Text
