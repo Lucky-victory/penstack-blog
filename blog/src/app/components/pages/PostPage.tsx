@@ -32,7 +32,7 @@ interface FeaturedImage {
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   const postContentBg = useColorModeValue("white", "gray.900");
-  const imageWrapBg = useColorModeValue("gray.100", "gray.700");
+  const imageWrapBg = useColorModeValue("gray.200", "gray.800");
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     if (post) {
@@ -52,7 +52,6 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
         <Flex
           alignItems={{ base: "normal", lg: "flex-start" }}
           py={8}
-          pr={3}
           pos={"relative"}
           direction={{ base: "column", lg: "row" }}
           flexWrap={{ base: "wrap", lg: "nowrap" }}
@@ -60,8 +59,8 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
           maxW={1400}
           mx="auto"
         >
-          <Container maxW="5xl" px={{ base: 3, sm: 4 }}>
-            <Box minH={300} rounded={{ base: 20, md: 24 }}>
+          <Container maxW="6xl">
+            <Box minH={300}>
               <ChakraImage
                 src={
                   post.featured_image!?.url ?? "https://picsum.photos/1200/600"
@@ -72,19 +71,19 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                 maxH={600}
                 minH={"300px"}
                 objectFit={"cover"}
-                // rounded={{ base: 20, md: 24 }}
+                roundedTop={{ base: 20, md: 24 }}
               />
             </Box>
 
             <Box
               // mt={{ base: -16, md: -20 }}
               pos={"relative"}
-              px={{ base: 2, sm: 3, md: 3, lg: 5 }}
+              // px={{ base: 2, sm: 3, md: 3, lg: 5 }}
               zIndex={2}
             >
               <Box
                 bg={postContentBg}
-                rounded={{ base: 20, md: 24 }}
+                // rounded={{ base: 20, md: 24 }}
                 p={{ base: 2, sm: 3, md: 4, lg: 6 }}
               >
                 <Flex gap={{ base: 4, md: 6 }}>
@@ -128,11 +127,11 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                       </Text>
                     </Box>
                   </VStack>
-                  <Box as="article">
-                    <HStack my={4} gap={{ base: 5, md: 8 }} ml={0}>
+                  <Box as="article" px={4}>
+                    <HStack my={4} gap={{ base: 5, md: 7 }} ml={0}>
                       {post?.category && (
                         <Text as="span" color="gray.500" fontWeight="semibold">
-                          {post?.category?.name}
+                          {post?.category?.name || "Technology"}
                         </Text>
                       )}
 
@@ -156,7 +155,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
           </Flex> */}
                     </Box>
 
-                    <Box className="prose" maxW="none">
+                    <Box className="prose" maxW="none" pb={8}>
                       <Text
                         fontSize="xl"
                         fontWeight="semibold"
@@ -182,12 +181,13 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             </Box>
 
             <Box
-              mt={-10}
+              // mt={-10}
               pos={"relative"}
               px={{ base: 3, md: 4 }}
-              pt={10}
+              py={{ base: 4, md: 6 }}
+              // pt={10}
               bg={imageWrapBg}
-              rounded={{ base: 20, md: 24 }}
+              roundedBottom={{ base: 20, md: 24 }}
             >
               <VStack align={"start"} px={{ base: 2, md: 3 }} py={4}>
                 <Heading size="md">Written By</Heading>
@@ -206,22 +206,22 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                 </Flex>
               </VStack>
             </Box>
-            <Box h={"2px"} bg={"gray.100"} my={5} />
           </Container>
-          <Box
-            // h={800}
-            flex={1}
-            bg={"gray.50"}
-            rounded={{ base: 20, lg: 24 }}
-            pos={{ base: "relative", lg: "sticky" }}
-            top={{ base: 0, lg: 8 }}
-            p={3}
-          >
-            <Heading as="h2" size="lg" mb={4}>
-              Related Posts
-            </Heading>
+          <Box px={3} py={4} flex={1}>
+            <Box
+              // h={800}
+              bg={"gray.50"}
+              rounded={{ base: 20, lg: 24 }}
+              pos={{ base: "relative", lg: "sticky" }}
+              top={{ base: 0, lg: 8 }}
+              p={3}
+            >
+              <Heading as="h2" size="lg" mb={4}>
+                Related Posts
+              </Heading>
 
-            <PostsCards />
+              <PostsCards />
+            </Box>
           </Box>
         </Flex>
       )}

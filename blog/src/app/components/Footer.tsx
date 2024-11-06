@@ -11,7 +11,7 @@ import {
 import { LuGithub, LuTwitter, LuMail } from "react-icons/lu";
 
 const Footer = () => {
-  const bgColor = useColorModeValue("gray.100", "gray.900");
+  const bgColor = useColorModeValue("gray.200", "gray.900");
   const textColor = useColorModeValue("gray.600", "gray.400");
   const hoverColor = useColorModeValue("gray.700", "gray.300");
 
