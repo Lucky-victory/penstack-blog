@@ -12,17 +12,17 @@ import { useState } from "react";
 import { useColorModeValue } from "@chakra-ui/react";
 import { LuSend } from "react-icons/lu";
 
-export const Newsletter = () => {
+export const Newsletter = ({ title }: { title?: string }) => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
-  const bgColor = useColorModeValue("blue.50", "gray.800");
+  const bgColor = useColorModeValue("blue.100", "gray.800");
   const formWrapBgColor = useColorModeValue("white", "black");
   const textColor = useColorModeValue("gray.600", "gray.300");
-
+  const headingColor = useColorModeValue("gray.900", "white");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("success");
-    // Handle newsletter subscription logic here
+    // TODO: #1 Handle newsletter subscription logic here
   };
 
   return (
@@ -30,11 +30,13 @@ export const Newsletter = () => {
       bg={bgColor}
       borderRadius="3xl"
       p={{ base: 4, md: 8 }}
-      mb={12}
+      // mb={12}
       shadow={"md"}
     >
       <VStack maxW="2xl" mx="auto" spacing={4}>
-        <Heading size="lg">Subscribe to My Newsletter</Heading>
+        <Heading size="lg" color={headingColor}>
+          {title || "Subscribe to Our Newsletter"}
+        </Heading>
         <Text color={textColor}>
           Get the latest articles and insights delivered directly to your inbox.
           No spam, unsubscribe at any time.
@@ -44,7 +46,7 @@ export const Newsletter = () => {
           borderRadius="2xl"
           w={"full"}
           p={{ base: 5, md: 8 }}
-          mb={8}
+          // mb={8}
         >
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <Flex

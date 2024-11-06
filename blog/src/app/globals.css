@@ -6,7 +6,9 @@
   html {
     font-family: var(--font-rubik);
   }
+  
 }
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -260,7 +262,6 @@
 }
 .react-resizable {
   position: relative;
-
 }
 .react-resizable.selected {
   box-shadow: 0 0 0 2px #2351c4;

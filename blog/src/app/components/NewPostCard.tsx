@@ -17,6 +17,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { LuBookmark } from "react-icons/lu";
+import { Newsletter } from "./NewsLetter";
 
 export default function NewPostCard({
   post,
@@ -27,15 +28,16 @@ export default function NewPostCard({
   showBookmark?: boolean;
   post: PostSelect;
 }) {
-  const bgColor = useColorModeValue("white", "gray.700");
-  const textColor = useColorModeValue("gray.600", "gray.200");
+  const bgColor = useColorModeValue("white", "gray.800");
+  const authorAreaBgColor = useColorModeValue("gray.100", "gray.700");
 
+  const borderColor = useColorModeValue("gray.300", "gray.700");
   return (
     <Stack
       borderRadius="2xl"
       overflow="hidden"
       borderWidth={1}
-      borderColor={"gray.300"}
+      borderColor={borderColor}
       bg={bgColor}
       position="relative"
       shadow="md"
@@ -87,7 +89,7 @@ export default function NewPostCard({
             justify="space-between"
             align="center"
             alignSelf={showAuthor ? undefined : "end"}
-            bg="gray.100"
+            bg={authorAreaBgColor}
             p={2}
             borderRadius="xl"
           >
