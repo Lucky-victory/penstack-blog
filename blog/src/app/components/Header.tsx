@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import {
   Box,
   Container,
@@ -21,6 +21,9 @@ import {
   useDisclosure,
   VStack,
   Divider,
+  InputGroup,
+  Input,
+  InputRightElement,
 } from "@chakra-ui/react";
 import {
   LuSun,
@@ -29,12 +32,16 @@ import {
   LuChevronDown,
   LuGithub,
   LuTwitter,
+  LuSearch,
 } from "react-icons/lu";
+import { useRouter } from "next/navigation";
+import { useQueryParams } from "@/src/hooks";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [searchValue, setSearchValue] = useState("");
+  const { queryParams, setQueryParam } = useQueryParams();
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("gray.700", "gray.200");
@@ -54,7 +61,20 @@ const Header = () => {
     { name: "Newsletter", href: "/newsletter" },
     { name: "About", href: "/about" },
   ];
+  const router = useRouter();
+  function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const searchQuery = formData.get("search");
+    router.push(`/search?query=${searchQuery}`);
+  }
+  function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    console.log(value);
 
+    setSearchValue(value);
+    setQueryParam("query", value);
+  }
   return (
     <Box
       as="header"
@@ -132,15 +152,28 @@ const Header = () => {
                 ))}
               </MenuList>
             </Menu>
-
-            <Button
-              as="a"
-              href="/search"
-              variant="ghost"
-              _hover={{ bg: hoverBgColor }}
-            >
-              Search
-            </Button>
+            {/* Search Area */}
+            <form onSubmit={handleFormSubmit}>
+              <InputGroup maxW="300px">
+                <Input
+                  placeholder="Search articles..."
+                  _placeholder={{ color: "gray.500" }}
+                  _hover={{ borderColor: hoverBgColor }}
+                  value={searchValue}
+                  borderRadius="md"
+                  name="search"
+                  onChange={handleInputChange}
+                />
+                <InputRightElement>
+                  <IconButton
+                    aria-label="Search"
+                    icon={<LuSearch size={16} />}
+                    variant="ghost"
+                    _hover={{ bg: hoverBgColor }}
+                  />
+                </InputRightElement>
+              </InputGroup>
+            </form>
           </HStack>
 
           {/* Right Side Actions */}
