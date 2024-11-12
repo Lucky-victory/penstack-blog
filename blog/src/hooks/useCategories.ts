@@ -13,7 +13,7 @@ export const useCategories = (
     queryKey: ["categories"],
     queryFn: async () => {
       const { data } = await axios.get<{
-        data: PostSelect[];
+        data: { id: number; name: string; slug: string }[];
         meta: {
           total: number;
           page: number;
@@ -26,5 +26,6 @@ export const useCategories = (
         meta: data?.meta,
       };
     },
+    staleTime: 1000 * 60 * 60 * 24,
   });
 };

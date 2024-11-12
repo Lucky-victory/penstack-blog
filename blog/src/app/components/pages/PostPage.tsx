@@ -193,6 +193,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                 <Heading size="md">Written By</Heading>
                 <Flex alignItems="center" mb={4}>
                   <Avatar
+                    rounded={"md"}
                     src={post.author.avatar}
                     name={post.author.name}
                     mr={4}

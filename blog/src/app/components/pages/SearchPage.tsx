@@ -33,7 +33,6 @@ const SearchResults = () => {
   const mutedColor = useColorModeValue("gray.600", "gray.400");
   const { data: categories } = useCategories({});
   const categoriesResults = categories?.results || [];
-  console.log(categoriesResults);
 
   const { queryParams, setQueryParam } = useQueryParams<{
     query: string;
@@ -81,7 +80,8 @@ const SearchResults = () => {
               bg={bgColor}
               borderColor={borderColor}
               onChange={handleSearch}
-              defaultValue={searchValue}
+              defaultValue={queryParams?.query}
+              value={searchValue}
               _hover={{
                 borderColor: useColorModeValue("blue.500", "blue.300"),
               }}
@@ -105,11 +105,16 @@ const SearchResults = () => {
             borderColor={borderColor}
             onChange={handleCategorySelect}
           >
-            <option value="1">React</option>
-            <option value="2">TypeScript</option>
-            <option value="nodejs">Node.js</option>
-            <option value="python">Python</option>
-            <option value="devops">DevOps</option>
+            {categoriesResults?.length > 0 &&
+              categoriesResults?.map((category) => (
+                <option
+                  key={category?.id}
+                  value={category?.id}
+                  data-slug={category?.slug}
+                >
+                  {category?.name}
+                </option>
+              ))}
           </Select>
           <Select
             onChange={handleSortSelect}

@@ -41,7 +41,7 @@ export default function NewPostCard({
       bg={bgColor}
       position="relative"
       shadow="md"
-      p={3}
+      p={4}
       transition="all 0.2s"
       _hover={{ transform: "translateY(-4px)", boxShadow: "lg" }}
       spacing={4}
@@ -117,12 +117,14 @@ export default function NewPostCard({
                 </VStack>
               </HStack>
             )}
-            <IconButton
-              icon={<LuBookmark size={18} />}
-              variant="ghost"
-              aria-label="Bookmark"
-              size="sm"
-            />
+            {showBookmark && (
+              <IconButton
+                icon={<LuBookmark size={18} />}
+                variant="ghost"
+                aria-label="Bookmark"
+                size="sm"
+              />
+            )}
           </HStack>
         )}
       </VStack>

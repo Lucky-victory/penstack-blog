@@ -51,13 +51,12 @@ async function getData(slug: string, fromMetadata: boolean = false) {
       },
     });
     const tags = post?.tags?.length ? post?.tags.map((t) => t.tag) : [];
-    console.log(post);
+
     const viewsCount = post?.views?.length;
 
     if (!post) return null;
 
     const transformedPost = { ...post, tags, views: { count: viewsCount } };
-    console.log(transformedPost);
 
     return transformedPost;
   } catch (error) {
