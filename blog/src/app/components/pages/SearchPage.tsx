@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Container,
@@ -17,17 +17,53 @@ import {
   useColorModeValue,
   Skeleton,
 } from "@chakra-ui/react";
-import { LuSearch, LuFilter } from "react-icons/lu";
+import { LuSearch } from "react-icons/lu";
 import { useQueryParams } from "@/src/hooks";
+import { useSearchResults } from "@/src/hooks/useSearchResults";
+import PostCard from "../PostCard";
+import { useCallback } from "react";
+import debounce from "lodash/debounce";
+import { useCategories } from "@/src/hooks/useCategories";
+import NewPostCard from "../NewPostCard";
 
 const SearchResults = () => {
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.700", "gray.200");
   const mutedColor = useColorModeValue("gray.600", "gray.400");
+  const { data: categories } = useCategories({});
+  const categoriesResults = categories?.results || [];
+  console.log(categoriesResults);
 
-  const { queryParams, setQueryParam } = useQueryParams<{ query: string }>();
+  const { queryParams, setQueryParam } = useQueryParams<{
+    query: string;
+    category?: string;
+    sort?: "relevant" | "recent" | "popular";
+    page?: number;
+  }>();
+  const [searchValue, setSearchValue] = useState(queryParams?.query || "");
 
+  const { data, isLoading } = useSearchResults({ queryParams });
+  const searchResults = data?.results || [];
+  const totalResult = data?.meta?.total;
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      setQueryParam("query", value);
+    }, 1000),
+    [setQueryParam]
+  );
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+    debouncedSearch(e.target.value);
+  };
+
+  const handleCategorySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setQueryParam("category", e.target.value);
+  };
+  const handleSortSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setQueryParam("sort", e.target.value);
+  };
   return (
     <Box
       bg={useColorModeValue("gray.50", "gray.900")}
@@ -44,7 +80,8 @@ const SearchResults = () => {
               placeholder="Search articles..."
               bg={bgColor}
               borderColor={borderColor}
-              value={queryParams?.query || ""}
+              onChange={handleSearch}
+              defaultValue={searchValue}
               _hover={{
                 borderColor: useColorModeValue("blue.500", "blue.300"),
               }}
@@ -66,14 +103,16 @@ const SearchResults = () => {
             maxW="200px"
             bg={bgColor}
             borderColor={borderColor}
+            onChange={handleCategorySelect}
           >
-            <option value="react">React</option>
-            <option value="typescript">TypeScript</option>
+            <option value="1">React</option>
+            <option value="2">TypeScript</option>
             <option value="nodejs">Node.js</option>
             <option value="python">Python</option>
             <option value="devops">DevOps</option>
           </Select>
           <Select
+            onChange={handleSortSelect}
             placeholder="Sort by"
             maxW="200px"
             bg={bgColor}
@@ -86,35 +125,48 @@ const SearchResults = () => {
         </HStack>
 
         {/* Results Count */}
-        <Text color={mutedColor} mb={6}>
-          Showing 15 results for "React Hooks"
-        </Text>
+        <Box>
+          {searchResults?.length > 0 && (
+            <Text color={mutedColor} mb={6}>
+              Showing {totalResult} results for{" "}
+              <Text as="span" fontWeight={500}>
+                &quot;{queryParams?.query}
+                &quot;
+              </Text>
+            </Text>
+          )}
+        </Box>
 
         {/* Results Grid */}
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-          {[...Array(6)].map((_, i) => (
-            <Box
-              key={i}
-              bg={bgColor}
-              p={6}
-              borderRadius="lg"
-              borderWidth="1px"
-              borderColor={borderColor}
-              transition="all 0.2s"
-              _hover={{ transform: "translateY(-4px)", shadow: "md" }}
-            >
-              <VStack align="stretch" spacing={4}>
-                <Skeleton height="200px" borderRadius="md" />
-                <Skeleton height="24px" width="100px" />
-                <Skeleton height="36px" />
-                <Skeleton height="60px" />
-                <HStack justify="space-between">
-                  <Skeleton height="40px" width="150px" />
-                  <Skeleton height="40px" width="40px" borderRadius="md" />
-                </HStack>
-              </VStack>
-            </Box>
-          ))}
+          {!isLoading &&
+            searchResults?.map((post) => (
+              <NewPostCard key={post.id} post={post} showBookmark={false} />
+            ))}
+          {isLoading &&
+            [...Array(6)].map((_, i) => (
+              <Box
+                key={i}
+                bg={bgColor}
+                p={6}
+                borderRadius="lg"
+                borderWidth="1px"
+                borderColor={borderColor}
+                transition="all 0.2s"
+                _hover={{ transform: "translateY(-4px)", shadow: "md" }}
+              >
+                <VStack align="stretch" spacing={4}>
+                  <Skeleton height="200px" borderRadius="md" />
+                  <Skeleton height="24px" width="100px" />
+                  <Skeleton height="36px" />
+                  <Skeleton height="60px" />
+                  <HStack justify="space-between">
+                    <Skeleton height="40px" width="150px" />
+                    <Skeleton height="40px" width="40px" borderRadius="md" />
+                  </HStack>
+                </VStack>
+              </Box>
+            ))}
         </SimpleGrid>
       </Container>
     </Box>

@@ -36,7 +36,7 @@ export async function GET(
     });
 
     return NextResponse.json({
-      data: category,
+      data: category?.posts,
       message: "Category Posts fetched successfully",
     });
   } catch (error: any) {

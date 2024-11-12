@@ -36,6 +36,7 @@ import {
 } from "react-icons/lu";
 import { useRouter } from "next/navigation";
 import { useQueryParams } from "@/src/hooks";
+import { Link } from "@chakra-ui/next-js";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -90,7 +91,7 @@ const Header = () => {
         "rgba(26, 32, 44, 0.8)"
       )}
     >
-      <Container maxW="1400" py={4}>
+      <Container maxW="container.xl" py={4}>
         <HStack justify="space-between" align="center">
           {/* Logo */}
           <Text
@@ -119,7 +120,7 @@ const Header = () => {
                 {topics.map((topic) => (
                   <MenuItem
                     key={topic.name}
-                    as="a"
+                    as={Link}
                     href={topic.href}
                     _hover={{ bg: hoverBgColor }}
                   >
@@ -143,7 +144,7 @@ const Header = () => {
                 {resources.map((resource) => (
                   <MenuItem
                     key={resource.name}
-                    as="a"
+                    as={Link}
                     href={resource.href}
                     _hover={{ bg: hoverBgColor }}
                   >
