@@ -8,6 +8,7 @@ const config: ThemeConfig = {
   initialColorMode: "system",
 };
 export const theme = extendTheme(
+  config,
   {
     styles: {
       global: {

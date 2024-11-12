@@ -71,7 +71,6 @@ const Header = () => {
   }
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-    console.log(value);
 
     setSearchValue(value);
     setQueryParam("query", value);

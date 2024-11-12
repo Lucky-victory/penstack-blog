@@ -17,9 +17,8 @@ export function useFeaturedPost() {
       );
       return data.data;
     },
-    // staleTime: 1000 * 60 * 60 * 24,
+    staleTime: 1000 * 60 * 60 * 12,
   });
-  console.log(featuredPost);
 
   return {
     featuredPost,
