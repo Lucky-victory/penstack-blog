@@ -36,9 +36,10 @@ import { filterEditorActions } from "@/src/lib/editor-actions";
 import Medias from "../../Dashboard/Medias";
 import { MediaResponse } from "@/src/types";
 import { MediaInsert } from "./MediaInsert";
+import { useCustomEditorContext } from "@/src/context/AppEditor";
 
 export const MenuBar = () => {
-  const { editor } = useCurrentEditor();
+  const { editor } = useCustomEditorContext();
   const {
     isOpen: isMediaModalOpen,
     onClose: onMediaModalClose,

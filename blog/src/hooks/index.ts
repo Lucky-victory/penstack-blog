@@ -67,7 +67,6 @@ export const useAutoSave = <T extends SaveableValue>({
   };
 };
 
-
 export function useHTMLToMarkdownConverter() {
   const [html, setHtml] = useState("");
   const [markdown, setMarkdown] = useState("");
@@ -98,10 +97,13 @@ export function useHTMLToMarkdownConverter() {
     }
   }, [html, turndownService]);
 
-  const updateHtml = useCallback((newHtml: string) => {
-    setHtml(newHtml);
-    return turndownService.turndown(newHtml);
-  }, []);
+  const updateHtml = useCallback(
+    (newHtml: string) => {
+      setHtml(newHtml);
+      return turndownService.turndown(newHtml);
+    },
+    [turndownService]
+  );
 
   return { markdown, updateHtml };
 }

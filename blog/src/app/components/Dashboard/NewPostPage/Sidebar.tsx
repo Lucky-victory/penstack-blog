@@ -45,6 +45,7 @@ import {
 import { FeaturedImageCard } from "@/src/app/components/Dashboard/NewPostPage/FeaturedImageCard";
 import { PostInsert, PostSelect } from "@/src/types";
 import { useFormik } from "formik";
+import { useCustomEditorContext } from "@/src/context/AppEditor";
 
 export const SidebarContent = ({
   formik,
@@ -75,7 +76,7 @@ export const SidebarContent = ({
   const [isSlugEditable, setIsSlugEditable] = useState<boolean>(false);
   const [tag, setTag] = useState("");
   const [category, setCategory] = useState("");
-
+  const { meta: editorMeta } = useCustomEditorContext();
   const handleAddCategory = () => {
     const lastCategory = categories[categories.length - 1];
     setCategories((prev) => [
@@ -183,7 +184,7 @@ export const SidebarContent = ({
                   Word count:
                 </Text>
                 <Text as={"span"} fontWeight="semibold">
-                  {editorCounts.words}
+                  {editorMeta.wordCount}
                 </Text>
               </HStack>
             </ListItem>
@@ -194,7 +195,7 @@ export const SidebarContent = ({
                   Character count:
                 </Text>
                 <Text as={"span"} fontWeight="semibold">
-                  {editorCounts.characters}
+                  {editorMeta.characterCount}
                 </Text>
               </HStack>
             </ListItem>

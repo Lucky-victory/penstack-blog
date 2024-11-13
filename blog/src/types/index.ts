@@ -66,3 +66,22 @@ export interface PaginatedResponse<T> {
     totalPages: number;
   };
 }
+export type EDITOR_CONTEXT_STATE = {
+  isSaving: boolean;
+  editor: Editor | null;
+  initialContent: string;
+  setInitialContent: (content: string) => void;
+  setEditorContent: (content: EDITOR_CONTEXT_STATE["content"]) => void;
+  markdownContent?: string;
+  content: {
+    text: string;
+    html: string;
+  };
+  clearEditor: () => void;
+  setIsSaving: (isSaving: boolean) => void;
+  isEditorReady: boolean;
+  meta: {
+    wordCount: number;
+    characterCount: number;
+  };
+};
