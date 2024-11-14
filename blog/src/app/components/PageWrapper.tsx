@@ -7,7 +7,7 @@ import { Box, useColorModeValue } from "@chakra-ui/react";
 export default function PageWrapper({ children }: PropsWithChildren) {
   const bgColor = useColorModeValue("gray.100", "black");
   return (
-    <Box bg={bgColor}>
+    <Box bg={bgColor} minH={"var(--chakra-vh)"}>
       <Header />
       {children}
       <Footer />

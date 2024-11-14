@@ -34,7 +34,8 @@ export async function GET(
         author: {
           columns: {
             name: true,
-            username: true,id:true,
+            username: true,
+            id: true,
 
             avatar: true,
           },
@@ -95,8 +96,52 @@ export async function PUT(
       .update(posts)
       .set(body)
       .where(or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)));
+    const post = await db.query.posts.findFirst({
+      where: or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),
+      columns: {
+        author_id: false,
+      },
+      with: {
+        featured_image: {
+          columns: {
+            url: true,
+            alt_text: true,
+            id: true,
+            caption: true,
+          },
+        },
+        category: {
+          columns: {
+            name: true,
+            slug: true,
+            id: true,
+          },
+        },
+        author: {
+          columns: {
+            name: true,
+            username: true,
+            id: true,
+
+            avatar: true,
+          },
+        },
+        tags: {
+          with: {
+            tag: {
+              columns: {
+                name: true,
+                slug: true,
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
     return NextResponse.json(
       {
+        data: post,
         message: "Post updated successfully",
         lastUpdate: new Date().getTime(),
       },

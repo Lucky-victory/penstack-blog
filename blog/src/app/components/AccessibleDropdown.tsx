@@ -47,6 +47,8 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
   const optionsRef = useRef<(HTMLLIElement | null)[]>([]);
   const iconColorValue = useColorModeValue("gray.500", "gray.200");
   const activeTextColorValue = useColorModeValue("white", "white");
+  const bgColor = useColorModeValue("white", "gray.900");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -164,9 +166,9 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
           minW={"200px"}
           px={2}
           spacing={2}
-          bg={useColorModeValue("white", "gray.900")}
+          bg={bgColor}
           border={"1px"}
-          borderColor={useColorModeValue("gray.200", "gray.700")}
+          borderColor={borderColor}
           rounded={"md"}
           shadow={"lg"}
           overflowY={"auto"}
@@ -222,5 +224,4 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
     </Box>
   );
 }
-
 export default AccessibleDropdown;

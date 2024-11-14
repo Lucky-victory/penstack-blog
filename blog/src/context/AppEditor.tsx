@@ -102,7 +102,9 @@ export const AppEditorContextProvider = ({
       handleEditorUpdate(editor as Editor);
     },
   });
-
+  const setInitialContentCallback = useCallback((initialContent: string) => {
+    setInitialContent(initialContent);
+  }, []);
   const setIsSavingCallback = useCallback((isSaving: boolean) => {
     setIsSaving(isSaving);
   }, []);
@@ -145,6 +147,11 @@ export const AppEditorContextProvider = ({
     setIsEditorReady(!isEmpty(editor));
   }, [editor]);
 
+  useEffect(() => {
+    if (editor) {
+      editor.commands.setContent(initialContent);
+    }
+  }, [editor, initialContent]);
   return (
     <AppEditorContext.Provider
       value={{
@@ -154,7 +161,7 @@ export const AppEditorContextProvider = ({
         setEditorContent: setEditorContentCallback,
         setIsSaving: setIsSavingCallback,
         initialContent,
-        setInitialContent,
+        setInitialContent: setInitialContentCallback,
         markdownContent,
         clearEditor,
         isEditorReady,

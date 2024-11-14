@@ -33,7 +33,7 @@ import Loader from "../../Loader";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { debounce } from "lodash";
-import { encode } from "html-entities";
+import { decode, encode } from "html-entities";
 import {
   AppEditorContextProvider,
   useCustomEditorContext,
@@ -52,12 +52,16 @@ export default function NewPostPage() {
       </Stack>
     );
   }
-  return <PostEditor post={post} />;
+  return (
+    <AppEditorContextProvider>
+      <PostEditor post={post} />
+    </AppEditorContextProvider>
+  );
 }
 
 export function PostEditor({ post }: { post: PostSelect }) {
-  const { setInitialContent } = useCustomEditorContext();
-  const [editorContent, setEditorContent] = useState(post?.content || "");
+  const { setInitialContent, content } = useCustomEditorContext();
+
   const [lastUpdate, setLastUpdate] = useState<Date | null>(
     post?.updated_at as Date
   );
@@ -66,6 +70,7 @@ export function PostEditor({ post }: { post: PostSelect }) {
   const { mutate, isPending: isSaving } = useMutation({
     mutationFn: async (values: PostInsert) => {
       const response = await axios.put<{
+        data: PostSelect;
         message: string;
         lastUpdate: string | Date;
       }>(`/api/posts/${values.post_id}`, values);
@@ -85,7 +90,6 @@ export function PostEditor({ post }: { post: PostSelect }) {
     enableReinitialize: true,
     initialValues: {
       ...postWithoutAuthor,
-      content: editorContent,
     } as PostSelect,
     onSubmit: async (values) => {
       const postToSave: PostInsert = {
@@ -109,14 +113,19 @@ export function PostEditor({ post }: { post: PostSelect }) {
   );
   const [tags, setTags] = useState<{ name: string }[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const updatePost = useCallback((updates: Partial<PostInsert>) => {
-    formik.setValues((prev) => ({ ...prev, ...updates }));
-    console.log("formik", formik.values);
-  }, []);
-  useEffect(() => {
-    setInitialContent(editorContent);
-  }, [editorContent, setInitialContent]);
+  const debouncedSubmit = useMemo(
+    () =>
+      debounce(() => {
+        formik.submitForm();
+      }, 1000),
+    [formik]
+  );
+  const updatePost = useCallback(
+    (key: keyof PostSelect, value: any) => {
+      formik.setFieldValue(key, value);
+    },
+    [formik]
+  );
 
   // Handle slug generation
   useEffect(() => {
@@ -129,154 +138,147 @@ export function PostEditor({ post }: { post: PostSelect }) {
         lower: true,
         strict: true,
       });
-      updatePost({ slug: generatedSlug });
+      updatePost("slug", generatedSlug);
     }
   }, [formik.values.title, updatePost]);
 
-  const debouncedSubmit = useMemo(
-    () =>
-      debounce(() => {
-        formik.handleSubmit();
-      }, 500),
-    [formik]
-  );
-
   const handleTitleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      updatePost({ title: e.target.value });
-      debouncedSubmit();
+      updatePost("title", e.target.value);
     },
-    [updatePost, debouncedSubmit]
+    [updatePost]
   );
 
+  useEffect(() => {
+    // console.log("post changed", content);
+
+    updatePost("content", encode(content?.html || ""));
+  }, [content?.html, updatePost]);
+
+  useEffect(() => {
+    setInitialContent(decode(post?.content));
+  }, [post?.content, setInitialContent]);
   return (
-    <AppEditorContextProvider>
-      <Box h="full" overflowY="auto">
-        <DashHeader pos="sticky" top={0} zIndex={10}>
-          <Stack gap={0}>
-            <Text fontSize="2xl" fontWeight={600} as="span">
-              Create Post
-            </Text>
-            <Text as="span" fontSize="sm" color="gray.500">
-              Last updated:{" "}
-              {lastUpdate ? formatDate(new Date(lastUpdate)) : "Not saved yet"}
-            </Text>
-          </Stack>
-          <Hide below="md">
-            <Button
-              variant="outline"
-              gap={2}
-              size="sm"
-              rounded="full"
-              onClick={onOpen}
-              display={{ base: "flex", lg: "none" }}
-            >
-              <LuSettings />
-              <Text>Post Settings</Text>
-            </Button>
-          </Hide>
-          <Show below="md">
-            <IconButton
-              icon={<LuSettings />}
-              rounded={"full"}
-              variant={"outline"}
-              aria-label="Post Settings"
-              onClick={onOpen}
-            ></IconButton>
-          </Show>
-        </DashHeader>
-
-        <Flex gap={3} py={4} px={{ base: 2, md: 3 }}>
-          <Stack
-            minH="100%"
-            h="calc(var(--chakra-vh) - (var(--dash-header-h) + 32px))"
-            flex={1}
-            minW={{ base: 300, md: 350 }}
-            pos="sticky"
-            top="calc(var(--dash-header-h) + 16px)"
-            width={{ base: "100%" }}
-            bg={useColorModeValue("white", "gray.900")}
-            border="1px"
-            borderColor={borderColor}
-            overflowY="hidden"
-            rounded="26px"
-            boxShadow="var(--card-raised)"
-            gap={0}
+    <Box h="full" overflowY="auto">
+      <DashHeader pos="sticky" top={0} zIndex={10}>
+        <Stack gap={0}>
+          <Text fontSize="2xl" fontWeight={600} as="span">
+            Create Post
+          </Text>
+          <Text as="span" fontSize="sm" color="gray.500">
+            Last updated:{" "}
+            {lastUpdate ? formatDate(new Date(lastUpdate)) : "Not saved yet"}
+          </Text>
+        </Stack>
+        <Hide below="md">
+          <Button
+            variant="outline"
+            gap={2}
+            size="sm"
+            rounded="full"
+            onClick={onOpen}
+            display={{ base: "flex", lg: "none" }}
           >
-            <Box
-              borderBottom="1px"
-              borderBottomColor={borderColor}
-              p={1}
-              py={2}
-            >
-              <Input
-                border="none"
-                outline="none"
-                autoComplete="off"
-                placeholder="Awesome title"
-                name="title"
-                value={formik.values.title || ""}
-                fontWeight={600}
-                onChange={handleTitleChange}
-                rounded="none"
-                _focus={{ boxShadow: "none" }}
-                fontSize={{ base: "lg", md: "24px" }}
-              />
-            </Box>
-            <TextEditor />
-          </Stack>
+            <LuSettings />
+            <Text>Post Settings</Text>
+          </Button>
+        </Hide>
+        <Show below="md">
+          <IconButton
+            icon={<LuSettings />}
+            rounded={"full"}
+            variant={"outline"}
+            aria-label="Post Settings"
+            onClick={onOpen}
+          ></IconButton>
+        </Show>
+      </DashHeader>
 
-          <Box display={{ base: "none", lg: "block" }} maxW={320}>
+      <Flex gap={3} py={4} px={{ base: 2, md: 3 }}>
+        <Stack
+          minH="100%"
+          h="calc(var(--chakra-vh) - (var(--dash-header-h) + 32px))"
+          flex={1}
+          minW={{ base: 300, md: 350 }}
+          pos="sticky"
+          top="calc(var(--dash-header-h) + 16px)"
+          width={{ base: "100%" }}
+          bg={useColorModeValue("white", "gray.900")}
+          border="1px"
+          borderColor={borderColor}
+          overflowY="hidden"
+          rounded="26px"
+          boxShadow="var(--card-raised)"
+          gap={0}
+        >
+          <Box borderBottom="1px" borderBottomColor={borderColor} p={1} py={2}>
+            <Input
+              border="none"
+              outline="none"
+              autoComplete="off"
+              placeholder="Awesome title"
+              name="title"
+              value={formik.values.title || ""}
+              fontWeight={600}
+              onChange={handleTitleChange}
+              rounded="none"
+              _focus={{ boxShadow: "none" }}
+              fontSize={{ base: "lg", md: "24px" }}
+            />
+          </Box>
+          <TextEditor />
+        </Stack>
+
+        <Box display={{ base: "none", lg: "block" }} maxW={320}>
+          <SidebarContent
+            formik={formik}
+            updatePost={updatePost}
+            categories={categories}
+            setCategories={setCategories}
+            isSubmitting={formik.isSubmitting}
+            tags={tags}
+            setTags={setTags}
+            onPublish={() => {
+              updatePost("status", "published");
+              formik.submitForm().then(() => {
+                router.push("/dashboard/posts");
+              });
+            }}
+            onDraft={() => {
+              updatePost("status", "draft");
+              formik.handleSubmit();
+            }}
+            isSaving={isSaving}
+          />
+        </Box>
+      </Flex>
+
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xs">
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Post Settings</DrawerHeader>
+          <DrawerBody px={2}>
             <SidebarContent
               formik={formik}
               updatePost={updatePost}
               categories={categories}
               setCategories={setCategories}
-              isSubmitting={formik.isSubmitting}
               tags={tags}
               setTags={setTags}
+              isSaving={isSaving}
               onPublish={() => {
-                updatePost({ status: "published" });
-                formik.submitForm().then(() => {
-                  router.push("/dashboard/posts");
-                });
-              }}
-              onDraft={() => {
-                updatePost({ status: "draft" });
+                updatePost("status", "published");
                 formik.handleSubmit();
               }}
-              isSaving={isSaving}
+              onDraft={() => {
+                updatePost("status", "draft");
+                formik.handleSubmit();
+              }}
             />
-          </Box>
-        </Flex>
-
-        <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xs">
-          <DrawerOverlay />
-          <DrawerContent>
-            <DrawerCloseButton />
-            <DrawerHeader>Post Settings</DrawerHeader>
-            <DrawerBody px={2}>
-              <SidebarContent
-                formik={formik}
-                updatePost={updatePost}
-                categories={categories}
-                setCategories={setCategories}
-                tags={tags}
-                setTags={setTags}
-                isSaving={isSaving}
-                onPublish={() => {
-                  updatePost({ status: "published" });
-                  formik.handleSubmit();
-                }}
-                onDraft={() => {
-                  updatePost({ status: "draft" });
-                  formik.handleSubmit();
-                }}
-              />
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>
-      </Box>
-    </AppEditorContextProvider>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+    </Box>
   );
 }

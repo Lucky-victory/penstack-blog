@@ -24,6 +24,7 @@ import { PostSelect } from "@/src/types";
 import { Skeleton } from "@/src/app/components/ui/Skeleton";
 import Loader from "../Loader";
 import PageWrapper from "../PageWrapper";
+import { decode } from "html-entities";
 
 interface FeaturedImage {
   src: string;
@@ -166,7 +167,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                       </Text>
                       <Box
                         dangerouslySetInnerHTML={{
-                          __html: post.content as string,
+                          __html: decode(post.content) as string,
                         }}
                       />
                       Lorem ipsum dolor sit, amet consectetur adipisicing elit.

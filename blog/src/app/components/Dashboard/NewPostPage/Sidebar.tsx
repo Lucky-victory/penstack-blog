@@ -67,7 +67,7 @@ export const SidebarContent = ({
 }: {
   isSubmitting?: boolean;
   formik: ReturnType<typeof useFormik<PostSelect>>;
-  updatePost: (updates: Partial<PostInsert>) => void;
+  updatePost: (key: keyof PostSelect, value: any) => void;
   categories: { name: string; id?: number }[];
   onPublish: () => void;
   onDraft?: () => void;
@@ -223,9 +223,7 @@ export const SidebarContent = ({
             </Text>
             <FeaturedImageCard
               onChange={(imageId) => {
-                updatePost({
-                  featured_image_id: imageId,
-                });
+                updatePost("featured_image_id", imageId);
               }}
               image={formik.values.featured_image}
             />
