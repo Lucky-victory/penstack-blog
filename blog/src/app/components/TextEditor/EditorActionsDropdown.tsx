@@ -5,7 +5,6 @@ import {
   MenuList,
 } from "@/src/app/components/ui/Menu";
 import { Button } from "@/src/app/components/ui/Button";
-import { Editor, useCurrentEditor } from "@tiptap/react";
 import {
   HStack,
   Text,
@@ -14,14 +13,16 @@ import {
 } from "@chakra-ui/react";
 import { LuChevronsUpDown } from "react-icons/lu";
 import { filterEditorActions } from "@/src/lib/editor-actions";
-import { EditorActionItem } from "@/src/types";
 import React, { useMemo } from "react";
 import { MediaInsert } from "./MenuBar/MediaInsert";
+import { useCustomEditorContext } from "@/src/context/AppEditor";
+import AccessibleDropdown from "../AccessibleDropdown";
+import { EditorActionItem } from "@/src/types";
 
 export default function EditorActionsDropdown() {
   const iconColorValue = useColorModeValue("gray.500", "gray.200");
   const activeTextColorValue = useColorModeValue("white", "white");
-  const { editor } = useCurrentEditor();
+  const { editor } = useCustomEditorContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const dropdownActions = useMemo(
@@ -49,14 +50,13 @@ export default function EditorActionsDropdown() {
 
   return (
     <>
-      <Menu
-        isLazy
+      {/* <Menu
         onClose={() => {
           editor?.commands.focus();
         }}
       >
         <MenuButton
-          variant="outline"
+          variant="ghost"
           as={Button}
           size="sm"
           fontSize="medium"
@@ -92,7 +92,8 @@ export default function EditorActionsDropdown() {
             </MenuItem>
           ))}
         </MenuList>
-      </Menu>
+      </Menu> */}
+      <AccessibleDropdown options={dropdownActions} />
       <MediaInsert editor={editor} isOpen={isOpen} onClose={onClose} />
     </>
   );

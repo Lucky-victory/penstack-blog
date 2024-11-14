@@ -42,6 +42,7 @@ export type PostSelect = InferSelectModel<typeof posts> & {
 };
 
 export interface EditorActionItem {
+  id: string | number;
   label: string;
   command: ({ editor, open }: { editor?: Editor; open?: () => void }) => void;
   icon: IconType;

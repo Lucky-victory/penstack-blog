@@ -15,9 +15,12 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  Hide,
+  Show,
+  IconButton,
 } from "@chakra-ui/react";
 import { LuSettings } from "react-icons/lu";
-import TextEditor, { TextEditorHandle } from "@/src/app/components/TextEditor";
+import TextEditor from "@/src/app/components/TextEditor";
 import slugify from "slugify";
 import { formatDate, nullToEmptyString, shortIdGenerator } from "@/src/utils";
 import { PostInsert, PostSelect } from "@/src/types";
@@ -31,7 +34,10 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { debounce } from "lodash";
 import { encode } from "html-entities";
-import { AppEditorContextProvider } from "@/src/context/AppEditor";
+import {
+  AppEditorContextProvider,
+  useCustomEditorContext,
+} from "@/src/context/AppEditor";
 
 const META_DESCRIPTION_LENGTH = 155;
 
@@ -50,18 +56,12 @@ export default function NewPostPage() {
 }
 
 export function PostEditor({ post }: { post: PostSelect }) {
-  const [editorCounts, setEditorCounts] = useState({ words: 0, characters: 0 });
+  const { setInitialContent } = useCustomEditorContext();
   const [editorContent, setEditorContent] = useState(post?.content || "");
   const [lastUpdate, setLastUpdate] = useState<Date | null>(
     post?.updated_at as Date
   );
   const borderColor = useColorModeValue("gray.300", "gray.700");
-  const editorRef = useRef<TextEditorHandle>(null);
-
-  const randomNumId = useMemo(
-    () => shortIdGenerator.bigIntId().substring(6, 12),
-    []
-  );
 
   const { mutate, isPending: isSaving } = useMutation({
     mutationFn: async (values: PostInsert) => {
@@ -114,6 +114,9 @@ export function PostEditor({ post }: { post: PostSelect }) {
     formik.setValues((prev) => ({ ...prev, ...updates }));
     console.log("formik", formik.values);
   }, []);
+  useEffect(() => {
+    setInitialContent(editorContent);
+  }, [editorContent, setInitialContent]);
 
   // Handle slug generation
   useEffect(() => {
@@ -122,28 +125,13 @@ export function PostEditor({ post }: { post: PostSelect }) {
       formik.values.title?.length > 0 &&
       formik.values.title?.length <= 60
     ) {
-      const generatedSlug = slugify(`${formik.values.title}-${randomNumId}`, {
+      const generatedSlug = slugify(`${formik.values.title}`, {
         lower: true,
         strict: true,
       });
       updatePost({ slug: generatedSlug });
     }
-  }, [formik.values.title, randomNumId, updatePost]);
-
-  const handleContentChange = (content: {
-    html?: string;
-    markdown: string;
-    text: string;
-  }) => {
-    const encodedHtml = content.html ? encode(content.html) : "";
-    updatePost({ content: encodedHtml });
-    const c = editorRef?.current?.getContent();
-    console.log(c);
-
-    if (content.text.length <= META_DESCRIPTION_LENGTH) {
-      updatePost({ summary: content.text });
-    }
-  };
+  }, [formik.values.title, updatePost]);
 
   const debouncedSubmit = useMemo(
     () =>
@@ -174,17 +162,28 @@ export function PostEditor({ post }: { post: PostSelect }) {
               {lastUpdate ? formatDate(new Date(lastUpdate)) : "Not saved yet"}
             </Text>
           </Stack>
-          <Button
-            variant="outline"
-            gap={2}
-            size="sm"
-            rounded="full"
-            onClick={onOpen}
-            display={{ base: "flex", lg: "none" }}
-          >
-            <LuSettings />
-            <Text hideBelow="md">Post Settings</Text>
-          </Button>
+          <Hide below="md">
+            <Button
+              variant="outline"
+              gap={2}
+              size="sm"
+              rounded="full"
+              onClick={onOpen}
+              display={{ base: "flex", lg: "none" }}
+            >
+              <LuSettings />
+              <Text>Post Settings</Text>
+            </Button>
+          </Hide>
+          <Show below="md">
+            <IconButton
+              icon={<LuSettings />}
+              rounded={"full"}
+              variant={"outline"}
+              aria-label="Post Settings"
+              onClick={onOpen}
+            ></IconButton>
+          </Show>
         </DashHeader>
 
         <Flex gap={3} py={4} px={{ base: 2, md: 3 }}>
@@ -226,7 +225,7 @@ export function PostEditor({ post }: { post: PostSelect }) {
             <TextEditor />
           </Stack>
 
-          <Box display={{ base: "none", lg: "block" }} maxW={280}>
+          <Box display={{ base: "none", lg: "block" }} maxW={320}>
             <SidebarContent
               formik={formik}
               updatePost={updatePost}
@@ -246,7 +245,6 @@ export function PostEditor({ post }: { post: PostSelect }) {
                 formik.handleSubmit();
               }}
               isSaving={isSaving}
-              editorCounts={editorCounts}
             />
           </Box>
         </Flex>
@@ -265,7 +263,6 @@ export function PostEditor({ post }: { post: PostSelect }) {
                 tags={tags}
                 setTags={setTags}
                 isSaving={isSaving}
-                editorCounts={editorCounts}
                 onPublish={() => {
                   updatePost({ status: "published" });
                   formik.handleSubmit();

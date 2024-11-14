@@ -115,7 +115,7 @@ export const MenuBar = () => {
       borderColor={borderColorValue}
       bg={bgColorValue}
       zIndex={2}
-      p={3}
+      px={3}
     >
       <EditorActionsDropdown />
       {nonHeadingOrParagraphActions.map((item, index) =>
@@ -233,7 +233,7 @@ export const MenuBar = () => {
           <LuRedo2 size={20} />
         </IconButton>
       </Tooltip>
-      <Button
+      {/* <Button
         onClick={() => {
           editor
             .chain()
@@ -249,7 +249,7 @@ export const MenuBar = () => {
         }}
       >
         add media
-      </Button>
+      </Button> */}
     </HStack>
   );
 };
