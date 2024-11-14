@@ -9,7 +9,8 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React, { useState, useRef, useEffect } from "react";
+import { Editor } from "@tiptap/react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { IconType } from "react-icons";
 import { LuChevronsDownUp, LuChevronsUpDown } from "react-icons/lu";
 
@@ -127,7 +128,7 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
       });
     }
   }, [activeIndex]);
-
+  // TODO: Fix: select active item based on the editor active item
   return (
     <Box className={`relative w-auto ${className}`} ref={dropdownRef}>
       <Button
@@ -173,50 +174,49 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
           aria-labelledby="dropdown-label"
           tabIndex={-1}
         >
-          {options.map((option, index) => (
-            <ListItem
-              display={"flex"}
-              key={option.id}
-              ref={(el: HTMLLIElement | null) => {
-                if (el) optionsRef.current[index] = el;
-              }}
-              py={2}
-              px={4}
-              cursor={"pointer"}
-              bg={
-                activeIndex === index && selectedOption?.id !== option.id
-                  ? "blue.100"
-                  : selectedOption?.id === option.id
-                  ? "blue.500"
-                  : ""
-              }
-              color={
-                selectedOption?.id === option.id
-                  ? activeTextColorValue
-                  : "black"
-              }
-              _hover={{
-                bg: selectedOption?.id === option.id ? "blue.400" : "blue.100",
-              }}
-              rounded={"xl"}
-              role="option"
-              aria-selected={selectedOption?.id === option.id}
-              onClick={() => handleSelect(option)}
-              onMouseEnter={() => setActiveIndex(index)}
-            >
-              {/* color={item?.active(editor) ? activeTextColorValue : undefined}
+          {options.map((option, index) => {
+            const isActive =
+              activeIndex === index && selectedOption?.id !== option.id;
+
+            const isSelected =
+              selectedOption?.id === option.id ||
+              (option as EditorActionItem)?.active(editor as Editor);
+            return (
+              <ListItem
+                display={"flex"}
+                key={option.id}
+                ref={(el: HTMLLIElement | null) => {
+                  if (el) optionsRef.current[index] = el;
+                }}
+                py={2}
+                px={4}
+                cursor={"pointer"}
+                bg={isActive ? "blue.100" : isSelected ? "blue.500" : ""}
+                color={isSelected ? activeTextColorValue : "black"}
+                _hover={{
+                  bg: isSelected ? "blue.400" : "blue.100",
+                }}
+                rounded={"xl"}
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => handleSelect(option)}
+                onMouseEnter={() => setActiveIndex(index)}
+              >
+                {/* color={item?.active(editor) ? activeTextColorValue : undefined}
               bg={item?.active(editor) ? "blue.500" : undefined}
               icon={React.createElement(item.icon, { size: 20 })}
               rounded="xl"
             > */}
-              <HStack flexShrink={0}>
-                {option?.icon && React.createElement(option.icon, { size: 20 })}
-                <Text as="span" fontSize="16px" fontWeight={500}>
-                  {option.label}
-                </Text>
-              </HStack>
-            </ListItem>
-          ))}
+                <HStack flexShrink={0}>
+                  {option?.icon &&
+                    React.createElement(option.icon, { size: 20 })}
+                  <Text as="span" fontSize="16px" fontWeight={500}>
+                    {option.label}
+                  </Text>
+                </HStack>
+              </ListItem>
+            );
+          })}
         </List>
       )}
     </Box>

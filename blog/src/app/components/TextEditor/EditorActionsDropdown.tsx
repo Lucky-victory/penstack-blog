@@ -14,18 +14,15 @@ import {
 } from "@chakra-ui/react";
 import { LuChevronsUpDown } from "react-icons/lu";
 import { filterEditorActions } from "@/src/lib/editor-actions";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MediaInsert } from "./MenuBar/MediaInsert";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
 import AccessibleDropdown from "../AccessibleDropdown";
 import { EditorActionItem } from "@/src/types";
 
 export default function EditorActionsDropdown() {
-  const iconColorValue = useColorModeValue("gray.500", "gray.200");
-  const activeTextColorValue = useColorModeValue("white", "white");
   const { editor } = useCustomEditorContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const dropdownActions = useMemo(
     () =>
       filterEditorActions([
@@ -39,13 +36,6 @@ export default function EditorActionsDropdown() {
       ]),
     []
   );
-
-  const getActiveActionItem = useMemo(() => {
-    if (!editor) return dropdownActions[0];
-    return (
-      dropdownActions.find((item) => item.active(editor)) || dropdownActions[0]
-    );
-  }, [editor, dropdownActions]);
 
   if (!editor) return null;
 
