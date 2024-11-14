@@ -102,7 +102,7 @@ export const FeaturedImageCard = memo(
                 fontWeight={500}
                 textAlign="center"
               >
-                No featured image (recommended size: 1200x630)
+                (Recommended size: 1200x630)
               </Text>
             </Stack>
           )}

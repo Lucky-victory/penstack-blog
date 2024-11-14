@@ -1,32 +1,51 @@
+import { useCustomEditorContext } from "@/src/context/AppEditor";
+import { EditorActionItem } from "@/src/types";
+import {
+  Box,
+  Button,
+  HStack,
+  List,
+  ListItem,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import React, { useState, useRef, useEffect } from "react";
+import { IconType } from "react-icons";
+import { LuChevronsDownUp, LuChevronsUpDown } from "react-icons/lu";
 
 interface Option {
   id: number | string;
   label: string;
+  icon?: IconType;
 }
 
-interface AccessibleDropdownProps<T extends Option> {
+interface AccessibleDropdownProps<T extends Option | EditorActionItem> {
   label?: string;
   options: T[];
   onSelect?: (option: T) => void;
   defaultValue?: T;
   className?: string;
+  onOpen?: () => void;
 }
 
-function AccessibleDropdown<T extends Option>({
+function AccessibleDropdown<T extends Option | EditorActionItem>({
   label = "Select an option",
   options = [],
   onSelect,
   defaultValue,
   className = "",
+  onOpen,
 }: AccessibleDropdownProps<T>) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<T | null>(
     defaultValue || null
   );
+  const { editor } = useCustomEditorContext();
   const [activeIndex, setActiveIndex] = useState<number>(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const optionsRef = useRef<(HTMLLIElement | null)[]>([]);
+  const iconColorValue = useColorModeValue("gray.500", "gray.200");
+  const activeTextColorValue = useColorModeValue("white", "white");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -91,6 +110,14 @@ function AccessibleDropdown<T extends Option>({
     setSelectedOption(option);
     setIsOpen(false);
     onSelect?.(option);
+    const _option = option as EditorActionItem;
+    if (editor) {
+      if (_option?.id === "insert-media") {
+        _option.command?.({ editor, open: onOpen });
+      } else {
+        _option.command?.({ editor });
+      }
+    }
   };
 
   useEffect(() => {
@@ -102,52 +129,97 @@ function AccessibleDropdown<T extends Option>({
   }, [activeIndex]);
 
   return (
-    <div className={`relative w-64 ${className}`} ref={dropdownRef}>
-      <button
-        className="w-full px-4 py-2 text-left bg-white border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+    <Box className={`relative w-auto ${className}`} ref={dropdownRef}>
+      <Button
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={handleKeyDown}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-labelledby="dropdown-label"
         type="button"
+        variant={"ghost"}
       >
-        {selectedOption ? selectedOption.label : label}
-      </button>
+        <HStack>
+          {selectedOption &&
+            selectedOption?.icon &&
+            React.createElement(selectedOption?.icon, {
+              color: iconColorValue,
+            })}
+          <LuChevronsUpDown />
+        </HStack>
+      </Button>
 
       <div id="dropdown-label" className="sr-only">
         {label}
       </div>
 
       {isOpen && (
-        <ul
-          className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto focus:outline-none"
+        <List
           role="listbox"
+          pos={"absolute"}
+          zIndex={10}
+          mt={1}
+          py={2}
+          minW={"200px"}
+          px={2}
+          spacing={2}
+          bg={useColorModeValue("white", "gray.900")}
+          border={"1px"}
+          borderColor={useColorModeValue("gray.200", "gray.700")}
+          rounded={"md"}
+          shadow={"lg"}
+          overflowY={"auto"}
+          _focus={{ outline: "none" }}
           aria-labelledby="dropdown-label"
           tabIndex={-1}
         >
           {options.map((option, index) => (
-            <li
+            <ListItem
+              display={"flex"}
               key={option.id}
               ref={(el: HTMLLIElement | null) => {
                 if (el) optionsRef.current[index] = el;
               }}
-              className={`px-4 py-2 cursor-pointer ${
-                activeIndex === index ? "bg-blue-100" : ""
-              } ${
-                selectedOption?.id === option.id ? "bg-blue-50" : ""
-              } hover:bg-blue-50`}
+              py={2}
+              px={4}
+              cursor={"pointer"}
+              bg={
+                activeIndex === index && selectedOption?.id !== option.id
+                  ? "blue.100"
+                  : selectedOption?.id === option.id
+                  ? "blue.500"
+                  : ""
+              }
+              color={
+                selectedOption?.id === option.id
+                  ? activeTextColorValue
+                  : "black"
+              }
+              _hover={{
+                bg: selectedOption?.id === option.id ? "blue.400" : "blue.100",
+              }}
+              rounded={"xl"}
               role="option"
               aria-selected={selectedOption?.id === option.id}
               onClick={() => handleSelect(option)}
               onMouseEnter={() => setActiveIndex(index)}
             >
-              {option.label}
-            </li>
+              {/* color={item?.active(editor) ? activeTextColorValue : undefined}
+              bg={item?.active(editor) ? "blue.500" : undefined}
+              icon={React.createElement(item.icon, { size: 20 })}
+              rounded="xl"
+            > */}
+              <HStack flexShrink={0}>
+                {option?.icon && React.createElement(option.icon, { size: 20 })}
+                <Text as="span" fontSize="16px" fontWeight={500}>
+                  {option.label}
+                </Text>
+              </HStack>
+            </ListItem>
           ))}
-        </ul>
+        </List>
       )}
-    </div>
+    </Box>
   );
 }
 

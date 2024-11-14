@@ -201,6 +201,7 @@ export function PostEditor({ post }: { post: PostSelect }) {
             overflowY="hidden"
             rounded="26px"
             boxShadow="var(--card-raised)"
+            gap={0}
           >
             <Box
               borderBottom="1px"

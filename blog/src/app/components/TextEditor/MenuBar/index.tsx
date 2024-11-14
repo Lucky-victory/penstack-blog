@@ -7,28 +7,17 @@ import {
   Portal,
   useColorModeValue,
   Tooltip,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverArrow,
-  PopoverCloseButton,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalOverlay,
-  Heading,
+  useOutsideClick,
   Box,
   Button,
+  Divider,
+  Stack,
 } from "@chakra-ui/react";
 
-import { useCurrentEditor } from "@tiptap/react";
+import { Editor, useCurrentEditor } from "@tiptap/react";
 import { useFormik } from "formik";
 import isEmpty from "just-is-empty";
-import React, { FormEvent, useRef } from "react";
+import React, { FormEvent, useRef, useState } from "react";
 
 import { LuCornerDownLeft, LuLink, LuRedo2, LuUndo2 } from "react-icons/lu";
 import EditorActionsDropdown from "../EditorActionsDropdown";
@@ -37,52 +26,21 @@ import Medias from "../../Dashboard/Medias";
 import { MediaResponse } from "@/src/types";
 import { MediaInsert } from "./MediaInsert";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
+import { extractContentAndLinkMark } from "@/src/utils";
 
 export const MenuBar = () => {
   const { editor } = useCustomEditorContext();
+  const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);
   const {
     isOpen: isMediaModalOpen,
     onClose: onMediaModalClose,
     onOpen: onMediaModalOpen,
   } = useDisclosure();
-  const initialFocusRef = useRef<any>();
-  const { isOpen, onClose, onOpen } = useDisclosure();
+
   const btnStyles = {
     size: "sm",
     fontSize: "medium",
   };
-  const formik = useFormik({
-    initialValues: {
-      content: "",
-    },
-    onSubmit: (values, actions) => {
-      const content = values.content;
-      const previousUrl = editor?.getAttributes("link").href;
-      actions.setFieldValue("content", previousUrl);
-      const url = content;
-
-      if (url === null) {
-        return;
-      }
-
-      // empty
-      if (isEmpty(url)) {
-        editor?.chain().focus().extendMarkRange("link").unsetMark("link").run();
-
-        return;
-      }
-
-      // update link
-      editor
-        ?.chain()
-        .focus()
-        .extendMarkRange("link")
-        .setMark("link", { href: url })
-        .run();
-      onClose();
-    },
-  });
-
   const borderColorValue = useColorModeValue("gray.300", "gray.800");
   const bgColorValue = useColorModeValue("white", "gray.800");
   const borderBottomColorValue = useColorModeValue("gray.300", "gray.900");
@@ -118,6 +76,7 @@ export const MenuBar = () => {
       px={3}
     >
       <EditorActionsDropdown />
+
       {nonHeadingOrParagraphActions.map((item, index) =>
         item.label === "Insert Media" ? (
           <Box key={index}>
@@ -158,58 +117,27 @@ export const MenuBar = () => {
           </Tooltip>
         )
       )}
-      <Popover
-        onClose={onClose}
-        onOpen={onOpen}
-        isOpen={isOpen}
-        initialFocusRef={initialFocusRef}
-      >
-        <PopoverTrigger>
-          <Tooltip label="Insert Link" hasArrow placement="top" rounded={"lg"}>
-            <IconButton
-              aria-label=""
-              {...btnStyles}
-              variant={editor.isActive("link") ? "solid" : "ghost"}
-            >
-              <LuLink size={20} />
-            </IconButton>
-          </Tooltip>
-        </PopoverTrigger>
-        <Portal>
-          <PopoverContent zIndex={10000} py={4}>
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverHeader fontWeight="bold" border="0">
-              Enter URL:
-            </PopoverHeader>
-            <PopoverBody>
-              <HStack
-                as={"form"}
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  formik.handleSubmit(
-                    e as unknown as FormEvent<HTMLFormElement>
-                  );
-                }}
-              >
-                <Input
-                  name="content"
-                  rounded={"lg"}
-                  autoComplete="off"
-                  value={formik.values.content}
-                  ref={initialFocusRef}
-                  onChange={formik.handleChange}
-                  placeholder="https://example.com"
-                  size={"sm"}
-                />
-                <IconButton aria-label="" variant={"ghost"} type="submit">
-                  <LuCornerDownLeft />
-                </IconButton>
-              </HStack>
-            </PopoverBody>
-          </PopoverContent>
-        </Portal>
-      </Popover>
+
+      <Tooltip label="Insert Link" hasArrow placement="top" rounded={"lg"}>
+        <Box pos={"relative"}>
+          <IconButton
+            aria-label=""
+            onClick={() => {
+              setIsLinkFormOpen(true);
+            }}
+            {...btnStyles}
+            variant={editor.isActive("link") ? "solid" : "ghost"}
+          >
+            <LuLink size={20} />
+          </IconButton>
+          {isLinkFormOpen && (
+            <LinkInputForm
+              editor={editor}
+              setIsLinkFormOpen={setIsLinkFormOpen}
+            />
+          )}
+        </Box>
+      </Tooltip>
 
       <Tooltip label="Undo" hasArrow placement="top" rounded={"lg"}>
         <IconButton
@@ -236,20 +164,114 @@ export const MenuBar = () => {
       {/* <Button
         onClick={() => {
           editor
-            .chain()
-            .focus()
-            .setMedia({
-              src: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1352&q=80",
-              alt: "A random image",
-              title: "A random image",
-              width: 600,
-              height: 400,
+          .chain()
+          .focus()
+          .setMedia({
+            src: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1352&q=80",
+            alt: "A random image",
+            title: "A random image",
+            width: 600,
+            height: 400,
             })
             .run();
-        }}
-      >
-        add media
-      </Button> */}
+            }}
+            >
+            add media
+            </Button> */}
     </HStack>
+  );
+};
+
+export const LinkInputForm = ({
+  editor,
+  setIsLinkFormOpen,
+}: {
+  editor: Editor;
+  setIsLinkFormOpen: (isOpen: boolean) => void;
+}) => {
+  const linkFormRef = useRef<HTMLDivElement | null>(null);
+
+  const selectedContentJson = editor.state.selection.content().content.toJSON();
+  useOutsideClick({
+    ref: linkFormRef,
+    handler() {
+      setIsLinkFormOpen(false);
+    },
+  });
+  const selectedContent = extractContentAndLinkMark(selectedContentJson);
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      url: selectedContent?.linkMark?.attrs?.href || "",
+      text: selectedContent?.text || "",
+    },
+    onSubmit(values) {
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: "text",
+          text: values.text,
+          marks: [
+            {
+              type: "link",
+              attrs: {
+                href: values.url,
+              },
+            },
+          ],
+        })
+        .run();
+      setIsLinkFormOpen(false);
+    },
+  });
+  return (
+    <Stack
+      ref={linkFormRef}
+      shadow={"xl"}
+      as={"form"}
+      border={"1px"}
+      borderColor={useColorModeValue("gray.200", "gray.700")}
+      pos={"absolute"}
+      bg={useColorModeValue("white", "gray.900")}
+      mt={1}
+      p={3}
+      right={0}
+      minW={200}
+      zIndex={10}
+      rounded="lg"
+      onSubmit={(e) => {
+        e.preventDefault();
+        formik.handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
+      }}
+    >
+      <Input
+        placeholder="Enter text"
+        rounded={"lg"}
+        autoComplete="off"
+        name="text"
+        value={formik.values.text}
+        onChange={formik.handleChange}
+        size={"sm"}
+      />
+      <Input
+        name="url"
+        type="url"
+        rounded={"lg"}
+        autoComplete="off"
+        value={formik.values.url}
+        onChange={formik.handleChange}
+        placeholder="https://example.com"
+        size={"sm"}
+      />
+      <Button
+        type="submit"
+        rounded={"full"}
+        size="sm"
+        isDisabled={!(formik.values.url && formik.values.text)}
+      >
+        Insert
+      </Button>
+    </Stack>
   );
 };

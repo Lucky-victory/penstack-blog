@@ -6,6 +6,7 @@ import {
 } from "@/src/app/components/ui/Menu";
 import { Button } from "@/src/app/components/ui/Button";
 import {
+  Divider,
   HStack,
   Text,
   useColorModeValue,
@@ -93,7 +94,13 @@ export default function EditorActionsDropdown() {
           ))}
         </MenuList>
       </Menu> */}
-      <AccessibleDropdown options={dropdownActions} />
+      <AccessibleDropdown
+        options={dropdownActions}
+        onOpen={onOpen}
+        defaultValue={dropdownActions[0]}
+      />
+      <Divider orientation="vertical" h={10} />
+
       <MediaInsert editor={editor} isOpen={isOpen} onClose={onClose} />
     </>
   );

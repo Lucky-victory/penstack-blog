@@ -247,7 +247,79 @@ export function getServerSearchParams<T extends object>(req: NextRequest) {
   const params = Object.fromEntries(searchParams);
   return params as T;
 }
+interface LinkAttrs {
+  href: string;
+  target: string;
+  rel: string;
+  class: string | null;
+}
 
+interface Mark {
+  type: string;
+  attrs: LinkAttrs;
+}
+
+interface ContentItem {
+  type: string;
+  marks?: Mark[];
+  text?: string;
+}
+
+interface ParagraphAttrs {
+  textAlign: string;
+}
+
+interface ParagraphItem {
+  type: string;
+  attrs: ParagraphAttrs;
+  content: ContentItem[];
+}
+
+interface ExtractResult {
+  firstContent: ContentItem[] | null;
+  text: string | null;
+  linkMark: Mark | null;
+}
+
+export const extractContentAndLinkMark = (
+  data: ParagraphItem[]
+): ExtractResult => {
+  try {
+    // Check if data is an array and has at least one element
+    if (!Array.isArray(data) || data.length === 0) {
+      return {
+        firstContent: null,
+        text: null,
+        linkMark: null,
+      };
+    }
+
+    const firstItem = data[0];
+
+    // Get first content array if it exists
+    const firstContent = firstItem?.content || null;
+
+    // Get text from first content item if it exists
+    const text = firstContent?.[0]?.text || null;
+
+    // Look for a link mark specifically
+    const linkMark =
+      firstContent?.[0]?.marks?.find((mark) => mark.type === "link") || null;
+
+    return {
+      firstContent,
+      text,
+      linkMark,
+    };
+  } catch (error) {
+    console.error("Error extracting content and link mark:", error);
+    return {
+      firstContent: null,
+      text: null,
+      linkMark: null,
+    };
+  }
+};
 export function formatBytes(bytes: number) {
   if (!bytes || typeof bytes !== "number") return 0;
   return (bytes / 1024 / 1024).toFixed(2) + " MB";
