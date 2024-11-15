@@ -26,7 +26,7 @@ import { formatDate, nullToEmptyString, shortIdGenerator } from "@/src/utils";
 import { PostInsert, PostSelect } from "@/src/types";
 import { usePost } from "@/src/hooks";
 import DashHeader from "@/src/app/components/Dashboard/Header";
-import { SidebarContent } from "@/src/app/components/Dashboard/NewPostPage/Sidebar";
+import { SidebarContent } from "@/src/app/components/TipTapEditor/Sidebar";
 import { useFormik } from "formik";
 import { useParams, useRouter } from "next/navigation";
 import Loader from "../../Loader";
@@ -34,6 +34,8 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { debounce } from "lodash";
 import { decode, encode } from "html-entities";
+import TipTapEditor from "@/src/app/components/TipTapEditor";
+import { AppEditorContextProvider } from "@/src/context/AppEditor";
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
@@ -46,7 +48,11 @@ export default function NewPostPage() {
       </Stack>
     );
   }
-  return <PostEditor post={post} />;
+  return (
+    <AppEditorContextProvider post={post}>
+      <PostEditor post={post} />
+    </AppEditorContextProvider>
+  );
 }
 
 export function PostEditor({ post }: { post: PostSelect }) {
@@ -175,91 +181,7 @@ export function PostEditor({ post }: { post: PostSelect }) {
         </Show>
       </DashHeader>
 
-      <Flex gap={3} py={4} px={{ base: 2, md: 3 }}>
-        <Stack
-          minH="100%"
-          h="calc(var(--chakra-vh) - (var(--dash-header-h) + 32px))"
-          flex={1}
-          minW={{ base: 300, md: 350 }}
-          pos="sticky"
-          top="calc(var(--dash-header-h) + 16px)"
-          width={{ base: "100%" }}
-          bg={useColorModeValue("white", "gray.900")}
-          border="1px"
-          borderColor={borderColor}
-          overflowY="hidden"
-          rounded="26px"
-          boxShadow="var(--card-raised)"
-          gap={0}
-        >
-          <Box borderBottom="1px" borderBottomColor={borderColor} p={1} py={2}>
-            <Input
-              border="none"
-              outline="none"
-              autoComplete="off"
-              placeholder="Awesome title"
-              name="title"
-              value={formik.values.title || ""}
-              fontWeight={600}
-              onChange={handleTitleChange}
-              rounded="none"
-              _focus={{ boxShadow: "none" }}
-              fontSize={{ base: "lg", md: "24px" }}
-            />
-          </Box>
-          <TextEditor />
-        </Stack>
-
-        <Box display={{ base: "none", lg: "block" }} maxW={320}>
-          <SidebarContent
-            formik={formik}
-            updatePost={updatePost}
-            categories={categories}
-            setCategories={setCategories}
-            isSubmitting={formik.isSubmitting}
-            tags={tags}
-            setTags={setTags}
-            onPublish={() => {
-              updatePost("status", "published");
-              formik.submitForm().then(() => {
-                router.push("/dashboard/posts");
-              });
-            }}
-            onDraft={() => {
-              updatePost("status", "draft");
-              formik.handleSubmit();
-            }}
-            isSaving={isSaving}
-          />
-        </Box>
-      </Flex>
-
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xs">
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Post Settings</DrawerHeader>
-          <DrawerBody px={2}>
-            <SidebarContent
-              formik={formik}
-              updatePost={updatePost}
-              categories={categories}
-              setCategories={setCategories}
-              tags={tags}
-              setTags={setTags}
-              isSaving={isSaving}
-              onPublish={() => {
-                updatePost("status", "published");
-                formik.handleSubmit();
-              }}
-              onDraft={() => {
-                updatePost("status", "draft");
-                formik.handleSubmit();
-              }}
-            />
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+      <TipTapEditor />
     </Box>
   );
 }

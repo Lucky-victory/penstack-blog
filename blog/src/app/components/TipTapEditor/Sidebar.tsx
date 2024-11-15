@@ -51,31 +51,9 @@ import { FeaturedImageCard } from "@/src/app/components/Dashboard/NewPostPage/Fe
 import { PostInsert, PostSelect } from "@/src/types";
 import { useFormik } from "formik";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
+import { Editor } from "@tiptap/react";
 
-export const SidebarContent = ({
-  formik,
-  updatePost,
-  categories,
-  setCategories,
-  tags,
-  setTags,
-  isSaving,
-
-  onPublish = () => {},
-  onDraft = () => {},
-  isSubmitting,
-}: {
-  isSubmitting?: boolean;
-  formik: ReturnType<typeof useFormik<PostSelect>>;
-  updatePost: (key: keyof PostSelect, value: any) => void;
-  categories: { name: string; id?: number }[];
-  onPublish: () => void;
-  onDraft?: () => void;
-  setCategories: Dispatch<SetStateAction<{ name: string; id?: number }[]>>;
-  tags: { name: string }[];
-  setTags: Dispatch<SetStateAction<{ name: string }[]>>;
-  isSaving: boolean;
-}) => {
+export const SidebarContent = ({ editor }: { editor: Editor|null }) => {
   const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);
   const [isSlugEditable, setIsSlugEditable] = useState<boolean>(false);
   const [tag, setTag] = useState("");
@@ -371,6 +349,18 @@ export const SidebarContent = ({
           </Box>
         </SectionCard>
       </Stack>
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xs">
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Post Settings</DrawerHeader>
+          <DrawerBody px={2}>
+            {/* <SidebarContent
+            
+            /> */}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 };

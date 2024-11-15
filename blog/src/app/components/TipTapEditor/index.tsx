@@ -1,7 +1,7 @@
-import { Editor, EditorProvider } from "@tiptap/react";
-import { Box, Stack, useColorModeValue } from "@chakra-ui/react";
-import { MenuBar } from "./MenuBar";
-import { useMemo } from "react";
+import { EditorContent, EditorProvider, useEditor } from "@tiptap/react";
+import { Box, Flex, Stack, useColorModeValue } from "@chakra-ui/react";
+
+import { ReactNode, useMemo } from "react";
 
 import StarterKit from "@tiptap/starter-kit";
 import Highlight from "@tiptap/extension-highlight";
@@ -14,9 +14,11 @@ import CharacterCount from "@tiptap/extension-character-count";
 
 import { TableOfContents } from "@/src/lib/editor/extensions/toc";
 import { Media } from "@/src/lib/editor/extensions/media";
-import { SidebarContent } from "../TipTapEditor/Sidebar";
+import { MenuBar } from "../TextEditor/MenuBar";
+import { SidebarContent } from "./Sidebar";
+import { EditorWrapper } from "./Wrapper";
 
-const TextEditor = () => {
+export default function TipTapEditor({ children }: { children?: ReactNode }) {
   const extensions = useMemo(
     () => [
       StarterKit,
@@ -43,26 +45,23 @@ const TextEditor = () => {
     ],
     []
   );
+  const editor = useEditor({
+    editorProps: { attributes: { class: "tiptap-post-editor" } },
+    enablePasteRules: true,
 
+    content: "",
+    extensions: extensions,
+  });
   return (
-    <Stack
-      h="full"
-      overflowY="auto"
-      minH={300}
-      bg={useColorModeValue("#f0f8ff", "gray.700")}
-      maxH="full"
-    >
-      <Box>
-        <EditorProvider
-          editorProps={{ attributes: { class: "tiptap-post-editor" } }}
-          enablePasteRules={true}
-          slotBefore={<MenuBar />}
-          content={""}
-          extensions={extensions}
-        ></EditorProvider>
-      </Box>
-    </Stack>
+    <>
+      <Flex gap={3} py={4} px={{ base: 2, md: 3 }}>
+        <EditorWrapper>
+          <MenuBar editor={editor} />
+          <EditorContent editor={editor} />
+        </EditorWrapper>
+        {/* <SidebarContent editor={editor} /> */}
+        <Box display={{ base: "none", lg: "block" }} maxW={320}></Box>
+      </Flex>
+    </>
   );
-};
-TextEditor.displayName = "TextEditor";
-export default TextEditor;
+}

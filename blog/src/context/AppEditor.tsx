@@ -6,34 +6,20 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { type EDITOR_CONTEXT_STATE } from "../types";
+import { PostSelect, type EDITOR_CONTEXT_STATE } from "../types";
 
 import {
   type Editor,
-  EditorProvider,
-  useCurrentEditor,
-  useEditor,
 } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Highlight from "@tiptap/extension-highlight";
-import TextAlign from "@tiptap/extension-text-align";
-import Typography from "@tiptap/extension-typography";
-import Image from "@tiptap/extension-image";
-import Link from "@tiptap/extension-link";
-import Placeholder from "@tiptap/extension-placeholder";
-import CharacterCount from "@tiptap/extension-character-count";
-import { Stack, useColorModeValue } from "@chakra-ui/react";
 
-import { useHTMLToMarkdownConverter } from "@/src/hooks";
-import { TableOfContents } from "@/src/lib/editor/extensions/toc";
-import { Media } from "@/src/lib/editor/extensions/media";
 import isEmpty from "just-is-empty";
 
 const AppEditorContext = createContext<EDITOR_CONTEXT_STATE>({
-  setEditor: () => {},
+ 
   isSaving: false,
 
-  editor: null,
+activePost:null,
+setActivePost: () => {},
   content: {
     text: "",
     html: "",
@@ -45,7 +31,6 @@ const AppEditorContext = createContext<EDITOR_CONTEXT_STATE>({
   markdownContent: "",
   clearEditor: () => {},
   isEditorReady: false,
-  handleEditorUpdate: () => {},
   meta: {
     wordCount: 0,
     characterCount: 0,
@@ -53,10 +38,11 @@ const AppEditorContext = createContext<EDITOR_CONTEXT_STATE>({
 });
 
 export const AppEditorContextProvider = ({
-  children,
+  children,post
 }: {
-  children: ReactNode;
+  children: ReactNode;post:PostSelect|null
 }) => {
+  const [activePost, setActivePost] = useState<PostSelect|null>(post);
   const [isSaving, setIsSaving] = useState(false);
   const [editor, setEditor] = useState<Editor | null>(null);
   const [isEditorReady, setIsEditorReady] = useState(false);
@@ -80,9 +66,9 @@ export const AppEditorContextProvider = ({
   const setIsSavingCallback = useCallback((isSaving: boolean) => {
     setIsSaving(isSaving);
   }, []);
-  const setEditorCallback = useCallback(() => {
-    setEditor(editor);
-  }, [editor]);
+  const setActivePostCallback = useCallback((post: PostSelect|null) => {
+    setActivePost(post);
+  }, []);
 
   const setEditorContentCallback = useCallback(
     (content: EDITOR_CONTEXT_STATE["content"]) => {
@@ -120,19 +106,15 @@ export const AppEditorContextProvider = ({
     setIsEditorReady(!isEmpty(editor));
   }, [editor]);
 
-  // useEffect(() => {
-  //   if (editor) {
-  //     editor.commands.setContent(initialContent);
-  //   }
-  // }, [editor, initialContent]);
+ 
   return (
     <AppEditorContext.Provider
       value={{
         isSaving,
-        editor,
+      
         content: editorContent,
-        setEditor: setEditorCallback,
-        handleEditorUpdate,
+        setActivePost: setActivePostCallback,
+   activePost,
         setEditorContent: setEditorContentCallback,
         setIsSaving: setIsSavingCallback,
         initialContent,

@@ -22,8 +22,7 @@ import { filterEditorActions } from "@/src/lib/editor-actions";
 import { MediaInsert } from "./MediaInsert";
 import { extractContentAndLinkMark } from "@/src/utils";
 
-export const MenuBar = () => {
-  const { editor } = useCurrentEditor();
+export const MenuBar = ({ editor }: { editor: Editor | null }) => {
   const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);
   const {
     isOpen: isMediaModalOpen,
