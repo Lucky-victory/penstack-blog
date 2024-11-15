@@ -1,21 +1,32 @@
 import React from "react";
-import { LuSearch } from "react-icons/lu";
-import { HStack, Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
+import { LuRefreshCw, LuRotate3D, LuSearch } from "react-icons/lu";
+import {
+  Button,
+  HStack,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+} from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
 import { FilterParams, MediaType } from "@/src/types";
 
 interface MediaFilterProps {
   onFilterChange: (filters: Partial<FilterParams>) => void;
   folders: string[];
+  refetchMedia: () => void;
 }
 
 export const MediaFilter: React.FC<MediaFilterProps> = ({
   onFilterChange,
-
+  refetchMedia,
   folders,
 }) => {
   return (
-    <HStack gap={4} wrap={"wrap"} justify={"space-between"}>
+    <HStack
+      gap={4}
+      wrap={{ base: "wrap", xl: "nowrap" }}
+      justify={"space-between"}
+    >
       <InputGroup maxW={500}>
         <InputLeftAddon roundedLeft={"full"}>
           <LuSearch />
@@ -53,11 +64,12 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
           }
         >
           <option value="">All folders</option>
-          {folders.map((folder) => (
-            <option key={folder} value={folder}>
-              {folder}
-            </option>
-          ))}
+          {folders?.length > 0 &&
+            folders.map((folder) => (
+              <option key={folder} value={folder}>
+                {folder}
+              </option>
+            ))}
         </Select>
 
         <Select
@@ -79,6 +91,18 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
           <option value="size-desc">Largest first</option>
           <option value="size-asc">Smallest first</option>
         </Select>
+        <Button
+          flexShrink={0}
+          ml="auto"
+          size={"sm"}
+          rounded={"full"}
+          leftIcon={<LuRefreshCw />}
+          onClick={() => {
+            refetchMedia?.();
+          }}
+        >
+          Refresh
+        </Button>
       </HStack>
     </HStack>
   );

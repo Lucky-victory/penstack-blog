@@ -47,7 +47,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
 
   const debouncedFilters = useDebounce(filters, 300);
 
-  const { data: media } = useQuery({
+  const { data: media, refetch } = useQuery({
     queryKey: ["media", debouncedFilters],
     queryFn: fetchMedia,
     enabled: !!debouncedFilters.page,
@@ -123,6 +123,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       <MediaFilter
         onFilterChange={handleFilterChange}
         folders={folders as string[]}
+        refetchMedia={refetch}
       />
 
       {loading && (

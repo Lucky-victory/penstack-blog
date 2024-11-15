@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -53,12 +53,18 @@ import { useFormik } from "formik";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { Editor } from "@tiptap/react";
 
-export const SidebarContent = ({ editor }: { editor: Editor|null }) => {
+export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
+  const { activePost } = useCustomEditorContext();
   const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);
   const [isSlugEditable, setIsSlugEditable] = useState<boolean>(false);
   const [tag, setTag] = useState("");
   const [category, setCategory] = useState("");
-  const { meta: editorMeta } = useCustomEditorContext();
+  const [categories, setCategories] = useState<{ name: string; id: number }[]>(
+    []
+  );
+  const [tags, setTags] = useState<{ name: string }[]>([]);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
   const handleAddCategory = () => {
     const lastCategory = categories[categories.length - 1];
     setCategories((prev) => [
@@ -71,6 +77,19 @@ export const SidebarContent = ({ editor }: { editor: Editor|null }) => {
     setTags((prev) => [...prev, { name: tag }]);
     setTag("");
   };
+  function onDraft() {}
+  function onPublish() {}
+
+  function updatePost(key: keyof PostSelect, value: any) {}
+  function handleChange(
+    evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {}
+
+  const editorMeta = {
+    wordCount: editor?.storage?.characterCount?.words() || 0,
+    characterCount: editor?.storage?.characterCount?.characters() || 0,
+  };
+
   return (
     <>
       <Stack
@@ -123,8 +142,8 @@ export const SidebarContent = ({ editor }: { editor: Editor|null }) => {
               </Button>
               <Button
                 size={"sm"}
-                isDisabled={isSubmitting}
-                isLoading={isSubmitting}
+                // isDisabled={isSubmitting}
+                // isLoading={isSubmitting}
                 loadingText={"publishing..."}
                 flex={1}
                 rounded={"full"}
@@ -150,7 +169,7 @@ export const SidebarContent = ({ editor }: { editor: Editor|null }) => {
                     fontWeight="semibold"
                     textTransform={"capitalize"}
                   >
-                    {formik.values.status}
+                    {activePost?.status}
                   </Text>
                 </HStack>
               </ListItem>
@@ -165,7 +184,7 @@ export const SidebarContent = ({ editor }: { editor: Editor|null }) => {
                     fontWeight="semibold"
                     textTransform={"capitalize"}
                   >
-                    {formik.values.visibility}
+                    {activePost?.visibility}
                   </Text>
                 </HStack>
               </ListItem>
@@ -203,7 +222,7 @@ export const SidebarContent = ({ editor }: { editor: Editor|null }) => {
               onChange={(imageId) => {
                 updatePost("featured_image_id", imageId);
               }}
-              image={formik.values.featured_image}
+              image={activePost?.featured_image || null}
             />
 
             <FormControl>
@@ -212,9 +231,9 @@ export const SidebarContent = ({ editor }: { editor: Editor|null }) => {
                 <Input
                   placeholder="Slug"
                   name="slug"
-                  value={formik.values.slug}
+                  value={activePost?.slug}
                   autoComplete="off"
-                  onChange={formik.handleChange}
+                  onChange={handleChange}
                   isDisabled={!isSlugEditable}
                   onBlur={() => setIsSlugEditable(false)}
                   rounded={"full"}
@@ -242,8 +261,8 @@ export const SidebarContent = ({ editor }: { editor: Editor|null }) => {
               <Textarea
                 placeholder="summary"
                 name="summary"
-                value={formik.values.summary as string}
-                onChange={formik.handleChange}
+                value={activePost?.summary as string}
+                onChange={handleChange}
                 maxH={150}
                 rounded={"lg"}
               />
@@ -349,18 +368,6 @@ export const SidebarContent = ({ editor }: { editor: Editor|null }) => {
           </Box>
         </SectionCard>
       </Stack>
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xs">
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Post Settings</DrawerHeader>
-          <DrawerBody px={2}>
-            {/* <SidebarContent
-            
-            /> */}
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
     </>
   );
 };

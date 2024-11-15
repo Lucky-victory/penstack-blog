@@ -147,40 +147,6 @@ export function PostEditor({ post }: { post: PostSelect }) {
 
   return (
     <Box h="full" overflowY="auto">
-      <DashHeader pos="sticky" top={0} zIndex={10}>
-        <Stack gap={0}>
-          <Text fontSize="2xl" fontWeight={600} as="span">
-            Create Post
-          </Text>
-          <Text as="span" fontSize="sm" color="gray.500">
-            Last updated:{" "}
-            {lastUpdate ? formatDate(new Date(lastUpdate)) : "Not saved yet"}
-          </Text>
-        </Stack>
-        <Hide below="md">
-          <Button
-            variant="outline"
-            gap={2}
-            size="sm"
-            rounded="full"
-            onClick={onOpen}
-            display={{ base: "flex", lg: "none" }}
-          >
-            <LuSettings />
-            <Text>Post Settings</Text>
-          </Button>
-        </Hide>
-        <Show below="md">
-          <IconButton
-            icon={<LuSettings />}
-            rounded={"full"}
-            variant={"outline"}
-            aria-label="Post Settings"
-            onClick={onOpen}
-          ></IconButton>
-        </Show>
-      </DashHeader>
-
       <TipTapEditor />
     </Box>
   );

@@ -31,7 +31,7 @@ export const TitleInput = ({
         onChange={handleTitleChange}
         rounded="none"
         _focus={{ boxShadow: "none" }}
-        fontSize={{ base: "lg", md: "24px" }}
+        fontSize={{ base: "x-large", md: "xx-large" }}
       />
     </Box>
   );
