@@ -27,6 +27,7 @@ interface AccessibleDropdownProps<T extends Option | EditorActionItem> {
   defaultValue?: T;
   className?: string;
   onOpen?: () => void;
+  editor: Editor | null;
 }
 
 function AccessibleDropdown<T extends Option | EditorActionItem>({
@@ -36,12 +37,13 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
   defaultValue,
   className = "",
   onOpen,
+  editor,
 }: AccessibleDropdownProps<T>) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<T | null>(
     defaultValue || null
   );
-  const { editor } = useCustomEditorContext();
+
   const [activeIndex, setActiveIndex] = useState<number>(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const optionsRef = useRef<(HTMLLIElement | null)[]>([]);

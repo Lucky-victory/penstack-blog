@@ -19,9 +19,13 @@ import { MediaInsert } from "./MenuBar/MediaInsert";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
 import AccessibleDropdown from "../AccessibleDropdown";
 import { EditorActionItem } from "@/src/types";
+import { Editor } from "@tiptap/react";
 
-export default function EditorActionsDropdown() {
-  const { editor } = useCustomEditorContext();
+export default function EditorActionsDropdown({
+  editor,
+}: {
+  editor: Editor | null;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dropdownActions = useMemo(
     () =>
@@ -87,6 +91,7 @@ export default function EditorActionsDropdown() {
       <AccessibleDropdown
         options={dropdownActions}
         onOpen={onOpen}
+        editor={editor}
         defaultValue={dropdownActions[0]}
       />
       <Divider orientation="vertical" h={10} />

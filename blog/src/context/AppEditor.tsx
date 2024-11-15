@@ -29,31 +29,10 @@ import { TableOfContents } from "@/src/lib/editor/extensions/toc";
 import { Media } from "@/src/lib/editor/extensions/media";
 import isEmpty from "just-is-empty";
 
-const extensions = [
-  StarterKit,
-  Placeholder.configure({
-    placeholder: "Write something …",
-  }),
-  Link.configure({
-    HTMLAttributes: {
-      target: "_blank",
-      rel: "noopener noreferrer",
-    },
-    openOnClick: false,
-    autolink: true,
-  }),
-  Typography,
-  Image,
-  TextAlign.configure({
-    types: ["heading", "paragraph"],
-  }),
-  Highlight,
-  CharacterCount,
-  TableOfContents,
-  Media,
-];
 const AppEditorContext = createContext<EDITOR_CONTEXT_STATE>({
+  setEditor: () => {},
   isSaving: false,
+
   editor: null,
   content: {
     text: "",
@@ -66,6 +45,7 @@ const AppEditorContext = createContext<EDITOR_CONTEXT_STATE>({
   markdownContent: "",
   clearEditor: () => {},
   isEditorReady: false,
+  handleEditorUpdate: () => {},
   meta: {
     wordCount: 0,
     characterCount: 0,
@@ -78,6 +58,7 @@ export const AppEditorContextProvider = ({
   children: ReactNode;
 }) => {
   const [isSaving, setIsSaving] = useState(false);
+  const [editor, setEditor] = useState<Editor | null>(null);
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [initialContent, setInitialContent] = useState("");
   const [markdownContent, setMarkdownContent] = useState("");
@@ -85,7 +66,7 @@ export const AppEditorContextProvider = ({
     wordCount: 0,
     characterCount: 0,
   });
-  const { updateHtml } = useHTMLToMarkdownConverter();
+  // const { updateHtml } = useHTMLToMarkdownConverter();
   const [editorContent, setEditorContent] = useState<
     EDITOR_CONTEXT_STATE["content"]
   >({
@@ -93,21 +74,16 @@ export const AppEditorContextProvider = ({
     html: "",
   });
 
-  const editor = useEditor({
-    extensions,
-    editorProps: { attributes: { class: "tiptap-post-editor" } },
-    content: initialContent,
-    enablePasteRules: true,
-    onUpdate: ({ editor }) => {
-      handleEditorUpdate(editor as Editor);
-    },
-  });
   const setInitialContentCallback = useCallback((initialContent: string) => {
     setInitialContent(initialContent);
   }, []);
   const setIsSavingCallback = useCallback((isSaving: boolean) => {
     setIsSaving(isSaving);
   }, []);
+  const setEditorCallback = useCallback(() => {
+    setEditor(editor);
+  }, [editor]);
+
   const setEditorContentCallback = useCallback(
     (content: EDITOR_CONTEXT_STATE["content"]) => {
       setEditorContent(content);
@@ -120,21 +96,18 @@ export const AppEditorContextProvider = ({
   //   setMarkdownContent(markdown);
   // }, [editorContent?.html, updateHtml]);
 
-  const handleEditorUpdate = useCallback(
-    (editor: Editor) => {
-      setEditorContentCallback({
-        text: editor.getText(),
-        html: editor.getHTML(),
-      });
-      const characterCount = editor.storage.characterCount.characters();
-      const wordCount = editor.storage.characterCount.words();
-      setMeta({
-        wordCount: wordCount,
-        characterCount,
-      });
-    },
-    [setEditorContentCallback]
-  );
+  const handleEditorUpdate = useCallback((editor: Editor) => {
+    setEditorContent({
+      text: editor.getText(),
+      html: editor.getHTML(),
+    });
+    const characterCount = editor.storage.characterCount.characters();
+    const wordCount = editor.storage.characterCount.words();
+    setMeta({
+      wordCount: wordCount,
+      characterCount,
+    });
+  }, []);
   const clearEditor = useCallback(() => {
     setEditorContent({
       text: "",
@@ -147,17 +120,19 @@ export const AppEditorContextProvider = ({
     setIsEditorReady(!isEmpty(editor));
   }, [editor]);
 
-  useEffect(() => {
-    if (editor) {
-      editor.commands.setContent(initialContent);
-    }
-  }, [editor, initialContent]);
+  // useEffect(() => {
+  //   if (editor) {
+  //     editor.commands.setContent(initialContent);
+  //   }
+  // }, [editor, initialContent]);
   return (
     <AppEditorContext.Provider
       value={{
         isSaving,
         editor,
         content: editorContent,
+        setEditor: setEditorCallback,
+        handleEditorUpdate,
         setEditorContent: setEditorContentCallback,
         setIsSaving: setIsSavingCallback,
         initialContent,

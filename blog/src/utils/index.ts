@@ -145,8 +145,8 @@ type QueryParamObject = {
  * objectToQueryParams(params);
  * // Returns: "name=John%20Doe&age=30&filters[active]=true&filters[roles][]=admin&filters[roles][]=user"
  */
-export function objectToQueryParams(
-  params: QueryParamObject,
+export function objectToQueryParams<T extends object = QueryParamObject>(
+  params: T,
   prefix: string = ""
 ): string {
   return Object.entries(params)

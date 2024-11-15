@@ -34,12 +34,6 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { debounce } from "lodash";
 import { decode, encode } from "html-entities";
-import {
-  AppEditorContextProvider,
-  useCustomEditorContext,
-} from "@/src/context/AppEditor";
-
-const META_DESCRIPTION_LENGTH = 155;
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
@@ -52,16 +46,10 @@ export default function NewPostPage() {
       </Stack>
     );
   }
-  return (
-    <AppEditorContextProvider>
-      <PostEditor post={post} />
-    </AppEditorContextProvider>
-  );
+  return <PostEditor post={post} />;
 }
 
 export function PostEditor({ post }: { post: PostSelect }) {
-  const { setInitialContent, content } = useCustomEditorContext();
-
   const [lastUpdate, setLastUpdate] = useState<Date | null>(
     post?.updated_at as Date
   );
@@ -120,12 +108,9 @@ export function PostEditor({ post }: { post: PostSelect }) {
       }, 1000),
     [formik]
   );
-  const updatePost = useCallback(
-    (key: keyof PostSelect, value: any) => {
-      formik.setFieldValue(key, value);
-    },
-    [formik]
-  );
+  const updatePost = useCallback((key: keyof PostSelect, value: any) => {
+    formik.setFieldValue(key, value);
+  }, []);
 
   // Handle slug generation
   useEffect(() => {
@@ -149,15 +134,11 @@ export function PostEditor({ post }: { post: PostSelect }) {
     [updatePost]
   );
 
-  useEffect(() => {
-    // console.log("post changed", content);
-
+  function onEditorUpdate(content: any) {
     updatePost("content", encode(content?.html || ""));
-  }, [content?.html, updatePost]);
+    console.log("content", content);
+  }
 
-  useEffect(() => {
-    setInitialContent(decode(post?.content));
-  }, [post?.content, setInitialContent]);
   return (
     <Box h="full" overflowY="auto">
       <DashHeader pos="sticky" top={0} zIndex={10}>

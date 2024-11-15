@@ -4,32 +4,26 @@ import {
   IconButton,
   useDisclosure,
   Input,
-  Portal,
   useColorModeValue,
   Tooltip,
   useOutsideClick,
   Box,
   Button,
-  Divider,
   Stack,
 } from "@chakra-ui/react";
 
 import { Editor, useCurrentEditor } from "@tiptap/react";
 import { useFormik } from "formik";
-import isEmpty from "just-is-empty";
 import React, { FormEvent, useRef, useState } from "react";
 
-import { LuCornerDownLeft, LuLink, LuRedo2, LuUndo2 } from "react-icons/lu";
+import { LuLink, LuRedo2, LuUndo2 } from "react-icons/lu";
 import EditorActionsDropdown from "../EditorActionsDropdown";
 import { filterEditorActions } from "@/src/lib/editor-actions";
-import Medias from "../../Dashboard/Medias";
-import { MediaResponse } from "@/src/types";
 import { MediaInsert } from "./MediaInsert";
-import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { extractContentAndLinkMark } from "@/src/utils";
 
 export const MenuBar = () => {
-  const { editor } = useCustomEditorContext();
+  const { editor } = useCurrentEditor();
   const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);
   const {
     isOpen: isMediaModalOpen,
@@ -75,7 +69,7 @@ export const MenuBar = () => {
       zIndex={2}
       px={3}
     >
-      <EditorActionsDropdown />
+      <EditorActionsDropdown editor={editor} />
 
       {nonHeadingOrParagraphActions.map((item, index) =>
         item.label === "Insert Media" ? (

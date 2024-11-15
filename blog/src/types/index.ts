@@ -68,11 +68,13 @@ export interface PaginatedResponse<T> {
   };
 }
 export type EDITOR_CONTEXT_STATE = {
+  setEditor: (editor: Editor) => void;
   isSaving: boolean;
   editor: Editor | null;
   initialContent: string;
   setInitialContent: (content: string) => void;
   setEditorContent: (content: EDITOR_CONTEXT_STATE["content"]) => void;
+  handleEditorUpdate: (editor: Editor) => void;
   markdownContent?: string;
   content: {
     text: string;

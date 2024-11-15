@@ -17,10 +17,12 @@ import {
   LuChevronsRight,
   LuTrash2,
 } from "react-icons/lu";
-import { useDebounce } from "@/src/hooks";
+import { useDebounce, useQueryParams } from "@/src/hooks";
 import { FilterParams, MediaResponse, PaginatedResponse } from "@/src/types";
 import axios from "axios";
 import Loader from "../../Loader";
+import { objectToQueryParams } from "@/src/utils";
+import { useQuery } from "@tanstack/react-query";
 
 interface MediaLibraryProps {
   onSelect?: (media: MediaResponse | MediaResponse[]) => void;
@@ -41,42 +43,44 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     ...defaultFilters,
   });
   const [loading, setLoading] = useState(false);
-  const [media, setMedia] = useState<PaginatedResponse<MediaResponse>>();
   const [selectedMedia, setSelectedMedia] = useState<MediaResponse[]>([]);
-  const [folders, setFolders] = useState<string[]>([]);
 
   const debouncedFilters = useDebounce(filters, 300);
 
-  const fetchFolders = async () => {
+  const { data: media } = useQuery({
+    queryKey: ["media", debouncedFilters],
+    queryFn: fetchMedia,
+    enabled: !!debouncedFilters.page,
+    staleTime: 1000 * 60 * 5,
+  });
+  const { data: folders } = useQuery({
+    queryKey: ["folders"],
+    queryFn: fetchFolders,
+    staleTime: 1000 * 60 * 5,
+  });
+  async function fetchFolders() {
     try {
       const { data } = await axios<{ data: string[] }>(`/api/media/folders`);
 
-      setFolders(data?.data);
+      return data.data;
     } catch (error) {
       console.error("Failed to fetch folders:", error);
     }
-  };
-  const fetchMedia = async () => {
+  }
+  async function fetchMedia() {
     setLoading(true);
     try {
-      const queryParams = new URLSearchParams();
-      Object.entries(debouncedFilters).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          value.forEach((v) => queryParams.append(key, v));
-        } else if (value) {
-          queryParams.append(key, value.toString());
-        }
-      });
+      const { data: media } = await axios<PaginatedResponse<MediaResponse>>(
+        `/api/media?${objectToQueryParams(debouncedFilters)}`
+      );
 
-      const { data: media } = await axios(`/api/media?${queryParams}`);
-
-      setMedia(media);
+      return media;
     } catch (error) {
       console.error("Failed to fetch media:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleFilterChange = (newFilters: Partial<FilterParams>) => {
     setFilters((prev) => ({
@@ -95,7 +99,6 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
         }
 
         if (maxSelection && prev.length >= maxSelection) {
-          // Remove the first item and add the new one at the end
           const newArray = [...prev.slice(1), media];
           return newArray;
         }
@@ -114,15 +117,13 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       }));
     }
   };
-  useEffect(() => {
-    fetchMedia();
-  }, [debouncedFilters]);
-  useEffect(() => {
-    fetchFolders();
-  }, []);
+
   return (
     <Box className="space-y-6">
-      <MediaFilter onFilterChange={handleFilterChange} folders={folders} />
+      <MediaFilter
+        onFilterChange={handleFilterChange}
+        folders={folders as string[]}
+      />
 
       {loading && (
         <VStack justify={"center"} py={12}>
@@ -146,14 +147,15 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             templateColumns={"repeat(auto-fit, minmax(200px, 1fr))"}
             gap={{ base: 3, md: 4 }}
           >
-            {media?.data.map((item) => (
-              <MediaCard
-                key={item.id}
-                media={item}
-                onSelect={handleSelect}
-                selected={!!selectedMedia.find((m) => m.id === item.id)}
-              />
-            ))}
+            {media?.data.length > 0 &&
+              media?.data.map((item) => (
+                <MediaCard
+                  key={item.id}
+                  media={item}
+                  onSelect={handleSelect}
+                  selected={!!selectedMedia.find((m) => m.id === item.id)}
+                />
+              ))}
           </Grid>
           <HStack spacing={2} justify={"center"}>
             <IconButton
