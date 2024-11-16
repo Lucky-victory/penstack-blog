@@ -8,18 +8,15 @@ import {
 } from "react";
 import { PostSelect, type EDITOR_CONTEXT_STATE } from "../types";
 
-import {
-  type Editor,
-} from "@tiptap/react";
+import { type Editor } from "@tiptap/react";
 
 import isEmpty from "just-is-empty";
 
 const AppEditorContext = createContext<EDITOR_CONTEXT_STATE>({
- 
   isSaving: false,
 
-activePost:null,
-setActivePost: () => {},
+  activePost: null,
+  setActivePost: () => {},
   content: {
     text: "",
     html: "",
@@ -38,13 +35,17 @@ setActivePost: () => {},
 });
 
 export const AppEditorContextProvider = ({
-  children,post
+  children,
+  post,
 }: {
-  children: ReactNode;post:PostSelect|null
+  children: ReactNode;
+  post: PostSelect | null;
 }) => {
-  const [activePost, setActivePost] = useState<PostSelect|null>(post);
+  const [activePost, setActivePost] = useState<PostSelect | null>(post);
   const [isSaving, setIsSaving] = useState(false);
   const [editor, setEditor] = useState<Editor | null>(null);
+  console.log("Active Post:", activePost);
+
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [initialContent, setInitialContent] = useState("");
   const [markdownContent, setMarkdownContent] = useState("");
@@ -66,7 +67,7 @@ export const AppEditorContextProvider = ({
   const setIsSavingCallback = useCallback((isSaving: boolean) => {
     setIsSaving(isSaving);
   }, []);
-  const setActivePostCallback = useCallback((post: PostSelect|null) => {
+  const setActivePostCallback = useCallback((post: PostSelect | null) => {
     setActivePost(post);
   }, []);
 
@@ -106,15 +107,14 @@ export const AppEditorContextProvider = ({
     setIsEditorReady(!isEmpty(editor));
   }, [editor]);
 
- 
   return (
     <AppEditorContext.Provider
       value={{
         isSaving,
-      
+
         content: editorContent,
         setActivePost: setActivePostCallback,
-   activePost,
+        activePost,
         setEditorContent: setEditorContentCallback,
         setIsSaving: setIsSavingCallback,
         initialContent,

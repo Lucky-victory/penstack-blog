@@ -47,7 +47,7 @@ import {
   LuType,
   LuSettings,
 } from "react-icons/lu";
-import { FeaturedImageCard } from "@/src/app/components/Dashboard/NewPostPage/FeaturedImageCard";
+import { FeaturedImageCard } from "@/src/app/components/TipTapEditor/FeaturedImageCard";
 import { PostInsert, PostSelect } from "@/src/types";
 import { useFormik } from "formik";
 import { useCustomEditorContext } from "@/src/context/AppEditor";

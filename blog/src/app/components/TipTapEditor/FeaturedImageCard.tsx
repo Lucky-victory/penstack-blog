@@ -9,11 +9,12 @@ import {
   Tooltip,
   useDisclosure,
   Button,
+  HStack,
 } from "@chakra-ui/react";
 import { useState, useCallback, memo } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import isEmpty from "just-is-empty";
-import { MediaModal } from "../../TextEditor/MenuBar/MediaInsert";
+import { MediaModal } from "../TextEditor/MenuBar/MediaInsert";
 import { MediaResponse } from "@/src/types";
 
 export const FeaturedImageCard = memo(
@@ -61,7 +62,7 @@ export const FeaturedImageCard = memo(
           h="157.5px"
           w="full"
           aspectRatio="2:1"
-          maxW="300px"
+          maxW="350px"
         >
           {!isEmpty(featuredImage?.url) ? (
             <>
@@ -107,19 +108,20 @@ export const FeaturedImageCard = memo(
             </Stack>
           )}
         </Flex>
-
-        <Button
-          gap={2}
-          size="xs"
-          onClick={onOpen}
-          rounded="full"
-          leftIcon={!featuredImage?.url ? <LuPlus /> : undefined}
-          w="full"
-        >
-          <Text as="span">
-            {featuredImage?.url ? "Change image" : "Add featured image"}
-          </Text>
-        </Button>
+        <HStack justify={"flex-end"}>
+          <Button
+            size="sm"
+            onClick={onOpen}
+            variant={"ghost"}
+            rounded="full"
+            leftIcon={!featuredImage?.url ? <LuPlus size={18} /> : undefined}
+            // w="full"
+          >
+            <Text as="span">
+              {featuredImage?.url ? "Change image" : "Add featured image"}
+            </Text>
+          </Button>
+        </HStack>
 
         <MediaModal
           onClose={onClose}

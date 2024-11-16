@@ -22,12 +22,12 @@ export const posts = mysqlTable(
   "Posts",
   {
     id: int("id").autoincrement().primaryKey(),
-    title: varchar("title", { length: 255 }).default("Untitled"),
+    title: varchar("title", { length: 255 }),
     content: longtext("content"),
     summary: varchar("summary", { length: 255 }),
     seo_meta_id: int("meta_id"),
     post_id: varchar("post_id", { length: 255 }).$defaultFn(() =>
-      shortIdGenerator.urlSafeId()
+      shortIdGenerator.urlSafeId(18)
     ),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     status: mysqlEnum("status", ["draft", "published", "deleted"]).default(
@@ -60,6 +60,7 @@ export const posts = mysqlTable(
     };
   }
 );
+// TODO: Add ON DUPLICATE for slug
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
   author: one(users, {

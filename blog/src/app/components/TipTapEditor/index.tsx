@@ -1,5 +1,12 @@
 import { EditorContent, EditorProvider, useEditor } from "@tiptap/react";
-import { Box, Flex, Show, Stack, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Hide,
+  Show,
+  Stack,
+  useColorModeValue,
+} from "@chakra-ui/react";
 
 import { ReactNode, useMemo } from "react";
 
@@ -60,9 +67,9 @@ export default function TipTapEditor({ children }: { children?: ReactNode }) {
           <MenuBar editor={editor} />
           <EditorContent editor={editor} />
         </EditorWrapper>
-        <Show above="md">
+        <Hide below="lg">
           <SidebarContent editor={editor} />
-        </Show>
+        </Hide>
         <Box display={{ base: "none", lg: "block" }} maxW={320}></Box>
       </Flex>
     </>
