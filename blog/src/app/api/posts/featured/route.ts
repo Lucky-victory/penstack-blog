@@ -1,6 +1,6 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
-import { getEngagementBasedFeaturedPosts } from "@/src/lib/db/featured";
+import { getEngagementBasedFeaturedPosts } from "@/src/lib/queries/featured";
 import { desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 

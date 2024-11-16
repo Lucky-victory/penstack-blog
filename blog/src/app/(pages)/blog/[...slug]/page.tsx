@@ -7,58 +7,11 @@ import { postViews } from "@/src/db/schemas";
 import { sql } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { headers } from "next/headers";
+import { getPost } from "@/src/lib/queries/post";
 
 async function getData(slug: string, fromMetadata: boolean = false) {
   try {
-    const post = await db.query.posts.findFirst({
-      where: (posts, { eq }) => eq(posts.slug, slug),
-      with: {
-        views: {
-          columns: { id: true },
-        },
-        featured_image: {
-          columns: {
-            url: true,
-            alt_text: true,
-            caption: true,
-          },
-        },
-        author: {
-          columns: {
-            username: true,
-            name: true,
-            avatar: true,
-          },
-        },
-        category: {
-          columns: {
-            id: true,
-            name: true,
-            slug: true,
-          },
-        },
-        tags: {
-          with: {
-            tag: {
-              columns: {
-                id: true,
-                name: true,
-                slug: true,
-              },
-            },
-          },
-        },
-      },
-    });
-    const tags = post?.tags?.length ? post?.tags.map((t) => t.tag) : [];
-
-    const viewsCount = post?.views?.length;
-
-    if (!post) return null;
-
-    const transformedPost = { ...post, tags, views: { count: viewsCount } };
-
-    return transformedPost;
+    return getPost(slug);
   } catch (error) {
     console.log(error);
 
@@ -81,7 +34,6 @@ export async function generateMetadata(
   const post = await getData(postSlug, true);
   if (!post) return notFound();
 
-  // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
 
   return {

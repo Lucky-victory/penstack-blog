@@ -15,9 +15,9 @@ import {
 import { LuChevronsUpDown } from "react-icons/lu";
 import { filterEditorActions } from "@/src/lib/editor-actions";
 import React, { useEffect, useMemo, useState } from "react";
-import { MediaInsert } from "./MenuBar/MediaInsert";
+import { MediaInsert } from "./MediaInsert";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
-import AccessibleDropdown from "../AccessibleDropdown";
+import AccessibleDropdown from "../../AccessibleDropdown";
 import { EditorActionItem } from "@/src/types";
 import { Editor } from "@tiptap/react";
 

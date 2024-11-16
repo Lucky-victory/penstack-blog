@@ -21,7 +21,7 @@ import CharacterCount from "@tiptap/extension-character-count";
 
 import { TableOfContents } from "@/src/lib/editor/extensions/toc";
 import { Media } from "@/src/lib/editor/extensions/media";
-import { MenuBar } from "../TextEditor/MenuBar";
+import { MenuBar } from "./MenuBar";
 import { SidebarContent } from "./Sidebar";
 import { EditorWrapper } from "./Wrapper";
 import EditorHeader from "./Header";
