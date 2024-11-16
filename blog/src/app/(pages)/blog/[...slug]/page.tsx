@@ -52,6 +52,8 @@ export async function generateMetadata(
 export default async function Page({ params, searchParams }: Props) {
   const headersL = await headers();
   const session = await getServerSession();
+  console.log("session", session);
+
   const referrer = headersL.get("referer") || "";
   const userAgent = headersL.get("user-agent") || "";
   const slug = params.slug;

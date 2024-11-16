@@ -64,6 +64,7 @@ export const authOptions: NextAuthOptions = {
             eq(users.email, credentials.emailOrUsername)
           ),
         });
+        console.log("user:", user);
 
         if (!user || !user.password) {
           throw new Error("User not found");
@@ -82,7 +83,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           name: user.name,
           email: user.email,
-          avatar: user.avatar,
+          avatar: user.avatar as string,
           username: user.username as string,
           auth_type: user.auth_type as User["auth_type"],
           role_id: user.role_id,
@@ -91,21 +92,43 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      if (!user.email) return false;
+      if (user.email) {
+        const existingUser = await db.query.users.findFirst({
+          where: eq(users.email, user.email),
+        });
+        console.log("existingUser:", existingUser);
+
+        if (!existingUser) {
+          return "Account not found. Please sign up.";
+        }
+      }
+      return true;
+    },
     async jwt({ token, user, account }) {
       if (user) {
-        token.id = user.id;
+        token.id = user.id as number;
         token.role_id = user.role_id;
         token.auth_type = user.auth_type;
         token.username = user.username;
+        token.avatar = user.avatar;
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
-        session.user.role_id = token.role_id;
-        session.user.auth_type = token.auth_type;
-        session.user.username = token.username;
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            id: token.id,
+            role_id: token.role_id,
+            auth_type: token.auth_type,
+            username: token.username,
+            avatar: token.avatar,
+          },
+        };
       }
       return session;
     },

@@ -7,6 +7,7 @@ declare module "next-auth" {
       role_id: number;
       auth_type: "local" | "google" | "github";
       username?: string;
+      avatar?: string;
     } & DefaultSession["user"];
   }
 
@@ -15,6 +16,7 @@ declare module "next-auth" {
     role_id: number;
     auth_type: "local" | "google" | "github";
     username?: string;
+    avatar?: string;
   }
 }
 
@@ -24,5 +26,6 @@ declare module "next-auth/jwt" {
     role_id: number;
     auth_type: "local" | "google" | "github";
     username?: string;
+    avatar?: string;
   }
 }

@@ -14,6 +14,7 @@ import { fonts } from "../lib/fonts";
 import { Providers } from "../providers/chakra";
 import ReactQueryClient from "../providers/react-query";
 import AuthProvider from "../providers/auth";
+
 export default function RootLayout({
   children,
 }: {

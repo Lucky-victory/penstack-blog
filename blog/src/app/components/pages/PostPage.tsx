@@ -15,6 +15,7 @@ import {
   useColorModeValue,
   IconButton,
   Divider,
+  Button,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { LuBookmark, LuBookmarkPlus, LuShare } from "react-icons/lu";
@@ -25,11 +26,7 @@ import { Skeleton } from "@/src/app/components/ui/Skeleton";
 import Loader from "../Loader";
 import PageWrapper from "../PageWrapper";
 import { decode } from "html-entities";
-
-interface FeaturedImage {
-  src: string;
-  alt_text: string;
-}
+import { signOut } from "next-auth/react";
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   const postContentBg = useColorModeValue("white", "gray.900");
@@ -60,6 +57,13 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
           maxW={1400}
           mx="auto"
         >
+          {/* <Button
+            onClick={() => {
+              signOut();
+            }}
+          >
+            signout{" "}
+          </Button> */}
           <Container maxW="6xl">
             <Box minH={300}>
               <ChakraImage

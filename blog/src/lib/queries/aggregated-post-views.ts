@@ -7,7 +7,6 @@ export async function aggregatePostViews(
   db: MySql2Database<typeof schema>,
   date?: Date
 ) {
-  console.log("aggre start");
   try {
     const _date = date && date instanceof Date ? new Date(date) : new Date();
     const startDate = new Date(_date);
@@ -30,15 +29,7 @@ export async function aggregatePostViews(
         anonymous_views: sql<number>`sum(case when ${postViews.user_id} is null then 1 else 0 end)`,
       })
       .from(postViews)
-      .where(
-        and(
-          eq(postViews.viewed_at, startDate),
-          between(postViews.viewed_at, startDate, endDate)
-        )
-        //   sql`DATE(${postViews.viewed_at}) = DATE(${startDate})`,
-        //   sql`TIME(${postViews.viewed_at}) BETWEEN TIME(${startDate}) AND TIME(${endDate})`
-        //  )
-      )
+      .where(and(between(postViews.viewed_at, startDate, endDate)))
       .groupBy(postViews.post_id);
 
     console.log("agg", aggregatedStats);

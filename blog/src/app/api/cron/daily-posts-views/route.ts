@@ -5,18 +5,10 @@ import { db } from "@/src/db";
 
 export async function POST(request: Request) {
   try {
-    // 1. Verify the request is from Vercel Cron
-    const headersList = headers();
-    const cronSecret = headersList.get("x-vercel-cron-secret");
-
-    // Must match the value in your Vercel environment variables
-    // if (cronSecret !== process.env.CRON_SECRET) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
     try {
       await aggregatePostViews(db);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
     return NextResponse.json({
       success: true,
