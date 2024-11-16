@@ -14,16 +14,18 @@ import { fonts } from "../lib/fonts";
 import { Providers } from "../providers/chakra";
 import ReactQueryClient from "../providers/react-query";
 import AuthProvider from "../providers/auth";
+import { getSession } from "../lib/auth/next-auth";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
   return (
     <html lang="en" className={fonts.rubik.variable}>
       <body>
-        <AuthProvider>
+        <AuthProvider session={session}>
           <ReactQueryClient>
             <Providers>{children}</Providers>
           </ReactQueryClient>
