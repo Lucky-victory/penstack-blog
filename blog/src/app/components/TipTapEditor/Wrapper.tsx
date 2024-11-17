@@ -4,9 +4,7 @@ import { TitleInput } from "./TitleInput";
 
 export const EditorWrapper = ({ children }: { children: ReactNode }) => {
   const borderColor = useColorModeValue("gray.300", "gray.700");
-  function handleTitleChange(value: string) {
-    console.log("title:", value);
-  }
+
   return (
     <Stack
       minH="100%"
@@ -24,7 +22,7 @@ export const EditorWrapper = ({ children }: { children: ReactNode }) => {
       boxShadow="var(--card-raised)"
       gap={0}
     >
-      <TitleInput defaultTitle="" onChange={handleTitleChange} />
+      <TitleInput />
       <Stack
         h="full"
         overflowY="auto"

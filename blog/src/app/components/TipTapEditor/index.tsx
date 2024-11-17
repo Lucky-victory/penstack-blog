@@ -1,14 +1,7 @@
-import { EditorContent, EditorProvider, useEditor } from "@tiptap/react";
-import {
-  Box,
-  Flex,
-  Hide,
-  Show,
-  Stack,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { useEditor } from "@tiptap/react";
+import { Box, Flex, Hide } from "@chakra-ui/react";
 
-import { ReactNode, useMemo } from "react";
+import { useMemo } from "react";
 
 import StarterKit from "@tiptap/starter-kit";
 import Highlight from "@tiptap/extension-highlight";
@@ -25,8 +18,9 @@ import { MenuBar } from "./MenuBar";
 import { SidebarContent } from "./Sidebar";
 import { EditorWrapper } from "./Wrapper";
 import EditorHeader from "./Header";
+import ContentArea from "./ContentArea";
 
-export default function TipTapEditor({ children }: { children?: ReactNode }) {
+export default function TipTapEditor() {
   const extensions = useMemo(
     () => [
       StarterKit,
@@ -55,8 +49,6 @@ export default function TipTapEditor({ children }: { children?: ReactNode }) {
   const editor = useEditor({
     editorProps: { attributes: { class: "tiptap-post-editor" } },
     enablePasteRules: true,
-
-    content: "",
     extensions: extensions,
   });
   return (
@@ -65,7 +57,7 @@ export default function TipTapEditor({ children }: { children?: ReactNode }) {
       <Flex gap={3} py={4} px={{ base: 2, md: 3 }}>
         <EditorWrapper>
           <MenuBar editor={editor} />
-          <EditorContent editor={editor} />
+          <ContentArea editor={editor} />
         </EditorWrapper>
         <Hide below="lg">
           <SidebarContent editor={editor} />

@@ -14,7 +14,8 @@ import isEmpty from "just-is-empty";
 
 const AppEditorContext = createContext<EDITOR_CONTEXT_STATE>({
   isSaving: false,
-
+  editor: null,
+  setEditor: () => {},
   activePost: null,
   setActivePost: () => {},
   content: {
@@ -44,7 +45,10 @@ export const AppEditorContextProvider = ({
   const [activePost, setActivePost] = useState<PostSelect | null>(post);
   const [isSaving, setIsSaving] = useState(false);
   const [editor, setEditor] = useState<Editor | null>(null);
-  console.log("Active Post:", activePost);
+
+  useEffect(() => {
+    console.log("Active Post:", activePost);
+  }, [activePost]);
 
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [initialContent, setInitialContent] = useState("");
@@ -77,34 +81,41 @@ export const AppEditorContextProvider = ({
     },
     []
   );
+  const setEditorCallback = useCallback((editor: Editor | null) => {
+    setEditor(editor);
+  }, []);
   //TODO: Uncomment this to enable markdown content
   // useEffect(() => {
   //   const markdown = updateHtml(editorContent?.html) || "";
   //   setMarkdownContent(markdown);
   // }, [editorContent?.html, updateHtml]);
 
-  const handleEditorUpdate = useCallback((editor: Editor) => {
-    setEditorContent({
-      text: editor.getText(),
-      html: editor.getHTML(),
-    });
-    const characterCount = editor.storage.characterCount.characters();
-    const wordCount = editor.storage.characterCount.words();
-    setMeta({
-      wordCount: wordCount,
-      characterCount,
-    });
-  }, []);
+  const handleEditorUpdate = useCallback(
+    (editor: Editor) => {
+      setEditorContentCallback({
+        text: editor.getText(),
+        html: editor.getHTML(),
+      });
+    },
+    [setEditorContentCallback]
+  );
+
   const clearEditor = useCallback(() => {
-    setEditorContent({
+    setEditorContentCallback({
       text: "",
       html: "",
     });
     editor?.commands?.setContent("");
-  }, [editor]);
+  }, []);
 
+  // useEffect(() => {
+  //   if (editor) {
+  //     editor.commands.setContent(activePost?.content || "");
+  //   }
+  // }, [activePost?.content, editor]);
   useEffect(() => {
     setIsEditorReady(!isEmpty(editor));
+    console.log("editor:", editor);
   }, [editor]);
 
   return (
@@ -122,6 +133,8 @@ export const AppEditorContextProvider = ({
         markdownContent,
         clearEditor,
         isEditorReady,
+        editor,
+        setEditor: setEditorCallback,
         meta,
       }}
     >

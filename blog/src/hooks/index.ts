@@ -199,6 +199,8 @@ export function useAuthorPosts({
 }
 
 export function usePost(slug: string) {
+  console.log("hook:", "usePost");
+
   const {
     data: post,
     isLoading: loading,

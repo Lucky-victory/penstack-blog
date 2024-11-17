@@ -3,16 +3,16 @@ import { Input } from "@/src/app/components/ui/Input";
 import { useFormik } from "formik";
 import { PostInsert } from "@/src/types";
 import { ChangeEvent, memo, useState } from "react";
+import { useCustomEditorContext } from "@/src/context/AppEditor";
 
 export const TitleInput = ({
-  defaultTitle,
   onChange,
 }: {
-  defaultTitle: string;
-  onChange: (title: string) => void;
+  onChange?: (title: string) => void;
 }) => {
+  const { activePost } = useCustomEditorContext();
   const borderColor = useColorModeValue("gray.200", "gray.700");
-  const [title, setTitle] = useState(defaultTitle);
+  const [title, setTitle] = useState(activePost?.title || "");
   function handleTitleChange(evt: ChangeEvent<HTMLInputElement>) {
     const { value } = evt.target;
     onChange?.(value);

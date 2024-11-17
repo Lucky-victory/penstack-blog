@@ -17,9 +17,31 @@ import DashHeader from "../Dashboard/Header";
 import { LuSettings } from "react-icons/lu";
 import { Editor } from "@tiptap/react";
 import { SidebarContent } from "./Sidebar";
+import { useCustomEditorContext } from "@/src/context/AppEditor";
+import { useCallback, useEffect, useMemo } from "react";
 
 export default function EditorHeader({ editor }: { editor: Editor | null }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { setEditor, setEditorContent, content } = useCustomEditorContext();
+
+  // useEffect(() => {
+  //   setEditor(editor);
+  // }, [editor, setEditor]);
+
+  const handleEditorUpdate = useCallback(
+    (editor: Editor) => {
+      console.log("editorContent:", content);
+      const htmlContent = editor.getHTML();
+      // const textContent = editor.getText();
+      setEditorContent({ html: htmlContent, text: "" });
+    },
+    [setEditorContent]
+  );
+
+  if (editor) {
+    editor.on("update", ({ editor }) => handleEditorUpdate(editor as Editor));
+  }
+
   return (
     <>
       <DashHeader pos="sticky" top={0} zIndex={10}>
