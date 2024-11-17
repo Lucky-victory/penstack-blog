@@ -13,7 +13,9 @@ export async function GET(req: NextRequest) {
   const query = searchParams.get("query");
   const category = Number(searchParams.get("category"));
   const sort = searchParams.get("sort") as "relevant" | "recent" | "popular";
-
+  const status =
+    (searchParams.get("status") as NonNullable<PostSelect["status"] | "all">) ||
+    "published";
   const offset = (page - 1) * limit;
 
   // Build where conditions
@@ -23,6 +25,10 @@ export async function GET(req: NextRequest) {
     whereConditions.push(
       or(ilike(posts.title, `%${query}%`), ilike(posts.content, `%${query}%`))
     );
+  }
+
+  if (status && status !== "all") {
+    whereConditions.push(eq(posts.status, status));
   }
   if (category) {
     whereConditions.push(

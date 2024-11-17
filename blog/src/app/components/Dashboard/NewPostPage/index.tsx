@@ -1,41 +1,23 @@
 "use client";
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import {
-  Box,
-  Button,
-  Input,
-  Flex,
-  useColorModeValue,
-  Stack,
-  Text,
-  useDisclosure,
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  Hide,
-  Show,
-  IconButton,
-} from "@chakra-ui/react";
-import { LuSettings } from "react-icons/lu";
-import TextEditor from "@/src/app/components/TextEditor";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { Box, useColorModeValue, Stack, useDisclosure } from "@chakra-ui/react";
 import slugify from "slugify";
-import { formatDate, nullToEmptyString, shortIdGenerator } from "@/src/utils";
+import { nullToEmptyString } from "@/src/utils";
 import { PostInsert, PostSelect } from "@/src/types";
 import { usePost } from "@/src/hooks";
-import DashHeader from "@/src/app/components/Dashboard/Header";
-import { SidebarContent } from "@/src/app/components/TipTapEditor/Sidebar";
 import { useFormik } from "formik";
 import { useParams, useRouter } from "next/navigation";
 import Loader from "../../Loader";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { debounce } from "lodash";
-import { decode, encode } from "html-entities";
+import { encode } from "html-entities";
 import TipTapEditor from "@/src/app/components/TipTapEditor";
-import { AppEditorContextProvider } from "@/src/context/AppEditor";
+import {
+  AppEditorContextProvider,
+  useCustomEditorContext,
+} from "@/src/context/AppEditor";
+import { ProtectedComponent } from "../../ProtectedComponent";
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
@@ -50,18 +32,18 @@ export default function NewPostPage() {
   }
   return (
     <AppEditorContextProvider post={post}>
-      <PostEditor post={post} />
+      <PostEditor />
     </AppEditorContextProvider>
   );
 }
 
-export function PostEditor({ post }: { post: PostSelect }) {
+export function PostEditor() {
+  const { activePost } = useCustomEditorContext();
   const [lastUpdate, setLastUpdate] = useState<Date | null>(
-    post?.updated_at as Date
+    activePost?.updated_at as Date
   );
-  const borderColor = useColorModeValue("gray.300", "gray.700");
 
-  const { mutate, isPending: isSaving } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async (values: PostInsert) => {
       const response = await axios.put<{
         data: PostSelect;
@@ -78,7 +60,7 @@ export function PostEditor({ post }: { post: PostSelect }) {
     },
   });
 
-  const { author, ...postWithoutAuthor } = nullToEmptyString(post);
+  const { author, ...postWithoutAuthor } = nullToEmptyString(activePost!);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -101,19 +83,7 @@ export function PostEditor({ post }: { post: PostSelect }) {
       mutate(postToSave);
     },
   });
-  const router = useRouter();
-  const [categories, setCategories] = useState<{ name: string; id?: number }[]>(
-    []
-  );
-  const [tags, setTags] = useState<{ name: string }[]>([]);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const debouncedSubmit = useMemo(
-    () =>
-      debounce(() => {
-        formik.submitForm();
-      }, 1000),
-    [formik]
-  );
+
   const updatePost = useCallback((key: keyof PostSelect, value: any) => {
     formik.setFieldValue(key, value);
   }, []);
@@ -133,21 +103,11 @@ export function PostEditor({ post }: { post: PostSelect }) {
     }
   }, [formik.values.title, updatePost]);
 
-  const handleTitleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      updatePost("title", e.target.value);
-    },
-    [updatePost]
-  );
-
-  function onEditorUpdate(content: any) {
-    updatePost("content", encode(content?.html || ""));
-    console.log("content", content);
-  }
-
   return (
-    <Box h="full" overflowY="auto">
-      <TipTapEditor />
-    </Box>
+    <ProtectedComponent requiredPermission={"posts:create"}>
+      <Box h="full" overflowY="auto">
+        <TipTapEditor />
+      </Box>
+    </ProtectedComponent>
   );
 }

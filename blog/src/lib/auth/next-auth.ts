@@ -1,13 +1,12 @@
 import { type AuthOptions, getServerSession } from "next-auth";
 import { eq, or } from "drizzle-orm";
-import NextAuth, { type User } from "next-auth";
+import { type User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import bcrypt from "bcryptjs";
 import { db } from "@/src/db";
 import { users } from "@/src/db/schemas";
-import { randomUUID } from "crypto";
 
 interface CustomUser extends User {
   id: number;
@@ -103,7 +102,7 @@ const authOptions: AuthOptions = {
           name: user.name,
           email: user.email,
 
-          image: (user.avatar as string) || "https://picsum.photos/200",
+          image: user.avatar as string,
         } as CustomUser;
       },
     }),
@@ -149,10 +148,6 @@ const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      console.log("Session token:", token);
-      console.log("Session user:", session.user);
-      console.log("Session:", session);
-
       return {
         ...session,
         user: {

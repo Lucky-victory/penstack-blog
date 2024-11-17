@@ -31,6 +31,8 @@ import { useAuthor, useAuthorPosts } from "@/src/hooks";
 import Loader from "../Loader";
 import { PostCardLoader } from "../PostCardLoader";
 import PageWrapper from "../PageWrapper";
+import NewPostCard from "../NewPostCard";
+import { NewPostCardLoader } from "../NewPostCardLoader";
 
 const AuthorPage = ({ username }: { username: string }) => {
   const bgColor = useColorModeValue("gray.50", "gray.900");
@@ -150,11 +152,11 @@ const AuthorPage = ({ username }: { username: string }) => {
               </Flex>
             </Card>
           )}
-          <Newsletter />
+          <Newsletter title="Subscribe to My Newsletter" />
 
-          <Box>
+          <Box mt={8}>
             <Heading size="lg" mb={8}>
-              Latest Articles
+              Articles by {author?.name}
             </Heading>
             <Grid
               templateColumns={{
@@ -166,10 +168,10 @@ const AuthorPage = ({ username }: { username: string }) => {
             >
               {isAuthorPostsLoading
                 ? Array.from({ length: 4 }).map((_, index) => (
-                    <PostCardLoader key={index} />
+                    <NewPostCardLoader key={index} />
                   ))
                 : posts?.map((post) => (
-                    <PostCard showAuthor={false} key={post.id} post={post} />
+                    <NewPostCard showAuthor={false} key={post.id} post={post} />
                   ))}
             </Grid>
           </Box>

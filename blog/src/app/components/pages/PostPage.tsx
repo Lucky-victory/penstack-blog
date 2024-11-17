@@ -16,6 +16,8 @@ import {
   IconButton,
   Divider,
   Button,
+  LinkBox,
+  LinkOverlay,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { LuBookmark, LuBookmarkPlus, LuShare } from "react-icons/lu";
@@ -27,10 +29,11 @@ import Loader from "../Loader";
 import PageWrapper from "../PageWrapper";
 import { decode } from "html-entities";
 import { signOut } from "next-auth/react";
+import { Link } from "@chakra-ui/next-js";
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   const postContentBg = useColorModeValue("white", "gray.900");
-  const imageWrapBg = useColorModeValue("gray.200", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.800");
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     if (post) {
@@ -102,7 +105,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                     h={{ base: "auto", md: "100%" }}
                     bg={postContentBg}
                     roundedRight={{ base: 20, md: 0 }}
-                    p={{ base: 3, md: 0 }}
+                    p={{ base: 2, md: 0 }}
                   >
                     <VStack mt={{ base: 4, md: 12 }} gap={4}>
                       <IconButton
@@ -134,10 +137,19 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                   </VStack>
                   <Box as="article" px={4}>
                     <HStack my={4} gap={{ base: 5, md: 7 }} ml={0}>
-                      {post?.category && (
-                        <Text as="span" color="gray.500" fontWeight="semibold">
-                          {post?.category?.name || "Technology"}
-                        </Text>
+                      {post?.category?.name && (
+                        <Tag
+                          size="md"
+                          colorScheme="blue"
+                          borderRadius="md"
+                          px={3}
+                          py={1}
+                          bg={"blue.50"}
+                          color={"blue.500"}
+                          textTransform={"uppercase"}
+                        >
+                          {post.category.name}
+                        </Tag>
                       )}
 
                       <Text color="gray.500" as="span">
@@ -151,19 +163,26 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                       <Heading as="h1" size="2xl" mb={4}>
                         {post.title}
                       </Heading>
-                      {/* <Flex flexWrap="wrap" gap={2} mb={4}>
-            {post?.tags && post?.tags?.map((tag, index) => (
-              <Tag key={index} bg={"gray.200"} color="gray.700" size="sm" >
-                #{tag}
-              </Tag>
-            ))}
-          </Flex> */}
+                      {post?.tags && (
+                        <Flex flexWrap="wrap" gap={2} mb={4}>
+                          {post?.tags?.map((tag, index) => (
+                            <Tag
+                              key={index}
+                              bg={"gray.200"}
+                              color="gray.700"
+                              size="sm"
+                            >
+                              #{tag?.name}
+                            </Tag>
+                          ))}
+                        </Flex>
+                      )}
                     </Box>
 
                     <Box className="prose" maxW="none" pb={8}>
                       <Text
                         fontSize="xl"
-                        fontWeight="semibold"
+                        fontWeight="medium"
                         mb={4}
                         color="gray.600"
                       >
@@ -190,23 +209,35 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               pos={"relative"}
               px={{ base: 3, md: 4 }}
               py={{ base: 4, md: 6 }}
+              borderTop={"1px"}
+              borderColor={borderColor}
               // pt={10}
-              bg={imageWrapBg}
+              bg={postContentBg}
               roundedBottom={{ base: 20, md: 24 }}
             >
               <VStack align={"start"} px={{ base: 2, md: 3 }} py={4}>
                 <Heading size="md">Written By</Heading>
-                <Flex alignItems="center" mb={4}>
-                  <Avatar
-                    rounded={"md"}
-                    src={post.author.avatar}
-                    name={post.author.name}
-                    mr={4}
-                  />
+
+                <Flex mb={4}>
+                  <Link href={`/author/${post.author.username}`}>
+                    <Avatar
+                      rounded={"md"}
+                      src={post.author.avatar}
+                      name={post.author.name}
+                      mr={4}
+                    />
+                  </Link>
                   <Box>
-                    <Text fontWeight="semibold">{post.author.name}</Text>
-                    <Text color="gray.500" fontSize="sm">
-                      @{post.author.username}
+                    <Link href={`/author/${post.author.username}`}>
+                      <Text fontWeight="semibold" lineHeight={1}>
+                        {post.author.name}
+                      </Text>
+                      <Text color="gray.500" fontSize="sm">
+                        @{post.author.username}
+                      </Text>
+                    </Link>
+                    <Text mt={3} color="gray.700" fontSize="sm">
+                      {post?.author?.name}
                     </Text>
                   </Box>
                 </Flex>

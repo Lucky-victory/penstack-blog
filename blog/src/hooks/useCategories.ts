@@ -20,7 +20,7 @@ export const useCategories = (
           limit: number;
           totalPages: number;
         };
-      }>(`/api/posts/category?${objectToQueryParams(params)}`);
+      }>(`/api/categories?${objectToQueryParams(params)}`);
       return {
         results: data.data,
         meta: data?.meta,

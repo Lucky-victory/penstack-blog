@@ -1,24 +1,18 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
-import { PostInsert, PostSelect } from "@/src/types";
-import { getServerSearchParams } from "@/src/utils";
-import { and, asc, desc, eq, ilike, inArray, sql } from "drizzle-orm";
+import { checkPermission } from "@/src/middlewares/check-permission";
+import { PostSelect } from "@/src/types";
+import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  // const searchParams = getServerSearchParams<{
-  //   status: NonNullable<PostSelect["status"]> | "all";
-  //   limit: number;
-  //   page: number;
-  //   username: string;
-  // }>(req);
   const { searchParams } = new URL(req.url);
   const page = Number(searchParams.get("page")) || 1;
   const limit = Number(searchParams.get("limit")) || 20;
   const search = searchParams.get("search");
-  const status = searchParams.get("status") as NonNullable<
-    PostSelect["status"] | "all"
-  >;
+  const status =
+    (searchParams.get("status") as NonNullable<PostSelect["status"] | "all">) ||
+    "published";
   const sortBy =
     (searchParams.get("sortBy") as
       | "created_at"
@@ -38,7 +32,6 @@ export async function GET(req: NextRequest) {
     whereConditions.push(eq(posts.status, status));
   }
 
-  // Get total count
   const totalResult = await db
     .select({ count: sql<number>`count(*)` })
     .from(posts)
@@ -123,46 +116,51 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const {
-    title,
-    content,
-    summary,
-    slug,
-    featured_image_id,
-    status,
-    author_id,
-    visibility,
-    category_id,
-    post_id,
-  } = await req.json();
+  await checkPermission("posts:create", async () => {
+    const {
+      title,
+      content,
+      summary,
+      slug,
+      featured_image_id,
+      status,
+      author_id,
+      visibility,
+      category_id,
+      post_id,
+    } = await req.json();
 
-  try {
-    const post = await db.transaction(async (tx) => {
-      const [insertResponse] = await tx.insert(posts).values({
-        title,
-        content,
-        summary,
-        slug,
-        featured_image_id,
-        author_id,
-        status,
-        visibility,
-        category_id,
+    try {
+      const post = await db.transaction(async (tx) => {
+        const [insertResponse] = await tx
+          .insert(posts)
+          .values({
+            title,
+            content,
+            summary,
+            slug,
+            featured_image_id,
+            author_id,
+            status,
+            visibility,
+            category_id,
+          })
+          .$returningId();
+        return await tx.query.posts.findFirst({
+          where: eq(posts.id, insertResponse.id),
+        });
       });
-      return await tx.query.posts.findFirst({
-        where: eq(posts.id, insertResponse.insertId),
-      });
-    });
 
-    return NextResponse.json({
-      data: post,
-      message: "Post created successfully",
-    });
-  } catch (error: any) {
-    return NextResponse.json({
-      data: null,
-      error: error?.message,
-      message: "Error creating post",
-    });
-  }
+      return NextResponse.json({
+        data: post,
+        message: "Post created successfully",
+      });
+    } catch (error: any) {
+      return NextResponse.json({
+        data: null,
+        error: error?.message,
+        message: "Error creating post",
+      });
+    }
+  });
 }
