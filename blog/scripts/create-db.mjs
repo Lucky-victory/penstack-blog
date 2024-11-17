@@ -15,8 +15,8 @@ export async function createDatabaseIfNotExists() {
   const connection = await mysql.createConnection(dbConfig);
   try {
     const [rows] = await connection.query(`SHOW DATABASES LIKE ?`, [dbName]);
-    if (Array.isArray(rows) && rows.length === 0) {
-      await connection.query(`CREATE DATABASE ??`, [dbName]);
+    if (Array.isArray(rows) && rows.length === 1) {
+      await connection.query(`DROP DATABASE ??`, [dbName]);
       console.log(`Database '${dbName}' created successfully.`);
     } else {
       console.log(`Database '${dbName}' already exists.`);

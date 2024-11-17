@@ -18,7 +18,7 @@ export const trackPostView = async ({
   location,
 }: {
   postId: number;
-  userId?: number;
+  userId?: string;
   ipAddress: string;
   userAgent: string;
   referrer: string;

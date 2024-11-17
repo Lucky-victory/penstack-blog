@@ -7,11 +7,25 @@ import GithubProvider from "next-auth/providers/github";
 import bcrypt from "bcryptjs";
 import { db } from "@/src/db";
 import { users } from "@/src/db/schemas";
+import {
+  JWT,
+  encode,
+  decode,
+  JWTDecodeParams,
+  JWTEncodeParams,
+} from "next-auth/jwt";
+import { shortIdGenerator } from "@/src/utils";
+import { createUser } from "../queries/create-user";
+import { UserInsert } from "@/src/types";
 
+function generateSessionToken() {
+  const token = generateRandomString(32);
+  return token;
+}
 interface CustomUser extends User {
-  id: number;
+  id: string;
   role_id: number;
-  auth_type: "local" | "google" | "github";
+  auth_type: UserInsert["auth_type"];
   username: string;
   avatar: string;
 }
@@ -97,17 +111,42 @@ const authOptions: AuthOptions = {
         if (!isValid) {
           throw new Error("Invalid credentials");
         }
+        console.log("user:", user);
 
         return {
           name: user.name,
           email: user.email,
-
+          id: user?.auth_id,
           image: user.avatar as string,
         } as CustomUser;
       },
     }),
   ],
+  jwt: {
+    async encode(params: JWTEncodeParams): Promise<string> {
+      console.log("encode:", params);
 
+      if (params.token === undefined) {
+        throw new Error("Token is undefined");
+      }
+      return await encode({
+        token: params.token,
+        secret: params.secret,
+        maxAge: params.maxAge,
+      });
+    },
+    async decode(params: JWTDecodeParams): Promise<JWT | null> {
+      console.log("decode:", params);
+      // return a `JWT` object, or `null` if decoding failed
+      if (params.token === undefined) {
+        return null;
+      }
+      return await decode({
+        secret: params.secret,
+        token: params.token,
+      });
+    },
+  },
   callbacks: {
     async signIn({ user, account }) {
       if (!user.email) return false;
@@ -134,6 +173,7 @@ const authOptions: AuthOptions = {
           avatar: (user as CustomUser).avatar,
           auth_type: (user as CustomUser).auth_type,
           role_id: (user as CustomUser).role_id,
+          auth_id: (user as CustomUser).id,
         });
         return true;
       }
@@ -145,13 +185,19 @@ const authOptions: AuthOptions = {
       return true;
     },
     async jwt({ token, user, account, trigger }) {
-      return token;
+      console.log("jwt:", { token, user, account, trigger });
+
+      return {
+        ...token,
+        id: user?.id || (token?.sub as string),
+      };
     },
     async session({ session, token }) {
       return {
         ...session,
         user: {
           ...session.user,
+          id: token?.id,
         },
       };
     },
@@ -161,3 +207,7 @@ const authOptions: AuthOptions = {
 const getSession = () => getServerSession(authOptions);
 
 export { authOptions, getSession };
+
+function generateRandomString(len = 21) {
+  return shortIdGenerator.urlSafeId(len);
+}

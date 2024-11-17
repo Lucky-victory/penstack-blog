@@ -3,13 +3,11 @@ import { relations, sql } from "drizzle-orm";
 import {
   mysqlTable,
   int,
-  bigint,
   varchar,
   longtext,
   timestamp,
   mysqlEnum,
   text,
-  json,
   boolean,
   uniqueIndex,
 } from "drizzle-orm/mysql-core";
@@ -33,7 +31,7 @@ export const posts = mysqlTable(
     status: mysqlEnum("status", ["draft", "published", "deleted"]).default(
       "draft"
     ),
-    author_id: int("author_id").notNull(),
+    author_id: varchar("author_id", { length: 100 }).notNull(),
     visibility: mysqlEnum("visibility", ["public", "private"]).default(
       "public"
     ),
@@ -65,7 +63,7 @@ export const posts = mysqlTable(
 export const postsRelations = relations(posts, ({ one, many }) => ({
   author: one(users, {
     fields: [posts.author_id],
-    references: [users.id],
+    references: [users.auth_id],
   }),
   views: many(postViews),
   reactions: many(postReactions),
@@ -147,7 +145,7 @@ export const comments = mysqlTable("Comments", {
     "deleted",
   ]).default("pending"),
   post_id: int("post_id").notNull(),
-  author_id: int("author_id").notNull(),
+  author_id: varchar("author_id", { length: 100 }).notNull(),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").onUpdateNow(),
 });
@@ -155,7 +153,7 @@ export const comments = mysqlTable("Comments", {
 export const commentsRelations = relations(comments, ({ one, many }) => ({
   author: one(users, {
     fields: [comments.author_id],
-    references: [users.id],
+    references: [users.auth_id],
   }),
   post: one(posts, {
     fields: [comments.post_id],
@@ -175,7 +173,7 @@ export const replies = mysqlTable("Replies", {
   ]).default("pending"),
 
   comment_id: int("comment_id").notNull(),
-  author_id: int("author_id").notNull(),
+  author_id: varchar("author_id", { length: 100 }).notNull(),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").onUpdateNow(),
 });
@@ -183,7 +181,7 @@ export const replies = mysqlTable("Replies", {
 export const repliesRelations = relations(replies, ({ one }) => ({
   author: one(users, {
     fields: [replies.author_id],
-    references: [users.id],
+    references: [users.auth_id],
   }),
   parentComment: one(comments, {
     fields: [replies.comment_id],

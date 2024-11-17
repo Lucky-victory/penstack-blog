@@ -4,6 +4,7 @@ import { Editor } from "@tiptap/react";
 import { IconType } from "react-icons";
 import { medias, permissions, users } from "../db/schemas";
 export type UserSelect = InferSelectModel<typeof users>;
+export type UserInsert = InferInsertModel<typeof users>;
 export type PostToPost = PostInsert & {
   categories: string[];
   tags: string[];
@@ -28,7 +29,13 @@ export type PostSelect = InferSelectModel<typeof posts> & {
     alt_text?: string;
     caption?: string;
   } | null;
-  author: { id: number; name: string; avatar: string; username: string };
+  author: {
+    auth_id: string;
+    name: string;
+    avatar: string;
+    username: string;
+    bio?: string;
+  };
   category?: {
     id: number;
     slug: string;

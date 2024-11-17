@@ -44,9 +44,10 @@ async function getPublicPermissions(): Promise<string[]> {
   return publicPermissionsCache;
 }
 
-export async function checkPermission(
+export async function checkPermission<T = NextResponse>(
   requiredPermission: TPermissions,
-  handler: () => Promise<NextResponse>
+  handler: () => Promise<T>,
+  isServerComp: boolean = false
 ) {
   // First check if this is a public permission
   const publicPermissions = await getPublicPermissions();
@@ -58,12 +59,14 @@ export async function checkPermission(
   const session = await getSession();
 
   if (!session?.user?.email) {
+    if (isServerComp) throw new Error("Unauthorized");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const userPermissions = await getUserPermissions(session.user.email);
 
   if (!userPermissions.includes(requiredPermission)) {
+    if (isServerComp) throw new Error("Forbidden");
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

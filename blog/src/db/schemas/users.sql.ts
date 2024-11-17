@@ -8,6 +8,7 @@ import {
 import { relations } from "drizzle-orm";
 
 import { posts } from "./posts.sql";
+import { shortIdGenerator } from "@/src/utils";
 
 export const users = mysqlTable("Users", {
   id: int("id").autoincrement().primaryKey(),
@@ -19,6 +20,9 @@ export const users = mysqlTable("Users", {
   username: varchar("username", { length: 255 }),
   avatar: varchar("avatar", { length: 255 }),
   social_id: int("social_id"),
+  auth_id: varchar("auth_id", { length: 100 }).default(
+    shortIdGenerator.bigIntId()
+  ),
   auth_type: mysqlEnum("auth_type", [
     "local",
     "google",
@@ -93,7 +97,7 @@ export const RolePermissionRelations = relations(
 );
 export const userSocials = mysqlTable("UserSocials", {
   id: int("id").primaryKey().autoincrement(),
-  user_id: int("user_id").notNull(),
+  user_id: varchar("user_id", { length: 100 }).notNull(),
   github: varchar("github", { length: 100 }),
   facebook: varchar("facebook", { length: 100 }),
   email: varchar("email", { length: 100 }),

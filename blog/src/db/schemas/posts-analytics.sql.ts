@@ -6,7 +6,7 @@ import { relations, sql } from "drizzle-orm";
 export const postViews = mysqlTable("PostViews", {
   id: int("id").autoincrement().primaryKey(),
   post_id: int("post_id").notNull(),
-  user_id: int("user_id"), // Nullable for anonymous views
+  user_id: varchar("user_id", { length: 100 }), // Nullable for anonymous views
   ip_address: varchar("ip_address", { length: 45 }), // IPv6 compatible
   user_agent: varchar("user_agent", { length: 255 }),
   referrer: varchar("referrer", { length: 255 }),
@@ -28,7 +28,7 @@ export const postViewStats = mysqlTable("PostViewStats", {
 export const postViewAnalytics = mysqlTable("PostViewAnalytics", {
   id: int("id").autoincrement().primaryKey(),
   post_id: int("post_id").notNull(),
-  user_id: int("user_id"), // Nullable for anonymous users
+  user_id: varchar("user_id", { length: 100 }), // Nullable for anonymous users
   session_id: varchar("session_id", { length: 255 }),
   device_type: varchar("device_type", { length: 50 }), // mobile, tablet, desktop
   browser: varchar("browser", { length: 50 }),
@@ -47,7 +47,7 @@ export const postViewAnalytics = mysqlTable("PostViewAnalytics", {
 export const activePostViewers = mysqlTable("ActivePostViewers", {
   id: int("id").autoincrement().primaryKey(),
   post_id: int("post_id").notNull(),
-  user_id: int("user_id"),
+  user_id: varchar("user_id", { length: 100 }),
   session_id: varchar("session_id", { length: 255 }).notNull(),
   last_active: timestamp("last_active").onUpdateNow(),
   created_at: timestamp("created_at").defaultNow(),
@@ -61,7 +61,7 @@ export const postViewsRelations = relations(postViews, ({ one }) => ({
   }),
   user: one(users, {
     fields: [postViews.user_id],
-    references: [users.id],
+    references: [users.auth_id],
   }),
 }));
 

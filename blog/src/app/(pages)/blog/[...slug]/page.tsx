@@ -64,7 +64,7 @@ export default async function Page({ params, searchParams }: Props) {
     viewed_at: sql`NOW()`,
     user_agent: userAgent,
     post_id: post?.id as number,
-    user_id: session?.user?.id as number,
+    user_id: session?.user?.id,
     referrer: referrer,
   });
 

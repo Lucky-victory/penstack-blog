@@ -77,7 +77,7 @@ export function PostEditor() {
         featured_image_id: values.featured_image_id,
         status: values.status,
         post_id: values.post_id,
-        author_id: author?.id,
+        author_id: author?.auth_id,
       };
 
       mutate(postToSave);
