@@ -14,13 +14,21 @@ import CharacterCount from "@tiptap/extension-character-count";
 
 import { TableOfContents } from "@/src/lib/editor/extensions/toc";
 import { Media } from "@/src/lib/editor/extensions/media";
-import { MenuBar } from "./MenuBar";
+import MenuBar from "./MenuBar";
 import { SidebarContent } from "./Sidebar";
 import { EditorWrapper } from "./Wrapper";
 import EditorHeader from "./Header";
 import ContentArea from "./ContentArea";
+import React from "react";
+import { debounce } from "lodash";
 
-export default function TipTapEditor() {
+function TipTapEditor({
+  onUpdate,
+  initialContent,
+}: {
+  onUpdate?: (content: { html: string; text?: string }) => void;
+  initialContent?: string;
+}) {
   const extensions = useMemo(
     () => [
       StarterKit,
@@ -46,10 +54,25 @@ export default function TipTapEditor() {
     ],
     []
   );
+  const debouncedUpdate = useMemo(
+    () =>
+      debounce(
+        (content: { html: string; text?: string }) => onUpdate?.(content),
+        750
+      ),
+    [onUpdate]
+  );
+
   const editor = useEditor({
     editorProps: { attributes: { class: "tiptap-post-editor" } },
     enablePasteRules: true,
     extensions: extensions,
+    content: initialContent,
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      const text = editor.getText();
+      debouncedUpdate({ html, text });
+    },
   });
   return (
     <>
@@ -67,3 +90,4 @@ export default function TipTapEditor() {
     </>
   );
 }
+export default React.memo(TipTapEditor);

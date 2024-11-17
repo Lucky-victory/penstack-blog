@@ -3,6 +3,7 @@ import { posts } from "@/src/db/schemas/posts.sql";
 import { Editor } from "@tiptap/react";
 import { IconType } from "react-icons";
 import { medias, permissions, users } from "../db/schemas";
+import { useFormik } from "formik";
 export type UserSelect = InferSelectModel<typeof users>;
 export type UserInsert = InferInsertModel<typeof users>;
 export type PostToPost = PostInsert & {
@@ -83,9 +84,12 @@ export type EDITOR_CONTEXT_STATE = {
   initialContent: string;
   setInitialContent: (content: string) => void;
   setEditorContent: (content: EDITOR_CONTEXT_STATE["content"]) => void;
+  savePost: () => void;
+  updatePost: (key: keyof PostInsert, value: any) => void;
+  formik: ReturnType<typeof useFormik<PostInsert>> | null;
   markdownContent?: string;
   content: {
-    text: string;
+    text?: string;
     html: string;
   };
   clearEditor: () => void;

@@ -14,18 +14,14 @@ import {
 } from "@chakra-ui/react";
 import { LuChevronsUpDown } from "react-icons/lu";
 import { filterEditorActions } from "@/src/lib/editor-actions";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { MediaInsert } from "./MediaInsert";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
 import AccessibleDropdown from "../../AccessibleDropdown";
 import { EditorActionItem } from "@/src/types";
 import { Editor } from "@tiptap/react";
 
-export default function EditorActionsDropdown({
-  editor,
-}: {
-  editor: Editor | null;
-}) {
+function EditorActionsDropdown({ editor }: { editor: Editor | null }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dropdownActions = useMemo(
     () =>
@@ -100,3 +96,4 @@ export default function EditorActionsDropdown({
     </>
   );
 }
+export default memo(EditorActionsDropdown);

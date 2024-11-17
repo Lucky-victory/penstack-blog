@@ -18,30 +18,16 @@ import { LuSettings } from "react-icons/lu";
 import { Editor } from "@tiptap/react";
 import { SidebarContent } from "./Sidebar";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
-import { useCallback, useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import React from "react";
+import { formatDate } from "@/src/utils";
 
-export default function EditorHeader({ editor }: { editor: Editor | null }) {
+function EditorHeader({ editor }: { editor: Editor | null }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { setEditor, setEditorContent, content } = useCustomEditorContext();
-
-  // useEffect(() => {
-  //   setEditor(editor);
-  // }, [editor, setEditor]);
-
-  const handleEditorUpdate = useCallback(
-    (editor: Editor) => {
-      console.log("editorContent:", content);
-      const htmlContent = editor.getHTML();
-      // const textContent = editor.getText();
-      setEditorContent({ html: htmlContent, text: "" });
-    },
-    [setEditorContent]
-  );
-
-  if (editor) {
-    editor.on("update", ({ editor }) => handleEditorUpdate(editor as Editor));
-  }
-
+  const { activePost } = useCustomEditorContext();
+  const lastUpdate = useMemo(() => {
+    return activePost?.updated_at;
+  }, [activePost]);
   return (
     <>
       <DashHeader pos="sticky" top={0} zIndex={10}>
@@ -51,7 +37,7 @@ export default function EditorHeader({ editor }: { editor: Editor | null }) {
           </Text>
           <Text as="span" fontSize="sm" color="gray.500">
             Last updated:{" "}
-            {/* {lastUpdate ? formatDate(new Date(lastUpdate)) : "Not saved yet"} */}
+            {lastUpdate ? formatDate(new Date(lastUpdate)) : "Not saved yet"}
           </Text>
         </Stack>
         <Hide below="md">
@@ -90,3 +76,5 @@ export default function EditorHeader({ editor }: { editor: Editor | null }) {
     </>
   );
 }
+
+export default React.memo(EditorHeader);

@@ -1,6 +1,6 @@
 "use client";
 import { usePathname, useSearchParams } from "next/navigation";
-import { FormikErrors, useFormik } from "formik";
+import { FormikContextType, FormikErrors, useFormik } from "formik";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { PostInsert, PostSelect, UserSelect } from "@/src/types";
@@ -199,8 +199,6 @@ export function useAuthorPosts({
 }
 
 export function usePost(slug: string) {
-  console.log("hook:", "usePost");
-
   const {
     data: post,
     isLoading: loading,
@@ -225,21 +223,16 @@ export function usePost(slug: string) {
   return { post, loading, error, refetchPost };
 }
 
-export function useDebounce<T extends string | number | object>(
-  value: T,
-  delay: number
-) {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-  return debouncedValue;
-}
+export const usePostUpdate = (formik: FormikContextType<PostInsert>) => {
+  const updatePost = useCallback(
+    (key: keyof PostInsert, value: PostInsert[typeof key]) => {
+      formik.setFieldValue(key, value);
+    },
+    [formik]
+  );
+
+  return updatePost;
+};
 
 type QueryParamValue = string | number | boolean | null;
 

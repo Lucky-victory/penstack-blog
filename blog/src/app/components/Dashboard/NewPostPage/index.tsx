@@ -11,7 +11,7 @@ import Loader from "../../Loader";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { debounce } from "lodash";
-import { encode } from "html-entities";
+import { decode, encode } from "html-entities";
 import TipTapEditor from "@/src/app/components/TipTapEditor";
 import {
   AppEditorContextProvider,
@@ -38,75 +38,20 @@ export default function NewPostPage() {
 }
 
 export function PostEditor() {
-  const { activePost } = useCustomEditorContext();
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(
-    activePost?.updated_at as Date
-  );
-
-  const { mutate } = useMutation({
-    mutationFn: async (values: PostInsert) => {
-      const response = await axios.put<{
-        data: PostSelect;
-        message: string;
-        lastUpdate: string | Date;
-      }>(`/api/posts/${values.post_id}`, values);
-      return response.data;
-    },
-    onSuccess: (data) => {
-      setLastUpdate(new Date(data.lastUpdate));
-    },
-    onError: (error) => {
-      console.error("Error saving post:", error);
-    },
-  });
-
-  const { author, ...postWithoutAuthor } = nullToEmptyString(activePost!);
-
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      ...postWithoutAuthor,
-    } as PostSelect,
-    onSubmit: async (values) => {
-      const postToSave: PostInsert = {
-        title: values.title,
-        slug: values.slug,
-        summary: values.summary,
-        visibility: values.visibility,
-        content: values.content,
-        featured_image_id: values.featured_image_id,
-        status: values.status,
-        post_id: values.post_id,
-        author_id: author?.auth_id,
-      };
-
-      mutate(postToSave);
-    },
-  });
-
-  const updatePost = useCallback((key: keyof PostSelect, value: any) => {
-    formik.setFieldValue(key, value);
-  }, []);
-
-  // Handle slug generation
-  useEffect(() => {
-    if (
-      formik.values.title &&
-      formik.values.title?.length > 0 &&
-      formik.values.title?.length <= 60
-    ) {
-      const generatedSlug = slugify(`${formik.values.title}`, {
-        lower: true,
-        strict: true,
-      });
-      updatePost("slug", generatedSlug);
-    }
-  }, [formik.values.title, updatePost]);
-
+  const { activePost, setEditorContent, setIsSaving } =
+    useCustomEditorContext();
+  
+  function onEditorUpdate(content: { html: string; text?: string }) {
+    setEditorContent(content);
+    console.log(content);
+  }
   return (
     <ProtectedComponent requiredPermission={"posts:create"}>
       <Box h="full" overflowY="auto">
-        <TipTapEditor />
+        <TipTapEditor
+          onUpdate={onEditorUpdate}
+          initialContent={decode(activePost?.content) || ""}
+        />
       </Box>
     </ProtectedComponent>
   );

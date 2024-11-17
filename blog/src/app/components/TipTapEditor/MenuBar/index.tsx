@@ -14,7 +14,7 @@ import {
 
 import { Editor, useCurrentEditor } from "@tiptap/react";
 import { useFormik } from "formik";
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, memo, useRef, useState } from "react";
 
 import { LuLink, LuRedo2, LuUndo2 } from "react-icons/lu";
 import EditorActionsDropdown from "./EditorActionsDropdown";
@@ -22,7 +22,7 @@ import { filterEditorActions } from "@/src/lib/editor-actions";
 import { MediaInsert } from "./MediaInsert";
 import { extractContentAndLinkMark } from "@/src/utils";
 
-export const MenuBar = ({ editor }: { editor: Editor | null }) => {
+const MenuBar = ({ editor }: { editor: Editor | null }) => {
   const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);
   const {
     isOpen: isMediaModalOpen,
@@ -268,3 +268,4 @@ export const LinkInputForm = ({
     </Stack>
   );
 };
+export default memo(MenuBar);
