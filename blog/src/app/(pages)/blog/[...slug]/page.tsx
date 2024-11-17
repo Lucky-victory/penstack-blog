@@ -8,10 +8,13 @@ import { sql } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { headers } from "next/headers";
 import { getPost } from "@/src/lib/queries/post";
+import { getSession } from "@/src/lib/auth/next-auth";
 
 async function getData(slug: string, fromMetadata: boolean = false) {
   try {
-    return getPost(slug);
+    const session = await getSession();
+    console.log("session", session);
+    return await getPost(slug);
   } catch (error) {
     console.log(error);
 
@@ -51,8 +54,7 @@ export async function generateMetadata(
 
 export default async function Page({ params, searchParams }: Props) {
   const headersL = await headers();
-  const session = await getServerSession();
-  console.log("session", session);
+  const session = await getSession();
 
   const referrer = headersL.get("referer") || "";
   const userAgent = headersL.get("user-agent") || "";

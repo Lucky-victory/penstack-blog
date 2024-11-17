@@ -15,6 +15,13 @@
       "when": 1731850737569,
       "tag": "0001_milky_retro_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1731855375256,
+      "tag": "0002_material_quicksilver",
+      "breakpoints": true
     }
   ]
 }

@@ -14,14 +14,8 @@ import {
   JWTDecodeParams,
   JWTEncodeParams,
 } from "next-auth/jwt";
-import { shortIdGenerator } from "@/src/utils";
-import { createUser } from "../queries/create-user";
 import { UserInsert } from "@/src/types";
 
-function generateSessionToken() {
-  const token = generateRandomString(32);
-  return token;
-}
 interface CustomUser extends User {
   id: string;
   role_id: number;
@@ -124,8 +118,6 @@ const authOptions: AuthOptions = {
   ],
   jwt: {
     async encode(params: JWTEncodeParams): Promise<string> {
-      console.log("encode:", params);
-
       if (params.token === undefined) {
         throw new Error("Token is undefined");
       }
@@ -136,8 +128,6 @@ const authOptions: AuthOptions = {
       });
     },
     async decode(params: JWTDecodeParams): Promise<JWT | null> {
-      console.log("decode:", params);
-      // return a `JWT` object, or `null` if decoding failed
       if (params.token === undefined) {
         return null;
       }
@@ -185,11 +175,10 @@ const authOptions: AuthOptions = {
       return true;
     },
     async jwt({ token, user, account, trigger }) {
-      console.log("jwt:", { token, user, account, trigger });
-
       return {
         ...token,
         id: user?.id || (token?.sub as string),
+        sub: user?.id || (token?.sub as string),
       };
     },
     async session({ session, token }) {
@@ -198,6 +187,7 @@ const authOptions: AuthOptions = {
         user: {
           ...session.user,
           id: token?.id,
+          sub: token?.id,
         },
       };
     },
@@ -207,7 +197,3 @@ const authOptions: AuthOptions = {
 const getSession = () => getServerSession(authOptions);
 
 export { authOptions, getSession };
-
-function generateRandomString(len = 21) {
-  return shortIdGenerator.urlSafeId(len);
-}

@@ -261,7 +261,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
               <Textarea
                 placeholder="summary"
                 name="summary"
-                value={activePost?.summary as string}
+                value={activePost?.summary || ""}
                 onChange={handleChange}
                 maxH={150}
                 rounded={"lg"}
