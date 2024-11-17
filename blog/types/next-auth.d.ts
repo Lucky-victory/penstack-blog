@@ -6,17 +6,22 @@ declare module "next-auth" {
       id: number;
       role_id: number;
       auth_type: "local" | "google" | "github";
-      username?: string;
-      avatar?: string;
-    } & DefaultSession["user"];
+      username: string;
+      avatar: string;
+      email: string;
+      name: string;
+      image?: string;
+    };
   }
 
   interface User {
     id: number;
     role_id: number;
     auth_type: "local" | "google" | "github";
-    username?: string;
-    avatar?: string;
+    username: string;
+    avatar: string;
+    name: string;
+    image?: string;
   }
 }
 
@@ -25,7 +30,9 @@ declare module "next-auth/jwt" {
     id: number;
     role_id: number;
     auth_type: "local" | "google" | "github";
-    username?: string;
-    avatar?: string;
+    username: string;
+    avatar: string;
+    name: string;
+    image?: string;
   }
 }

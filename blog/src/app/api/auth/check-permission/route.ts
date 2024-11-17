@@ -1,11 +1,15 @@
-import { getUserPermissions } from "@/src/lib/auth/permissions";
-import { checkPermission } from "@/src/middlewares/checkPermission";
-import { getServerSession } from "next-auth";
+import { checkPermission } from "@/src/middlewares/check-permission";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const { permission } = await req.json();
-
+  if (!permission)
+    return NextResponse.json(
+      {
+        message: "Permission name is required",
+      },
+      { status: 400 }
+    );
   return await checkPermission(permission, async () => {
     return NextResponse.json({
       message: "Permissions checked",

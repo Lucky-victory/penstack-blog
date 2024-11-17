@@ -1,4 +1,3 @@
-
 import { type AuthOptions, getServerSession } from "next-auth";
 import { eq, or } from "drizzle-orm";
 import NextAuth, { type User } from "next-auth";
@@ -8,9 +7,28 @@ import GithubProvider from "next-auth/providers/github";
 import bcrypt from "bcryptjs";
 import { db } from "@/src/db";
 import { users } from "@/src/db/schemas";
+import { randomUUID } from "crypto";
 
+interface CustomUser extends User {
+  id: number;
+  role_id: number;
+  auth_type: "local" | "google" | "github";
+  username: string;
+  avatar: string;
+}
+function checkUserAuthType(
+  user: CustomUser,
+  provider: "google" | "github" | "credentials"
+) {
+  if (user.auth_type === "local" && provider !== "credentials") {
+    return "This account already exists but was created with a different provider. Please sign in with the same provider as the account was created with.";
+  }
+  if (user.auth_type !== provider) {
+    return "This account already exists but was created with a different provider. Please sign in with the same provider as the account was created with.";
+  }
+  return false;
+}
 const authOptions: AuthOptions = {
-
   session: {
     strategy: "jwt",
   },
@@ -30,7 +48,8 @@ const authOptions: AuthOptions = {
           username: profile.email.split("@")[0],
           auth_type: "google",
           role_id: 5,
-        };
+          image: profile.picture,
+        } as CustomUser;
       },
     }),
     GithubProvider({
@@ -45,7 +64,8 @@ const authOptions: AuthOptions = {
           username: profile.login,
           auth_type: "github",
           role_id: 5,
-        };
+          image: profile?.avatar_url,
+        } as CustomUser;
       },
     }),
     CredentialsProvider({
@@ -65,7 +85,6 @@ const authOptions: AuthOptions = {
             eq(users.email, credentials.emailOrUsername)
           ),
         });
-        console.log("user:", user);
 
         if (!user || !user.password) {
           throw new Error("User not found");
@@ -86,55 +105,80 @@ const authOptions: AuthOptions = {
           email: user.email,
           avatar: user.avatar as string,
           username: user.username as string,
-          auth_type: user.auth_type as User["auth_type"],
+          auth_type: user.auth_type,
           role_id: user.role_id,
-        };
+          image: (user.avatar as string) || "https://picsum.photos/200",
+        } as CustomUser;
       },
     }),
   ],
+
   callbacks: {
     async signIn({ user, account }) {
       if (!user.email) return false;
-      if (user.email) {
-        const existingUser = await db.query.users.findFirst({
-          where: eq(users.email, user.email),
-        });
-        console.log("existingUser:", existingUser);
 
-        if (!existingUser) {
-          return "Account not found. Please sign up.";
+      const existingUser = await db.query.users.findFirst({
+        where: eq(users.email, user.email),
+      });
+      if (existingUser) {
+        const authTypeCheck = checkUserAuthType(
+          user as CustomUser,
+          account?.provider as "google" | "github" | "credentials"
+        );
+        if (authTypeCheck) {
+          return authTypeCheck;
         }
+        return true;
       }
+      if (!existingUser && account?.provider !== "credentials") {
+        // Create user for OAuth providers if they don't exist
+        await db.insert(users).values({
+          email: user.email,
+          name: user.name,
+          username: (user as CustomUser).username,
+          avatar: (user as CustomUser).avatar,
+          auth_type: (user as CustomUser).auth_type,
+          role_id: (user as CustomUser).role_id,
+        });
+        return true;
+      }
+
+      if (!existingUser) {
+        return "Account not found. Please sign up.";
+      }
+
       return true;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger }) {
       if (user) {
-        token.id = user.id as number;
-        token.role_id = user.role_id;
-        token.auth_type = user.auth_type;
-        token.username = user.username;
-        token.avatar = user.avatar;
+        token.id = (user as CustomUser).id;
+        token.role_id = (user as CustomUser).role_id;
+        token.auth_type = (user as CustomUser).auth_type;
+        token.username = (user as CustomUser).username;
+        token.avatar = (user as CustomUser).avatar;
       }
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        return {
-          ...session,
-          user: {
-            ...session.user,
-            id: token.id,
-            role_id: token.role_id,
-            auth_type: token.auth_type,
-            username: token.username,
-            avatar: token.avatar,
-          },
-        };
-      }
-      return session;
+      console.log("Session token:", token);
+      console.log("Session user:", session.user);
+      console.log("Session:", session);
+
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id,
+          role_id: token.role_id,
+          auth_type: token.auth_type,
+          username: token.username,
+          avatar: token.avatar,
+        },
+      };
     },
   },
 };
+
 const getSession = () => getServerSession(authOptions);
 
 export { authOptions, getSession };

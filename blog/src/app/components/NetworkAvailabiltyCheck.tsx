@@ -1,6 +1,7 @@
 "use client";
 
-import { HStack } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
+import { signOut } from "next-auth/react";
 import { ReactNode, useEffect, useState } from "react";
 
 export default function NetworkAvailabiltyCheck({
@@ -43,6 +44,9 @@ export default function NetworkAvailabiltyCheck({
           {isOnline ? <p>You are online</p> : <p>You are offline</p>}
         </HStack>
       )}
+      <Button onClick={() => signOut()} colorScheme="red">
+        sign out
+      </Button>
       {children}
     </>
   );

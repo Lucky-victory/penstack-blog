@@ -17,7 +17,7 @@ export function ProtectedComponent({
 
   useEffect(() => {
     async function checkPermission() {
-      if (session?.user?.id) {
+      if (session?.user?.email) {
         const { data } = await axios.post<{ data: { hasPermission: boolean } }>(
           "/api/auth/check-permission",
           { permission: requiredPermission }

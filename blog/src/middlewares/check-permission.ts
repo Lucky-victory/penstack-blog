@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getUserPermissions } from "@/src/lib/auth/permissions";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/src/app/api/auth/[...nextauth]/route";
+import { getSession } from "@/src/lib/auth/next-auth";
 import { TPermissions } from "../types";
 
 import { db } from "@/src/db";
@@ -37,7 +36,6 @@ async function getPublicPermissions(): Promise<string[]> {
 
   if (!publicRole?.permissions) return [];
 
-  // Update cache
   publicPermissionsCache = publicRole.permissions.map(
     (rp) => rp.permission.name
   );
@@ -57,13 +55,13 @@ export async function checkPermission(
   }
 
   // If not public, check user session
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
 
-  if (!session?.user?.id) {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const userPermissions = await getUserPermissions(session.user.id);
+  const userPermissions = await getUserPermissions(session.user.email);
 
   if (!userPermissions.includes(requiredPermission)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });

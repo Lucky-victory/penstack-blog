@@ -1,4 +1,4 @@
-import { ClientNewPostRedirect } from "@/src/app/components/Dashboard/ClientNewPostRedirect";
+import { ClientNewPostRedirect } from "@/src/app/components/Dashboard/NewPostPage/ClientNewPostRedirect";
 import { db } from "@/src/db";
 import { posts, users } from "@/src/db/schemas";
 import { PostSelect } from "@/src/types";
@@ -28,9 +28,18 @@ export default async function DashboardNewPostPage() {
       };
 
       createdPost = (await db.transaction(async (tx) => {
-        const [insertResponse] = await tx.insert(posts).values(newPost);
+        const [insertResponse] = await tx
+          .insert(posts)
+          .values(newPost)
+          .onDuplicateKeyUpdate({
+            set: {
+              slug: newPost.slug,
+              updated_at: new Date(),
+            },
+          })
+          .$returningId();
         return await tx.query.posts.findFirst({
-          where: eq(posts.id, insertResponse.insertId),
+          where: eq(posts.id, insertResponse.id),
           with: {
             author: {
               columns: {
