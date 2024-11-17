@@ -2,7 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@chakra-ui/react";
 import { ProtectedComponent } from "@/src/app/components/ProtectedComponent";
 
@@ -11,6 +11,8 @@ export default function SignIn() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -26,14 +28,17 @@ export default function SignIn() {
         password,
         redirect: false,
       });
+      console.log({ result });
 
       if (result?.error) {
         setError(result.error);
       } else {
-        router.push("/dashboard");
+        router.push(callbackUrl);
         router.refresh();
       }
     } catch (error) {
+      console.log("error:", error);
+
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
@@ -107,13 +112,13 @@ export default function SignIn() {
 
         <div className="grid grid-cols-2 gap-4">
           <button
-            onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+            onClick={() => signIn("github", { callbackUrl })}
             className="flex items-center justify-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-white hover:bg-gray-800"
           >
             GitHub
           </button>
           <button
-            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+            onClick={() => signIn("google", { callbackUrl })}
             className="flex items-center justify-center gap-2 rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-500"
           >
             Google

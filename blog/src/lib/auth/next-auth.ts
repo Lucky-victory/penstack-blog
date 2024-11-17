@@ -21,10 +21,10 @@ function checkUserAuthType(
   provider: "google" | "github" | "credentials"
 ) {
   if (user.auth_type === "local" && provider !== "credentials") {
-    return "This account already exists but was created with a different provider. Please sign in with the same provider as the account was created with.";
+    return "This account was created with a different provider. Please sign in with the same provider.";
   }
-  if (user.auth_type !== provider) {
-    return "This account already exists but was created with a different provider. Please sign in with the same provider as the account was created with.";
+  if (provider !== "credentials" && user.auth_type !== provider) {
+    return "This account was created with a different provider. Please sign in with the same provider.";
   }
   return false;
 }
@@ -87,7 +87,7 @@ const authOptions: AuthOptions = {
         });
 
         if (!user || !user.password) {
-          throw new Error("User not found");
+          throw new Error("Invalid credentials");
         }
 
         const isValid = await bcrypt.compare(
@@ -100,13 +100,9 @@ const authOptions: AuthOptions = {
         }
 
         return {
-          id: user.id,
           name: user.name,
           email: user.email,
-          avatar: user.avatar as string,
-          username: user.username as string,
-          auth_type: user.auth_type,
-          role_id: user.role_id,
+
           image: (user.avatar as string) || "https://picsum.photos/200",
         } as CustomUser;
       },
@@ -126,7 +122,7 @@ const authOptions: AuthOptions = {
           account?.provider as "google" | "github" | "credentials"
         );
         if (authTypeCheck) {
-          return authTypeCheck;
+          throw new Error(authTypeCheck);
         }
         return true;
       }
@@ -144,19 +140,12 @@ const authOptions: AuthOptions = {
       }
 
       if (!existingUser) {
-        return "Account not found. Please sign up.";
+        throw new Error("Account not found. Please sign up.");
       }
 
       return true;
     },
     async jwt({ token, user, account, trigger }) {
-      if (user) {
-        token.id = (user as CustomUser).id;
-        token.role_id = (user as CustomUser).role_id;
-        token.auth_type = (user as CustomUser).auth_type;
-        token.username = (user as CustomUser).username;
-        token.avatar = (user as CustomUser).avatar;
-      }
       return token;
     },
     async session({ session, token }) {
@@ -168,11 +157,6 @@ const authOptions: AuthOptions = {
         ...session,
         user: {
           ...session.user,
-          id: token.id,
-          role_id: token.role_id,
-          auth_type: token.auth_type,
-          username: token.username,
-          avatar: token.avatar,
         },
       };
     },
