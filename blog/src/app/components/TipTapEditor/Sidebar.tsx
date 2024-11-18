@@ -33,6 +33,7 @@ import {
   Tab,
   TabPanels,
   TabPanel,
+  Switch,
 } from "@chakra-ui/react";
 
 import { SectionCard } from "@/src/app/components/Dashboard/SectionCard";
@@ -46,6 +47,8 @@ import {
   LuFileText,
   LuType,
   LuSettings,
+  LuMessageSquare,
+  LuRadioReceiver,
 } from "react-icons/lu";
 import { FeaturedImageCard } from "@/src/app/components/TipTapEditor/FeaturedImageCard";
 import { PostInsert, PostSelect } from "@/src/types";
@@ -54,7 +57,7 @@ import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { Editor } from "@tiptap/react";
 
 export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
-  const { activePost } = useCustomEditorContext();
+  const { activePost, isSaving } = useCustomEditorContext();
   const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);
   const [isSlugEditable, setIsSlugEditable] = useState<boolean>(false);
   const [tag, setTag] = useState("");
@@ -63,7 +66,6 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
     []
   );
   const [tags, setTags] = useState<{ name: string }[]>([]);
-  const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const handleAddCategory = () => {
     const lastCategory = categories[categories.length - 1];
@@ -161,7 +163,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
               <ListItem>
                 <HStack>
                   <Text as={"span"} color="gray.500">
-                    <Icon as={LuPin} mr={1} />
+                    <Icon as={LuRadioReceiver} mr={1} />
                     Status:
                   </Text>
                   <Text
@@ -208,6 +210,24 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                   <Text as={"span"} fontWeight="semibold">
                     {editorMeta.characterCount}
                   </Text>
+                </HStack>
+              </ListItem>
+              <ListItem>
+                <HStack>
+                  <Text as={"span"} color="gray.500">
+                    <Icon as={LuMessageSquare} mr={1} />
+                    Allow Comments:
+                  </Text>
+                  {/* <Switch isChecked={activePost?.allow_comments as boolean} /> */}
+                </HStack>
+              </ListItem>
+              <ListItem>
+                <HStack>
+                  <Text as={"span"} color="gray.500">
+                    <Icon as={LuPin} mr={1} />
+                    Pinned:
+                  </Text>
+                  {/* <Switch isChecked={activePost?.is_sticky as boolean} /> */}
                 </HStack>
               </ListItem>
             </Stack>

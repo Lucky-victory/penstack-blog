@@ -10,13 +10,16 @@ export const TitleInput = ({
 }: {
   onChange?: (title: string) => void;
 }) => {
-  const { activePost } = useCustomEditorContext();
+  const { activePost, updateField } = useCustomEditorContext();
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const [title, setTitle] = useState(activePost?.title || "");
   function handleTitleChange(evt: ChangeEvent<HTMLInputElement>) {
     const { value } = evt.target;
+    console.log("title:", value);
+
     onChange?.(value);
     setTitle(value);
+    updateField("title", value, true);
   }
   return (
     <Box borderBottom="1px" borderBottomColor={borderColor} p={1} py={2}>

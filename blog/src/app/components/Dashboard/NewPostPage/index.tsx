@@ -18,6 +18,7 @@ import {
   useCustomEditorContext,
 } from "@/src/context/AppEditor";
 import { ProtectedComponent } from "../../ProtectedComponent";
+import NetworkAvailabiltyCheck from "../../NetworkAvailabiltyCheck";
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
@@ -38,21 +39,22 @@ export default function NewPostPage() {
 }
 
 export function PostEditor() {
-  const { activePost, setEditorContent, setIsSaving } =
-    useCustomEditorContext();
-  
+  const { activePost, setEditorContent } = useCustomEditorContext();
+
   function onEditorUpdate(content: { html: string; text?: string }) {
     setEditorContent(content);
     console.log(content);
   }
   return (
-    <ProtectedComponent requiredPermission={"posts:create"}>
-      <Box h="full" overflowY="auto">
-        <TipTapEditor
-          onUpdate={onEditorUpdate}
-          initialContent={decode(activePost?.content) || ""}
-        />
-      </Box>
-    </ProtectedComponent>
+    <NetworkAvailabiltyCheck>
+      <ProtectedComponent requiredPermission={"posts:create"}>
+        <Box h="full" overflowY="auto">
+          <TipTapEditor
+            onUpdate={onEditorUpdate}
+            initialContent={decode(activePost?.content) || ""}
+          />
+        </Box>
+      </ProtectedComponent>
+    </NetworkAvailabiltyCheck>
   );
 }

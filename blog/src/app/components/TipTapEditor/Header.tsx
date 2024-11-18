@@ -21,6 +21,7 @@ import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { useMemo } from "react";
 import React from "react";
 import { formatDate } from "@/src/utils";
+import { UserInfoComp } from "../Dashboard/UserInfoComp";
 
 function EditorHeader({ editor }: { editor: Editor | null }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -62,6 +63,7 @@ function EditorHeader({ editor }: { editor: Editor | null }) {
             onClick={onOpen}
           ></IconButton>
         </Show>
+        <UserInfoComp />
       </DashHeader>
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xs">
         <DrawerOverlay />

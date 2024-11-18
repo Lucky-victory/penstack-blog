@@ -79,21 +79,27 @@ export type EDITOR_CONTEXT_STATE = {
   editor: Editor | null;
   setEditor: (editor: Editor | null) => void;
   isSaving: boolean;
+  isDirty: boolean;
+  updateField: <K extends keyof PostInsert>(
+    key: K,
+    value: PostInsert[K],
+    shouldAutosave?: boolean
+  ) => void;
   activePost: PostSelect | null;
   setActivePost: (post: PostSelect | null) => void;
   initialContent: string;
   setInitialContent: (content: string) => void;
   setEditorContent: (content: EDITOR_CONTEXT_STATE["content"]) => void;
   savePost: () => void;
-  updatePost: (key: keyof PostInsert, value: any) => void;
-  formik: ReturnType<typeof useFormik<PostInsert>> | null;
+  updatePost?: (key: keyof PostInsert, value: any) => void;
+  formik?: ReturnType<typeof useFormik<PostInsert>> | null;
   markdownContent?: string;
   content: {
     text?: string;
     html: string;
   };
   clearEditor: () => void;
-  setIsSaving: (isSaving: boolean) => void;
+  setIsSaving?: (isSaving: boolean) => void;
   isEditorReady: boolean;
   meta: {
     wordCount: number;

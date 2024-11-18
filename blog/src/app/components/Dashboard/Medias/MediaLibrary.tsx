@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { MediaCard } from "./MediaCard";
 import { MediaFilter } from "./MediaFilter";
 import {
@@ -17,12 +17,13 @@ import {
   LuChevronsRight,
   LuTrash2,
 } from "react-icons/lu";
-import { useDebounce, useQueryParams } from "@/src/hooks";
+import { useQueryParams } from "@/src/hooks";
 import { FilterParams, MediaResponse, PaginatedResponse } from "@/src/types";
 import axios from "axios";
 import Loader from "../../Loader";
 import { objectToQueryParams } from "@/src/utils";
 import { useQuery } from "@tanstack/react-query";
+import { debounce } from "lodash";
 
 interface MediaLibraryProps {
   onSelect?: (media: MediaResponse | MediaResponse[]) => void;
@@ -45,12 +46,25 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
   const [loading, setLoading] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<MediaResponse[]>([]);
 
-  const debouncedFilters = useDebounce(filters, 300);
+  const filtersDebounce = useRef(
+    debounce((filters: FilterParams) => {
+      return filters;
+    }, 400)
+  ).current;
 
+  const debouncedFilters = useCallback(() => {
+    return filtersDebounce(filters);
+  }, [filters, filtersDebounce]);
+
+  useEffect(() => {
+    return () => {
+      filtersDebounce.cancel();
+    };
+  }, [filtersDebounce]);
   const { data: media, refetch } = useQuery({
-    queryKey: ["media", debouncedFilters],
+    queryKey: ["media", debouncedFilters()],
     queryFn: fetchMedia,
-    enabled: !!debouncedFilters.page,
+    enabled: !!debouncedFilters()?.page,
     staleTime: 1000 * 60 * 5,
   });
   const { data: folders } = useQuery({
@@ -71,7 +85,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     setLoading(true);
     try {
       const { data: media } = await axios<PaginatedResponse<MediaResponse>>(
-        `/api/media?${objectToQueryParams(debouncedFilters)}`
+        `/api/media?${objectToQueryParams(filtersDebounce)}`
       );
 
       return media;
