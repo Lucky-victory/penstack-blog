@@ -35,7 +35,7 @@ export async function GET(
           columns: {
             name: true,
             username: true,
-            id: true,
+
             auth_id: true,
             avatar: true,
           },
@@ -121,7 +121,7 @@ export async function PUT(
           columns: {
             name: true,
             username: true,
-            id: true,
+
             auth_id: true,
             avatar: true,
           },

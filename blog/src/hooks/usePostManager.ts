@@ -24,11 +24,6 @@ export const usePostManager = (initialPost: PostSelect | null) => {
       : null
   );
   const [isDirty, setIsDirty] = useState(false);
-  console.table({
-    post,
-    initialPost,
-    isDirty,
-  });
 
   // Fields to exclude from API updates
   const excludedFields = [
@@ -37,6 +32,7 @@ export const usePostManager = (initialPost: PostSelect | null) => {
     "created_at",
     "updated_at",
     "tags",
+    "author",
     "category",
   ] as const;
 
@@ -47,7 +43,7 @@ export const usePostManager = (initialPost: PostSelect | null) => {
     const filteredPost = Object.entries(postData).reduce(
       (acc, [key, value]) => {
         if (!excludedFields.includes(key as (typeof excludedFields)[number])) {
-          acc[key as keyof PostInsert] = value;
+          acc[key as keyof PostInsert] = value as any;
         }
         return acc;
       },
@@ -90,11 +86,11 @@ export const usePostManager = (initialPost: PostSelect | null) => {
     }, 1000)
   ).current;
 
-  useEffect(() => {
-    return () => {
-      debouncedSave.cancel();
-    };
-  }, [debouncedSave]);
+  //   useEffect(() => {
+  //     return () => {
+  //       debouncedSave.cancel();
+  //     };
+  //   }, [debouncedSave]);
 
   const updateField = useCallback(
     <K extends keyof PostInsert>(
