@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import PageWrapper from "../../components/PageWrapper";
-import { PostsCards } from "../../components/PostsCards";
+import { PostsCards } from "../../../themes/smooth-land/PostsCards";
 
 export default function Posts() {
   return (

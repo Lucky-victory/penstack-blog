@@ -1,4 +1,4 @@
-import { ClientNewPostRedirect } from "@/src/app/components/Dashboard/NewPostPage/ClientNewPostRedirect";
+import { ClientNewPostRedirect } from "@/src/app/components/pages/Dashboard/NewPostPage/ClientNewPostRedirect";
 import { db } from "@/src/db";
 import { posts, users } from "@/src/db/schemas";
 import { getSession } from "@/src/lib/auth/next-auth";
