@@ -6,7 +6,7 @@ import { Box, useColorModeValue } from "@chakra-ui/react";
 import NetworkAvailabiltyCheck from "../NetworkAvailabiltyCheck";
 
 export default function PageWrapper({ children }: PropsWithChildren) {
-  const bgColor = useColorModeValue("gray.100", "black");
+  const bgColor = useColorModeValue("white", "black");
   return (
     <NetworkAvailabiltyCheck>
       <Box bg={bgColor} minH={"var(--chakra-vh)"}>

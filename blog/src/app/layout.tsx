@@ -23,7 +23,10 @@ export default async function RootLayout({
 }) {
   const session = await getSession();
   return (
-    <html lang="en" className={fonts.rubik.variable}>
+    <html
+      lang="en"
+      className={`${fonts.rubik.variable} ${fonts.karla.variable}`}
+    >
       <body>
         <AuthProvider session={session}>
           <ReactQueryClient>

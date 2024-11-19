@@ -3,16 +3,18 @@ import {
   Box,
   Container,
   Flex,
+  HStack,
   Link,
   Text,
   VStack,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { LuGithub, LuTwitter, LuMail } from "react-icons/lu";
+import { Newsletter } from "../NewsLetter";
 
 const Footer = () => {
-  const bgColor = useColorModeValue("gray.200", "gray.900");
-  const textColor = useColorModeValue("gray.600", "gray.400");
+  const bgColor = useColorModeValue("black", "gray.900");
+  const textColor = useColorModeValue("white", "gray.400");
   const hoverColor = useColorModeValue("gray.700", "gray.300");
 
   const navItems = [
@@ -38,15 +40,27 @@ const Footer = () => {
   ];
 
   return (
-    <Box as="footer" bg={bgColor} py={8}>
-      <Container maxW="7xl">
+    <Box as="footer" px={4} pb={5}>
+      <Container
+        maxW="container.xl"
+        bg={bgColor}
+        py={8}
+        rounded={"3xl"}
+        mb={5}
+        minH={150}
+        px={{ base: 4, md: 8, lg: 10 }}
+        alignContent={"center"}
+      >
+        <Box mb={10}>
+          <Newsletter />
+        </Box>
         <Flex
           direction={{ base: "column", md: "row" }}
           justify="space-between"
-          align="center"
+          align={{ md: "center" }}
           gap={{ base: 6, md: 0 }}
         >
-          <VStack align={{ base: "center", md: "start" }} spacing={4}>
+          <VStack align={"start"} spacing={4}>
             <Text fontSize="lg" fontWeight="bold" color={textColor}>
               TechBlog
             </Text>
@@ -55,7 +69,7 @@ const Footer = () => {
             </Text>
           </VStack>
 
-          <Flex gap={6}>
+          <Flex gap={6} flexDir={{ base: "column", sm: "row" }}>
             {navItems.map((item) => (
               <Link
                 key={item.label}

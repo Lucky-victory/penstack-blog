@@ -15,56 +15,64 @@ import {
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
-import Loader from "../Loader";
+import Loader from "../../../app/components/Loader";
 import { Link } from "@chakra-ui/next-js";
 
 export default function FeaturedPostCard() {
   const { featuredPost, loading } = useFeaturedPost();
   const cardBgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.300", "gray.700");
-  const textColor = useColorModeValue("gray.600", "gray.300");
+  const textColor = useColorModeValue("white", "white");
 
   return (
-    <LinkBox mb={12}>
-      <Box
-        bg={cardBgColor}
-        borderRadius="3xl"
-        borderWidth={1}
-        borderColor={borderColor}
-        boxShadow={"md"}
-        transition="all 0.2s"
-        _hover={{ boxShadow: "lg" }}
-        minH={400}
-      >
-        {loading && (
-          <VStack justify={"center"} height={"400"}>
-            <Loader />
-          </VStack>
-        )}
-        {featuredPost && (
-          <Grid
-            templateColumns={{ base: "1fr", lg: "3fr 2fr" }}
-            gap={6}
-            p={4}
+    <Box
+      mt={2}
+      bg={cardBgColor}
+      rounded="3xl"
+      overflow={"hidden"}
+      borderWidth={2}
+      borderColor={borderColor}
+      transition="all 0.2s"
+      pos={"relative"}
+      h={{ base: "auto", md: 500, lg: 600 }}
+      minH={450}
+    >
+      {loading && (
+        <VStack justify={"center"} height={"400"}>
+          <Loader />
+        </VStack>
+      )}
+      {!loading && featuredPost && (
+        <>
+          <Box position="absolute" h={"full"} w={"full"}>
+            <Image
+              w={"full"}
+              h={"full"}
+              objectFit={"cover"}
+              src={
+                featuredPost?.featured_image?.url ||
+                "https://picsum.photos/1200/600"
+              }
+              alt={featuredPost?.featured_image?.alt_text}
+            />
+          </Box>
+          <Stack
+            justify={"flex-end"}
+            pos={"relative"}
+            // zIndex={20}
+            h={"full"}
             minH={450}
+            backgroundImage="linear-gradient(130deg, transparent, rgba(0, 0, 0, 1))"
           >
-            <Box position="relative" height={{ base: "300px", md: "auto" }}>
-              <Image
-                rounded="2xl"
-                src={featuredPost?.featured_image?.url}
-                alt={featuredPost?.featured_image?.alt_text}
-                className="w-full h-full object-cover"
-              />
-            </Box>
             <VStack
               align="start"
               spacing={4}
-              px={{ base: 3, lg: 6 }}
-              py={{ base: 3, lg: 6 }}
+              px={{ base: 3, sm: 6, lg: 8 }}
+              py={{ base: 3, sm: 6, lg: 8 }}
               justify="space-between"
             >
-              <VStack align="start">
-                {featuredPost?.category?.name && (
+              <VStack align="start" maxW={900}>
+                {/* {featuredPost?.category?.name && (
                   <Tag
                     size="md"
                     colorScheme="blue"
@@ -77,9 +85,14 @@ export default function FeaturedPostCard() {
                   >
                     {featuredPost.category.name}
                   </Tag>
-                )}
+                )} */}
+                <Box>
+                  <Text color={textColor} fontWeight={500} fontSize={"large"}>
+                    Featured
+                  </Text>
+                </Box>
                 <LinkOverlay href={formatPostPermalink(featuredPost)}>
-                  <Heading size="2xl" mb={4}>
+                  <Heading color={"white"} size="2xl" mb={4}>
                     {featuredPost.title} lorem ipsum dolor sit amet
                   </Heading>
                 </LinkOverlay>
@@ -87,7 +100,7 @@ export default function FeaturedPostCard() {
                   {featuredPost.summary} another summary lorem ipsum dolor
                 </Text>
               </VStack>
-              <HStack spacing={2}>
+              {/* <HStack spacing={2}>
                 <Link href={`/author/${featuredPost.author?.username}`}>
                   <Avatar
                     src={featuredPost?.author?.avatar}
@@ -108,11 +121,11 @@ export default function FeaturedPostCard() {
                       : nativeFormatDate(featuredPost.updated_at as Date)}
                   </Text>
                 </VStack>
-              </HStack>
+              </HStack> */}
             </VStack>
-          </Grid>
-        )}
-      </Box>
-    </LinkBox>
+          </Stack>
+        </>
+      )}
+    </Box>
   );
 }

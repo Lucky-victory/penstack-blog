@@ -24,7 +24,7 @@ export const theme = extendTheme(
       },
     },
     fonts: {
-      heading: "var(--font-rubik)",
+      heading: "var(--font-karla)",
       body: "var(--font-rubik)",
     },
   },

@@ -15,10 +15,9 @@ import { LuSend } from "react-icons/lu";
 export const Newsletter = ({ title }: { title?: string }) => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
-  const bgColor = useColorModeValue("blue.100", "gray.800");
   const formWrapBgColor = useColorModeValue("white", "black");
-  const textColor = useColorModeValue("gray.600", "gray.300");
-  const headingColor = useColorModeValue("gray.900", "white");
+  const textColor = useColorModeValue("gray.400", "gray.300");
+  const headingColor = useColorModeValue("gray.200", "white");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("success");
@@ -26,13 +25,7 @@ export const Newsletter = ({ title }: { title?: string }) => {
   };
 
   return (
-    <Box
-      bg={bgColor}
-      borderRadius="3xl"
-      p={{ base: 4, md: 8 }}
-      // mb={12}
-      shadow={"md"}
-    >
+    <Box>
       <VStack maxW="2xl" mx="auto" spacing={4}>
         <Heading size="lg" color={headingColor}>
           {title || "Subscribe to Our Newsletter"}
@@ -42,10 +35,8 @@ export const Newsletter = ({ title }: { title?: string }) => {
           No spam, unsubscribe at any time.
         </Text>
         <Box
-          bg={formWrapBgColor}
-          borderRadius="2xl"
           w={"full"}
-          p={{ base: 5, md: 8 }}
+
           // mb={8}
         >
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>

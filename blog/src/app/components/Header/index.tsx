@@ -90,15 +90,15 @@ const Header = () => {
         "rgba(26, 32, 44, 0.8)"
       )}
     >
-      <Container maxW="container.xl" py={4}>
+      <Container maxW="container.xl" py={2}>
         <HStack justify="space-between" align="center">
           {/* Logo */}
           <Text
-            as="a"
+            as={Link}
             href="/"
             fontSize="2xl"
             fontWeight="bold"
-            color={useColorModeValue("blue.600", "blue.400")}
+            color={useColorModeValue("black", "white")}
           >
             TechBlog
           </Text>
@@ -109,6 +109,8 @@ const Header = () => {
             <Menu>
               <MenuButton
                 as={Button}
+                rounded={"full"}
+                colorScheme="black"
                 variant="ghost"
                 rightIcon={<LuChevronDown size={16} />}
                 _hover={{ bg: hoverBgColor }}
@@ -132,8 +134,10 @@ const Header = () => {
             {/* Resources Dropdown */}
             <Menu>
               <MenuButton
+                rounded={"full"}
                 as={Button}
                 variant="ghost"
+                colorScheme="black"
                 rightIcon={<LuChevronDown size={16} />}
                 _hover={{ bg: hoverBgColor }}
               >
@@ -156,17 +160,19 @@ const Header = () => {
             <form onSubmit={handleFormSubmit}>
               <InputGroup maxW="300px">
                 <Input
+                  rounded={"full"}
                   placeholder="Search articles..."
                   _placeholder={{ color: "gray.500" }}
                   _hover={{ borderColor: hoverBgColor }}
                   value={searchValue}
-                  borderRadius="md"
                   name="search"
                   onChange={handleInputChange}
                 />
                 <InputRightElement>
                   <IconButton
                     aria-label="Search"
+                    colorScheme="black"
+                    rounded={"full"}
                     icon={<LuSearch size={16} />}
                     variant="ghost"
                     _hover={{ bg: hoverBgColor }}
@@ -181,26 +187,33 @@ const Header = () => {
             {/* Social Icons */}
             <HStack spacing={2} display={{ base: "none", md: "flex" }}>
               <IconButton
-                as="a"
+                rounded={"full"}
+                as={Link}
+                isExternal
                 href="https://github.com/yourusername"
                 aria-label="GitHub"
                 icon={<LuGithub size={20} />}
                 variant="ghost"
                 _hover={{ bg: hoverBgColor }}
+                colorScheme="black"
               />
               <IconButton
-                as="a"
+                rounded={"full"}
+                as={Link}
+                isExternal
                 href="https://twitter.com/yourusername"
                 aria-label="Twitter"
                 icon={<LuTwitter size={20} />}
                 variant="ghost"
                 _hover={{ bg: hoverBgColor }}
+                colorScheme="black"
               />
             </HStack>
 
             {/* Theme Toggle */}
             <IconButton
               aria-label="Toggle color mode"
+              colorScheme="black"
               icon={
                 colorMode === "light" ? (
                   <LuMoon size={20} />
@@ -211,10 +224,12 @@ const Header = () => {
               onClick={toggleColorMode}
               variant="ghost"
               _hover={{ bg: hoverBgColor }}
+              rounded={"full"}
             />
 
             {/* Mobile Menu Button */}
             <IconButton
+              colorScheme="black"
               display={{ base: "flex", md: "none" }}
               aria-label="Open menu"
               icon={<LuMenu size={20} />}
@@ -240,7 +255,8 @@ const Header = () => {
               {topics.map((topic) => (
                 <Button
                   key={topic.name}
-                  as="a"
+                  rounded={"full"}
+                  as={Link}
                   href={topic.href}
                   variant="ghost"
                   justifyContent="flex-start"
@@ -259,7 +275,8 @@ const Header = () => {
               {resources.map((resource) => (
                 <Button
                   key={resource.name}
-                  as="a"
+                  rounded={"full"}
+                  as={Link}
                   href={resource.href}
                   variant="ghost"
                   justifyContent="flex-start"
@@ -273,7 +290,8 @@ const Header = () => {
               <Divider />
 
               <Button
-                as="a"
+                rounded={"full"}
+                as={Link}
                 href="/search"
                 variant="ghost"
                 justifyContent="flex-start"
@@ -285,14 +303,20 @@ const Header = () => {
 
               <HStack spacing={4} pt={4}>
                 <IconButton
-                  as="a"
+                  rounded={"full"}
+                  as={Link}
+                  isExternal
+                  colorScheme="black"
                   href="https://github.com/yourusername"
                   aria-label="GitHub"
                   icon={<LuGithub size={20} />}
                   variant="ghost"
                 />
                 <IconButton
-                  as="a"
+                  rounded={"full"}
+                  as={Link}
+                  isExternal
+                  colorScheme="black"
                   href="https://twitter.com/yourusername"
                   aria-label="Twitter"
                   icon={<LuTwitter size={20} />}

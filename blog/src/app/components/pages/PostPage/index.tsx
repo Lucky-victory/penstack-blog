@@ -237,26 +237,6 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               </VStack>
             </Box>
           </Container>
-          <Box
-            px={3}
-            // py={4}
-            flex={1}
-            pos={{ base: "relative", lg: "sticky" }}
-            top={{ base: 0, lg: 8 }}
-          >
-            <Box
-              // h={800}
-              bg={"gray.50"}
-              rounded={{ base: 20, lg: 24 }}
-              p={3}
-            >
-              <Heading as="h2" size="lg" mb={4}>
-                Related Posts
-              </Heading>
-
-              <PostsCards />
-            </Box>
-          </Box>
         </Flex>
       )}
     </PageWrapper>
