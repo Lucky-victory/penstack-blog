@@ -18,7 +18,7 @@ import axios from "axios";
 import { debounce } from "lodash";
 import { usePostUpdate } from "../hooks";
 import { usePostManager } from "../hooks/usePostManager";
-import { encode } from "html-entities";
+import { decode, encode } from "html-entities";
 
 const AppEditorContext = createContext<EDITOR_CONTEXT_STATE>({
   isSaving: false,
@@ -79,17 +79,17 @@ export const AppEditorContextProvider = ({
     isSaving,
   } = usePostManager(initialPost);
 
-  // Watch content changes and update post
-  useEffect(() => {
-    console.log({
-      editorContent: encode(editorContent.html),
-      activePost: activePost?.content,
-    });
+  // // Watch content changes and update post
+  // useEffect(() => {
+  //   console.log({
+  //     editorContent: encode(editorContent.html),
+  //     activePost: activePost?.content,
+  //   });
 
-    if (encode(editorContent.html) !== activePost?.content) {
-      updateField("content", encode(editorContent.html), true);
-    }
-  }, [editorContent.html]);
+  //   // if (encode(editorContent.html) !== activePost?.content) {
+  //   updateField("content", decode(editorContent.html), true);
+  //   // }
+  // }, [editorContent.html]);
 
   // Editor ready state effect
   useEffect(() => {

@@ -230,7 +230,7 @@ export const LinkInputForm = ({
       mt={1}
       p={3}
       right={0}
-      minW={200}
+      minW={250}
       zIndex={10}
       rounded="lg"
       onSubmit={(e) => {
@@ -268,4 +268,4 @@ export const LinkInputForm = ({
     </Stack>
   );
 };
-export default memo(MenuBar);
+export default MenuBar;

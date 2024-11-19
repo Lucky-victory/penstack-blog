@@ -36,7 +36,7 @@ export async function GET(
             name: true,
             username: true,
             id: true,
-
+            auth_id: true,
             avatar: true,
           },
         },
@@ -122,7 +122,7 @@ export async function PUT(
             name: true,
             username: true,
             id: true,
-
+            auth_id: true,
             avatar: true,
           },
         },
@@ -139,9 +139,12 @@ export async function PUT(
         },
       },
     });
+    const tags =
+      post && post?.tags?.length > 0 ? post?.tags.map((t) => t.tag) : [];
+
     return NextResponse.json(
       {
-        data: post,
+        data: { ...post, tags },
         message: "Post updated successfully",
         lastUpdate: new Date().getTime(),
       },

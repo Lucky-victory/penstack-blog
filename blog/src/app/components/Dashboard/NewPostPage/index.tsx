@@ -39,11 +39,13 @@ export default function NewPostPage() {
 }
 
 export function PostEditor() {
-  const { activePost, setEditorContent } = useCustomEditorContext();
+  const { activePost, setEditorContent, updateField } =
+    useCustomEditorContext();
 
   function onEditorUpdate(content: { html: string; text?: string }) {
     setEditorContent(content);
-    console.log(content);
+    console.log("Editor content", content);
+    updateField("content", encode(content.html), true);
   }
   return (
     <NetworkAvailabiltyCheck>

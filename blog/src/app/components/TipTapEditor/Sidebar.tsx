@@ -57,7 +57,7 @@ import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { Editor } from "@tiptap/react";
 
 export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
-  const { activePost, isSaving } = useCustomEditorContext();
+  const { activePost, isSaving, updateField } = useCustomEditorContext();
   const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);
   const [isSlugEditable, setIsSlugEditable] = useState<boolean>(false);
   const [tag, setTag] = useState("");
@@ -218,7 +218,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                     <Icon as={LuMessageSquare} mr={1} />
                     Allow Comments:
                   </Text>
-                  {/* <Switch isChecked={activePost?.allow_comments as boolean} /> */}
+                  <Switch isChecked={activePost?.allow_comments as boolean} />
                 </HStack>
               </ListItem>
               <ListItem>
@@ -227,7 +227,14 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                     <Icon as={LuPin} mr={1} />
                     Pinned:
                   </Text>
-                  {/* <Switch isChecked={activePost?.is_sticky as boolean} /> */}
+                  <Switch
+                    isChecked={activePost?.is_sticky as boolean}
+                    onChange={(e) => {
+                      console.log("sticky check", e.target.checked);
+
+                      updateField("is_sticky", !activePost?.is_sticky, true);
+                    }}
+                  />
                 </HStack>
               </ListItem>
             </Stack>

@@ -21,6 +21,7 @@ export const TitleInput = ({
     setTitle(value);
     updateField("title", value, true);
   }
+  
   return (
     <Box borderBottom="1px" borderBottomColor={borderColor} p={1} py={2}>
       <Input

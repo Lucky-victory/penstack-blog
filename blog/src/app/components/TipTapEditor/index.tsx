@@ -90,4 +90,4 @@ function TipTapEditor({
     </>
   );
 }
-export default React.memo(TipTapEditor);
+export default TipTapEditor;

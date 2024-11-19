@@ -24,6 +24,11 @@ export const usePostManager = (initialPost: PostSelect | null) => {
       : null
   );
   const [isDirty, setIsDirty] = useState(false);
+  console.table({
+    post,
+    initialPost,
+    isDirty,
+  });
 
   // Fields to exclude from API updates
   const excludedFields = [

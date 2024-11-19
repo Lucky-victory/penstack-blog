@@ -20,11 +20,12 @@ interface MediaInsertProps {
   defaultFilters?: Partial<FilterParams>;
 }
 
-export const MediaInsert :FC<PropsWithChildren<MediaInsertProps>>= ({
+export const MediaInsert: FC<PropsWithChildren<MediaInsertProps>> = ({
   editor,
   isOpen,
   onClose,
-  maxSelection,children,
+  maxSelection,
+  children,
   defaultFilters = {},
 }) => {
   return (
@@ -52,7 +53,7 @@ export const MediaInsert :FC<PropsWithChildren<MediaInsertProps>>= ({
                 .focus()
                 .setImage({
                   src: media.url,
-                  alt: media.name,
+                  alt: media?.alt_text || media.name,
                   title: media.caption as string,
                 })
                 .run();

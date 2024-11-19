@@ -96,4 +96,4 @@ function EditorActionsDropdown({ editor }: { editor: Editor | null }) {
     </>
   );
 }
-export default memo(EditorActionsDropdown);
+export default EditorActionsDropdown
