@@ -31,6 +31,8 @@ export const posts = mysqlTable(
     status: mysqlEnum("status", ["draft", "published", "deleted"]).default(
       "draft"
     ),
+    scheduled_at: timestamp("scheduled_at"),
+    schedule_id: varchar("schedule_id", { length: 50 }),
     author_id: varchar("author_id", { length: 100 }).notNull(),
     visibility: mysqlEnum("visibility", ["public", "private"]).default(
       "public"
@@ -58,7 +60,6 @@ export const posts = mysqlTable(
     };
   }
 );
-// TODO: Add ON DUPLICATE for slug
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
   author: one(users, {

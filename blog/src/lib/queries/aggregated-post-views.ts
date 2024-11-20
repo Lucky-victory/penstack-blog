@@ -8,14 +8,11 @@ export async function aggregatePostViews(
   date?: Date
 ) {
   try {
-    const _date = date && date instanceof Date ? new Date(date) : new Date();
+    const _date = date && date instanceof Date ? new Date(date) : Date.now();
     const startDate = new Date(_date);
     startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(_date);
     endDate.setHours(23, 59, 59, 999);
-
-    console.log("startDate", startDate);
-    console.log("endDate", endDate);
 
     const aggregatedStats = await db
       .select({
