@@ -7,6 +7,7 @@ import {
   Icon,
   useColorModeValue,
   Tooltip,
+  Button,
 } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { Link } from "@chakra-ui/next-js";
@@ -23,7 +24,6 @@ import {
   LuSettings,
   LuUsers,
 } from "react-icons/lu";
-import { Button } from "@/src/app/components/ui/Button";
 
 const navItems = [
   { icon: LuHome, label: "Overview", href: "/dashboard" },

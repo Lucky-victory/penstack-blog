@@ -28,7 +28,7 @@ function EditorHeader({ editor }: { editor: Editor | null }) {
   const { activePost } = useCustomEditorContext();
   const lastUpdate = useMemo(() => {
     return activePost?.updated_at;
-  }, [activePost]);
+  }, [activePost?.updated_at]);
   return (
     <>
       <DashHeader pos="sticky" top={0} zIndex={10}>
@@ -65,7 +65,7 @@ function EditorHeader({ editor }: { editor: Editor | null }) {
         </Show>
         <UserInfoComp />
       </DashHeader>
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xs">
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="sm">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -79,4 +79,4 @@ function EditorHeader({ editor }: { editor: Editor | null }) {
   );
 }
 
-export default React.memo(EditorHeader);
+export default EditorHeader;
