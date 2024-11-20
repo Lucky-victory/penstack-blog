@@ -136,7 +136,7 @@ const PostsDashboard = () => {
               leftIcon={<AddIcon />}
               colorScheme="blue"
               rounded={"full"}
-              onClick={() => (window.location.href = "/dashboard/posts/new")}
+              onClick={() => router.push("/dashboard/posts/new")}
             >
               New Post
             </Button>

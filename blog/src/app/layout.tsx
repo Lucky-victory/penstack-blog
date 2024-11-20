@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./tiptap.css";
+import "./calendar.css";
 
 export const metadata: Metadata = {
   title: "Tech Blog",

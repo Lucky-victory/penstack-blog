@@ -52,9 +52,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     }, 400)
   ).current;
 
-  const debouncedFilters = useCallback(() => {
-    return filtersDebounce(filters);
-  }, [filters, filtersDebounce]);
+  const debouncedFilters = filtersDebounce(filters);
 
   useEffect(() => {
     return () => {
@@ -62,9 +60,9 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     };
   }, [filtersDebounce]);
   const { data: media, refetch } = useQuery({
-    queryKey: ["media", debouncedFilters()],
+    queryKey: ["media", debouncedFilters],
     queryFn: fetchMedia,
-    enabled: !!debouncedFilters()?.page,
+    // enabled: !!debouncedFilters?.page,
     staleTime: 1000 * 60 * 5,
   });
   const { data: folders } = useQuery({
@@ -85,7 +83,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     setLoading(true);
     try {
       const { data: media } = await axios<PaginatedResponse<MediaResponse>>(
-        `/api/media?${objectToQueryParams(filtersDebounce)}`
+        `/api/media?${objectToQueryParams(debouncedFilters || {})}`
       );
 
       return media;

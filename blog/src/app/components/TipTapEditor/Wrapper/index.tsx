@@ -1,6 +1,7 @@
 import { Box, Input, Stack, useColorModeValue } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { TitleInput } from "../TitleInput";
+import Calendar from "../../Calendar";
 
 export const EditorWrapper = ({ children }: { children: ReactNode }) => {
   const borderColor = useColorModeValue("gray.300", "gray.700");
@@ -22,6 +23,7 @@ export const EditorWrapper = ({ children }: { children: ReactNode }) => {
       boxShadow="var(--card-raised)"
       gap={0}
     >
+      <Calendar onDateSelect={() => {}} />
       <TitleInput />
       <Stack
         h="full"

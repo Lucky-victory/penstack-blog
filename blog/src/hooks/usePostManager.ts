@@ -86,11 +86,11 @@ export const usePostManager = (initialPost: PostSelect | null) => {
     }, 1000)
   ).current;
 
-  //   useEffect(() => {
-  //     return () => {
-  //       debouncedSave.cancel();
-  //     };
-  //   }, [debouncedSave]);
+  useEffect(() => {
+    return () => {
+      debouncedSave.cancel();
+    };
+  }, [debouncedSave]);
 
   const updateField = useCallback(
     <K extends keyof PostInsert>(
@@ -112,18 +112,18 @@ export const usePostManager = (initialPost: PostSelect | null) => {
           });
         }
 
+        // If autosave is enabled, save the updated post
+        if (shouldAutosave) {
+          debouncedSave(newPost);
+        }
+
         return newPost;
       });
 
       setIsDirty(true);
-
-      if (shouldAutosave) {
-        debouncedSave(post);
-      }
     },
     [post, debouncedSave]
   );
-
   const savePost = useCallback(() => {
     if (post && isDirty) {
       debouncedSave(post);
