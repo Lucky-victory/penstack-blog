@@ -1,6 +1,14 @@
-import React, { useState } from "react";
-import { format, addMonths, subMonths, isToday } from "date-fns";
+import React, { ReactNode, useEffect, useState } from "react";
+import {
+  format,
+  addMonths,
+  subMonths,
+  isToday,
+  addYears,
+  subYears,
+} from "date-fns";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import { Button, IconButton } from "@chakra-ui/react";
 
 interface CalendarDataItem {
   day: number;
@@ -14,9 +22,20 @@ interface CalendarData {
 }
 
 interface CalendarProps {
+  defaultValue?: Date;
+  onDone?: (date: Date) => void;
+  onCancel?: () => void;
   onDateSelect: (date: Date) => void;
+  /**
+   * The start date of the calendar. Defaults to the current date.
+   */
+  startDate?: Date;
+  /**
+   * The end date of the calendar. Defaults to the 10 years from the current date.
+   */
+  endDate?: Date;
+  footer?: ReactNode;
 }
-
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = [
   "January",
@@ -51,15 +70,32 @@ function generateCalendarData(date: Date): CalendarData {
   return monthData;
 }
 
-const Calendar: React.FC<CalendarProps> = ({ onDateSelect }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+const Calendar: React.FC<CalendarProps> = ({
+  defaultValue = new Date(),
+  onDateSelect,
+  onCancel,
+  onDone,
+  startDate: _startDate = new Date(),
+  endDate: _endDate = addYears(new Date(), 10),
+  footer,
+}) => {
+  const [currentDate, setCurrentDate] = useState(defaultValue);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
+  const [disablePrevBtn, setDisablePrevBtn] = useState(false);
+  const [disableNextBtn, setDisableNextBtn] = useState(false);
+  const [startDate, setStartDate] = useState(_startDate);
+  const [endDate, setEndDate] = useState(_endDate);
   const handlePrevMonth = () => {
+    if (currentDate.getTime() <= startDate.getTime()) {
+      return;
+    }
     setCurrentDate(subMonths(currentDate, 1));
   };
 
   const handleNextMonth = () => {
+    if (currentDate.getTime() >= endDate.getTime()) {
+      return;
+    }
     setCurrentDate(addMonths(currentDate, 1));
   };
 
@@ -74,15 +110,30 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect }) => {
   };
 
   const currentMonthData = generateCalendarData(currentDate);
-
+  useEffect(() => {
+    setDisablePrevBtn(currentDate.getTime() <= startDate.getTime());
+  }, [currentDate, startDate]);
+  useEffect(() => {
+    setDisableNextBtn(currentDate.getTime() >= endDate.getTime());
+  }, [currentDate, endDate]);
   return (
     <div className="calendar">
       <div className="calendar-header">
-        <button className="prev-month" onClick={handlePrevMonth}>
+        <button
+          aria-label="Previous Month"
+          disabled={disablePrevBtn}
+          className="prev-month"
+          onClick={handlePrevMonth}
+        >
           <LuChevronLeft />
         </button>
         <div className="current-month">{format(currentDate, "MMMM yyyy")}</div>
-        <button className="next-month" onClick={handleNextMonth}>
+        <button
+          aria-label="Next Month"
+          disabled={disableNextBtn}
+          className="next-month"
+          onClick={handleNextMonth}
+        >
           <LuChevronRight />
         </button>
       </div>
@@ -99,25 +150,50 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect }) => {
           .map((_, i) => (
             <div key={`empty-${i}`} className="day empty"></div>
           ))}
-        {currentMonthData.days.map(({ day, isToday, dayOfWeek }) => (
-          <div
-            key={day}
-            className={`day ${
-              selectedDate?.getDate() === day &&
-              selectedDate?.getMonth() === currentDate.getMonth() &&
-              selectedDate?.getFullYear() === currentDate.getFullYear()
-                ? "selected"
-                : ""
-            } ${isToday ? "today" : ""}`}
-            onClick={() => handleDayClick(day)}
+        {currentMonthData.days.map(({ day, isToday, dayOfWeek }) => {
+          const isSelected =
+            selectedDate?.getDate() === day &&
+            selectedDate?.getMonth() === currentDate.getMonth() &&
+            selectedDate?.getFullYear() === currentDate.getFullYear();
+          return (
+            <button
+              key={day}
+              tabIndex={isSelected ? 0 : -1}
+              className={`day ${isSelected ? "selected" : ""} ${
+                isToday ? "today" : ""
+              }`}
+              onClick={() => handleDayClick(day)}
+              type="button"
+            >
+              {day}
+            </button>
+          );
+        })}
+      </div>
+      {footer ? (
+        footer
+      ) : (
+        <div className="calendar-footer">
+          <button
+            className="cancel-button"
+            onClick={() => {
+              onCancel?.();
+              setSelectedDate(null);
+            }}
           >
-            {day}
-          </div>
-        ))}
-      </div>
-      <div className="calendar-footer">
-        <button className="done-button">Done</button>
-      </div>
+            Cancel
+          </button>
+          <button
+            className="done-button"
+            onClick={() => {
+              onDone?.(selectedDate as Date);
+              onDateSelect(selectedDate as Date);
+            }}
+          >
+            Done
+          </button>
+        </div>
+      )}
     </div>
   );
 };
