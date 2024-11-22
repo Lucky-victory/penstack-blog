@@ -36,6 +36,7 @@ import {
   Card,
   CardBody,
   VStack,
+  TableContainer,
 } from "@chakra-ui/react";
 import {
   EditIcon,
@@ -184,108 +185,109 @@ const PostsDashboard = () => {
           )}
           {filteredPosts && filteredPosts.length > 0 && (
             <>
-              <Box
-                maxH={600}
-                overflow="auto"
-                bg={"white"}
-                p={4}
-                rounded={{ base: 20, md: 24 }}
-              >
-                <Table variant="simple">
-                  <Thead>
-                    <Tr>
-                      <Th>Title</Th>
-                      <Th>Status</Th>
-                      <Th>Category</Th>
-                      <Th>Author</Th>
-                      <Th>Published Date</Th>
-                      <Th>Views</Th>
-                      <Th>Actions</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {filteredPosts &&
-                      filteredPosts.length > 0 &&
-                      filteredPosts?.map((post) => (
-                        <Tr key={post.id}>
-                          <Td>
-                            <Flex align="center">
-                              {getVisibilityIcon(post.visibility)}
-                              <Text ml={2}>{post.title}</Text>
-                            </Flex>
-                          </Td>
-                          <Td>
-                            <Badge
-                              rounded={"full"}
-                              px={2}
-                              colorScheme={getStatusColor(
-                                post.status as string
-                              )}
-                            >
-                              {post.status}
-                            </Badge>
-                          </Td>
-                          <Td>{post.category?.name || "-"}</Td>
-                          <Td>{post.author?.name}</Td>
-                          <Td>
-                            {post.published_at
-                              ? new Date(post.published_at).toLocaleDateString()
-                              : "-"}
-                          </Td>
-                          <Td>{post?.views?.count}</Td>
-                          <Td>
-                            <Menu>
-                              <MenuButton
-                                as={IconButton}
-                                icon={<ChevronDownIcon />}
-                                variant="ghost"
-                                size="sm"
-                              />
-                              <MenuList>
-                                <MenuItem
-                                  icon={<ViewIcon />}
-                                  onClick={() =>
-                                    router.push(formatPostPermalink(post))
-                                  }
-                                >
-                                  View
-                                </MenuItem>
-                                <MenuItem
-                                  icon={<EditIcon />}
-                                  onClick={() => handleEdit(post)}
-                                >
-                                  Edit
-                                </MenuItem>
-                                <MenuItem
-                                  icon={<DeleteIcon />}
-                                  onClick={() => handleDelete(post)}
-                                  color="red.500"
-                                >
-                                  Delete
-                                </MenuItem>
-                              </MenuList>
-                            </Menu>
-                          </Td>
+              <Card rounded={{ base: 20, md: 24 }} mb={8}>
+                <CardBody>
+                  <TableContainer>
+                    <Table variant="simple">
+                      <Thead>
+                        <Tr>
+                          <Th>Title</Th>
+                          <Th>Status</Th>
+                          <Th>Category</Th>
+                          <Th>Author</Th>
+                          <Th>Published Date</Th>
+                          <Th>Views</Th>
+                          <Th>Actions</Th>
                         </Tr>
-                      ))}
-                  </Tbody>
-                </Table>
+                      </Thead>
+                      <Tbody>
+                        {filteredPosts &&
+                          filteredPosts.length > 0 &&
+                          filteredPosts?.map((post) => (
+                            <Tr key={post.id}>
+                              <Td>
+                                <Flex align="center">
+                                  {getVisibilityIcon(post.visibility)}
+                                  <Text ml={2}>{post.title}</Text>
+                                </Flex>
+                              </Td>
+                              <Td>
+                                <Badge
+                                  rounded={"lg"}
+                                  textTransform={"capitalize"}
+                                  px={2}
+                                  colorScheme={getStatusColor(
+                                    post.status as string
+                                  )}
+                                >
+                                  {post.status}
+                                </Badge>
+                              </Td>
+                              <Td>{post.category?.name || "-"}</Td>
+                              <Td>{post.author?.name}</Td>
+                              <Td>
+                                {post.published_at
+                                  ? new Date(
+                                      post.published_at
+                                    ).toLocaleDateString()
+                                  : "-"}
+                              </Td>
+                              <Td>{post?.views?.count}</Td>
+                              <Td>
+                                <Menu>
+                                  <MenuButton
+                                    as={IconButton}
+                                    icon={<ChevronDownIcon />}
+                                    variant="ghost"
+                                    size="sm"
+                                  />
+                                  <MenuList>
+                                    <MenuItem
+                                      icon={<ViewIcon />}
+                                      onClick={() =>
+                                        router.push(formatPostPermalink(post))
+                                      }
+                                    >
+                                      View
+                                    </MenuItem>
+                                    <MenuItem
+                                      icon={<EditIcon />}
+                                      onClick={() => handleEdit(post)}
+                                    >
+                                      Edit
+                                    </MenuItem>
+                                    <MenuItem
+                                      icon={<DeleteIcon />}
+                                      onClick={() => handleDelete(post)}
+                                      color="red.500"
+                                    >
+                                      Delete
+                                    </MenuItem>
+                                  </MenuList>
+                                </Menu>
+                              </Td>
+                            </Tr>
+                          ))}
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
 
-                {loading && (
-                  <HStack my={8} justify={"center"}>
-                    <Spinner />
-                    <Text>Loading posts...</Text>
-                  </HStack>
-                )}
-
-                {!loading &&
-                  posts?.length === 0 &&
-                  filteredPosts?.length === 0 && (
-                    <Flex justify="center" my={8}>
-                      <Text>No posts found</Text>
-                    </Flex>
+                  {loading && (
+                    <HStack my={8} justify={"center"}>
+                      <Spinner />
+                      <Text>Loading posts...</Text>
+                    </HStack>
                   )}
-              </Box>
+
+                  {!loading &&
+                    posts?.length === 0 &&
+                    filteredPosts?.length === 0 && (
+                      <Flex justify="center" my={8}>
+                        <Text>No posts found</Text>
+                      </Flex>
+                    )}
+                </CardBody>
+              </Card>
             </>
           )}
           {!loading && !filteredPosts.length && (

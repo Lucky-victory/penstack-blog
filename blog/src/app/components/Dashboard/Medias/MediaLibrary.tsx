@@ -8,6 +8,7 @@ import {
   HStack,
   IconButton,
   Text,
+  useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 import {
@@ -131,7 +132,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
   };
 
   return (
-    <Box className="space-y-6">
+    <Box className="space-y-6" minH={400}>
       <MediaFilter
         onFilterChange={handleFilterChange}
         folders={folders as string[]}
@@ -155,7 +156,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
         <>
           <Grid
             rounded={{ base: 20, md: 24 }}
-            bg={"gray.100"}
+            bg={useColorModeValue("white", "gray.800")}
             p={{ base: 3, md: 4 }}
             templateColumns={"repeat(auto-fit, minmax(200px, 1fr))"}
             gap={{ base: 3, md: 4 }}

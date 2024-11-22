@@ -5,8 +5,10 @@ import {
   LuVideo,
   LuFileAudio,
   LuFileText,
+  LuEye,
+  LuCheck,
 } from "react-icons/lu";
-import { Box, Card, CardBody, CardFooter } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, CardFooter } from "@chakra-ui/react";
 import { formatBytes } from "@/src/utils";
 import { Image } from "@chakra-ui/react";
 import { MediaResponse } from "@/src/types";
@@ -56,15 +58,44 @@ export const MediaCard: React.FC<MediaCardProps> = ({
         cursor-pointer transition-all duration-200
       `}
       onClick={handleClick}
+      maxW={240}
     >
       <CardBody className="p-2">
         {media.type === "image" && (
-          <div className="aspect-square rounded-md overflow-hidden">
+          <div className="aspect-square rounded-md overflow-hidden relative">
             <Image
               src={media.url}
               alt={media.alt_text || media.name}
               className="w-full h-full object-cover"
             />
+            <Box
+              zIndex={10}
+              className=" absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2"
+            >
+              <Button
+                size="sm"
+                colorScheme="blue"
+                leftIcon={<LuCheck />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect?.(media);
+                }}
+              >
+                Select
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                colorScheme="white"
+                leftIcon={<LuEye />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Add preview handler
+                }}
+              >
+                Preview
+              </Button>
+            </Box>
           </div>
         )}
         {media.type === "video" && (

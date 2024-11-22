@@ -89,7 +89,7 @@ export const SidebarContentNav = ({
   }) => {
     const isActive =
       pathname === href ||
-      (href === "/dashboard/posts/new" && pathname.match(href + "/*"));
+      (href.includes("/dashboard/posts/new") && pathname.match(href + "/*"));
     const color = useColorModeValue("gray.600", "gray.300");
     const activeColor = "white";
 

@@ -2,6 +2,7 @@
 
 import { HStack } from "@chakra-ui/react";
 import { ReactNode, useEffect, useState } from "react";
+import { LuWifi, LuWifiOff } from "react-icons/lu";
 
 export default function NetworkAvailabiltyCheck({
   children,
@@ -40,7 +41,17 @@ export default function NetworkAvailabiltyCheck({
     <>
       {showStatus && (
         <HStack justify={"center"} p={4} fontWeight={500} {...styles}>
-          {isOnline ? <p>You are online</p> : <p>You are offline</p>}
+          {isOnline ? (
+            <HStack>
+              <LuWifi />
+              <p>You are back online</p>
+            </HStack>
+          ) : (
+            <HStack>
+              <LuWifiOff />
+              <p>You are offline</p>
+            </HStack>
+          )}
         </HStack>
       )}
       {children}

@@ -181,17 +181,21 @@ const UsersDashboard = () => {
         <CardBody>
           <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
             <InputGroup>
-              <InputLeftAddon>
+              <InputLeftAddon roundedLeft={"full"}>
                 <SearchIcon />
               </InputLeftAddon>
               <Input
+                maxW={{ md: "320px" }}
                 placeholder="Search users..."
                 value={searchTerm}
+                roundedRight={"full"}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </InputGroup>
             <Select
+              rounded={"full"}
               placeholder="Filter by Role"
+              maxW={{ md: "300px" }}
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
             >
@@ -268,6 +272,9 @@ const UsersDashboard = () => {
                     <Td>{user.email}</Td>
                     <Td>
                       <Badge
+                        rounded={"lg"}
+                        textTransform={"capitalize"}
+                        px={2}
                         colorScheme={
                           user.role_id === 1
                             ? "red"
@@ -284,7 +291,13 @@ const UsersDashboard = () => {
                       </Badge>
                     </Td>
                     <Td>
-                      <Badge variant="outline" colorScheme="purple">
+                      <Badge
+                        variant="outline"
+                        rounded={"lg"}
+                        textTransform={"capitalize"}
+                        px={2}
+                        colorScheme="purple"
+                      >
                         {user.auth_type}
                       </Badge>
                     </Td>
@@ -330,6 +343,7 @@ const UsersDashboard = () => {
               <FormControl>
                 <FormLabel>Name</FormLabel>
                 <Input
+                  rounded={"full"}
                   placeholder="Enter full name"
                   value={currentUser?.name || ""}
                   onChange={(e) =>
@@ -345,6 +359,7 @@ const UsersDashboard = () => {
                 <Input
                   placeholder="Enter email"
                   type="email"
+                  rounded={"full"}
                   value={currentUser?.email || ""}
                   onChange={(e) =>
                     setCurrentUser((prev) => ({
@@ -357,6 +372,7 @@ const UsersDashboard = () => {
               <FormControl>
                 <FormLabel>Role</FormLabel>
                 <Select
+                  rounded={"full"}
                   value={currentUser?.role_id || ""}
                   onChange={(e) =>
                     setCurrentUser((prev) => ({
@@ -373,10 +389,10 @@ const UsersDashboard = () => {
             </VStack>
           </ModalBody>
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
+            <Button rounded={"full"} variant="ghost" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="blue" onClick={saveUser}>
+            <Button rounded={"full"} colorScheme="blue" onClick={saveUser}>
               {currentUser?.id ? "Update" : "Create"}
             </Button>
           </ModalFooter>
