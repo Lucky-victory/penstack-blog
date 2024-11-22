@@ -23,6 +23,7 @@ import {
   HStack,
   Switch,
   useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import { SectionCard } from "@/src/app/components/Dashboard/SectionCard";
@@ -44,6 +45,9 @@ import { Editor } from "@tiptap/react";
 import { useRouter } from "next/navigation";
 import { ProtectedComponent } from "../../ProtectedComponent";
 import Calendar from "../../Calendar";
+import { format } from "date-fns";
+import { CalendarPicker } from "../CalendarPicker";
+import { shortIdGenerator } from "@/src/utils";
 
 export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
   const { activePost, isSaving, updateField } = useCustomEditorContext();
@@ -56,6 +60,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
   const [categories, setCategories] = useState<{ name: string; id: number }[]>(
     []
   );
+  const { isOpen, onClose, onOpen, onToggle } = useDisclosure();
   const [tags, setTags] = useState<{ name: string }[]>([]);
   const toast = useToast({
     duration: 3000,
@@ -194,11 +199,6 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
           }
         >
           <Box p={4} pb={0}>
-            <Calendar
-              onDateSelect={(date) => {
-                console.log(date);
-              }}
-            />
             <Stack as={List} fontSize={14} gap={2}>
               <ListItem>
                 <HStack>
@@ -245,12 +245,37 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                       fontWeight="semibold"
                       textTransform={"capitalize"}
                     >
-                      {activePost?.scheduled_at ? "On" : "Off"}
+                      {activePost?.scheduled_at ? (
+                        <>
+                          <Text fontSize={"small"}>
+                            {format(
+                              new Date(activePost?.scheduled_at as Date),
+                              "MMM d, yyyy hh:mm a"
+                            )}
+                          </Text>
+                        </>
+                      ) : (
+                        "Off"
+                      )}
                     </Text>
                   </HStack>
-                  <Button variant={"ghost"} size={"xs"}>
-                    Edit
-                  </Button>
+                  <CalendarPicker
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    onDateSelect={(date) => {
+                      updateField("scheduled_at", date);
+                    }}
+                    onCancel={() => onClose()}
+                    trigger={
+                      <Button
+                        variant={"ghost"}
+                        size={"xs"}
+                        onClick={() => onToggle()}
+                      >
+                        Edit
+                      </Button>
+                    }
+                  />
                 </HStack>
               </ListItem>
               <ListItem>

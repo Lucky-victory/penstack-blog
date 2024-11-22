@@ -94,7 +94,10 @@ export async function PUT(
 
     await db
       .update(posts)
-      .set(body)
+      .set({
+        ...body,
+        scheduled_at: body.scheduled_at ? new Date(body.scheduled_at) : null,
+      })
       .where(or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)));
     const post = await db.query.posts.findFirst({
       where: or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),

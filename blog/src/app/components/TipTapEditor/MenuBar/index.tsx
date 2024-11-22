@@ -34,9 +34,9 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
     size: "sm",
     fontSize: "medium",
   };
-  const borderColorValue = useColorModeValue("gray.300", "gray.800");
-  const bgColorValue = useColorModeValue("white", "gray.800");
-  const borderBottomColorValue = useColorModeValue("gray.300", "gray.900");
+  const borderColorValue = useColorModeValue("gray.200", "gray.700");
+  const bgColorValue = useColorModeValue("white", "gray.900");
+  // const borderBottomColorValue = useColorModeValue("gray.300", "red");
 
   if (!editor) {
     return <></>;
@@ -62,10 +62,10 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       pos={"sticky"}
       top={0}
       borderBottom={"1px"}
-      borderBottomColor={borderBottomColorValue}
       borderColor={borderColorValue}
       bg={bgColorValue}
       zIndex={2}
+      py={1}
       px={3}
     >
       <EditorActionsDropdown editor={editor} />

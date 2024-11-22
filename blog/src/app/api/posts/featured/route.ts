@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const featuredPost = await db.query.posts.findFirst({
+      where: eq(posts.status, "published"),
       orderBy: [desc(posts.content)],
       columns: {
         author_id: false,

@@ -29,6 +29,7 @@ export const EditorWrapper = ({ children }: { children: ReactNode }) => {
         minH={300}
         bg={useColorModeValue("#f0f8ff", "gray.700")}
         maxH="full"
+        gap={0}
       >
         {children}
       </Stack>
