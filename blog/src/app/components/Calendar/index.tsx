@@ -8,7 +8,12 @@ import {
   subYears,
 } from "date-fns";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
-import { Button, IconButton } from "@chakra-ui/react";
+import { TimePicker } from "./TimePicker";
+import {
+  extractFullTimeString,
+  mergeTimeStringWithDate,
+} from "@/src/lib/cron/helper";
+import { HStack, Stack } from "@chakra-ui/react";
 
 interface CalendarDataItem {
   day: number;
@@ -173,26 +178,37 @@ const Calendar: React.FC<CalendarProps> = ({
       {footer ? (
         footer
       ) : (
-        <div className="calendar-footer">
-          <button
-            className="cancel-button"
-            onClick={() => {
-              onCancel?.();
-              setSelectedDate(null);
+        <Stack justify="space-between" mt={3}>
+          <TimePicker
+            value={selectedDate ? (selectedDate as Date) : currentDate}
+            onChange={(val) => {
+              if (val)
+                setSelectedDate(
+                  mergeTimeStringWithDate(val, selectedDate as Date)
+                );
             }}
-          >
-            Cancel
-          </button>
-          <button
-            className="done-button"
-            onClick={() => {
-              onDone?.(selectedDate as Date);
-              onDateSelect(selectedDate as Date);
-            }}
-          >
-            Done
-          </button>
-        </div>
+          />
+          <div className="calendar-footer">
+            <button
+              className="cancel-button"
+              onClick={() => {
+                onCancel?.();
+                setSelectedDate(null);
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              className="done-button"
+              onClick={() => {
+                onDone?.(selectedDate as Date);
+                onDateSelect(selectedDate as Date);
+              }}
+            >
+              Done
+            </button>
+          </div>
+        </Stack>
       )}
     </div>
   );

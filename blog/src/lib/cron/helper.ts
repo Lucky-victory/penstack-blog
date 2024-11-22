@@ -81,21 +81,26 @@ export function createIntervalSchedule(interval: number): number[] {
   return minutes;
 }
 export function extractFullTimeString(date: Date): string {
+  if (!date) return "";
   return date.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
     hour12: false,
-    timeZoneName: "short",
   });
 }
-export function mergeDateAndTime(baseDate: Date, timeToMerge: Date): Date {
+export function mergeTimeStringWithDate(
+  timeString: string,
+  dateObject: Date
+): Date {
+  const [hours, minutes] = timeString.split(":").map(Number);
+
+  // Create new Date object, preserving original date but replacing time
   return new Date(
-    baseDate.getFullYear(),
-    baseDate.getMonth(),
-    baseDate.getDate(),
-    timeToMerge.getHours(),
-    timeToMerge.getMinutes(),
-    timeToMerge.getSeconds()
+    dateObject.getFullYear(),
+    dateObject.getMonth(),
+    dateObject.getDate(),
+    hours,
+    minutes
   );
 }
