@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   const page = Number(searchParams.get("page")) || 1;
   const limit = Number(searchParams.get("limit")) || 20;
 
-  const query = searchParams.get("query");
+  const query = searchParams.get("q");
   const category = Number(searchParams.get("category"));
   const sort = searchParams.get("sort") as "relevant" | "recent" | "popular";
   const status =

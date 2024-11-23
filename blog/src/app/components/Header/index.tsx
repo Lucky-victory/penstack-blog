@@ -37,6 +37,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useQueryParams } from "@/src/hooks";
 import { Link } from "@chakra-ui/next-js";
+import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -67,13 +68,12 @@ const Header = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const searchQuery = formData.get("search");
-    router.push(`/search?query=${searchQuery}`);
+    router.push(`/search?q=${searchQuery}`);
   }
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
 
     setSearchValue(value);
-    setQueryParam("query", value);
   }
   return (
     <Box
@@ -211,22 +211,7 @@ const Header = () => {
             </HStack>
 
             {/* Theme Toggle */}
-            <IconButton
-              aria-label="Toggle color mode"
-              colorScheme="black"
-              icon={
-                colorMode === "light" ? (
-                  <LuMoon size={20} />
-                ) : (
-                  <LuSun size={20} />
-                )
-              }
-              onClick={toggleColorMode}
-              variant="ghost"
-              _hover={{ bg: hoverBgColor }}
-              rounded={"full"}
-            />
-
+<LightDarkModeSwitch/>
             {/* Mobile Menu Button */}
             <IconButton
               colorScheme="black"

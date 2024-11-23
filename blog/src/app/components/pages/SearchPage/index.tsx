@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Box,
   Container,
@@ -35,26 +35,32 @@ const SearchResults = () => {
   const categoriesResults = categories?.results || [];
 
   const { queryParams, setQueryParam } = useQueryParams<{
-    query: string;
+    q: string;
     category?: string;
     sort?: "relevant" | "recent" | "popular";
     page?: number;
   }>();
-  const [searchValue, setSearchValue] = useState(queryParams?.query || "");
 
-  const { data, isLoading } = useSearchResults({ queryParams });
+  const filtersDebounce = useRef(
+    debounce((queryParams: any) => {
+      return queryParams;
+    }, 400)
+  ).current;
+
+  const debouncedQueryParams = filtersDebounce(queryParams) as {
+    q: string;
+    category?: string;
+    sort?: "relevant" | "recent" | "popular";
+    page?: number;
+  };
+  const { data, isLoading } = useSearchResults({
+    queryParams: debouncedQueryParams,
+  });
   const searchResults = data?.results || [];
   const totalResult = data?.meta?.total;
-  const debouncedSearch = useCallback(
-    debounce((value: string) => {
-      setQueryParam("query", value);
-    }, 1000),
-    [setQueryParam]
-  );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-    debouncedSearch(e.target.value);
+    setQueryParam("q", e.target.value);
   };
 
   const handleCategorySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -80,8 +86,7 @@ const SearchResults = () => {
               bg={bgColor}
               borderColor={borderColor}
               onChange={handleSearch}
-              defaultValue={queryParams?.query}
-              value={searchValue}
+              value={queryParams?.q}
               _hover={{
                 borderColor: useColorModeValue("blue.500", "blue.300"),
               }}
@@ -135,7 +140,7 @@ const SearchResults = () => {
             <Text color={mutedColor} mb={6}>
               Showing {totalResult} results for{" "}
               <Text as="span" fontWeight={500}>
-                &quot;{queryParams?.query}
+                &quot;{queryParams?.q}
                 &quot;
               </Text>
             </Text>

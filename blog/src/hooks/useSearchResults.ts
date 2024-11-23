@@ -7,7 +7,7 @@ export const useSearchResults = ({
   queryParams,
 }: {
   queryParams: {
-    query: string;
+    q: string;
     category?: string;
     sort?: "relevant" | "recent" | "popular";
     page?: number;
@@ -16,7 +16,7 @@ export const useSearchResults = ({
   return useQuery({
     queryKey: [
       "search",
-      queryParams?.query,
+      queryParams?.q,
       queryParams?.category,
       queryParams?.sort,
       queryParams?.page,
@@ -36,6 +36,6 @@ export const useSearchResults = ({
         meta: data.meta,
       };
     },
-    enabled: !!queryParams?.query,
+    enabled: !!queryParams?.q,
   });
 };
