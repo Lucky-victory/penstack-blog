@@ -1,13 +1,16 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
-import { getEngagementBasedFeaturedPosts } from "@/src/lib/queries/featured";
+import {
+  getEngagementBasedFeaturedPosts,
+  getPublishedPostsQuery,
+} from "@/src/lib/queries/featured";
 import { desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
     const featuredPost = await db.query.posts.findFirst({
-      where: eq(posts.status, "published"),
+      where: getPublishedPostsQuery(),
       orderBy: [desc(posts.content)],
       columns: {
         author_id: false,

@@ -16,7 +16,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Loader from "../../../app/components/Loader";
-import { Link } from "@chakra-ui/next-js";
 
 export default function FeaturedPostCard() {
   const { featuredPost, loading } = useFeaturedPost();
@@ -45,16 +44,21 @@ export default function FeaturedPostCard() {
       {!loading && featuredPost && (
         <>
           <Box position="absolute" h={"full"} w={"full"}>
-            <Image
-              w={"full"}
-              h={"full"}
-              objectFit={"cover"}
-              src={
-                featuredPost?.featured_image?.url ||
-                "https://picsum.photos/1200/600"
-              }
-              alt={featuredPost?.featured_image?.alt_text}
-            />
+            {!featuredPost?.featured_image?.url && (
+              <Box w={"full"} h={"full"} bg={"gray.300"}>
+                {/* generate svg pattern */}
+                
+              </Box>
+            )}
+            {featuredPost?.featured_image?.url && (
+              <Image
+                w={"full"}
+                h={"full"}
+                objectFit={"cover"}
+                src={featuredPost?.featured_image?.url}
+                alt={featuredPost?.featured_image?.alt_text || ""}
+              />
+            )}
           </Box>
           <Stack
             justify={"flex-end"}

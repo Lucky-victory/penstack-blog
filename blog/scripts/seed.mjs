@@ -124,21 +124,94 @@ async function main() {
     // 2. Create blog-specific permissions
     console.log("Creating permissions...");
     const blogPermissions = [
-      { name: "posts:create", description: "Can create new posts" },
-      { name: "posts:edit", description: "Can edit existing posts" },
-      { name: "posts:delete", description: "Can delete posts" },
-      { name: "posts:publish", description: "Can publish posts" },
-      { name: "posts:read", description: "Can read posts" },
-      { name: "users:read", description: "Can view users" },
-      { name: "users:write", description: "Can create/edit users" },
-      { name: "users:delete", description: "Can delete users" },
-      { name: "roles:read", description: "Can view roles" },
-      { name: "roles:write", description: "Can create/edit roles" },
-      { name: "roles:delete", description: "Can delete roles" },
-      { name: "comments:create", description: "Can create comments" },
-      { name: "comments:moderate", description: "Can moderate comments" },
-      { name: "auth:register", description: "Can register a new account" },
-      { name: "auth:login", description: "Can login to existing account" },
+      {
+        name: "dashboard:access",
+        description: "Can access the dashboard",
+      },
+      {
+        name: "dashboard:view",
+        description: "Can view dashboard contents",
+      },
+      {
+        name: "posts:create",
+        description: "Can create new posts",
+      },
+      {
+        name: "posts:edit",
+        description: "Can edit existing posts",
+      },
+      {
+        name: "posts:delete",
+        description: "Can delete posts",
+      },
+      {
+        name: "posts:publish",
+        description: "Can publish posts",
+      },
+      {
+        name: "posts:read",
+        description: "Can read posts",
+      },
+      {
+        name: "users:read",
+        description: "Can view users",
+      },
+      {
+        name: "users:write",
+        description: "Can create/edit users",
+      },
+      {
+        name: "users:delete",
+        description: "Can delete users",
+      },
+      {
+        name: "roles:read",
+        description: "Can view roles",
+      },
+      {
+        name: "roles:write",
+        description: "Can create/edit roles",
+      },
+      {
+        name: "roles:delete",
+        description: "Can delete roles",
+      },
+      {
+        name: "media:upload",
+        description: "Can upload media files",
+      },
+      {
+        name: "media:read",
+        description: "Can view media files",
+      },
+      {
+        name: "media:delete",
+        description: "Can delete media files",
+      },
+      {
+        name: "settings:read",
+        description: "Can view system settings",
+      },
+      {
+        name: "settings:write",
+        description: "Can modify system settings",
+      },
+      {
+        name: "comments:create",
+        description: "Can create comments",
+      },
+      {
+        name: "comments:moderate",
+        description: "Can moderate comments",
+      },
+      {
+        name: "auth:register",
+        description: "Can register a new account",
+      },
+      {
+        name: "auth:login",
+        description: "Can login to existing account",
+      },
     ];
 
     const createdPermissions = await Promise.all(
@@ -191,6 +264,11 @@ async function main() {
       "comments:create",
       "comments:moderate",
       "auth:login",
+      "dashboard:access",
+      "dashboard:view",
+      "media:upload",
+      "media:read",
+      "media:delete",
     ]);
 
     // Author permissions
@@ -200,6 +278,10 @@ async function main() {
       "posts:read",
       "comments:create",
       "auth:login",
+      "dashboard:access",
+      "dashboard:view",
+      "media:upload",
+      "media:read",
     ]);
 
     // Contributor permissions
@@ -208,6 +290,9 @@ async function main() {
       "posts:read",
       "comments:create",
       "auth:login",
+      "dashboard:access",
+      "dashboard:view",
+      "media:read",
     ]);
 
     // Subscriber permissions
@@ -237,7 +322,7 @@ async function main() {
 
     if (!existingAdmin) {
       const [result] = await db.query(
-        "INSERT INTO Users (name, email, password, username, role_id, auth_type,title,bio) VALUES (?, ?, ?, ?, ?, ?,?,?)",
+        "INSERT INTO Users (name, email, password, username,role_id, auth_type,title,bio) VALUES (?, ?, ?, ?, ?, ?,?,?)",
         [
           "Super Admin",
           adminEmail,
@@ -253,6 +338,21 @@ async function main() {
         result.insertId,
       ]);
       console.log("✅ Admin user created:", adminUser);
+      try {
+        await db.query(
+          "INSERT INTO Posts (title,content,slug,author_id,status) VALUES(?,?,?,?,?)",
+          [
+            "Welcome to my blog",
+            "This is your first post, edit or delete it",
+            "welcome-to-my-blog",
+            adminUser.auth_id,
+            "published",
+          ]
+        );
+        console.log("✅ Post created successfully");
+      } catch (error) {
+        console.log("Error creating post:", error);
+      }
     } else {
       console.log("Admin user already exists");
     }

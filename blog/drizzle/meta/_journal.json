@@ -29,6 +29,13 @@
       "when": 1732113884104,
       "tag": "0003_regular_chameleon",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1732274914065,
+      "tag": "0004_shiny_kang",
+      "breakpoints": true
     }
   ]
 }

@@ -45,6 +45,8 @@ export const permissions = mysqlTable("Permissions", {
   name: varchar("name", {
     length: 50,
     enum: [
+      "dashboard:access",
+      "dashboard:view",
       "posts:create",
       "posts:edit",
       "posts:delete",
@@ -56,6 +58,11 @@ export const permissions = mysqlTable("Permissions", {
       "roles:read",
       "roles:write",
       "roles:delete",
+      "media:upload",
+      "media:read",
+      "media:delete",
+      "settings:read",
+      "settings:write",
       "comments:create",
       "comments:moderate",
       "auth:register",

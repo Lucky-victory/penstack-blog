@@ -12,7 +12,7 @@ import {
 } from "../../db/schemas";
 
 // Helper function to get base published posts query
-const getPublishedPostsQuery = () => {
+export const getPublishedPostsQuery = () => {
   return and(
     eq(posts.status, "published"),
     eq(posts.visibility, "public"),

@@ -47,16 +47,18 @@ export default function NewPostCard({
       spacing={4}
       as={LinkBox}
     >
-      <Box pos="relative" h="200px">
-        <Image
-          src={post.featured_image?.url || "https://picsum.photos/500/400"}
-          alt={post.featured_image?.alt_text || (post.title as string)}
-          w="full"
-          h="full"
-          objectFit="cover"
-          rounded="2xl"
-        />
-      </Box>
+      {post.featured_image?.url && (
+        <Box pos="relative" h="200px">
+          <Image
+            src={post.featured_image?.url || "https://picsum.photos/500/400"}
+            alt={post.featured_image?.alt_text || (post.title as string)}
+            w="full"
+            h="full"
+            objectFit="cover"
+            rounded="2xl"
+          />
+        </Box>
+      )}
       {post?.category && post?.category?.name && (
         <Box>
           <Tag

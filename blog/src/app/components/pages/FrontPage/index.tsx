@@ -13,7 +13,7 @@ const FrontPage = () => {
   // const bgColor = useColorModeValue("gray.100", "black");
   return (
     <PageWrapper>
-      <Box>
+      <Box my={12}>
         <Box maxW="7xl" mx="auto" px={4}>
           <FeaturedPostCard />
           <Heading my={8} size="lg">
