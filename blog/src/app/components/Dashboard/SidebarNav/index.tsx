@@ -17,6 +17,7 @@ import {
   Portal,
   Stack,
   HStack,
+  Divider,
 } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { Link } from "@chakra-ui/next-js";
@@ -115,11 +116,12 @@ export const SidebarContentNav = ({
   const pathname = usePathname();
   const [openItems, setOpenItems] = useState<string[]>([]);
   const bg = useColorModeValue("white", "gray.900");
+  const popoverBg = useColorModeValue("gray.50", "gray.900");
   const borderColor = useColorModeValue("gray.200", "gray.700");
-  const textColor = useColorModeValue("gray.100", "gray.300");
-  const hoverBg = useColorModeValue("blue.200", "blue.900");
+  const textColor = useColorModeValue("gray.600", "gray.300");
+  const hoverBg = useColorModeValue("blue.500", "blue.800");
   const activeHoverBg = useColorModeValue("blue.600", "blue.700");
-  const childrenBg = useColorModeValue("gray.100", "gray.800");
+  const childrenBg = useColorModeValue("gray.200", "gray.800");
 
   useEffect(() => {
     const activeParent = navItems.find(
@@ -157,13 +159,20 @@ export const SidebarContentNav = ({
     label?: string;
     permission?: TPermissions;
   }) => {
+    // const isActive =
+    //   pathname === href ||
+    //   (pathname.startsWith(href) &&
+    //     (href !== "/dashboard" || item.href !== "/dashboard/posts"));
     const isActive =
-      pathname === href || (pathname.startsWith(href) && href !== "/dashboard");
+      pathname === href ||
+      (href.includes("/dashboard/posts/new") && pathname.match(href + "/*"));
+
     const content = (
       <Flex borderRadius="lg" role="group">
         <Button
           as={Link}
           variant="ghost"
+          rounded={"full"}
           fontWeight={isActive ? "500" : "400"}
           size={nested ? "sm" : "md"}
           href={href}
@@ -176,7 +185,7 @@ export const SidebarContentNav = ({
           bg={isActive ? "blue.500" : "transparent"}
           _hover={{
             bg: isActive ? activeHoverBg : hoverBg,
-            color: isActive ? "white" : "blue.500",
+            color: isActive ? "white" : "blue.50",
           }}
         >
           {icon && (
@@ -200,7 +209,6 @@ export const SidebarContentNav = ({
 
   const NavItemWithChildren = ({ item }: { item: NavItem }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-
     if (isMinimized) {
       return (
         <ProtectedComponent requiredPermission={item.permission!}>
@@ -218,10 +226,10 @@ export const SidebarContentNav = ({
                 </NavItem>
               </Box>
             </PopoverTrigger>
-            <PopoverContent ml={2} w="200px">
-              <PopoverArrow />
+            <PopoverContent ml={2} w="200px" rounded={"xl"} bg={popoverBg}>
+              <PopoverArrow bg={bg} />
               <PopoverBody p={2}>
-                <VStack align="stretch" spacing={2}>
+                <VStack align="stretch" spacing={2} divider={<Divider />}>
                   {item.children?.map((child, idx) => (
                     <NavItem
                       key={idx}
@@ -240,22 +248,29 @@ export const SidebarContentNav = ({
         </ProtectedComponent>
       );
     }
+    const isActive =
+      pathname === item.href ||
+      (item.href.includes("/dashboard/posts/new") &&
+        pathname.match(item.href + "/*"));
 
     return (
       <ProtectedComponent requiredPermission={item.permission!}>
         <Box>
           <Button
             // alignItems="center"
+            fontWeight={isActive ? "500" : "400"}
             py="2"
             px="4"
             mx="0"
-            borderRadius="lg"
+            roundedTop={openItems.includes(item.href) ? "2xl" : "full"}
+            roundedBottom={openItems.includes(item.href) ? "0" : "full"}
             w="full"
             cursor="pointer"
             onClick={() => toggleOpen(item.href)}
+            justifyContent={isMinimized ? "center" : "space-between"}
             _hover={{
               bg: openItems.includes(item.href) ? activeHoverBg : hoverBg,
-              color: openItems.includes(item.href) ? "white" : "blue.500",
+              color: openItems.includes(item.href) ? "white" : "blue.50",
             }}
             bg={
               item.children?.some((child) => pathname.startsWith(child.href))
@@ -268,8 +283,10 @@ export const SidebarContentNav = ({
                 : textColor
             }
           >
-            <Icon mr="4" fontSize="16" as={item.icon} />
-            <Text flex="1">{item.label}</Text>
+            <HStack gap={0}>
+              <Icon mr="4" fontSize="16" as={item.icon} />
+              <Text flex="1">{item.label}</Text>
+            </HStack>
             <Icon
               as={LuChevronDown}
               transition="all .25s ease-in-out"
@@ -280,7 +297,8 @@ export const SidebarContentNav = ({
             <VStack
               spacing={3}
               align="stretch"
-              p={3}
+              px={3}
+              py={4}
               mt={-1}
               bg={childrenBg}
               roundedBottom="md"
