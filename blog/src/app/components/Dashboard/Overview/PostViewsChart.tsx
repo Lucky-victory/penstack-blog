@@ -60,7 +60,7 @@ const PostViewsChart = () => {
   };
 
   return (
-    <Card rounded={"20px"}>
+    <Card rounded={"20px"} shadow={"lg"}>
       <CardHeader>
         <HStack wrap={"wrap"} justify={"space-between"} gap={4}>
           <Heading size={"md"}>Post Views</Heading>
@@ -71,7 +71,7 @@ const PostViewsChart = () => {
                 rounded={"full"}
                 key={range.value}
                 colorScheme={timeRange === range.value ? "blue" : "gray"}
-                bg={timeRange === range.value ? "blue.500" : "gray.200"}
+                variant={timeRange === range.value ? "solid" : "ghost"}
                 onClick={() => setTimeRange(range.value)}
               >
                 {range.label}

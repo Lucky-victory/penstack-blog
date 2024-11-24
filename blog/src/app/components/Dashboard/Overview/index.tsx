@@ -39,13 +39,13 @@ export const OverviewCard = ({
   return (
     <HStack
       rounded={"md"}
-      bg={"white"}
+      bg={useColorModeValue("white", "gray.700")}
       shadow={"md"}
       borderTop={"4px solid var(--chakra-colors-" + color + "-500)"}
       p={6}
       minH={"60px"}
     >
-      <VStack bg={color + ".50"} p={2} rounded={"sm"}>
+      <VStack bg={color + ".100"} p={2} rounded={"full"}>
         <Icon as={icon} size={20} color={color + ".500"} />
       </VStack>
       <Stack gap={1}>
