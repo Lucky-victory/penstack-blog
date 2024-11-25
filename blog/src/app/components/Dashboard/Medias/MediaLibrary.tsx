@@ -60,6 +60,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       filtersDebounce.cancel();
     };
   }, [filtersDebounce]);
+
   const { data: media, refetch } = useQuery({
     queryKey: ["media", debouncedFilters],
     queryFn: fetchMedia,
@@ -71,6 +72,10 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     queryFn: fetchFolders,
     staleTime: 1000 * 60 * 5,
   });
+
+  const bgColor = useColorModeValue("gray.100", "gray.700");
+  const boxBgColor = useColorModeValue("white", "gray.700");
+
   async function fetchFolders() {
     try {
       const { data } = await axios<{ data: string[] }>(`/api/media/folders`);
@@ -156,9 +161,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
         <>
           <Grid
             rounded={{ base: 20, md: 24 }}
-            bg={useColorModeValue("white", "gray.800")}
+            bg={bgColor}
             p={{ base: 3, md: 4 }}
-            templateColumns={"repeat(auto-fit, minmax(200px, 1fr))"}
+            templateColumns={{
+              base: "repeat(auto-fill, minmax(200px, 1fr))",
+              md: "repeat(auto-fill, minmax(200px, 250px))",
+            }}
             gap={{ base: 3, md: 4 }}
           >
             {media?.data.length > 0 &&
@@ -237,8 +245,14 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       {multiple && selectedMedia.length > 0 && (
         <Box
           bottom={"env(safe-area-inset-bottom,0px)"}
-          className="sticky left-0 right-0 p-4 bg-white border-t shadow-lg"
-          roundedTop={"lg"}
+          pos={"sticky"}
+          borderTop={"1"}
+          bg={boxBgColor}
+          shadow="lg"
+          left={0}
+          right={0}
+          p={4}
+          rounded={"lg"}
         >
           <HStack
             direction={{ base: "column", md: "row" }}
