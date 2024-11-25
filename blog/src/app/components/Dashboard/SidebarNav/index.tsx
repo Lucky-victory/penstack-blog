@@ -36,6 +36,7 @@ import {
 import { TPermissions } from "@/src/types";
 import { ProtectedComponent } from "../../ProtectedComponent";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
+import { UserInfoComp } from "../UserInfoComp";
 
 interface NavItem {
   icon: ElementType;
@@ -321,7 +322,7 @@ export const SidebarContentNav = ({
   };
 
   return (
-    <Flex
+    <Stack
       bg={bg}
       borderRight="1px"
       zIndex={1000}
@@ -329,32 +330,42 @@ export const SidebarContentNav = ({
       w={
         isMinimized
           ? "var(--dash-sidebar-mini-w)"
-          : { base: "full", md: "var(--dash-sidebar-w)" }
+          : { base: "auto", md: "var(--dash-sidebar-w)" }
       }
       pos="fixed"
       h="full"
       {...rest}
     >
-      <Flex
-        h="var(--dash-header-h)"
-        alignItems="center"
-        mx={6}
-        justifyContent="space-between"
+      <Box>
+        <Flex
+          h="var(--dash-header-h)"
+          alignItems="center"
+          mx={6}
+          justifyContent="space-between"
+        >
+          {!isMinimized && (
+            <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+              BA
+            </Text>
+          )}
+          <Icon
+            as={isMinimized ? LuChevronRight : LuChevronLeft}
+            onClick={toggleMinimized}
+            fontSize="24"
+            cursor="pointer"
+            display={{ base: "none", md: "block" }}
+          />
+        </Flex>
+      </Box>
+
+      <VStack
+        spacing={4}
+        h={"calc(100% - var(--dash-header-h))"}
+        align="stretch"
+        flex={1}
+        px={3}
+        justifyContent={"space-between"}
       >
-        {!isMinimized && (
-          <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-            BA
-          </Text>
-        )}
-        <Icon
-          as={isMinimized ? LuChevronRight : LuChevronLeft}
-          onClick={toggleMinimized}
-          fontSize="24"
-          cursor="pointer"
-          display={{ base: "none", md: "block" }}
-        />
-      </Flex>
-      <VStack spacing={4} align="stretch" flex={1} px={3}>
         {navItems.map((item, index) => (
           <Box key={index}>
             {item.children ? (
@@ -370,11 +381,12 @@ export const SidebarContentNav = ({
             )}
           </Box>
         ))}
-        <Box mt={"auto"} mb={5}>
-          <LightDarkModeSwitch />
-        </Box>
+        <Stack mt={"auto"} mb={5} pl={0}>
+          <LightDarkModeSwitch showLabel={!isMinimized} />
+          <UserInfoComp showLabel={!isMinimized} />
+        </Stack>
       </VStack>
-    </Flex>
+    </Stack>
   );
 };
 

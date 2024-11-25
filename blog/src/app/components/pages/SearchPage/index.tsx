@@ -83,6 +83,7 @@ const SearchResults = () => {
           <InputGroup size="lg" maxW="600px">
             <Input
               placeholder="Search articles..."
+              rounded={"full"}
               bg={bgColor}
               borderColor={borderColor}
               onChange={handleSearch}
@@ -105,6 +106,7 @@ const SearchResults = () => {
         <HStack spacing={4} mb={8} wrap="wrap">
           <Select
             placeholder="Category"
+            rounded={"full"}
             maxW="200px"
             bg={bgColor}
             borderColor={borderColor}
@@ -124,6 +126,7 @@ const SearchResults = () => {
           <Select
             onChange={handleSortSelect}
             placeholder="Sort by"
+            rounded={"full"}
             maxW="200px"
             bg={bgColor}
             borderColor={borderColor}

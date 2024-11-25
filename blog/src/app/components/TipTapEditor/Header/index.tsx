@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Drawer,
   DrawerBody,
@@ -11,6 +12,7 @@ import {
   Show,
   Stack,
   Text,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import DashHeader from "../../Dashboard/Header";
@@ -63,15 +65,16 @@ function EditorHeader({ editor }: { editor: Editor | null }) {
             onClick={onOpen}
           ></IconButton>
         </Show>
-        <UserInfoComp />
       </DashHeader>
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="sm">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>Post Settings</DrawerHeader>
-          <DrawerBody px={2}>
-            <SidebarContent editor={editor} />
+          <DrawerBody px={2} bg={useColorModeValue("gray.100", "gray.700")}>
+            <Box display={"flex"} justifyContent={"center"} py={3}>
+              <SidebarContent editor={editor} />
+            </Box>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
