@@ -17,6 +17,8 @@ export async function POST(req: NextRequest) {
     );
   }
   const url = resolveUrl(baseUrl, body.job.url);
+  console.log({ url });
+
   try {
     const result = await CronJobHandler.addJob({
       job: {
@@ -30,6 +32,8 @@ export async function POST(req: NextRequest) {
       data: result,
     });
   } catch (error) {
+    console.log(error);
+
     return NextResponse.json(
       {
         error,

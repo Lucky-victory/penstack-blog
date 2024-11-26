@@ -15,8 +15,8 @@ interface CronJobSchedule {
  * @returns CronJob schedule object
  */
 export function dateTimeToCronJobSchedule(
-  dates: Date | Date[],
-  timezone: string = "UTC",
+  dates: Date,
+  timezone: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
   recurring: boolean = false
 ): CronJobSchedule {
   // Convert single date to array
@@ -28,38 +28,12 @@ export function dateTimeToCronJobSchedule(
 
   const schedule: CronJobSchedule = { timezone };
 
-  if (recurring) {
-    // For recurring schedules, extract unique values for each time component
-    schedule.minutes = [
-      ...new Set(dateArray.map((date) => date.getUTCMinutes())),
-    ];
-    schedule.hours = [...new Set(dateArray.map((date) => date.getUTCHours()))];
-    schedule.mdays = [...new Set(dateArray.map((date) => date.getUTCDate()))];
-    schedule.months = [
-      ...new Set(dateArray.map((date) => date.getUTCMonth() + 1)),
-    ];
-    schedule.wdays = [...new Set(dateArray.map((date) => date.getUTCDay()))];
-
-    // Remove components that include all possible values (full ranges)
-    // E.G. If minutes includes all 60 possible values (0-59)
-    // This means "run every minute" so we don't need to specify minutes at all
-    // the same goes for others
-    if (schedule.minutes?.length === 60) delete schedule.minutes;
-    if (schedule.hours?.length === 24) delete schedule.hours;
-    if (schedule.mdays?.length === 31) delete schedule.mdays;
-    if (schedule.months?.length === 12) delete schedule.months;
-    if (schedule.wdays?.length === 7) delete schedule.wdays;
-  } else {
-    // For one-time schedules, just use the exact times
-    schedule.minutes = [
-      ...new Set(dateArray.map((date) => date.getUTCMinutes())),
-    ];
-    schedule.hours = [...new Set(dateArray.map((date) => date.getUTCHours()))];
-    schedule.mdays = [...new Set(dateArray.map((date) => date.getUTCDate()))];
-    schedule.months = [
-      ...new Set(dateArray.map((date) => date.getUTCMonth() + 1)),
-    ];
-  }
+  // For one-time schedules, just use the exact times
+  schedule.minutes = [...new Set(dateArray.map((date) => date.getMinutes()))];
+  schedule.hours = [...new Set(dateArray.map((date) => date.getHours()))];
+  schedule.mdays = [...new Set(dateArray.map((date) => date.getDate()))];
+  schedule.months = [...new Set(dateArray.map((date) => date.getMonth() + 1))];
+  schedule.wdays = [...new Set(dateArray.map((date) => date.getDay()))];
 
   return schedule;
 }

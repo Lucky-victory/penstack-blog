@@ -12,7 +12,7 @@ const permissionsCache = new Map<
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-export const userPermissions = () => {
+export const usePermissions = () => {
   const { user } = useAuth();
   const [hasPermission, setHasPermission] = useState(false);
 

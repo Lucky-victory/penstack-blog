@@ -223,25 +223,6 @@ export function usePost(slug: string) {
   return { post, loading, error, refetchPost };
 }
 
-export const usePostUpdate = (
-  formik: FormikContextType<PostInsert>,
-  triggerSave: () => void,
-  autoSaveFields: Array<keyof PostInsert> = ["title", "summary", "content"]
-) => {
-  const updatePost = useCallback(
-    (key: keyof PostInsert, value: PostInsert[typeof key]) => {
-      formik.setFieldValue(key, value);
-
-      // Trigger autosave if the field is in the autoSaveFields array
-      if (autoSaveFields.includes(key)) {
-        triggerSave();
-      }
-    },
-    [triggerSave, autoSaveFields]
-  );
-
-  return updatePost;
-};
 type QueryParamValue = string | number | boolean | null;
 
 interface QueryParams {

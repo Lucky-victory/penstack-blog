@@ -43,6 +43,7 @@ export async function GET(req: NextRequest) {
     // Get total count
     const totalResult = await db
       .select({ count: sql<number>`count(*)` })
+
       .from(posts)
       .where(and(...whereConditions));
     const total = Number(totalResult[0].count);

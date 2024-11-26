@@ -42,7 +42,7 @@ export async function GET(
     const _posts = await db.query.posts.findMany({
       where:
         status === "all"
-          ? eq(posts.author_id, user?.id)
+          ? eq(posts.author_id, user?.auth_id as string)
           : eq(posts.status, status),
       offset: offset,
       limit: limit,

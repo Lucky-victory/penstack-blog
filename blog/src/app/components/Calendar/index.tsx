@@ -77,15 +77,15 @@ function generateCalendarData(date: Date): CalendarData {
 
 const Calendar: React.FC<CalendarProps> = ({
   defaultValue = new Date(),
-  onDateSelect,
+  onDateSelect = () => {},
   onCancel,
-  onDone,
+  onDone = () => {},
   startDate: _startDate = new Date(),
   endDate: _endDate = addYears(new Date(), 10),
   footer,
 }) => {
   const [currentDate, setCurrentDate] = useState(defaultValue);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(defaultValue);
   const [disablePrevBtn, setDisablePrevBtn] = useState(false);
   const [disableNextBtn, setDisableNextBtn] = useState(false);
   const [startDate, setStartDate] = useState(_startDate);
@@ -111,7 +111,9 @@ const Calendar: React.FC<CalendarProps> = ({
       day
     );
     setSelectedDate(selectedDate);
-    onDateSelect?.(selectedDate);
+    if (typeof onDateSelect === "function") {
+      onDateSelect?.(selectedDate);
+    }
   };
 
   const currentMonthData = generateCalendarData(currentDate);
@@ -201,6 +203,8 @@ const Calendar: React.FC<CalendarProps> = ({
             <button
               className="done-button"
               onClick={() => {
+                console.log({ selectedDate });
+
                 onDone?.(selectedDate as Date);
                 onDateSelect?.(selectedDate as Date);
               }}

@@ -7,10 +7,13 @@ import {
   PopoverContent,
   PopoverTrigger,
   useOutsideClick,
+  useToast,
 } from "@chakra-ui/react";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { CronJobPayload } from "@/src/lib/cron";
+import { dateTimeToCronJobSchedule } from "@/src/lib/cron/helper";
 
 export const CalendarPicker = ({
   defaultValue,
@@ -28,13 +31,42 @@ export const CalendarPicker = ({
     ref: popRef,
     handler: onClose,
   });
-  const { updateField } = useCustomEditorContext();
-  const { mutate } = useMutation({
-    mutationFn: async (bodyData) => {
-      const { data } = await axios.post("/api/cron/schedule", bodyData);
+  const { updateField, activePost } = useCustomEditorContext();
+  const toast = useToast({
+    duration: 3000,
+    isClosable: true,
+    position: "top",
+  });
+  const { mutateAsync } = useMutation({
+    mutationFn: async (bodyData: CronJobPayload) => {
+      const { data } = await axios.post("/api/cron", bodyData);
+      console.log({ data });
+      return data?.data;
     },
   });
-  async function onDone(date: Date) {}
+  function onDone(date: Date) {
+    onClose();
+    const payload: CronJobPayload = {
+      job: {
+        url: "/api/schedules/auto-publish",
+        enabled: true,
+        title: activePost?.title || "",
+        schedule: dateTimeToCronJobSchedule(new Date(date)),
+        saveResponses: true,
+        requestMethod: "POST",
+        extendedData: {
+          body: JSON.stringify({
+            post_id: activePost?.post_id,
+          }),
+        },
+      },
+    };
+    mutateAsync(payload).then((result) => {
+      updateField("scheduled_at", date);
+      updateField("schedule_id", result?.jobId);
+      toast({ title: result?.message });
+    });
+  }
   function onCancel() {}
   return (
     <>

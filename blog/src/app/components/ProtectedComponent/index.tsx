@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/src/hooks/useAuth";
-import { userPermissions } from "@/src/hooks/usePermissions";
+import { usePermissions } from "@/src/hooks/usePermissions";
 import { TPermissions } from "@/src/types";
 import { useEffect, useState } from "react";
 
@@ -13,12 +13,12 @@ export function ProtectedComponent({
 }) {
   const [hasPermission, setHasPermission] = useState(false);
   const { user } = useAuth();
-  const { checkPermission } = userPermissions();
+  const { checkPermission } = usePermissions();
   useEffect(() => {
     checkPermission(requiredPermission).then((res) => {
       setHasPermission(res);
     });
-  }, [user, requiredPermission]);
+  }, [requiredPermission, checkPermission]);
   if (!hasPermission) return null;
   return <>{children}</>;
 }

@@ -260,10 +260,13 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                     </Text>
                   </HStack>
                   <CalendarPicker
-                    defaultValue={activePost?.scheduled_at || undefined}
+                    defaultValue={
+                      activePost?.scheduled_at
+                        ? new Date(activePost.scheduled_at as Date)
+                        : undefined
+                    }
                     isOpen={isOpen}
                     onClose={onClose}
-                 
                     trigger={
                       <Button
                         variant={"ghost"}

@@ -77,7 +77,7 @@ export class CronJobHandler {
       throw new Error("Job URL is required");
     }
 
-    return this.makeRequest<{ jobId: number }>("POST", "/jobs", payload);
+    return this.makeRequest<{ jobId: number }>("PUT", "/jobs", payload);
   }
 
   static async deleteJob(jobId: string | number) {

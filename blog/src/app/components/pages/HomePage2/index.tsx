@@ -133,7 +133,7 @@ const FrontPage = () => {
                   {featuredPost.summary}
                 </Text>
                 <HStack spacing={4} mt={4}>
-                  <img
+                  <Image
                     src={featuredPost.author.avatar}
                     alt={featuredPost.author.name}
                     className="w-10 h-10 rounded-full"
