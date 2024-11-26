@@ -19,6 +19,7 @@ export async function getPost(slug: string) {
           username: true,
           name: true,
           avatar: true,
+          bio: true,
         },
       },
       category: {

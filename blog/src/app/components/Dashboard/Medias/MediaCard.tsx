@@ -6,7 +6,8 @@ import {
   LuFileAudio,
   LuFileText,
   LuEye,
-  LuCheck,
+  LuCheckSquare,
+  LuBoxSelect,
 } from "react-icons/lu";
 import {
   Box,
@@ -93,12 +94,14 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             p={3}
             bg={useColorModeValue("gray.50", "black")}
           >
-            <HStack>
+            <HStack justify={"stretch"}>
               <Button
                 size="sm"
-                colorScheme="blue"
-                leftIcon={<LuCheck />}
+                colorScheme={selected ? "blue" : "gray"}
+                // variant={selected ? "solid" : "ghost"}
+                leftIcon={selected ? <LuCheckSquare /> : <LuBoxSelect />}
                 rounded={"full"}
+                flex={1}
                 onClick={(e) => {
                   e.stopPropagation();
                   onSelect?.(media);
@@ -107,10 +110,11 @@ export const MediaCard: React.FC<MediaCardProps> = ({
                 Select
               </Button>
               <Button
+                flex={1}
                 size="sm"
                 variant="outline"
                 rounded={"full"}
-                colorScheme="white"
+                colorScheme="black"
                 leftIcon={<LuEye />}
                 onClick={(e) => {
                   e.stopPropagation();

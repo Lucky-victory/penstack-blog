@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { LuBookmark } from "react-icons/lu";
 import { Newsletter } from "../../../app/components/NewsLetter";
+import { decode } from "html-entities";
 
 export default function NewPostCard({
   post,
@@ -82,8 +83,8 @@ export default function NewPostCard({
               {post.title}
             </Heading>
           </LinkOverlay>
-          <Text fontSize="sm" color="gray.500" noOfLines={2}>
-            {post.summary || post.content}
+          <Text fontSize="sm" color="gray.500" noOfLines={3}>
+            {post.summary || decode(post.content)}
           </Text>
         </Box>
         {(showAuthor || showBookmark) && (

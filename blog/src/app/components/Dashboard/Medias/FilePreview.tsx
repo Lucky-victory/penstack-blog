@@ -13,6 +13,7 @@ import {
   DrawerBody,
   Image,
   DrawerCloseButton,
+  Text,
 } from "@chakra-ui/react";
 import { MediaResponse } from "@/src/types";
 
@@ -80,12 +81,9 @@ const FilePreview = ({
             aria-labelledby="PDF document"
             title={file.name}
           >
-            <p>
-              Your browser does not support PDFs.
-              <a href={file.url} download>
-                Download the PDF
-              </a>
-            </p>
+            <Text textAlign={"center"} my={8}>
+              Cloudinary restricts PDFs on free accounts.
+            </Text>
           </object>
         );
       default:

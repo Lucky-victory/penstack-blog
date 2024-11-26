@@ -30,7 +30,7 @@ interface CalendarProps {
   defaultValue?: Date;
   onDone?: (date: Date) => void;
   onCancel?: () => void;
-  onDateSelect: (date: Date) => void;
+  onDateSelect?: (date: Date) => void;
   /**
    * The start date of the calendar. Defaults to the current date.
    */
@@ -111,7 +111,7 @@ const Calendar: React.FC<CalendarProps> = ({
       day
     );
     setSelectedDate(selectedDate);
-    onDateSelect(selectedDate);
+    onDateSelect?.(selectedDate);
   };
 
   const currentMonthData = generateCalendarData(currentDate);
@@ -202,7 +202,7 @@ const Calendar: React.FC<CalendarProps> = ({
               className="done-button"
               onClick={() => {
                 onDone?.(selectedDate as Date);
-                onDateSelect(selectedDate as Date);
+                onDateSelect?.(selectedDate as Date);
               }}
             >
               Done

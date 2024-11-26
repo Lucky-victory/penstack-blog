@@ -8,19 +8,16 @@ import {
   PopoverTrigger,
   useOutsideClick,
 } from "@chakra-ui/react";
+import { useCustomEditorContext } from "@/src/context/AppEditor";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 export const CalendarPicker = ({
-  onDateSelect,
-  onCancel,
-  onDone,
   defaultValue,
   isOpen,
   onClose,
   trigger,
 }: {
-  onDateSelect: (date: Date) => void;
-  onCancel?: () => void;
-  onDone?: (date: Date) => void;
   defaultValue?: Date;
   isOpen: boolean;
   onClose: () => void;
@@ -31,6 +28,14 @@ export const CalendarPicker = ({
     ref: popRef,
     handler: onClose,
   });
+  const { updateField } = useCustomEditorContext();
+  const { mutate } = useMutation({
+    mutationFn: async (bodyData) => {
+      const { data } = await axios.post("/api/cron/schedule", bodyData);
+    },
+  });
+  async function onDone(date: Date) {}
+  function onCancel() {}
   return (
     <>
       <Popover isOpen={isOpen} onClose={onClose}>
@@ -44,7 +49,6 @@ export const CalendarPicker = ({
         >
           <PopoverBody>
             <Calendar
-              onDateSelect={onDateSelect}
               onCancel={onCancel}
               onDone={onDone}
               defaultValue={defaultValue}

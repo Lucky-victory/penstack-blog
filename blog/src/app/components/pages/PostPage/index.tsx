@@ -27,6 +27,7 @@ import { Link } from "@chakra-ui/next-js";
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   const postContentBg = useColorModeValue("white", "gray.900");
   const borderColor = useColorModeValue("gray.200", "gray.800");
+  const authorTextColor = useColorModeValue("gray.800", "gray.300");
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     if (post) {
@@ -153,7 +154,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                       </Text>
                     </HStack>
                     <Box as="header" mb={8}>
-                      <Heading as="h1" size="2xl" mb={4}>
+                      <Heading as="h1" size="2xl">
                         {post.title}
                       </Heading>
                       {post?.tags && (
@@ -173,24 +174,21 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                     </Box>
 
                     <Box className="prose" maxW="none" pb={8}>
-                      <Text
-                        fontSize="xl"
-                        fontWeight="medium"
-                        mb={4}
-                        color="gray.600"
-                      >
-                        {post.summary}
-                      </Text>
+                      {post.summary && (
+                        <Text
+                          fontSize="xl"
+                          fontWeight="medium"
+                          mb={4}
+                          color="gray.600"
+                        >
+                          {post.summary}
+                        </Text>
+                      )}
                       <Box
                         dangerouslySetInnerHTML={{
                           __html: decode(post.content) as string,
                         }}
                       />
-                      Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                      Quidem dicta, dolorum alias fugiat rerum ut dolor eaque
-                      exercitationem amet vitae totam ipsam neque voluptatum
-                      cupiditate consequuntur atque nobis mollitia facere. harum
-                      omnis.
                     </Box>
                   </Box>
                 </Flex>
@@ -229,9 +227,16 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                         @{post.author.username}
                       </Text>
                     </Link>
-                    <Text mt={3} color="gray.700" fontSize="sm">
-                      {post?.author?.name}
-                    </Text>
+                    {post?.author?.bio && (
+                      <Text
+                        mt={3}
+                        color={authorTextColor}
+                        fontSize="sm"
+                        maxW={600}
+                      >
+                        {post?.author?.bio}
+                      </Text>
+                    )}
                   </Box>
                 </Flex>
               </VStack>
@@ -242,5 +247,4 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
     </PageWrapper>
   );
 };
-
 export default PostPage;
