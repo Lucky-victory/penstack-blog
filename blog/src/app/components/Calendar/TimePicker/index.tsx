@@ -1,4 +1,4 @@
-import { Box, HStack, Stack, Text } from "@chakra-ui/react";
+import { Box, HStack, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { TimePicker as ReactTimePicker } from "react-time-picker";
 
 export const TimePicker = ({
@@ -9,8 +9,12 @@ export const TimePicker = ({
   onChange: (value: string | null) => void;
 }) => {
   return (
-    <HStack alignSelf={"flex-end"} mb={2}>
-      <Text as={"span"} fontWeight={500} color="gray.600">
+    <HStack alignSelf={"flex-end"}>
+      <Text
+        as={"span"}
+        fontWeight={500}
+        color={useColorModeValue("gray.500", "gray.400")}
+      >
         Time:
       </Text>
       <Box

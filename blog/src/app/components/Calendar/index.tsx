@@ -14,6 +14,7 @@ import {
   mergeTimeStringWithDate,
 } from "@/src/lib/cron/helper";
 import { HStack, Stack } from "@chakra-ui/react";
+import TimezonePicker from "./TimezonePicker";
 
 interface CalendarDataItem {
   day: number;
@@ -180,16 +181,23 @@ const Calendar: React.FC<CalendarProps> = ({
       {footer ? (
         footer
       ) : (
-        <Stack justify="space-between" mt={3}>
-          <TimePicker
-            value={selectedDate ? (selectedDate as Date) : currentDate}
-            onChange={(val) => {
-              if (val)
-                setSelectedDate(
-                  mergeTimeStringWithDate(val, selectedDate as Date)
-                );
-            }}
-          />
+        <Stack justify="space-between" mt={4}>
+          <HStack align={"center"} my={4}>
+            <TimezonePicker
+              onChange={(timezone) => {
+                console.log({ timezone });
+              }}
+            />
+            <TimePicker
+              value={selectedDate ? (selectedDate as Date) : currentDate}
+              onChange={(val) => {
+                if (val)
+                  setSelectedDate(
+                    mergeTimeStringWithDate(val, selectedDate as Date)
+                  );
+              }}
+            />
+          </HStack>
           <div className="calendar-footer">
             <button
               className="cancel-button"

@@ -10,14 +10,12 @@ interface CronJobSchedule {
 /**
  * Converts a datetime or array of datetimes into cron-job.org schedule format
  * @param dates - Single Date object or array of Date objects
- * @param timezone - Optional timezone (defaults to UTC)
- * @param recurring - If true, extracts pattern for recurring schedule. If false, creates one-time schedule
+ * @param timezone - Optional timezone (defaults to locale timezone)
  * @returns CronJob schedule object
  */
 export function dateTimeToCronJobSchedule(
   dates: Date,
-  timezone: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
-  recurring: boolean = false
+  timezone: string = Intl.DateTimeFormat().resolvedOptions().timeZone
 ): CronJobSchedule {
   // Convert single date to array
   const dateArray = Array.isArray(dates) ? dates : [dates];
