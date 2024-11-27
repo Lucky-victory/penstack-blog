@@ -9,10 +9,11 @@ export const TimePicker = ({
   onChange: (value: string | null) => void;
 }) => {
   return (
-    <HStack alignSelf={"flex-end"}>
+    <Stack gap={0}>
       <Text
         as={"span"}
         fontWeight={500}
+        size={"sm"}
         color={useColorModeValue("gray.500", "gray.400")}
       >
         Time:
@@ -62,17 +63,19 @@ export const TimePicker = ({
           },
         }}
         as={ReactTimePicker}
-        px={2}
+        px={3}
+        py={1}
         display={"flex"}
         rounded={"full"}
         value={value}
         ring={1}
+        ringColor={"blue.500"}
         format="h:mm a"
         onChange={onChange}
         clockIcon={null}
         clearIcon={null}
         shouldOpenClock={() => false}
       />
-    </HStack>
+    </Stack>
   );
 };

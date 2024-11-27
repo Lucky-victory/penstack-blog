@@ -36,33 +36,38 @@ const TimezonePicker = ({
       >
         Timezone:
       </Text>
-      <Menu>
-        <MenuButton
-          as={Button}
-          size={"sm"}
-          variant={"outline"}
-          rounded={"full"}
-          rightIcon={<LuChevronDown />}
-        >
-          {" "}
-          {selectedTimezone ? selectedTimezone : "Select timezone"}
-        </MenuButton>
-        <MenuList maxH={250} overflowY={"auto"} px={2}>
-          {timezones.map((timezone, index) => {
-            return (
-              <MenuItem
-                value={timezone}
-                rounded={"full"}
-                bg={selectedTimezone === timezone ? "blue.500" : ""}
-                color={selectedTimezone === timezone ? "white" : ""}
-                key={index}
-                onClick={() => handleChange(timezone)}
-              >
-                {timezone}
-              </MenuItem>
-            );
-          })}
-        </MenuList>
+      <Menu isLazy>
+        {({ isOpen }) => (
+          <>
+            {" "}
+            <MenuButton
+              as={Button}
+              size={"sm"}
+              variant={"outline"}
+              rounded={"full"}
+              rightIcon={<LuChevronDown rotate={isOpen ? "180deg" : "0deg"} />}
+            >
+              {" "}
+              {selectedTimezone ? selectedTimezone : "Select timezone"}
+            </MenuButton>
+            <MenuList rounded={"xl"} maxH={250} overflowY={"auto"} px={2}>
+              {timezones.map((timezone, index) => {
+                return (
+                  <MenuItem
+                    value={timezone}
+                    rounded={"full"}
+                    bg={selectedTimezone === timezone ? "blue.500" : ""}
+                    color={selectedTimezone === timezone ? "white" : ""}
+                    key={index}
+                    onClick={() => handleChange(timezone)}
+                  >
+                    {timezone}
+                  </MenuItem>
+                );
+              })}
+            </MenuList>
+          </>
+        )}
       </Menu>
     </Stack>
   );

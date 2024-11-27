@@ -8,6 +8,7 @@ export interface CronJobPayload {
     saveResponses?: boolean;
     schedule?: {
       timezone?: string;
+      expiresAt?: number;
       hours?: number[];
       mdays?: number[];
       minutes?: number[];
@@ -25,21 +26,24 @@ export interface CronJobPayload {
       onSuccess: boolean;
       onDisable: boolean;
     };
-    requestMethod?:
-      | "GET"
-      | "POST"
-      | "PUT"
-      | "DELETE"
-      | "PATCH"
-      | "HEAD"
-      | "OPTIONS";
+    requestMethod?: number;
     extendedData?: {
       headers?: Record<string, string>;
       body?: string;
     };
   };
 }
-
+export const CRON_REQUEST_METHOD = {
+  GET: 0,
+  POST: 1,
+  OPTIONS: 2,
+  HEAD: 3,
+  PUT: 4,
+  DELETE: 5,
+  TRACE: 6,
+  CONNECT: 7,
+  PATCH: 8,
+} as const;
 export class CronJobHandler {
   private static readonly API_URL = "https://api.cron-job.org";
   private static readonly API_KEY = process.env.CRON_JOB_API_KEY;

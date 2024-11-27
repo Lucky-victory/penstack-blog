@@ -32,6 +32,7 @@ interface CalendarProps {
   onDone?: (date: Date) => void;
   onCancel?: () => void;
   onDateSelect?: (date: Date) => void;
+  onTimezoneChange?: (timezone: string) => void;
   /**
    * The start date of the calendar. Defaults to the current date.
    */
@@ -81,6 +82,7 @@ const Calendar: React.FC<CalendarProps> = ({
   onDateSelect = () => {},
   onCancel,
   onDone = () => {},
+  onTimezoneChange = () => {},
   startDate: _startDate = new Date(),
   endDate: _endDate = addYears(new Date(), 10),
   footer,
@@ -182,10 +184,16 @@ const Calendar: React.FC<CalendarProps> = ({
         footer
       ) : (
         <Stack justify="space-between" mt={4}>
-          <HStack align={"center"} my={4}>
+          <HStack
+            align={"center"}
+            my={4}
+            justify={"space-between"}
+            px={1}
+            wrap={"wrap"}
+          >
             <TimezonePicker
               onChange={(timezone) => {
-                console.log({ timezone });
+                onTimezoneChange?.(timezone);
               }}
             />
             <TimePicker

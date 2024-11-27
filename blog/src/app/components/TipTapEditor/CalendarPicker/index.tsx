@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from "react";
+import { ReactNode, useMemo, useRef, useState } from "react";
 import Calendar from "../../Calendar";
 import {
   Button,
@@ -12,8 +12,9 @@ import {
 import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { CronJobPayload } from "@/src/lib/cron";
+import { CRON_REQUEST_METHOD, CronJobPayload } from "@/src/lib/cron";
 import { dateTimeToCronJobSchedule } from "@/src/lib/cron/helper";
+import { addMinutes } from "date-fns";
 
 export const CalendarPicker = ({
   defaultValue,
@@ -32,6 +33,11 @@ export const CalendarPicker = ({
     handler: onClose,
   });
   const { updateField, activePost } = useCustomEditorContext();
+  const defaultTimezone = useMemo(
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone,
+    []
+  );
+  const [timezone, setTimezone] = useState<string>(defaultTimezone);
   const toast = useToast({
     duration: 3000,
     isClosable: true,
@@ -40,7 +46,7 @@ export const CalendarPicker = ({
   const { mutateAsync } = useMutation({
     mutationFn: async (bodyData: CronJobPayload) => {
       const { data } = await axios.post("/api/cron", bodyData);
-      console.log({ data });
+
       return data?.data;
     },
   });
@@ -51,9 +57,13 @@ export const CalendarPicker = ({
         url: "/api/schedules/auto-publish",
         enabled: true,
         title: activePost?.title || "",
-        schedule: dateTimeToCronJobSchedule(new Date(date)),
+        schedule: {
+          ...dateTimeToCronJobSchedule(new Date(date)),
+          timezone,
+          expiresAt: addMinutes(new Date(date), 20).getMilliseconds(),
+        },
         saveResponses: true,
-        requestMethod: "POST",
+        requestMethod: CRON_REQUEST_METHOD.POST,
         extendedData: {
           body: JSON.stringify({
             post_id: activePost?.post_id,
@@ -84,6 +94,9 @@ export const CalendarPicker = ({
               onCancel={onCancel}
               onDone={onDone}
               defaultValue={defaultValue}
+              onTimezoneChange={(timezone) => {
+                setTimezone(timezone);
+              }}
             />
           </PopoverBody>
         </PopoverContent>
