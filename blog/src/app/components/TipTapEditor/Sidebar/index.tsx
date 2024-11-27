@@ -48,6 +48,8 @@ import Calendar from "../../Calendar";
 import { format } from "date-fns";
 import { CalendarPicker } from "../CalendarPicker";
 import { shortIdGenerator } from "@/src/utils";
+import { useCategories } from "@/src/hooks/useCategories";
+import { isEmpty } from "lodash";
 
 export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
   const { activePost, isSaving, updateField } = useCustomEditorContext();
@@ -57,9 +59,8 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
   const [tag, setTag] = useState("");
   const [category, setCategory] = useState("");
   const router = useRouter();
-  const [categories, setCategories] = useState<{ name: string; id: number }[]>(
-    []
-  );
+  const { data } = useCategories();
+  const categories = data?.results || [];
   const { isOpen, onClose, onOpen, onToggle } = useDisclosure();
   const [tags, setTags] = useState<{ name: string }[]>([]);
   const toast = useToast({
@@ -67,15 +68,12 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
     status: "success",
     position: "top",
   });
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     const lastCategory = categories[categories.length - 1];
-    setCategories((prev) => [
-      ...prev,
-      { name: category, id: lastCategory?.id ? lastCategory.id + 1 : 1 },
-    ]);
+
     setCategory("");
   };
-  const handleAddTag = () => {
+  const handleAddTag = async () => {
     setTags((prev) => [...prev, { name: tag }]);
     setTag("");
   };
@@ -394,16 +392,39 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
         </SectionCard>
         <SectionCard title="Categories">
           <Box p={4}>
-            <Stack as={RadioGroup} gap={2} name="category" defaultValue={""}>
-              {categories.map((category) => (
-                <Radio
-                  key={category.id}
-                  variant="solid"
-                  value={category.id + ""}
-                >
-                  {category.name}
-                </Radio>
-              ))}
+            <Stack
+              as={RadioGroup}
+              gap={2}
+              defaultValue={
+                !isEmpty(activePost?.category_id)
+                  ? (activePost?.category_id as number)
+                  : ""
+              }
+              name="category_id"
+              onChange={(val) =>
+                updateField(
+                  "category_id",
+                  !isEmpty(val) ? (val as unknown as number | undefined) : null
+                )
+              }
+            >
+              {categories?.length > 0 && (
+                <>
+                  <Radio variant="solid" value={""}>
+                    None
+                  </Radio>
+                  {categories.map((category) => (
+                    <Radio
+                      key={category.id}
+                      variant="solid"
+                      value={category.id + ""}
+                    >
+                      {category.name}
+                    </Radio>
+                  ))}
+                </>
+              )}
+
               {showCategoryInput && (
                 <HStack mt={2} align={"center"}>
                   <Input

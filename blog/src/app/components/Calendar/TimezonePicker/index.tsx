@@ -8,15 +8,13 @@ import {
   Text,
   useColorModeValue,
   Input,
-  MenuGroup,
-  MenuDivider,
   InputGroup,
   InputLeftElement,
   Icon,
   Box,
 } from "@chakra-ui/react";
 import timezones from "@/src/lib/timezones.json";
-import { memo, useEffect, useState, useMemo } from "react";
+import { memo, useEffect, useState, useMemo, useCallback } from "react";
 import { LuChevronDown, LuSearch } from "react-icons/lu";
 import { FixedSizeList } from "react-window";
 
@@ -33,6 +31,9 @@ const TimezonePicker = ({
   const [selectedTimezone, setSelectedTimezone] = useState(defaultValue);
   const [searchQuery, setSearchQuery] = useState("");
   const groupTextColor = useColorModeValue("gray.700", "gray.300");
+  const sbCb = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
   const groupedTimezones = useMemo(() => {
     const filtered = searchQuery
       ? timezones.filter((tz) =>
@@ -60,13 +61,13 @@ const TimezonePicker = ({
     return result;
   }, [groupedTimezones]);
 
-  const handleChange = (timezone: string) => {
+  const handleChange = useCallback((timezone: string) => {
     setSelectedTimezone(timezone);
-  };
+  }, []);
 
   useEffect(() => {
     onChange(selectedTimezone);
-  }, [selectedTimezone, onChange]);
+  }, [onChange, selectedTimezone]);
 
   const TimezoneRow = memo(
     ({ index, style }: { index: number; style: React.CSSProperties }) => {
@@ -79,14 +80,14 @@ const TimezonePicker = ({
         return (
           <Text
             fontWeight="bold"
-            pos={"sticky"}
+            pos="sticky"
             top={0}
             left={0}
             px={3}
             py={1}
             style={style}
             color={groupTextColor}
-            borderBottom={"1px solid"}
+            borderBottom="1px solid"
             borderBottomColor={borderBottomColor}
           >
             {item.name}
@@ -121,7 +122,9 @@ const TimezonePicker = ({
       );
     }
   );
+
   TimezoneRow.displayName = "TimezoneRow";
+
   return (
     <Stack gap={0}>
       <Text
@@ -150,20 +153,7 @@ const TimezonePicker = ({
               {selectedTimezone || "Select timezone"}
             </MenuButton>
             <MenuList rounded="xl" maxH={LIST_HEIGHT} overflowY="auto" px={2}>
-              <Stack mb={2}>
-                <InputGroup size="sm">
-                  <InputLeftElement>
-                    <LuSearch />
-                  </InputLeftElement>
-                  <Input
-                    placeholder="Search timezones..."
-                    size="sm"
-                    rounded="full"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </InputGroup>
-              </Stack>
+              <SearchInput searchQuery={searchQuery} setSearchQuery={sbCb} />
               <FixedSizeList
                 height={LIST_HEIGHT}
                 itemCount={flattenedTimezones.length}
@@ -179,4 +169,34 @@ const TimezonePicker = ({
     </Stack>
   );
 };
+const SearchInput = memo(
+  ({
+    searchQuery,
+    setSearchQuery,
+  }: {
+    setSearchQuery: (query: string) => void;
+    searchQuery: string;
+  }) => {
+    return (
+      <Stack mb={2}>
+        <InputGroup size="sm">
+          <InputLeftElement>
+            <LuSearch />
+          </InputLeftElement>
+          <Input
+            placeholder="Search timezones..."
+            size="sm"
+            rounded="full"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+            }}
+          />
+        </InputGroup>
+      </Stack>
+    );
+  }
+);
+
+SearchInput.displayName = "SearchInput";
 export default memo(TimezonePicker);
