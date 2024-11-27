@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@chakra-ui/react";
-import { ProtectedComponent } from "@/src/app/components/ProtectedComponent";
+import { PermissionGuard } from "@/src/app/components/PermissionGuard";
 
 export default function SignIn() {
   const router = useRouter();
@@ -87,9 +87,9 @@ export default function SignIn() {
           {error && (
             <div className="rounded-md bg-red-50 p-4 text-red-500">{error}</div>
           )}
-          <ProtectedComponent requiredPermission="users:write">
+          <PermissionGuard requiredPermission="users:write">
             <></>
-          </ProtectedComponent>
+          </PermissionGuard>
           <button
             type="submit"
             disabled={isLoading}

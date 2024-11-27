@@ -7,11 +7,12 @@ import { postViews, postViewAnalytics } from "@/src/db/schemas";
 import { trackPostView } from "@/src/utils/views-tracking";
 import { getGeoLocation } from "@/src/utils/geo-ip";
 import { getServerSession } from "next-auth";
+import { getSession } from "@/src/lib/auth/next-auth";
 
 export async function POST(req: NextRequest) {
   try {
-    const session=await getServerSession();
-    const userId=session?.user?.id;
+    const session = await getSession();
+    const userId = session?.user?.id;
     const headersList = headers();
     const body = await req.json();
     const { postId } = body;

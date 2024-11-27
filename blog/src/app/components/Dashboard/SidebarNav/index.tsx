@@ -34,7 +34,7 @@ import {
   LuUsers,
 } from "react-icons/lu";
 import { TPermissions } from "@/src/types";
-import { ProtectedComponent } from "../../ProtectedComponent";
+import { PermissionGuard } from "../../PermissionGuard";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
 import { UserInfoComp } from "../UserInfoComp";
 
@@ -200,9 +200,9 @@ export const SidebarContentNav = ({
 
     if (permission) {
       return (
-        <ProtectedComponent requiredPermission={permission}>
+        <PermissionGuard requiredPermission={permission}>
           {content}
-        </ProtectedComponent>
+        </PermissionGuard>
       );
     }
     return content;
@@ -212,7 +212,7 @@ export const SidebarContentNav = ({
     const { isOpen, onOpen, onClose } = useDisclosure();
     if (isMinimized) {
       return (
-        <ProtectedComponent requiredPermission={item.permission!}>
+        <PermissionGuard requiredPermission={item.permission!}>
           <Popover
             placement="right"
             isOpen={isOpen}
@@ -246,7 +246,7 @@ export const SidebarContentNav = ({
               </PopoverBody>
             </PopoverContent>
           </Popover>
-        </ProtectedComponent>
+        </PermissionGuard>
       );
     }
     const isActive =
@@ -255,7 +255,7 @@ export const SidebarContentNav = ({
         pathname.match(item.href + "/*"));
 
     return (
-      <ProtectedComponent requiredPermission={item.permission!}>
+      <PermissionGuard requiredPermission={item.permission!}>
         <Box>
           <Button
             // alignItems="center"
@@ -317,7 +317,7 @@ export const SidebarContentNav = ({
             </VStack>
           )}
         </Box>
-      </ProtectedComponent>
+      </PermissionGuard>
     );
   };
 

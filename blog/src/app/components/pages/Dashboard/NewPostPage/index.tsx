@@ -17,7 +17,7 @@ import {
   AppEditorContextProvider,
   useCustomEditorContext,
 } from "@/src/context/AppEditor";
-import { ProtectedComponent } from "../../../ProtectedComponent";
+import { PermissionGuard } from "../../../PermissionGuard";
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
@@ -47,13 +47,13 @@ export function PostEditor() {
     updateField("content", encode(content.html), true);
   }
   return (
-    <ProtectedComponent requiredPermission={"posts:create"}>
+    <PermissionGuard requiredPermission={"posts:create"}>
       <Box h="full" overflowY="auto">
         <TipTapEditor
           onUpdate={onEditorUpdate}
           initialContent={decode(activePost?.content) || ""}
         />
       </Box>
-    </ProtectedComponent>
+    </PermissionGuard>
   );
 }

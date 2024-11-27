@@ -1,19 +1,20 @@
 import { db } from "@/src/db";
 import { roles, rolePermissions, permissions, users } from "@/src/db/schemas";
+import { TPermissions } from "@/src/types";
 import { eq } from "drizzle-orm";
 
 // In-memory cache for user permissions
 const userPermissionsCache = new Map<
   string,
   {
-    permissions: string[];
+    permissions:TPermissions[];
     timestamp: number;
   }
 >();
 
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 
-export async function getUserPermissions(email: string): Promise<string[]> {
+export async function getUserPermissions(email: string): Promise<TPermissions[]> {
   const now = Date.now();
 
   // Check cache first

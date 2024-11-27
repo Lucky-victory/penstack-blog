@@ -1,13 +1,14 @@
 import { db } from "@/src/db";
 import { roles } from "@/src/db/schemas";
+import { TPermissions } from "@/src/types";
 import { eq } from "drizzle-orm";
 
 // Get public permissions (cached to avoid repeated DB queries)
-let publicPermissionsCache: string[] | null = null;
+let publicPermissionsCache: TPermissions[] | null = null;
 let publicPermissionsCacheTime: number = 0;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 
-export async function getPublicPermissions(): Promise<string[]> {
+export async function getPublicPermissions(): Promise<TPermissions[]> {
   // Return cached permissions if they exist and aren't expired
   const now = Date.now();
   if (

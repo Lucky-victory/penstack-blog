@@ -43,7 +43,7 @@ import { PostSelect } from "@/src/types";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { Editor } from "@tiptap/react";
 import { useRouter } from "next/navigation";
-import { ProtectedComponent } from "../../ProtectedComponent";
+import { PermissionGuard } from "../../PermissionGuard";
 import Calendar from "../../Calendar";
 import { format } from "date-fns";
 import { CalendarPicker } from "../CalendarPicker";
@@ -168,7 +168,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
           }
           footer={
             <>
-              <ProtectedComponent requiredPermission={"posts:delete"}>
+              <PermissionGuard requiredPermission={"posts:delete"}>
                 <Button
                   size={"sm"}
                   flex={1}
@@ -183,7 +183,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                 >
                   Delete
                 </Button>
-              </ProtectedComponent>
+              </PermissionGuard>
               <Button
                 size={"sm"}
                 flex={1}
@@ -195,7 +195,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
               >
                 Save draft
               </Button>
-              <ProtectedComponent requiredPermission={"posts:publish"}>
+              <PermissionGuard requiredPermission={"posts:publish"}>
                 <Button
                   size={"sm"}
                   isDisabled={isPublishing}
@@ -209,7 +209,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                 >
                   Publish
                 </Button>
-              </ProtectedComponent>
+              </PermissionGuard>
             </>
           }
         >

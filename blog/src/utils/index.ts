@@ -320,10 +320,14 @@ export const extractContentAndLinkMark = (
     };
   }
 };
-export function formatBytes(bytes: number) {
-  if (!bytes || typeof bytes !== "number") return 0;
-  return (bytes / 1024 / 1024).toFixed(2) + " MB";
-}
+ export const formatBytes = (bytes: number) => {
+   if (bytes === 0) return "0 Bytes";
+   const k = 1024;
+   const sizes = ["Bytes", "KB", "MB", "GB"];
+   const i = Math.floor(Math.log(bytes) / Math.log(k));
+   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+ };
+
 
 export const nativeFormatDate = (date: string | Date) => {
   return new Date(date).toLocaleDateString("en-US", {

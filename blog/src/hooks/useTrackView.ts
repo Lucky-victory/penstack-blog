@@ -26,10 +26,10 @@ export const useTrackView = (postId: number) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            postId,
-            userId: session?.user?.id,
-            timeSpent: timeSpentRef.current,
-            scrollDepth: scrollRef.current,
+            post_id: postId,
+            user_id: session?.user?.id,
+            time_spent: timeSpentRef.current,
+            scroll_depth: scrollRef.current,
           }),
         });
 

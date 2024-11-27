@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Check user session
+  
     const session = await getSession();
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
