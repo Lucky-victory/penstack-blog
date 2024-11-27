@@ -77,7 +77,9 @@ export const CalendarPicker = ({
       toast({ title: result?.message });
     });
   }
-  function onCancel() {}
+  function onCancel() {
+    onClose();
+  }
   return (
     <>
       <Popover isOpen={isOpen} onClose={onClose}>
