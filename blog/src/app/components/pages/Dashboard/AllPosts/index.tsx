@@ -51,6 +51,8 @@ import { PostSelect } from "@/src/types";
 import { useRouter } from "next/navigation";
 import { formatPostPermalink } from "@/src/utils";
 import Loader from "../../../Loader";
+import { Link } from "@chakra-ui/next-js";
+import { format } from "date-fns";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,10 +66,6 @@ const PostsDashboard = () => {
     limit: 20,
   });
   const router = useRouter();
-
-  const handleEdit = (post: PostSelect) => {
-    router.push(`/dashboard/posts/edit/${post.post_id}`);
-  };
 
   const handleDelete = (post: PostSelect) => {
     setSelectedPost(post);
@@ -137,7 +135,9 @@ const PostsDashboard = () => {
               leftIcon={<AddIcon />}
               colorScheme="blue"
               rounded={"full"}
-              onClick={() => router.push("/dashboard/posts/new")}
+              as={Link}
+              _hover={{ textDecoration: "none" }}
+              href="/dashboard/posts/new"
             >
               New Post
             </Button>
@@ -195,6 +195,7 @@ const PostsDashboard = () => {
                           <Th>Status</Th>
                           <Th>Category</Th>
                           <Th>Author</Th>
+                          <Th>Created Date</Th>
                           <Th>Published Date</Th>
                           <Th>Views</Th>
                           <Th>Actions</Th>
@@ -225,11 +226,20 @@ const PostsDashboard = () => {
                               </Td>
                               <Td>{post.category?.name || "-"}</Td>
                               <Td>{post.author?.name}</Td>
-                              <Td>
+                              <Td fontSize={"15px"}>
+                                {post.created_at
+                                  ? format(
+                                      new Date(post.created_at),
+                                      "dd/MM/yyyy hh:mm a"
+                                    )
+                                  : "-"}
+                              </Td>
+                              <Td fontSize={"15px"}>
                                 {post.published_at
-                                  ? new Date(
-                                      post.published_at
-                                    ).toLocaleDateString()
+                                  ? format(
+                                      new Date(post.published_at),
+                                      "dd/MM/yyyy hh:mm a"
+                                    )
                                   : "-"}
                               </Td>
                               <Td>{post?.views?.count}</Td>
@@ -241,22 +251,27 @@ const PostsDashboard = () => {
                                     variant="ghost"
                                     size="sm"
                                   />
-                                  <MenuList>
+                                  <MenuList rounded={"xl"} px={1}>
                                     <MenuItem
+                                      rounded="full"
                                       icon={<ViewIcon />}
-                                      onClick={() =>
-                                        router.push(formatPostPermalink(post))
-                                      }
+                                      as={Link}
+                                      isExternal
+                                      href={formatPostPermalink(post)}
                                     >
                                       View
                                     </MenuItem>
                                     <MenuItem
                                       icon={<EditIcon />}
-                                      onClick={() => handleEdit(post)}
+                                      as={Link}
+                                      isExternal
+                                      rounded="full"
+                                      href={`/dashboard/posts/edit/${post.post_id}`}
                                     >
                                       Edit
                                     </MenuItem>
                                     <MenuItem
+                                      rounded="full"
                                       icon={<DeleteIcon />}
                                       onClick={() => handleDelete(post)}
                                       color="red.500"

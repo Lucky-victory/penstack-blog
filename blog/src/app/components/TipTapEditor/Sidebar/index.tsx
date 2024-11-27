@@ -50,16 +50,22 @@ import { CalendarPicker } from "../CalendarPicker";
 import { shortIdGenerator } from "@/src/utils";
 import { useCategories } from "@/src/hooks/useCategories";
 import { isEmpty } from "lodash";
+import axios from "axios";
+import slugify from "slugify";
 
 export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
   const { activePost, isSaving, updateField } = useCustomEditorContext();
   const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);
   const [isSlugEditable, setIsSlugEditable] = useState<boolean>(false);
   const [isPublishing, setIsPublishing] = useState<boolean>(false);
+  const [isCreating, setIsCreating] = useState<{
+    category?: boolean;
+    tag?: boolean;
+  }>({ category: false, tag: false });
   const [tag, setTag] = useState("");
   const [category, setCategory] = useState("");
   const router = useRouter();
-  const { data } = useCategories();
+  const { data, refetch, isFetching } = useCategories();
   const categories = data?.results || [];
   const { isOpen, onClose, onOpen, onToggle } = useDisclosure();
   const [tags, setTags] = useState<{ name: string }[]>([]);
@@ -69,9 +75,20 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
     position: "top",
   });
   const handleAddCategory = async () => {
-    const lastCategory = categories[categories.length - 1];
+    try {
+      setIsCreating((prev) => ({ ...prev, category: true }));
 
-    setCategory("");
+      await axios.post("/api/categories", {
+        name: category,
+        slug: slugify(category),
+      });
+      setCategory("");
+      await refetch();
+    } catch (error) {
+      console.log("Error adding category", error);
+    } finally {
+      setIsCreating((prev) => ({ ...prev, category: false }));
+    }
   };
   const handleAddTag = async () => {
     setTags((prev) => [...prev, { name: tag }]);
@@ -441,8 +458,9 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                     }}
                   />
                   <Button
-                    isDisabled={!category}
+                    isDisabled={!category || isCreating.category}
                     onClick={handleAddCategory}
+                    isLoading={isCreating.category!}
                     size={"sm"}
                     variant={"outline"}
                     fontWeight={500}
