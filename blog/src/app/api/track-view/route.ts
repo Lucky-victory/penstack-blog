@@ -10,24 +10,23 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getSession();
     const userId = session?.user?.id;
-    const headersList = headers();
+
     const body = await req.json();
     const { post_id, time_spent, scroll_depth } = body;
     const cookieStore = cookies();
+    const referrer = req.headers.get("referer") || "";
 
-    const referrer = headersList.get("referer") || "";
     // Get or create session ID
     const { sessionId, isNewSession } = await getOrCreateSessionId(
       cookieStore,
       referrer
     );
-
     // Get IP address
-    const forwardedFor = headersList.get("x-forwarded-for");
+    const forwardedFor = req.headers.get("x-forwarded-for");
     const ip = forwardedFor ? forwardedFor.split(",")[0] : "127.0.0.1";
 
     // Get user agent and parse it
-    const userAgent = headersList.get("user-agent") || "";
+    const userAgent = req.headers.get("user-agent") || "";
     const deviceInfo = parseUserAgent(userAgent);
     const location = await getGeoLocation(ip);
 

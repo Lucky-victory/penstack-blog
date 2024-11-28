@@ -36,6 +36,13 @@
       "when": 1732274914065,
       "tag": "0004_shiny_kang",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1732757486853,
+      "tag": "0005_ancient_proudstar",
+      "breakpoints": true
     }
   ]
 }

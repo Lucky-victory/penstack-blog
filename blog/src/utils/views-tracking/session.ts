@@ -16,7 +16,7 @@ export async function getOrCreateSessionId(
 
   referrer: string
 ): Promise<{ sessionId: string; isNewSession: boolean }> {
-  const existingSessionId = cookieStore.get("sessionId");
+  const existingSessionId = cookieStore.get("viewSessionId");
 
   if (existingSessionId) {
     return {

@@ -1,68 +1,86 @@
 import { useEffect, useRef } from "react";
 
+const SCROLL_DEBOUNCE = 500; // Debounce scroll events
+
 export const useTrackView = (postId: number) => {
   const scrollRef = useRef<number>(0);
   const timeSpentRef = useRef<number>(0);
   const startTimeRef = useRef<number>(Date.now());
+  const isTrackingRef = useRef<boolean>(false);
+
+  const trackView = async (scrollDepth: number) => {
+    // Prevent concurrent tracking requests
+    if (isTrackingRef.current) return;
+
+    try {
+      isTrackingRef.current = true;
+      const now = Date.now();
+      timeSpentRef.current = Math.round((now - startTimeRef.current) / 1000);
+
+      const response = await fetch("/api/track-view", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          post_id: postId,
+          time_spent: timeSpentRef.current,
+          scroll_depth: scrollDepth,
+          timestamp: now,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to track view");
+      }
+    } catch (error) {
+      console.error("Error tracking view:", error);
+    } finally {
+      isTrackingRef.current = false;
+    }
+  };
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let scrollTimeout: NodeJS.Timeout;
 
     const trackScroll = () => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollTop = window.scrollY;
-      const scrollPercentage = Math.round(
-        (scrollTop / (documentHeight - windowHeight)) * 100
-      );
-      scrollRef.current = Math.max(scrollRef.current, scrollPercentage);
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.scrollY;
+        const scrollPercentage = Math.round(
+          (scrollTop / (documentHeight - windowHeight)) * 100
+        );
+        const newScrollDepth = Math.max(scrollRef.current, scrollPercentage);
+
+        // Only track if scroll depth has increased
+        if (newScrollDepth > scrollRef.current) {
+          scrollRef.current = newScrollDepth;
+          trackView(newScrollDepth);
+        }
+      }, SCROLL_DEBOUNCE);
     };
 
-    const trackView = async () => {
-      try {
-        const response = await fetch("/api/track-view", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            post_id: postId,
+    // Track initial view with a slight delay to prevent duplicate entries
+    const initialTrackTimeout = setTimeout(() => trackView(0), 1000);
 
-            time_spent: timeSpentRef.current,
-            scroll_depth: scrollRef.current,
-          }),
-        });
+    // Set up scroll tracking with passive option for better performance
+    window.addEventListener("scroll", trackScroll, { passive: true });
 
-        if (!response.ok) {
-          throw new Error("Failed to track view");
-        }
-      } catch (error) {
-        console.error("Error tracking view:", error);
+    // Track on page hide/unmount
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        trackView(scrollRef.current);
       }
     };
 
-    // Track initial view
-    trackView();
-
-    // Set up scroll tracking
-    window.addEventListener("scroll", trackScroll);
-
-    // Set up time tracking
-    intervalId = setInterval(() => {
-      timeSpentRef.current = Math.round(
-        (Date.now() - startTimeRef.current) / 1000
-      );
-    }, 1000);
-
-    // Update on unmount or when leaving the page
-    const handleBeforeUnload = () => {
-      trackView();
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
+      clearTimeout(initialTrackTimeout);
+      clearTimeout(scrollTimeout);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("scroll", trackScroll);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      clearInterval(intervalId);
-      trackView();
+      trackView(scrollRef.current);
     };
   }, [postId]);
 };
