@@ -140,9 +140,9 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                           borderRadius="md"
                           px={3}
                           py={1}
-                          bg={"blue.50"}
-                          color={"blue.500"}
-                          textTransform={"uppercase"}
+                          // bg={useColorModeValue("blue.50", "black")}
+                          // color={useColorModeValue("blue.600", "blue.300")}
+                          textTransform={"capitalize"}
                         >
                           {post.category.name}
                         </Tag>

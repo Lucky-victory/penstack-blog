@@ -1,5 +1,5 @@
 import { PostSelect } from "@/src/types";
-import { formatDate, formatPostPermalink } from "@/src/utils";
+import { formatDate, formatPostPermalink, stripHtml } from "@/src/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Box,
@@ -16,6 +16,7 @@ import {
   VStack,
   Avatar,
 } from "@chakra-ui/react";
+import { decode } from "html-entities";
 
 export default function PostCard({
   post,
@@ -57,8 +58,8 @@ export default function PostCard({
               top={3}
               right={3}
               colorScheme="blue"
-              bg={"blue.500"}
-              color={"white"}
+              bg={useColorModeValue("blue.50", "black")}
+              color={useColorModeValue("blue.600", "blue.300")}
               borderRadius="full"
               px={3}
               py={1}
@@ -96,10 +97,7 @@ export default function PostCard({
               : formatDate(new Date(post?.updated_at as Date))}
           </Text>
           <Text noOfLines={3} color={textColor}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa
-            delectus culpa, neque sint dignissimos atque nulla qui cum obcaecati
-            voluptatibus?
-            {post.summary ? post.summary : post.content}
+            {post.summary || stripHtml(decode(post.content))}
           </Text>
         </VStack>
       </CardBody>

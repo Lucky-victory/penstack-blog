@@ -1,5 +1,5 @@
 import { useFeaturedPost } from "@/src/hooks/useFeaturedPost";
-import { formatPostPermalink, nativeFormatDate } from "@/src/utils";
+import { formatPostPermalink, nativeFormatDate, stripHtml } from "@/src/utils";
 import {
   Avatar,
   Box,
@@ -16,6 +16,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Loader from "../../../app/components/Loader";
+import { decode } from "html-entities";
 
 export default function FeaturedPostCard() {
   const { featuredPost, loading } = useFeaturedPost();
@@ -47,7 +48,6 @@ export default function FeaturedPostCard() {
             {!featuredPost?.featured_image?.url && (
               <Box w={"full"} h={"full"} bg={"gray.300"}>
                 {/* generate svg pattern */}
-                
               </Box>
             )}
             {featuredPost?.featured_image?.url && (
@@ -97,11 +97,12 @@ export default function FeaturedPostCard() {
                 </Box>
                 <LinkOverlay href={formatPostPermalink(featuredPost)}>
                   <Heading color={"white"} size="2xl" mb={4}>
-                    {featuredPost.title} lorem ipsum dolor sit amet
+                    {featuredPost.title}
                   </Heading>
                 </LinkOverlay>
-                <Text color={textColor} fontSize="lg">
-                  {featuredPost.summary} another summary lorem ipsum dolor
+                <Text color={textColor} fontSize="lg" noOfLines={3}>
+                  {featuredPost.summary ||
+                    stripHtml(decode(featuredPost.content))}
                 </Text>
               </VStack>
               {/* <HStack spacing={2}>

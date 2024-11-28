@@ -1,5 +1,5 @@
 import { PostSelect } from "@/src/types";
-import { formatPostPermalink, nativeFormatDate } from "@/src/utils";
+import { formatPostPermalink, nativeFormatDate, stripHtml } from "@/src/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Avatar,
@@ -68,9 +68,9 @@ export default function NewPostCard({
             borderRadius="md"
             px={3}
             py={1}
-            bg={"blue.50"}
+            bg={useColorModeValue("blue.50", "blue.900")}
             color={"blue.500"}
-            textTransform={"uppercase"}
+            textTransform={"capitalize"}
           >
             {post.category.name}
           </Tag>
@@ -84,7 +84,7 @@ export default function NewPostCard({
             </Heading>
           </LinkOverlay>
           <Text fontSize="sm" color="gray.500" noOfLines={3}>
-            {post.summary || decode(post.content)}
+            {post.summary || stripHtml(decode(post.content))}
           </Text>
         </Box>
         {(showAuthor || showBookmark) && (

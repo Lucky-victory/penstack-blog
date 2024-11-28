@@ -3,6 +3,8 @@ import PostPage from "@/src/app/components/pages/PostPage";
 import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { getPost } from "@/src/lib/queries/post";
+import { decode } from "html-entities";
+import { shortenText, stripHtml } from "@/src/utils";
 
 async function getData(slug: string, fromMetadata: boolean = false) {
   try {
@@ -33,7 +35,10 @@ export async function generateMetadata(
 
   return {
     title: post?.title,
-    description: post?.summary,
+    description: shortenText(
+      post.summary || stripHtml(decode(post.content)),
+      200
+    ),
 
     openGraph: {
       images: [

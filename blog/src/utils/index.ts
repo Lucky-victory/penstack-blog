@@ -3,6 +3,9 @@ import { SnowflakeIdGenerator } from "@green-auth/snowflake-unique-id";
 import { PostSelect } from "../types";
 import { type NextRequest } from "next/server";
 
+export function stripHtml(html: string) {
+  return html.replace(/<[^>]*>/g, "");
+}
 type DatePart = "year" | "month" | "day" | "hour" | "minute" | "second";
 
 interface ConversionResult {
@@ -116,6 +119,7 @@ export function formatPostPermalink(
 
   return `/${prefix}/${post.slug}`;
 }
+
 type QueryParamValue =
   | string
   | number
@@ -320,14 +324,13 @@ export const extractContentAndLinkMark = (
     };
   }
 };
- export const formatBytes = (bytes: number) => {
-   if (bytes === 0) return "0 Bytes";
-   const k = 1024;
-   const sizes = ["Bytes", "KB", "MB", "GB"];
-   const i = Math.floor(Math.log(bytes) / Math.log(k));
-   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
- };
-
+export const formatBytes = (bytes: number) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};
 
 export const nativeFormatDate = (date: string | Date) => {
   return new Date(date).toLocaleDateString("en-US", {
