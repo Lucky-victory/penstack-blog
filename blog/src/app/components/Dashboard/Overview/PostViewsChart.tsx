@@ -60,7 +60,7 @@ const PostViewsChart = () => {
   };
 
   return (
-    <Card rounded={"20px"} shadow={"lg"}>
+    <Card rounded={"20px"}>
       <CardHeader>
         <HStack wrap={"wrap"} justify={"space-between"} gap={4}>
           <Heading size={"md"}>Post Views</Heading>

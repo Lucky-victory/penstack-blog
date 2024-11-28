@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { useSession } from "next-auth/react"; // If using NextAuth.js
 
 export const useTrackView = (postId: number) => {
   const scrollRef = useRef<number>(0);

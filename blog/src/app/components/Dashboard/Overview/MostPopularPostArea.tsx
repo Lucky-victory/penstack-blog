@@ -15,55 +15,7 @@ import {
 import { LuArrowUp, LuEye, LuTrendingUp } from "react-icons/lu";
 import Loader from "../../Loader";
 import { format } from "date-fns";
-const samplePosts = [
-  {
-    id: 1,
-    title:
-      "This a post with a long title that is very long and will be truncated",
-    slug: "post-1",
-    views: 100,
-    likes: 50,
-    comments: 10,
-    shares: 20,
-    created_at: new Date(),
-    updated_at: new Date(),
-    published_at: new Date(),
-    author: {
-      name: "John Doe",
-      avatar: "https://via.placeholder.com/150",
-    },
-    category: {
-      name: "Category 1",
-      slug: "category-1",
-    },
-    featured_image: {
-      url: "https://via.placeholder.com/150",
-      alt_text: "Post 1",
-      caption: "Post 1",
-    },
-    tags: [
-      {
-        name: "Tag 1",
-        slug: "tag-1",
-      },
-      {
-        name: "Tag 2",
-        slug: "tag-2",
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Post 2",
-    slug: "post-2",
-    views: 100,
-    author: {
-      name: "Mike Doe",
-      avatar: "https://via.placeholder.com/150",
-    },
-    published_at: new Date("2023-01-01"),
-  },
-];
+
 export default function MostPopularPosts() {
   const { posts = [], loading } = usePosts();
 
@@ -88,11 +40,7 @@ export default function MostPopularPosts() {
         {!loading && posts && posts?.length > 0 && (
           <Stack gap={1} divider={<StackDivider />}>
             {posts.map((post, index) => (
-              <HStack
-                key={post.id}
-                justify={"space-between"}
-                divider={<StackDivider />}
-              >
+              <HStack key={post.id} justify={"space-between"}>
                 <Stack key={post.id} justify={"space-between"}>
                   <HStack>
                     <Heading size={"sm"} noOfLines={1}>
