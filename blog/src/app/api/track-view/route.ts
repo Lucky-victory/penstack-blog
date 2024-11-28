@@ -1,13 +1,10 @@
-// app/api/track-view/route.ts
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { parseUserAgent } from "@/src/utils/user-agent-parser";
-import { db } from "@/src/db";
-import { postViews, postViewAnalytics } from "@/src/db/schemas";
 import { trackPostView } from "@/src/utils/views-tracking";
 import { getGeoLocation } from "@/src/utils/geo-ip";
-import { getServerSession } from "next-auth";
 import { getSession } from "@/src/lib/auth/next-auth";
+import { getOrCreateSessionId } from "@/src/utils/views-tracking/session";
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,7 +12,15 @@ export async function POST(req: NextRequest) {
     const userId = session?.user?.id;
     const headersList = headers();
     const body = await req.json();
-    const { postId } = body;
+    const { post_id, time_spent, scroll_depth } = body;
+    const cookieStore = cookies();
+
+    const referrer = headersList.get("referer") || "";
+    // Get or create session ID
+    const { sessionId, isNewSession } = await getOrCreateSessionId(
+      cookieStore,
+      referrer
+    );
 
     // Get IP address
     const forwardedFor = headersList.get("x-forwarded-for");
@@ -25,17 +30,16 @@ export async function POST(req: NextRequest) {
     const userAgent = headersList.get("user-agent") || "";
     const deviceInfo = parseUserAgent(userAgent);
     const location = await getGeoLocation(ip);
-    // Get referrer
-    const referrer = headersList.get("referer") || "";
 
-    // Get session ID (you should implement your session management)
-    const sessionId = headersList.get("x-session-id") || "";
+    // Get referrer
 
     // Track the view
     await trackPostView({
-      postId,
+      postId: post_id,
       userId,
       ipAddress: ip,
+      scrollDepth: scroll_depth,
+      timeSpent: time_spent,
       userAgent,
       referrer,
       sessionId,
@@ -51,7 +55,20 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true });
+    const response = NextResponse.json({ success: true });
+
+    // Set session cookie if it's new
+    if (isNewSession) {
+      response.cookies.set("viewSessionId", sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 24 * 60 * 60, // 24 hours
+        path: "/",
+      });
+    }
+
+    return response;
   } catch (error) {
     console.error("Error tracking view:", error);
     return NextResponse.json(

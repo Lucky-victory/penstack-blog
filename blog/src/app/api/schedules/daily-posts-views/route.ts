@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 import { aggregatePostViews } from "@/src/lib/queries/aggregated-post-views";
 import { db } from "@/src/db";
 
@@ -11,11 +10,18 @@ export async function POST(request: Request) {
       throw error;
     }
     return NextResponse.json({
+      message: "Daily post views updated successfully",
       success: true,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
     console.error("Cron job failed:", error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    return NextResponse.json(
+      {
+        message: "Failed: Error updating daily post views...",
+        error: String(error),
+      },
+      { status: 500 }
+    );
   }
 }

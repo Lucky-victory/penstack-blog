@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { useSession } from "next-auth/react"; // If using NextAuth.js
 
 export const useTrackView = (postId: number) => {
-  const { data: session } = useSession();
   const scrollRef = useRef<number>(0);
   const timeSpentRef = useRef<number>(0);
   const startTimeRef = useRef<number>(Date.now());
@@ -27,7 +26,7 @@ export const useTrackView = (postId: number) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             post_id: postId,
-            user_id: session?.user?.id,
+
             time_spent: timeSpentRef.current,
             scroll_depth: scrollRef.current,
           }),
@@ -66,5 +65,5 @@ export const useTrackView = (postId: number) => {
       clearInterval(intervalId);
       trackView();
     };
-  }, [postId, session]);
+  }, [postId]);
 };

@@ -23,8 +23,10 @@ import Loader from "../../Loader";
 import PageWrapper from "../../PageWrapper";
 import { decode } from "html-entities";
 import { Link } from "@chakra-ui/next-js";
+import { useTrackView } from "@/src/hooks/useTrackView";
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
+  useTrackView(post.id);
   const postContentBg = useColorModeValue("white", "gray.900");
   const borderColor = useColorModeValue("gray.200", "gray.800");
   const authorTextColor = useColorModeValue("gray.800", "gray.300");

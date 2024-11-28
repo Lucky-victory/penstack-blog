@@ -2,18 +2,10 @@ import PostPage from "@/src/app/components/pages/PostPage";
 
 import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
-import { db } from "@/src/db";
-import { postViews } from "@/src/db/schemas";
-import { sql } from "drizzle-orm";
-import { getServerSession } from "next-auth";
-import { headers } from "next/headers";
 import { getPost } from "@/src/lib/queries/post";
-import { getSession } from "@/src/lib/auth/next-auth";
 
 async function getData(slug: string, fromMetadata: boolean = false) {
   try {
-    const session = await getSession();
-    console.log("session", session);
     return await getPost(slug);
   } catch (error) {
     console.log(error);
@@ -53,22 +45,10 @@ export async function generateMetadata(
 }
 
 export default async function Page({ params, searchParams }: Props) {
-  const headersL = await headers();
-  const session = await getSession();
-
-  const referrer = headersL.get("referer") || "";
-  const userAgent = headersL.get("user-agent") || "";
   const slug = params.slug;
   const postSlug = slug[slug.length - 1];
   const post = await getData(postSlug);
   if (!post) return notFound();
-  await db.insert(postViews).values({
-    viewed_at: sql`NOW()`,
-    user_agent: userAgent,
-    post_id: post?.id as number,
-    user_id: session?.user?.id,
-    referrer: referrer,
-  });
 
   return <PostPage post={post as any} />;
 }

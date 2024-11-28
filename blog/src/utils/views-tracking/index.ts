@@ -1,11 +1,11 @@
 import { and, eq, sql } from "drizzle-orm";
-import { db } from "../db";
+import { db } from "../../db";
 import {
   activePostViewers,
   postViewAnalytics,
   postViews,
   postViewStats,
-} from "../db/schemas";
+} from "../../db/schemas";
 
 export const trackPostView = async ({
   postId,
@@ -16,6 +16,8 @@ export const trackPostView = async ({
   sessionId,
   deviceInfo,
   location,
+  scrollDepth,
+  timeSpent,
 }: {
   postId: number;
   userId?: string;
@@ -23,6 +25,8 @@ export const trackPostView = async ({
   userAgent: string;
   referrer: string;
   sessionId: string;
+  scrollDepth: number;
+  timeSpent: number;
   deviceInfo: {
     type: string;
     browser?: string;
@@ -46,6 +50,8 @@ export const trackPostView = async ({
     post_id: postId,
     user_id: userId,
     session_id: sessionId,
+    scroll_depth: scrollDepth,
+    time_spent: timeSpent,
     device_type: deviceInfo.type,
     browser: deviceInfo.browser,
     os: deviceInfo.os,
@@ -65,8 +71,8 @@ export const trackPostView = async ({
       set: { last_active: sql`CURRENT_TIMESTAMP` },
     });
 
-  // 4. Update daily stats (you might want to do this in a background job)
-  await updateDailyStats(postId);
+  // // 4. Update daily stats (you might want to do this in a background job)
+  // await updateDailyStats(postId);
 };
 const updateDailyStats = async (postId: number) => {
   const today = new Date().toISOString().split("T")[0];
