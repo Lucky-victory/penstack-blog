@@ -1,49 +1,35 @@
 "use client";
-import { Link } from "@chakra-ui/next-js";
 import {
   Box,
   Container,
-  Image,
   Text,
   Heading,
   VStack,
-  HStack,
   Grid,
-  Input,
-  Button,
-  FormControl,
   useColorModeValue,
   Flex,
-  Badge,
   Card,
-  CardBody,
-  CardHeader,
-  Tag,
   Stack,
   Avatar,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { LuMail, LuTwitter, LuGithub, LuLink, LuSend } from "react-icons/lu";
+import React from "react";
 import { Newsletter } from "../../NewsLetter";
-import { PostSelect } from "@/src/types";
-import PostCard from "../../../../themes/smooth-land/PostCard";
 import { useAuthor, useAuthorPosts } from "@/src/hooks";
 import Loader from "../../Loader";
-import { PostCardLoader } from "../../../../themes/smooth-land/PostCardLoader";
 import PageWrapper from "../../PageWrapper";
 import NewPostCard from "../../../../themes/raised-land/NewPostCard";
 import { NewPostCardLoader } from "../../../../themes/raised-land/NewPostCardLoader";
 
 const AuthorPage = ({ username }: { username: string }) => {
-  const bgColor = useColorModeValue("gray.50", "gray.900");
+  const bgColor = useColorModeValue("gray.100", "inherit");
   const cardBgColor = useColorModeValue("white", "gray.800");
-  const textColor = useColorModeValue("gray.600", "gray.300");
+  const textColor = useColorModeValue("gray.700", "gray.300");
   const { author, loading: isAuthorLoading } = useAuthor(username);
   const { posts, loading: isAuthorPostsLoading } = useAuthorPosts({ username });
 
   return (
     <PageWrapper>
-      <Box minH="100vh" bg={bgColor} py={12}>
+      <Box minH="100vh" bg={bgColor} py={12} mb={8}>
         <Container maxW="7xl">
           {/* Author Profile Section */}
           {isAuthorLoading ? (
@@ -152,7 +138,14 @@ const AuthorPage = ({ username }: { username: string }) => {
               </Flex>
             </Card>
           )}
-          <Newsletter title="Subscribe to My Newsletter" />
+          <Box
+            bg={cardBgColor}
+            borderRadius="3xl"
+            p={{ base: 4, md: 6, lg: 8 }}
+            mb={12}
+          >
+            <Newsletter title="Subscribe to My Newsletter" />
+          </Box>
 
           <Box mt={8}>
             <Heading size="lg" mb={8}>

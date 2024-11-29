@@ -5,11 +5,12 @@ import { objectToQueryParams } from "../utils";
 export const useCategories = (
   params: {
     sort?: "relevant" | "recent" | "popular";
+    postId?: number;
     page?: number;
   } = {}
 ) => {
   return useQuery({
-    queryKey: ["categories"],
+    queryKey: ["tags", params],
     queryFn: async () => {
       const { data } = await axios.get<{
         data: { id: number; name: string; slug: string }[];
@@ -19,7 +20,7 @@ export const useCategories = (
           limit: number;
           totalPages: number;
         };
-      }>(`/api/categories?${objectToQueryParams(params)}`);
+      }>(`/api/tags?${objectToQueryParams(params)}`);
       return {
         results: data.data,
         meta: data?.meta,

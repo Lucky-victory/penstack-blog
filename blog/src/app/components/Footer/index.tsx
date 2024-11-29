@@ -51,7 +51,7 @@ const Footer = () => {
         px={{ base: 4, md: 8, lg: 10 }}
         alignContent={"center"}
       >
-        <Box mb={10}>
+        <Box mb={10} color={textColor}>
           <Newsletter />
         </Box>
         <Flex

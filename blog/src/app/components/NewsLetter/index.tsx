@@ -17,7 +17,7 @@ export const Newsletter = ({ title }: { title?: string }) => {
   const [status, setStatus] = useState("");
   const formWrapBgColor = useColorModeValue("white", "black");
   const textColor = useColorModeValue("gray.400", "gray.300");
-  const headingColor = useColorModeValue("gray.200", "white");
+  const headingColor = useColorModeValue("inherit", "white");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("success");

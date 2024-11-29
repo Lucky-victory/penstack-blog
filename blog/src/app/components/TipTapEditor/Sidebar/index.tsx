@@ -13,8 +13,6 @@ import {
   FormLabel,
   FormControl,
   Icon,
-  RadioGroup,
-  Radio,
   TagCloseButton,
   TagLabel,
   InputRightElement,
@@ -31,7 +29,6 @@ import { SectionCard } from "@/src/app/components/Dashboard/SectionCard";
 import {
   LuEye,
   LuPin,
-  LuPlus,
   LuCheck,
   LuFileText,
   LuType,
@@ -39,61 +36,27 @@ import {
   LuRadioReceiver,
 } from "react-icons/lu";
 import { FeaturedImageCard } from "@/src/app/components/TipTapEditor/FeaturedImageCard";
-import { PostSelect } from "@/src/types";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { Editor } from "@tiptap/react";
 import { useRouter } from "next/navigation";
 import { PermissionGuard } from "../../PermissionGuard";
-import Calendar from "../../Calendar";
 import { format } from "date-fns";
 import { CalendarPicker } from "../CalendarPicker";
-import { shortIdGenerator } from "@/src/utils";
-import { useCategories } from "@/src/hooks/useCategories";
-import { isEmpty } from "lodash";
-import axios from "axios";
-import slugify from "slugify";
+import { CategorySection } from "./CategorySection";
 
 export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
   const { activePost, isSaving, updateField } = useCustomEditorContext();
-  const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);
   const [isSlugEditable, setIsSlugEditable] = useState<boolean>(false);
   const [isPublishing, setIsPublishing] = useState<boolean>(false);
-  const [isCreating, setIsCreating] = useState<{
-    category?: boolean;
-    tag?: boolean;
-  }>({ category: false, tag: false });
-  const [tag, setTag] = useState("");
-  const [category, setCategory] = useState("");
+
   const router = useRouter();
-  const { data, refetch, isFetching } = useCategories();
-  const categories = data?.results || [];
-  const { isOpen, onClose, onOpen, onToggle } = useDisclosure();
-  const [tags, setTags] = useState<{ name: string }[]>([]);
+  const { isOpen, onClose, onToggle } = useDisclosure();
   const toast = useToast({
     duration: 3000,
     status: "success",
     position: "top",
   });
-  const handleAddCategory = async () => {
-    try {
-      setIsCreating((prev) => ({ ...prev, category: true }));
 
-      await axios.post("/api/categories", {
-        name: category,
-        slug: slugify(category),
-      });
-      setCategory("");
-      await refetch();
-    } catch (error) {
-      console.log("Error adding category", error);
-    } finally {
-      setIsCreating((prev) => ({ ...prev, category: false }));
-    }
-  };
-  const handleAddTag = async () => {
-    setTags((prev) => [...prev, { name: tag }]);
-    setTag("");
-  };
   function onDraft() {
     updateField("status", "draft");
     toast({
@@ -134,7 +97,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
       <Stack
         gap={3}
         flexShrink={0}
-        maxW={350}
+        maxW={360}
         minW={300}
         width={{ base: "100%" }}
         overflowY={"auto"}
@@ -200,7 +163,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                   size={"sm"}
                   isDisabled={isPublishing}
                   isLoading={isPublishing}
-                  loadingText={"publishing..."}
+                  loadingText={"Publishing..."}
                   flex={1}
                   rounded={"full"}
                   onClick={() => {
@@ -324,7 +287,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                   </Text>
                   <Switch
                     isChecked={activePost?.allow_comments as boolean}
-                    onChange={(e) => {
+                    onChange={() => {
                       updateField(
                         "allow_comments",
                         !activePost?.allow_comments,
@@ -342,7 +305,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                   </Text>
                   <Switch
                     isChecked={activePost?.is_sticky as boolean}
-                    onChange={(e) => {
+                    onChange={() => {
                       updateField("is_sticky", !activePost?.is_sticky, true);
                     }}
                   />
@@ -407,128 +370,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
             </FormControl>
           </Stack>
         </SectionCard>
-        <SectionCard title="Categories">
-          <Box p={4}>
-            <Stack
-              as={RadioGroup}
-              gap={2}
-              defaultValue={
-                !isEmpty(activePost?.category_id)
-                  ? (activePost?.category_id as number)
-                  : ""
-              }
-              name="category_id"
-              onChange={(val) =>
-                updateField(
-                  "category_id",
-                  !isEmpty(val) ? (val as unknown as number | undefined) : null
-                )
-              }
-            >
-              {categories?.length > 0 && (
-                <>
-                  <Radio variant="solid" value={""}>
-                    None
-                  </Radio>
-                  {categories.map((category) => (
-                    <Radio
-                      key={category.id}
-                      variant="solid"
-                      value={category.id + ""}
-                    >
-                      {category.name}
-                    </Radio>
-                  ))}
-                </>
-              )}
-
-              {showCategoryInput && (
-                <HStack mt={2} align={"center"}>
-                  <Input
-                    autoComplete="off"
-                    placeholder="Enter category name"
-                    size={"sm"}
-                    rounded={"full"}
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleAddCategory();
-                      }
-                    }}
-                  />
-                  <Button
-                    isDisabled={!category || isCreating.category}
-                    onClick={handleAddCategory}
-                    isLoading={isCreating.category!}
-                    size={"sm"}
-                    variant={"outline"}
-                    fontWeight={500}
-                    fontSize={"13px"}
-                    rounded={"full"}
-                  >
-                    Add
-                  </Button>
-                </HStack>
-              )}
-              <Button
-                rounded={"full"}
-                alignItems={"center"}
-                alignSelf="start"
-                gap={2}
-                mt={4}
-                onClick={() => setShowCategoryInput(true)}
-                size={"xs"}
-                variant={"ghost"}
-              >
-                <Icon size={24} as={LuPlus} />
-                <Text as="span"> Add new category</Text>
-              </Button>
-            </Stack>{" "}
-          </Box>
-        </SectionCard>
-        <SectionCard title="Tags">
-          <HStack p={4} pb={0} gap={2} wrap={"wrap"}>
-            {tags.map((tag, index) => (
-              <Tag rounded={"full"} key={index} variant="solid">
-                <TagLabel>#{tag?.name}</TagLabel>{" "}
-                <TagCloseButton
-                  onClick={() =>
-                    setTags(tags.filter((t) => t.name !== tag.name))
-                  }
-                ></TagCloseButton>
-              </Tag>
-            ))}
-          </HStack>
-
-          <Box p={4}>
-            <HStack align={"center"}>
-              <Input
-                placeholder="Enter tag name"
-                size={"sm"}
-                value={tag}
-                rounded={"full"}
-                onChange={(e) => setTag(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleAddTag();
-                  }
-                }}
-              />
-              <Button
-                rounded={"full"}
-                isDisabled={!tag}
-                onClick={handleAddTag}
-                size={"sm"}
-                variant={"outline"}
-                fontWeight={500}
-                fontSize={"13px"}
-              >
-                Add
-              </Button>
-            </HStack>{" "}
-          </Box>
-        </SectionCard>
+        <CategorySection />
       </Stack>
     </>
   );

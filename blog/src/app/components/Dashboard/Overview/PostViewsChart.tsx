@@ -15,6 +15,7 @@ import {
   Heading,
   HStack,
   Button,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 const PostViewsChart = () => {
@@ -58,7 +59,7 @@ const PostViewsChart = () => {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
-
+  const tooltipContentBg = useColorModeValue("white", "black");
   return (
     <Card rounded={"20px"}>
       <CardHeader>
@@ -98,10 +99,20 @@ const PostViewsChart = () => {
             />
             <YAxis />
             <Tooltip
+              contentStyle={{
+                backgroundColor: tooltipContentBg,
+                borderRadius: "12px",
+              }}
               labelFormatter={formatDate}
               formatter={(value) => [`${value} views`, "Views"]}
             />
-            <Bar dataKey="views" fill="#3b82f6" barSize={20} />
+            <Bar
+              dataKey="views"
+              fill="#3b82f6"
+              barSize={24}
+              radius={[12, 12, 0, 0]}
+              style={{ borderRadius: "12px", backgroundColor: "red" }}
+            />
           </BarChart>
         </ResponsiveContainer>
       </CardBody>
