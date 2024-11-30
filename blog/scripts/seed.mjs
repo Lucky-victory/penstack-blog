@@ -28,28 +28,21 @@ async function main() {
     console.log("Creating tags...");
     const seedTags = [
       {
-        name: "React",
-        slug: "react",
+        name: "Technology",
+        slug: "technology",
       },
       {
         name: "Next.JS",
         slug: "next-js",
       },
-      {
-        name: "NodeJS",
-        slug: "node-js",
-      },
+
       {
         name: "Beginner",
         slug: "beginner",
       },
       {
-        name: "Javascript",
-        slug: "javascript",
-      },
-      {
-        name: "Typescript",
-        slug: "typescript",
+        name: "Programming",
+        slug: "programming",
       },
     ];
     await Promise.all(
@@ -307,10 +300,13 @@ async function main() {
     ]);
     // 4. Create default admin user
     console.log("Creating admin user...");
-    const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
-    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminEmail = process.env.ADMIN_EMAIL;
 
-    const adminEmail = process.env.ADMIN_EMAIL || "admin@example.com";
+    if (!adminPassword || !adminEmail) {
+      throw new Error("Admin password or email not provided");
+    }
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
     // Check if admin user already exists
     const [[existingAdmin]] = await db.query(
@@ -338,13 +334,14 @@ async function main() {
       console.log("✅ Admin user created:", adminUser);
       try {
         await db.query(
-          "INSERT INTO Posts (title,content,slug,author_id,status) VALUES(?,?,?,?,?)",
+          "INSERT INTO Posts (title,content,slug,author_id,status,category_id) VALUES(?,?,?,?,?,?)",
           [
             "Welcome to my blog",
             "This is your first post, edit or delete it",
             "welcome-to-my-blog",
             adminUser.auth_id,
             "published",
+            1,
           ]
         );
         console.log("✅ Post created successfully");

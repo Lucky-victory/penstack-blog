@@ -57,8 +57,6 @@ export default async function DashboardNewPostPage() {
       true
     )) as PostSelect;
 
-    console.log({ createdPost });
-
     if (!createdPost) {
       return <div>Failed to create post</div>;
     }

@@ -49,6 +49,7 @@ export async function PATCH(
   { params }: { params: { authId: string } }
 ) {
   const session = await getSession();
+  console.log(params, session);
 
   try {
     const body = await req.json();

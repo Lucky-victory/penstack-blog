@@ -42,6 +42,8 @@ import {
   Avatar,
   TableContainer,
   useColorModeValue,
+  Center,
+  Switch,
 } from "@chakra-ui/react";
 import {
   EditIcon,
@@ -53,6 +55,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { PaginatedResponse, RolesSelect, UserSelect } from "@/src/types";
 import axios from "axios";
+import Loader from "../../../Loader";
 
 // Mock data and types (replace with actual types from your schema)
 interface User {
@@ -73,6 +76,7 @@ const UsersDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [filteredUsers, setFilteredUsers] = useState<UserSelect[]>([]);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [currentUser, setCurrentUser] = useState<Partial<UserSelect> | null>(
     null
   );
@@ -85,7 +89,7 @@ const UsersDashboard = () => {
       return data.data;
     },
   });
-  const { isFetching, data } = useQuery({
+  const { isFetching, data, refetch } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
       const { data } = await axios<PaginatedResponse<UserSelect>>("/api/users");
@@ -143,14 +147,28 @@ const UsersDashboard = () => {
   };
 
   // Save user
-  const saveUser = () => {
-    // Implement save logic
-    toast({
-      title: currentUser?.id ? "User Updated" : "User Created",
-      status: "success",
-      duration: 3000,
-    });
-    onClose();
+  const saveUser = async () => {
+    try {
+      setIsUpdating(true);
+      if (currentUser?.id) {
+        await axios.patch(`/api/users/${currentUser?.auth_id}`, currentUser);
+
+        refetch();
+      } else {
+        await axios.post("/api/users", currentUser);
+        refetch();
+      }
+
+      toast({
+        title: currentUser?.id ? "User Updated" : "User Created",
+        status: "success",
+        duration: 3000,
+      });
+      onClose();
+    } catch (error) {
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   // Bulk actions
@@ -173,6 +191,23 @@ const UsersDashboard = () => {
       activeRole = roles?.[0];
     }
     return activeRole;
+  }
+  function getRoleName(roleId: number) {
+    return roles?.find((role) => roleId === role.id)?.name;
+  }
+  function getRoleColor(roleId: number) {
+    switch (roleId) {
+      case 1:
+        return "red";
+      case 2:
+        return "blue";
+      case 3:
+        return "yellow";
+      case 4:
+        return "aqua";
+      default:
+        return "green";
+    }
   }
   return (
     <Box p={8}>
@@ -248,117 +283,126 @@ const UsersDashboard = () => {
               </Menu>
             </HStack>
           )}
-          <TableContainer>
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th>
-                    <Checkbox
-                      isChecked={selectedUsers.length === filteredUsers.length}
-                      onChange={selectAllUsers}
-                    />
-                  </Th>
-                  <Th>User</Th>
-                  <Th>Email</Th>
-                  <Th>Role</Th>
-                  <Th>Auth Type</Th>
-                  <Th>Created At</Th>
-                  <Th>Actions</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filteredUsers &&
-                  filteredUsers?.length > 0 &&
-                  filteredUsers.map((user) => (
-                    <Tr key={user.id}>
-                      <Td>
+          {isFetching ? (
+            <Center>
+              <Loader />
+            </Center>
+          ) : (
+            <>
+              <TableContainer>
+                <Table variant="simple">
+                  <Thead>
+                    <Tr>
+                      <Th>
                         <Checkbox
-                          isChecked={selectedUsers.includes(user.id)}
-                          onChange={() => toggleUserSelection(user.id)}
-                        />
-                      </Td>
-                      <Td>
-                        <Flex align="center">
-                          <Avatar
-                            size="sm"
-                            name={user.name}
-                            src={user.avatar || ""}
-                            mr={3}
-                          />
-                          <Text>{user.name}</Text>
-                        </Flex>
-                      </Td>
-                      <Td>{user.email}</Td>
-                      <Td>
-                        <Badge
-                          rounded={"lg"}
-                          textTransform={"capitalize"}
-                          px={2}
-                          colorScheme={
-                            user.role_id === 1
-                              ? "red"
-                              : user.role_id === 2
-                              ? "blue"
-                              : "green"
+                          isChecked={
+                            selectedUsers.length === filteredUsers.length
                           }
-                        >
-                          {user.role_id === 1
-                            ? "Admin"
-                            : user.role_id === 2
-                            ? "Editor"
-                            : "User"}
-                        </Badge>
-                      </Td>
-                      <Td>
-                        <Badge
-                          variant="outline"
-                          rounded={"lg"}
-                          textTransform={"capitalize"}
-                          px={2}
-                          colorScheme="purple"
-                        >
-                          {user.auth_type}
-                        </Badge>
-                      </Td>
-                      <Td>{new Date(user.created_at!).toLocaleDateString()}</Td>
-                      <Td>
-                        <Menu>
-                          <MenuButton
-                            as={IconButton}
-                            icon={<ChevronDownIcon />}
-                            variant="ghost"
-                            size="sm"
-                          />
-                          <MenuList>
-                            <MenuItem
-                              icon={<EditIcon />}
-                              onClick={() => openUserModal(user)}
-                            >
-                              Edit
-                            </MenuItem>
-                            <MenuItem icon={<DeleteIcon />} color="red.500">
-                              Delete
-                            </MenuItem>
-                          </MenuList>
-                        </Menu>
-                      </Td>
+                          onChange={selectAllUsers}
+                        />
+                      </Th>
+                      <Th>ID</Th>
+                      <Th>User</Th>
+                      <Th>Email</Th>
+                      <Th>Role</Th>
+                      <Th>Auth Type</Th>
+                      <Th>Created At</Th>
+                      <Th>Actions</Th>
                     </Tr>
-                  ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                  </Thead>
+                  <Tbody>
+                    {filteredUsers &&
+                      filteredUsers?.length > 0 &&
+                      filteredUsers.map((user) => (
+                        <Tr key={user.id}>
+                          <Td>
+                            <Checkbox
+                              isChecked={selectedUsers.includes(user.id)}
+                              onChange={() => toggleUserSelection(user.id)}
+                            />
+                          </Td>
+                          <Td>{user.id}</Td>
+                          <Td>
+                            <Flex align="center">
+                              <Avatar
+                                size="sm"
+                                name={user.name}
+                                src={user.avatar || ""}
+                                mr={3}
+                              />
+                              <Text>{user.name}</Text>
+                            </Flex>
+                          </Td>
+                          <Td>{user.email}</Td>
+                          <Td>
+                            <Badge
+                              rounded={"lg"}
+                              textTransform={"capitalize"}
+                              px={2}
+                              colorScheme={getRoleColor(user.role_id)}
+                            >
+                              {getRoleName(user.role_id)}
+                            </Badge>
+                          </Td>
+                          <Td>
+                            <Badge
+                              variant="outline"
+                              rounded={"lg"}
+                              textTransform={"capitalize"}
+                              px={2}
+                              colorScheme="purple"
+                            >
+                              {user.auth_type}
+                            </Badge>
+                          </Td>
+                          <Td>
+                            {new Date(user.created_at!).toLocaleDateString()}
+                          </Td>
+                          <Td>
+                            <Menu>
+                              <MenuButton
+                                as={IconButton}
+                                icon={<ChevronDownIcon />}
+                                variant="ghost"
+                                size="sm"
+                              />
+                              <MenuList rounded={"xl"} p={2}>
+                                <MenuItem
+                                  rounded={"full"}
+                                  icon={<EditIcon />}
+                                  onClick={() => openUserModal(user)}
+                                >
+                                  Edit
+                                </MenuItem>
+                                <MenuItem
+                                  rounded={"full"}
+                                  icon={<DeleteIcon />}
+                                  color="red.500"
+                                >
+                                  Delete
+                                </MenuItem>
+                              </MenuList>
+                            </Menu>
+                          </Td>
+                        </Tr>
+                      ))}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </>
+          )}
         </CardBody>
       </Card>
 
       {/* User Create/Edit Modal */}
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
-        <ModalContent rounded={"xl"}>
+        <ModalContent rounded={"3xl"}>
           <ModalHeader>
             {currentUser?.id ? "Edit User" : "Add New User"}
           </ModalHeader>
           <ModalBody>
-            <VStack spacing={4}>
+            <VStack spacing={4} align={"start"}>
               <FormControl>
                 <FormLabel>Name</FormLabel>
                 <Input
@@ -401,11 +445,28 @@ const UsersDashboard = () => {
                   name="password"
                   autoComplete="off"
                   rounded={"full"}
-                  value={""}
+                  value={currentUser?.password || ""}
                   onChange={(e) =>
                     setCurrentUser((prev) => ({
                       ...prev,
                       password: e.target.value,
+                    }))
+                  }
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Username</FormLabel>
+                <Input
+                  autoComplete="off"
+                  rounded={"full"}
+                  placeholder="Username"
+                  type="text"
+                  name="username"
+                  value={currentUser?.username || ""}
+                  onChange={(e) =>
+                    setCurrentUser((prev) => ({
+                      ...prev,
+                      username: e.target.value,
                     }))
                   }
                 />
@@ -461,13 +522,36 @@ const UsersDashboard = () => {
                   </MenuList>
                 </Menu>
               </FormControl>
+              <FormControl w={"full"}>
+                {!currentUser?.id && (
+                  <FormLabel
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                  >
+                    <Stack gap={0}>
+                      <Text>Notify User</Text>
+                      <Text fontSize={"small"} color={"gray.500"}>
+                        Sends an email with the account details to user.
+                      </Text>
+                    </Stack>
+                    <Switch />
+                  </FormLabel>
+                )}
+              </FormControl>
             </VStack>
           </ModalBody>
           <ModalFooter>
             <Button rounded={"full"} variant="ghost" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button rounded={"full"} colorScheme="blue" onClick={saveUser}>
+            <Button
+              rounded={"full"}
+              colorScheme="blue"
+              onClick={saveUser}
+              isLoading={isUpdating}
+              loadingText={currentUser?.id ? "Updating..." : "Creating..."}
+            >
               {currentUser?.id ? "Update" : "Create"}
             </Button>
           </ModalFooter>

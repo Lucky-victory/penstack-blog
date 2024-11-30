@@ -1,6 +1,7 @@
 import { db } from "@/src/db";
 import { users } from "@/src/db/schemas";
 import { checkPermission } from "@/src/middlewares/check-permission";
+import { hash } from "bcryptjs";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -37,6 +38,9 @@ export async function GET(req: NextRequest) {
       const total = Number(totalResult[0].count);
 
       const _users = await db.query.users.findMany({
+        columns: {
+          password: false,
+        },
         limit,
         offset,
         orderBy: [
@@ -72,11 +76,23 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  await checkPermission("users:write", async () => {
-    const { name, email, username, password, role_id, avatar, bio } =
-      await req.json();
+  return await checkPermission("users:write", async () => {
+    const {
+      name,
+      email,
+      username,
+      password,
+      role_id = 5,
+      avatar,
+      bio,
+    } = await req.json();
 
     try {
+      let hashedPassword: string = "";
+      if (password) {
+        hashedPassword = await hash(password, 10);
+      }
+
       const user = await db.transaction(async (tx) => {
         const [insertResponse] = await tx
           .insert(users)
@@ -84,7 +100,7 @@ export async function POST(req: NextRequest) {
             name,
             email,
             username,
-            password,
+            ...(hashedPassword ? { password: hashedPassword } : {}),
             role_id,
             avatar,
             bio,
@@ -92,6 +108,9 @@ export async function POST(req: NextRequest) {
           .$returningId();
         return await tx.query.users.findFirst({
           where: eq(users.id, insertResponse.id),
+          columns: {
+            password: false,
+          },
         });
       });
 

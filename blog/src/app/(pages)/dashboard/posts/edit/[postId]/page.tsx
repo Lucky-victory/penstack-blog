@@ -1,9 +1,14 @@
-import NewPostPage from "@/src/app/components/pages/Dashboard/NewPostPage";
+import EditPostPage from "@/src/app/components/pages/Dashboard/NewPostPage";
+import { PermissionGuard } from "@/src/app/components/PermissionGuard";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Dashboard | Editing Post",
 };
 export default function DashboardNewPostPage() {
-  return <NewPostPage />;
+  return (
+    <PermissionGuard requiredPermission={"posts:edit"}>
+      <EditPostPage />
+    </PermissionGuard>
+  );
 }

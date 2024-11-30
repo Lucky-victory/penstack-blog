@@ -20,8 +20,8 @@ export const users = mysqlTable("Users", {
   username: varchar("username", { length: 255 }),
   avatar: varchar("avatar", { length: 255 }),
   social_id: int("social_id"),
-  auth_id: varchar("auth_id", { length: 100 }).default(
-    shortIdGenerator.bigIntId()
+  auth_id: varchar("auth_id", { length: 100 }).$defaultFn(
+    shortIdGenerator.bigIntId
   ),
   auth_type: mysqlEnum("auth_type", [
     "local",

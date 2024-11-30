@@ -19,6 +19,6 @@ export function PermissionGuard({
         <Spinner size={"sm"} />
       </div>
     );
-  if (!hasPermission) redirect("/");
+  if (!loading && !hasPermission) redirect("/");
   return <>{children}</>;
 }
