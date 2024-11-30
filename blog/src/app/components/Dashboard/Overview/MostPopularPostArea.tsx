@@ -15,9 +15,11 @@ import {
 import { LuArrowUp, LuEye, LuTrendingUp } from "react-icons/lu";
 import Loader from "../../Loader";
 import { format } from "date-fns";
+import { Link } from "@chakra-ui/next-js";
+import { formatPostPermalink } from "@/src/utils";
 
 export default function MostPopularPosts() {
-  const { posts = [], loading } = usePosts();
+  const { posts = [], loading } = usePosts({ sortBy: "popular", limit: 5 });
 
   return (
     <Card minH={200} rounded={"20px"}>
@@ -44,10 +46,12 @@ export default function MostPopularPosts() {
                 <Stack key={post.id} justify={"space-between"}>
                   <HStack>
                     <Heading size={"sm"} noOfLines={1}>
-                      <Text as={"span"} color={"green.500"} mr={2}>
-                        #{index + 1}
-                      </Text>
-                      {post.title}
+                      <Link href={formatPostPermalink(post)}>
+                        <Text as={"span"} color={"green.500"} mr={2}>
+                          #{index + 1}
+                        </Text>
+                        {post.title}
+                      </Link>
                     </Heading>
                   </HStack>
                   <HStack fontSize={"small"} color={"gray.400"}>

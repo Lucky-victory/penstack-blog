@@ -41,7 +41,7 @@ export const CategorySection = () => {
 
       await axios.post("/api/categories", {
         name: newCategory,
-        slug: slugify(newCategory),
+        slug: slugify(newCategory, { lower: true }),
       });
       setNewCategory("");
       await refetch();
@@ -57,13 +57,10 @@ export const CategorySection = () => {
         <Stack
           as={RadioGroup}
           gap={2}
-          value
+          value={activePost?.category_id?.toString() || ""}
           name="category_id"
           onChange={(val) =>
-            updateField(
-              "category_id",
-              !isEmpty(val) ? (val as unknown as number | undefined) : null
-            )
+            updateField("category_id", !isEmpty(val) ? Number(val) : null)
           }
         >
           {categories?.length > 0 && (
@@ -73,10 +70,9 @@ export const CategorySection = () => {
               </Radio>
               {categories.map((category) => (
                 <Radio
-                  isChecked={activePost?.category_id === category?.id}
                   key={category.id}
                   variant="solid"
-                  value={category.id + ""}
+                  value={category.id.toString()}
                 >
                   {category.name}
                 </Radio>

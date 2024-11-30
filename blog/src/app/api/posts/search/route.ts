@@ -51,18 +51,19 @@ export async function GET(req: NextRequest) {
     let orderBy;
     switch (sort) {
       case "recent":
-        orderBy = [desc(posts.created_at)];
+        orderBy = [desc(posts.created_at), desc(posts.is_sticky)];
         break;
       case "popular":
         orderBy = [
           desc(
             sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`
           ),
+          desc(posts.is_sticky),
         ];
         break;
       case "relevant":
       default:
-        orderBy = [desc(posts.created_at)];
+        orderBy = [desc(posts.created_at), desc(posts.is_sticky)];
         break;
     }
 

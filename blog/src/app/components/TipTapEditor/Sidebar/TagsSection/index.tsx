@@ -21,9 +21,9 @@ export const TagsSection = () => {
     try {
       setIsCreating(true);
 
-      await axios.post("/api/categories", {
+      await axios.post("/api/tags", {
         name: newTag,
-        slug: slugify(newTag),
+        slug: slugify(newTag, { lower: true }),
       });
       setNewTag("");
       // await refetch();
@@ -35,6 +35,8 @@ export const TagsSection = () => {
 
     setNewTag("");
   };
+  function removeTag(tag: { name: string; id: number }) {}
+
   return (
     <SectionCard title="Tags">
       <HStack p={4} pb={0} gap={2} wrap={"wrap"}>

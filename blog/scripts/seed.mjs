@@ -279,7 +279,6 @@ async function main() {
       "comments:create",
       "auth:login",
       "dashboard:access",
-      "dashboard:view",
       "media:upload",
       "media:read",
     ]);
@@ -291,7 +290,6 @@ async function main() {
       "comments:create",
       "auth:login",
       "dashboard:access",
-      "dashboard:view",
       "media:read",
     ]);
 

@@ -19,6 +19,8 @@ import Loader from "../../Loader";
 import PageWrapper from "../../PageWrapper";
 import NewPostCard from "../../../../themes/raised-land/NewPostCard";
 import { NewPostCardLoader } from "../../../../themes/raised-land/NewPostCardLoader";
+import { PostCardLoader } from "@/src/themes/smooth-land/PostCardLoader";
+import PostCard from "@/src/themes/smooth-land/PostCard";
 
 const AuthorPage = ({ username }: { username: string }) => {
   const bgColor = useColorModeValue("gray.100", "inherit");
@@ -161,10 +163,10 @@ const AuthorPage = ({ username }: { username: string }) => {
             >
               {isAuthorPostsLoading
                 ? Array.from({ length: 4 }).map((_, index) => (
-                    <NewPostCardLoader key={index} />
+                    <PostCardLoader key={index} />
                   ))
                 : posts?.map((post) => (
-                    <NewPostCard showAuthor={false} key={post.id} post={post} />
+                    <PostCard showAuthor={false} key={post.id} post={post} />
                   ))}
             </Grid>
           </Box>

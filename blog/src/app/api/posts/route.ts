@@ -17,7 +17,8 @@ export async function GET(req: NextRequest) {
     (searchParams.get("sortBy") as
       | "created_at"
       | "published_at"
-      | "updated_at") || "created_at";
+      | "updated_at"
+      | "popular") || "created_at";
   const sortOrder = searchParams.get("sortOrder") || "desc";
 
   const offset = (page - 1) * limit;
@@ -32,13 +33,6 @@ export async function GET(req: NextRequest) {
     whereConditions.push(eq(posts.status, status));
   }
 
-  const totalResult = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(posts)
-    .where(and(...whereConditions));
-
-  const total = Number(totalResult[0].count);
-
   try {
     // Get total count
     const totalResult = await db
@@ -48,12 +42,25 @@ export async function GET(req: NextRequest) {
       .where(and(...whereConditions));
     const total = Number(totalResult[0].count);
 
+    let orderBy;
+    const popularOrderSql = sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`;
+    switch (sortBy) {
+      case "popular":
+        orderBy = [
+          sortOrder === "desc" ? desc(popularOrderSql) : asc(popularOrderSql),
+        ];
+        break;
+      default:
+        orderBy = [
+          sortOrder === "desc" ? desc(posts[sortBy]) : asc(posts[sortBy]),
+          desc(posts.is_sticky),
+        ];
+        break;
+    }
     const _posts = await db.query.posts.findMany({
       limit,
       offset,
-      orderBy: [
-        sortOrder === "desc" ? desc(posts[sortBy]) : asc(posts[sortBy]),
-      ],
+      orderBy,
       where: whereConditions?.length > 0 ? and(...whereConditions) : undefined,
       with: {
         views: {

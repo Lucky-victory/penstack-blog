@@ -41,6 +41,7 @@ import {
   CardBody,
   Avatar,
   TableContainer,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import {
   EditIcon,
@@ -49,6 +50,9 @@ import {
   SearchIcon,
   ChevronDownIcon,
 } from "@chakra-ui/icons";
+import { useQuery } from "@tanstack/react-query";
+import { PaginatedResponse, RolesSelect, UserSelect } from "@/src/types";
+import axios from "axios";
 
 // Mock data and types (replace with actual types from your schema)
 interface User {
@@ -63,55 +67,56 @@ interface User {
 }
 
 const UsersDashboard = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserSelect[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [selectedRole, setSelectedRole] = useState<RolesSelect | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [currentUser, setCurrentUser] = useState<Partial<User> | null>(null);
+  const [filteredUsers, setFilteredUsers] = useState<UserSelect[]>([]);
+  const [currentUser, setCurrentUser] = useState<Partial<UserSelect> | null>(
+    null
+  );
+  const borderColor = useColorModeValue("gray.200", "gray.500");
+  const roleTextColor = useColorModeValue("gray.600", "gray.300");
+  const { data: roles } = useQuery({
+    queryKey: ["roles"],
+    queryFn: async () => {
+      const { data } = await axios.get<{ data: RolesSelect[] }>("/api/roles");
+      return data.data;
+    },
+  });
+  const { isFetching, data } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const { data } = await axios<PaginatedResponse<UserSelect>>("/api/users");
 
+      return data;
+    },
+
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
-  // Fetch users (mock implementation)
   useEffect(() => {
-    const mockUsers: User[] = [
-      {
-        id: 1,
-        name: "John Doe",
-        email: "john@example.com",
-        username: "johndoe",
-        role_id: 1,
-        auth_type: "local",
-        avatar: "https://bit.ly/dan-abramov",
-        created_at: new Date(),
-      },
-      {
-        id: 2,
-        name: "Mike Lily",
-        email: "lily@example.com",
-        username: "johndoe",
-        role_id: 2,
-        auth_type: "local",
-        avatar: "https://bit.ly/dan-abramov",
-        created_at: new Date(),
-      },
-      // Add more mock users...
-    ];
-    setUsers(mockUsers);
-  }, []);
+    if (data) {
+      setUsers(data.data);
+    }
+  }, [data]);
 
   // Filter users
   useEffect(() => {
-    const filtered = users.filter((user) => {
-      const matchesSearch =
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesRole =
-        roleFilter === "all" || user.role_id.toString() === roleFilter;
-      return matchesSearch && matchesRole;
-    });
-    setFilteredUsers(filtered);
+    if (users) {
+      const filtered = users.filter((user) => {
+        const matchesSearch =
+          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.email.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesRole =
+          roleFilter === "all" || user.role_id.toString() === roleFilter;
+        return matchesSearch && matchesRole;
+      });
+      setFilteredUsers(filtered);
+    }
   }, [users, searchTerm, roleFilter]);
 
   // Handle user selection
@@ -132,7 +137,7 @@ const UsersDashboard = () => {
   };
 
   // Open modal for create/edit
-  const openUserModal = (user?: User) => {
+  const openUserModal = (user?: UserSelect) => {
     setCurrentUser(user || {});
     onOpen();
   };
@@ -158,7 +163,17 @@ const UsersDashboard = () => {
     });
     setSelectedUsers([]);
   };
-
+  function getActiveRole() {
+    let activeRole;
+    if (currentUser) {
+      activeRole = roles?.find((role) => currentUser?.role_id === role.id);
+    } else if (selectedRole) {
+      activeRole = selectedRole;
+    } else {
+      activeRole = roles?.[0];
+    }
+    return activeRole;
+  }
   return (
     <Box p={8}>
       <Card rounded={{ base: 20, md: 24 }} mb={8}>
@@ -186,6 +201,7 @@ const UsersDashboard = () => {
               </InputLeftAddon>
               <Input
                 maxW={{ md: "320px" }}
+                autoComplete="off"
                 placeholder="Search users..."
                 value={searchTerm}
                 roundedRight={"full"}
@@ -194,15 +210,16 @@ const UsersDashboard = () => {
             </InputGroup>
             <Select
               rounded={"full"}
-              placeholder="Filter by Role"
               maxW={{ md: "300px" }}
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
             >
               <option value="all">All Roles</option>
-              <option value="1">Admin</option>
-              <option value="2">Editor</option>
-              <option value="3">User</option>
+              {roles?.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
             </Select>
           </Stack>
 
@@ -250,81 +267,83 @@ const UsersDashboard = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredUsers.map((user) => (
-                  <Tr key={user.id}>
-                    <Td>
-                      <Checkbox
-                        isChecked={selectedUsers.includes(user.id)}
-                        onChange={() => toggleUserSelection(user.id)}
-                      />
-                    </Td>
-                    <Td>
-                      <Flex align="center">
-                        <Avatar
-                          size="sm"
-                          name={user.name}
-                          src={user.avatar}
-                          mr={3}
+                {filteredUsers &&
+                  filteredUsers?.length > 0 &&
+                  filteredUsers.map((user) => (
+                    <Tr key={user.id}>
+                      <Td>
+                        <Checkbox
+                          isChecked={selectedUsers.includes(user.id)}
+                          onChange={() => toggleUserSelection(user.id)}
                         />
-                        <Text>{user.name}</Text>
-                      </Flex>
-                    </Td>
-                    <Td>{user.email}</Td>
-                    <Td>
-                      <Badge
-                        rounded={"lg"}
-                        textTransform={"capitalize"}
-                        px={2}
-                        colorScheme={
-                          user.role_id === 1
-                            ? "red"
+                      </Td>
+                      <Td>
+                        <Flex align="center">
+                          <Avatar
+                            size="sm"
+                            name={user.name}
+                            src={user.avatar || ""}
+                            mr={3}
+                          />
+                          <Text>{user.name}</Text>
+                        </Flex>
+                      </Td>
+                      <Td>{user.email}</Td>
+                      <Td>
+                        <Badge
+                          rounded={"lg"}
+                          textTransform={"capitalize"}
+                          px={2}
+                          colorScheme={
+                            user.role_id === 1
+                              ? "red"
+                              : user.role_id === 2
+                              ? "blue"
+                              : "green"
+                          }
+                        >
+                          {user.role_id === 1
+                            ? "Admin"
                             : user.role_id === 2
-                            ? "blue"
-                            : "green"
-                        }
-                      >
-                        {user.role_id === 1
-                          ? "Admin"
-                          : user.role_id === 2
-                          ? "Editor"
-                          : "User"}
-                      </Badge>
-                    </Td>
-                    <Td>
-                      <Badge
-                        variant="outline"
-                        rounded={"lg"}
-                        textTransform={"capitalize"}
-                        px={2}
-                        colorScheme="purple"
-                      >
-                        {user.auth_type}
-                      </Badge>
-                    </Td>
-                    <Td>{new Date(user.created_at).toLocaleDateString()}</Td>
-                    <Td>
-                      <Menu>
-                        <MenuButton
-                          as={IconButton}
-                          icon={<ChevronDownIcon />}
-                          variant="ghost"
-                          size="sm"
-                        />
-                        <MenuList>
-                          <MenuItem
-                            icon={<EditIcon />}
-                            onClick={() => openUserModal(user)}
-                          >
-                            Edit
-                          </MenuItem>
-                          <MenuItem icon={<DeleteIcon />} color="red.500">
-                            Delete
-                          </MenuItem>
-                        </MenuList>
-                      </Menu>
-                    </Td>
-                  </Tr>
-                ))}
+                            ? "Editor"
+                            : "User"}
+                        </Badge>
+                      </Td>
+                      <Td>
+                        <Badge
+                          variant="outline"
+                          rounded={"lg"}
+                          textTransform={"capitalize"}
+                          px={2}
+                          colorScheme="purple"
+                        >
+                          {user.auth_type}
+                        </Badge>
+                      </Td>
+                      <Td>{new Date(user.created_at!).toLocaleDateString()}</Td>
+                      <Td>
+                        <Menu>
+                          <MenuButton
+                            as={IconButton}
+                            icon={<ChevronDownIcon />}
+                            variant="ghost"
+                            size="sm"
+                          />
+                          <MenuList>
+                            <MenuItem
+                              icon={<EditIcon />}
+                              onClick={() => openUserModal(user)}
+                            >
+                              Edit
+                            </MenuItem>
+                            <MenuItem icon={<DeleteIcon />} color="red.500">
+                              Delete
+                            </MenuItem>
+                          </MenuList>
+                        </Menu>
+                      </Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
           </TableContainer>
@@ -332,9 +351,9 @@ const UsersDashboard = () => {
       </Card>
 
       {/* User Create/Edit Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent rounded={"xl"}>
           <ModalHeader>
             {currentUser?.id ? "Edit User" : "Add New User"}
           </ModalHeader>
@@ -343,8 +362,11 @@ const UsersDashboard = () => {
               <FormControl>
                 <FormLabel>Name</FormLabel>
                 <Input
+                  autoComplete="off"
                   rounded={"full"}
                   placeholder="Enter full name"
+                  type="text"
+                  name="name"
                   value={currentUser?.name || ""}
                   onChange={(e) =>
                     setCurrentUser((prev) => ({
@@ -360,6 +382,8 @@ const UsersDashboard = () => {
                   placeholder="Enter email"
                   type="email"
                   rounded={"full"}
+                  name="email"
+                  autoComplete="off"
                   value={currentUser?.email || ""}
                   onChange={(e) =>
                     setCurrentUser((prev) => ({
@@ -370,21 +394,72 @@ const UsersDashboard = () => {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel>Role</FormLabel>
-                <Select
+                <FormLabel>Password</FormLabel>
+                <Input
+                  placeholder="Enter password"
+                  type="password"
+                  name="password"
+                  autoComplete="off"
                   rounded={"full"}
-                  value={currentUser?.role_id || ""}
+                  value={""}
                   onChange={(e) =>
                     setCurrentUser((prev) => ({
                       ...prev,
-                      role_id: parseInt(e.target.value),
+                      password: e.target.value,
                     }))
                   }
-                >
-                  <option value="1">Admin</option>
-                  <option value="2">Editor</option>
-                  <option value="3">User</option>
-                </Select>
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Role</FormLabel>
+
+                <Menu>
+                  <MenuButton
+                    rounded={"full"}
+                    as={Button}
+                    variant={"ghost"}
+                    w="full"
+                    colorScheme="black"
+                    textTransform={"capitalize"}
+                    rightIcon={<ChevronDownIcon />}
+                    justifyContent={"start"}
+                    fontWeight={"normal"}
+                    textAlign={"left"}
+                    border={"1px solid"}
+                    borderColor={borderColor}
+                  >
+                    {getActiveRole()?.name || "Choose role"}
+                  </MenuButton>
+                  <MenuList rounded={"2xl"} px={2} py={2}>
+                    {roles &&
+                      roles?.length > 0 &&
+                      roles?.map((role) => (
+                        <MenuItem
+                          rounded={"full"}
+                          key={role.id}
+                          textTransform={"capitalize"}
+                          onClick={() => {
+                            setSelectedRole(role);
+                            setCurrentUser((prev) => ({
+                              ...prev,
+                              role_id: role.id,
+                            }));
+                          }}
+                        >
+                          <HStack justify={"space-between"} gap={4}>
+                            <Text>{role?.name}</Text>
+                            <Text
+                              as={"span"}
+                              fontSize={"smaller"}
+                              color={roleTextColor}
+                            >
+                              {role?.description}
+                            </Text>
+                          </HStack>
+                        </MenuItem>
+                      ))}
+                  </MenuList>
+                </Menu>
               </FormControl>
             </VStack>
           </ModalBody>
