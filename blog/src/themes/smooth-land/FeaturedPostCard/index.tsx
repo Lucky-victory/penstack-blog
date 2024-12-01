@@ -39,7 +39,7 @@ export default function FeaturedPostCard() {
       borderColor={borderColor}
       transition="all 0.2s"
       pos={"relative"}
-      h={{ base: "auto", md: 500, lg: 600 }}
+      h={{ base: "auto", md: 500, lg: 630 }}
       minH={450}
     >
       {loading && (
@@ -61,9 +61,7 @@ export default function FeaturedPostCard() {
                   date: featuredPost?.published_at
                     ? featuredPost?.published_at
                     : featuredPost?.created_at,
-                  username: featuredPost?.author?.username,
-                  avatar: featuredPost?.author?.avatar,
-                  name: featuredPost?.author?.name,
+
                   category: featuredPost?.category?.name,
                 })}`
               }

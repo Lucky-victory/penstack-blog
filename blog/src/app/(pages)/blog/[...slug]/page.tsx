@@ -4,7 +4,7 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { getPost } from "@/src/lib/queries/post";
 import { decode } from "html-entities";
-import { shortenText, stripHtml } from "@/src/utils";
+import { objectToQueryParams, shortenText, stripHtml } from "@/src/utils";
 
 async function getData(slug: string, fromMetadata: boolean = false) {
   try {
@@ -39,10 +39,20 @@ export async function generateMetadata(
       post.summary || stripHtml(decode(post.content)),
       200
     ),
-
+    creator: post?.author?.name,
+    authors: [{ name: post?.author?.name, url: "https://www.devvick.com" }],
+    category: post?.category?.name,
     openGraph: {
       images: [
-        post?.featured_image?.url || "https://picsum.photos/1200/630",
+        post?.featured_image?.url ||
+          `/api/og?${objectToQueryParams({
+            title: post.title,
+            date: post?.published_at ? post?.published_at : post?.created_at,
+            username: post?.author?.username,
+            avatar: post?.author?.avatar,
+            name: post?.author?.name,
+            category: post?.category?.name,
+          })}`,
         ...previousImages,
       ],
     },

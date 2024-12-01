@@ -9,6 +9,46 @@ function formatDate(dateString: string) {
   });
 }
 
+const colorMatrix = [
+  // Cosmic Night (Deep Purple/Blue)
+  [
+    "rgba(123, 44, 191, 0.30)", // Purple
+    "rgba(62, 94, 222, 0.25)", // Indigo
+    "rgba(67, 97, 238, 0.35)", // Electric Blue
+  ],
+
+  // Ocean Depths (Deep Teal/Emerald)
+  [
+    "rgba(6, 95, 70, 0.35)", // Deep Teal
+    "rgba(13, 148, 136, 0.30)", // Teal
+    "rgba(8, 145, 178, 0.25)", // Ocean Blue
+  ],
+
+  // Sunset Glow (Warm Red/Purple)
+  [
+    "rgba(157, 23, 77, 0.25)", // Deep Rose
+    "rgba(190, 24, 93, 0.30)", // Rose
+    "rgba(219, 39, 119, 0.35)", // Pink
+  ],
+
+  // Arctic Aurora (Blue/Indigo)
+  [
+    "rgba(30, 64, 175, 0.30)", // Deep Blue
+    "rgba(29, 78, 216, 0.35)", // Royal Blue
+    "rgba(37, 99, 235, 0.25)", // Bright Blue
+  ],
+
+  // Forest Mist (Deep Green/Blue)
+  [
+    "rgba(6, 95, 70, 0.35)", // Forest Green
+    "rgba(4, 120, 87, 0.25)", // Emerald
+    "rgba(5, 150, 105, 0.30)", // Sea Green
+  ],
+];
+
+const getRandomColorSet = () =>
+  colorMatrix[Math.floor(Math.random() * colorMatrix.length)];
+
 async function loadGoogleFont(font: string, text: string) {
   const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(
     text
@@ -27,6 +67,7 @@ async function loadGoogleFont(font: string, text: string) {
 
   throw new Error("failed to load font data");
 }
+
 export async function GET(request: Request) {
   try {
     const { searchParams, host } = new URL(request.url);
@@ -46,33 +87,74 @@ export async function GET(request: Request) {
             width: "100%",
             height: "100%",
             display: "flex",
-            flexDirection: "column",
-            backgroundColor: "#1a1a1a",
+            background: "#1a1a1a",
             position: "relative",
           }}
         >
-          {/* Gradient Overlay */}
+          {/* Background Gradient Section */}
           <div
             style={{
               position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
               display: "flex",
-              background:
-                "linear-gradient(45deg, rgba(76, 0, 255, 0.1) 0%, rgba(255, 0, 128, 0.1) 100%)",
-              //   zIndex: 1,
+              width: "50%",
+              maxWidth: 450,
+              top: 30,
+              left: 720,
+              bottom: 30,
+              right: 30,
+              borderRadius: 20,
+              overflow: "hidden",
             }}
-          />
+          >
+            <div
+              style={{
+                height: "110%",
+                width: "100%",
+                position: "absolute",
+                top: "-5%",
+                right: "-10%",
+                borderTopLeftRadius: "9999px",
+                borderBottomLeftRadius: "9999px",
+                background: `${getRandomColorSet()[0]} `,
+              }}
+            ></div>
+            <div
+              style={{
+                height: "95%",
+                width: "100%",
+                position: "absolute",
+                maxWidth: 350,
+                top: "2%",
+                right: "-10%",
+                borderTopLeftRadius: "9999px",
+                borderBottomLeftRadius: "9999px",
+                background: `${getRandomColorSet()[1]} `,
+              }}
+            ></div>
+            <div
+              style={{
+                height: "75%",
+                width: "100%",
+                maxWidth: 250,
+                position: "absolute",
+                // transform: "translateY(-50%)",
+                top: "10%",
+                right: "-10%",
+                borderTopLeftRadius: "9999px",
+                borderBottomLeftRadius: "9999px",
+                background: `${getRandomColorSet()[2]} `,
+              }}
+            ></div>
+          </div>
 
-          {/* Main Content */}
+          {/* Content Section */}
           <div
             style={{
+              position: "relative",
+              width: "100%",
               display: "flex",
               flexDirection: "column",
               padding: "60px",
-              //   zIndex: 2,
             }}
           >
             {/* Category & Date */}
@@ -87,12 +169,12 @@ export async function GET(request: Request) {
               {category && (
                 <div
                   style={{
-                    backgroundColor: "#4c00ff",
+                    backgroundColor: "#007bff",
                     padding: "8px 16px",
-                    borderRadius: "20px",
+                    borderRadius: "999px",
+                    display: "flex",
                     color: "white",
                     fontSize: "24px",
-                    display: "flex",
                   }}
                 >
                   {category}
@@ -105,7 +187,7 @@ export async function GET(request: Request) {
                   display: "flex",
                 }}
               >
-                {formatDate(publishDate)} · {readingTime}
+                {formatDate(publishDate)} · {readingTime + " min read time"}
               </div>
             </div>
 
@@ -115,6 +197,7 @@ export async function GET(request: Request) {
                 fontSize: "72px",
                 fontWeight: "bold",
                 color: "white",
+                display: "flex",
                 lineHeight: 1.2,
                 marginBottom: "48px",
                 maxWidth: "80%",
@@ -146,24 +229,26 @@ export async function GET(request: Request) {
                   }}
                 />
               ) : (
-                <div
-                  style={{
-                    width: "56px",
-                    height: "56px",
-                    borderRadius: "128px",
-                    backgroundColor: "#4c00ff",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "24px",
-                    fontWeight: "bold",
-                    border: "2px solid white",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {getNameInitials(name)}
-                </div>
+                name && (
+                  <div
+                    style={{
+                      width: "56px",
+                      height: "56px",
+                      borderRadius: "128px",
+                      backgroundColor: "#007bff",
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      border: "2px solid #f1f1f3",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {getNameInitials(name)}
+                  </div>
+                )
               )}
               <div
                 style={{
@@ -172,16 +257,18 @@ export async function GET(request: Request) {
                   gap: "4px",
                 }}
               >
-                <div
-                  style={{
-                    color: "white",
-                    fontSize: "24px",
-                    fontWeight: "bold",
-                    display: "flex",
-                  }}
-                >
-                  {name}
-                </div>
+                {name && (
+                  <div
+                    style={{
+                      color: "white",
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      display: "flex",
+                    }}
+                  >
+                    {name}
+                  </div>
+                )}
                 {username && (
                   <div
                     style={{
@@ -196,16 +283,27 @@ export async function GET(request: Request) {
               </div>
             </div>
           </div>
-
+          <div
+            style={{
+              position: "absolute",
+              top: 30,
+              left: 30,
+              bottom: 30,
+              right: 30,
+              display: "flex",
+              border: "4px solid #f1f1f3",
+              borderRadius: 16,
+            }}
+          ></div>
           {/* Watermark/Brand */}
           <div
             style={{
               position: "absolute",
-              bottom: "24px",
-              right: "24px",
+              bottom: "40px",
+              right: "35px",
+              display: "flex",
               color: "#ffffff66",
               fontSize: "20px",
-              //   zIndex: 2,
             }}
           >
             {host}
