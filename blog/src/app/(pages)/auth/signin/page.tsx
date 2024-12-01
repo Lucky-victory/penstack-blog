@@ -2,12 +2,11 @@
 
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Input } from "@chakra-ui/react";
 import { PermissionGuard } from "@/src/app/components/PermissionGuard";
 
 export default function SignIn() {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,15 +25,11 @@ export default function SignIn() {
       const result = await signIn("credentials", {
         emailOrUsername,
         password,
-        redirect: false,
+        callbackUrl,
       });
-      console.log({ result });
 
       if (result?.error) {
         setError(result.error);
-      } else {
-        router.push(callbackUrl);
-        router.refresh();
       }
     } catch (error) {
       console.log("error:", error);
@@ -65,6 +60,7 @@ export default function SignIn() {
               name="emailOrUsername"
               type="email"
               placeholder="me@you.com"
+              rounded={"full"}
               required
               className="mt-1 block w-full rounded-md border p-2"
             />
@@ -77,6 +73,7 @@ export default function SignIn() {
             <Input
               id="password"
               name="password"
+              rounded={"full"}
               placeholder="password"
               type="password"
               required
@@ -87,13 +84,11 @@ export default function SignIn() {
           {error && (
             <div className="rounded-md bg-red-50 p-4 text-red-500">{error}</div>
           )}
-          <PermissionGuard requiredPermission="users:write">
-            <></>
-          </PermissionGuard>
+
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+            className="w-full rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
           >
             {isLoading ? "Signing in..." : "Sign in"}
           </button>
@@ -113,13 +108,13 @@ export default function SignIn() {
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={() => signIn("github", { callbackUrl })}
-            className="flex items-center justify-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-white hover:bg-gray-800"
+            className="flex items-center justify-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-white hover:bg-gray-800"
           >
             GitHub
           </button>
           <button
             onClick={() => signIn("google", { callbackUrl })}
-            className="flex items-center justify-center gap-2 rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-500"
+            className="flex items-center justify-center gap-2 rounded-full bg-red-600 px-4 py-2 text-white hover:bg-red-500"
           >
             Google
           </button>
