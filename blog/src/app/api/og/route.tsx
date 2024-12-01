@@ -9,13 +9,6 @@ function formatDate(dateString: string) {
   });
 }
 
-// Calculate reading time (assumes average reading speed of 238 words per minute)
-function calculateReadingTime(content: string) {
-  const wordsPerMinute = 238;
-  const words = content.split(/\s+/).length;
-  const minutes = Math.ceil(words / wordsPerMinute);
-  return `${minutes} min read`;
-}
 async function loadGoogleFont(font: string, text: string) {
   const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(
     text
@@ -36,15 +29,15 @@ async function loadGoogleFont(font: string, text: string) {
 }
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const username = searchParams.get("username");
+    const { searchParams, host } = new URL(request.url);
+
+    const username = searchParams.get("username") || "";
     const name = searchParams.get("name") || "";
-    const avatar = searchParams.get("avatar");
+    const avatar = searchParams.get("avatar") || "";
     const title = searchParams.get("title") || "";
-    const category = searchParams.get("category") || "Technology";
+    const category = searchParams.get("category") || "";
     const publishDate = searchParams.get("date") || new Date().toISOString();
-    const content = searchParams.get("content") || "";
-    const readingTime = calculateReadingTime(content);
+    const readingTime = searchParams.get("readingTime") || "0";
 
     return new ImageResponse(
       (
@@ -69,7 +62,7 @@ export async function GET(request: Request) {
               display: "flex",
               background:
                 "linear-gradient(45deg, rgba(76, 0, 255, 0.1) 0%, rgba(255, 0, 128, 0.1) 100%)",
-              zIndex: 1,
+              //   zIndex: 1,
             }}
           />
 
@@ -79,7 +72,7 @@ export async function GET(request: Request) {
               display: "flex",
               flexDirection: "column",
               padding: "60px",
-              zIndex: 2,
+              //   zIndex: 2,
             }}
           >
             {/* Category & Date */}
@@ -91,21 +84,25 @@ export async function GET(request: Request) {
                 marginBottom: "24px",
               }}
             >
-              <div
-                style={{
-                  backgroundColor: "#4c00ff",
-                  padding: "8px 16px",
-                  borderRadius: "20px",
-                  color: "white",
-                  fontSize: "24px",
-                }}
-              >
-                {category}
-              </div>
+              {category && (
+                <div
+                  style={{
+                    backgroundColor: "#4c00ff",
+                    padding: "8px 16px",
+                    borderRadius: "20px",
+                    color: "white",
+                    fontSize: "24px",
+                    display: "flex",
+                  }}
+                >
+                  {category}
+                </div>
+              )}
               <div
                 style={{
                   color: "#ffffff99",
                   fontSize: "24px",
+                  display: "flex",
                 }}
               >
                 {formatDate(publishDate)} · {readingTime}
@@ -138,6 +135,8 @@ export async function GET(request: Request) {
               {avatar ? (
                 <img
                   src={avatar}
+                  width={56}
+                  height={56}
                   alt={name}
                   style={{
                     width: "56px",
@@ -151,7 +150,7 @@ export async function GET(request: Request) {
                   style={{
                     width: "56px",
                     height: "56px",
-                    borderRadius: "28px",
+                    borderRadius: "128px",
                     backgroundColor: "#4c00ff",
                     color: "white",
                     display: "flex",
@@ -160,6 +159,7 @@ export async function GET(request: Request) {
                     fontSize: "24px",
                     fontWeight: "bold",
                     border: "2px solid white",
+                    textTransform: "uppercase",
                   }}
                 >
                   {getNameInitials(name)}
@@ -177,6 +177,7 @@ export async function GET(request: Request) {
                     color: "white",
                     fontSize: "24px",
                     fontWeight: "bold",
+                    display: "flex",
                   }}
                 >
                   {name}
@@ -186,6 +187,7 @@ export async function GET(request: Request) {
                     style={{
                       color: "#ffffff99",
                       fontSize: "20px",
+                      display: "flex",
                     }}
                   >
                     @{username}
@@ -203,10 +205,10 @@ export async function GET(request: Request) {
               right: "24px",
               color: "#ffffff66",
               fontSize: "20px",
-              zIndex: 2,
+              //   zIndex: 2,
             }}
           >
-            yourblog.com
+            {host}
           </div>
         </div>
       ),

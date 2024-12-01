@@ -1,5 +1,10 @@
 import { useFeaturedPost } from "@/src/hooks/useFeaturedPost";
-import { formatPostPermalink, nativeFormatDate, stripHtml } from "@/src/utils";
+import {
+  formatPostPermalink,
+  nativeFormatDate,
+  objectToQueryParams,
+  stripHtml,
+} from "@/src/utils";
 import {
   Avatar,
   Box,
@@ -45,20 +50,25 @@ export default function FeaturedPostCard() {
       {!loading && featuredPost && (
         <>
           <Box position="absolute" h={"full"} w={"full"}>
-            {!featuredPost?.featured_image?.url && (
-              <Box w={"full"} h={"full"} bg={"gray.300"}>
-                {/* generate svg pattern */}
-              </Box>
-            )}
-            {featuredPost?.featured_image?.url && (
-              <Image
-                w={"full"}
-                h={"full"}
-                objectFit={"cover"}
-                src={featuredPost?.featured_image?.url}
-                alt={featuredPost?.featured_image?.alt_text || ""}
-              />
-            )}
+            <Image
+              w={"full"}
+              h={"full"}
+              objectFit={"cover"}
+              src={
+                featuredPost?.featured_image?.url ||
+                `/api/og?${objectToQueryParams({
+                  title: featuredPost.title,
+                  date: featuredPost?.published_at
+                    ? featuredPost?.published_at
+                    : featuredPost?.created_at,
+                  username: featuredPost?.author?.username,
+                  avatar: featuredPost?.author?.avatar,
+                  name: featuredPost?.author?.name,
+                  category: featuredPost?.category?.name,
+                })}`
+              }
+              alt={featuredPost?.featured_image?.alt_text || ""}
+            />
           </Box>
           <Stack
             justify={"flex-end"}
