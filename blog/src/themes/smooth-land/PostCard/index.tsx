@@ -32,7 +32,8 @@ export default function PostCard({
 }) {
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
-
+  const tagBgColor = useColorModeValue("blue.50", "black");
+  const tagColor = useColorModeValue("blue.600", "blue.300");
   const bgColor = useColorModeValue("white", "gray.800");
   return (
     <Card
@@ -70,8 +71,8 @@ export default function PostCard({
               top={3}
               right={3}
               colorScheme="blue"
-              bg={useColorModeValue("blue.50", "black")}
-              color={useColorModeValue("blue.600", "blue.300")}
+              bg={tagBgColor}
+              color={tagColor}
               borderRadius="full"
               px={3}
               py={1}

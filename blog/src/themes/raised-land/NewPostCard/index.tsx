@@ -31,7 +31,7 @@ export default function NewPostCard({
 }) {
   const bgColor = useColorModeValue("white", "gray.800");
   const authorAreaBgColor = useColorModeValue("gray.100", "gray.700");
-
+  const tagBgColor = useColorModeValue("blue.50", "blue.900");
   const borderColor = useColorModeValue("gray.300", "gray.700");
   return (
     <Stack
@@ -68,7 +68,7 @@ export default function NewPostCard({
             borderRadius="md"
             px={3}
             py={1}
-            bg={useColorModeValue("blue.50", "blue.900")}
+            bg={tagBgColor}
             color={"blue.500"}
             textTransform={"capitalize"}
           >
