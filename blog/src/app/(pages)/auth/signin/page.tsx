@@ -4,7 +4,6 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@chakra-ui/react";
-import { PermissionGuard } from "@/src/app/components/PermissionGuard";
 
 export default function SignIn() {
   const [error, setError] = useState<string | null>(null);
