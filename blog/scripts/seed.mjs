@@ -316,8 +316,9 @@ async function main() {
 
     if (!existingAdmin) {
       const [result] = await db.query(
-        "INSERT INTO Users (name, email, password, username,role_id, auth_type,title,bio) VALUES (?, ?, ?, ?, ?, ?,?,?)",
+        "INSERT INTO Users (auth_id,name, email, password, username,role_id, auth_type,title,bio) VALUES (?, ?, ?, ?, ?, ?,?,?,?)",
         [
+          "131872340407637508096",
           "Super Admin",
           adminEmail,
           hashedPassword,
