@@ -18,6 +18,7 @@ import {
   useCustomEditorContext,
 } from "@/src/context/AppEditor";
 import { PermissionGuard } from "../../../PermissionGuard";
+import { useAuth } from "@/src/hooks/useAuth";
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
@@ -40,14 +41,17 @@ export default function NewPostPage() {
 export function PostEditor() {
   const { activePost, setEditorContent, updateField } =
     useCustomEditorContext();
-
+  const { user } = useAuth();
   function onEditorUpdate(content: { html: string; text?: string }) {
     setEditorContent(content);
-    console.log("Editor content", content);
+
     updateField("content", encode(content.html), true);
   }
   return (
-    <PermissionGuard requiredPermission={"posts:create"}>
+    <PermissionGuard
+      requiredPermission={"posts:create"}
+      isOwner={activePost?.author?.auth_id === user?.id}
+    >
       <Box h="full" overflowY="auto">
         <TipTapEditor
           onUpdate={onEditorUpdate}

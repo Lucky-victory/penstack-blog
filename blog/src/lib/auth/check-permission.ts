@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getUserPermissions } from "@/src/lib/auth/permissions";
 import { getSession } from "@/src/lib/auth/next-auth";
-import { TPermissions } from "../types";
+import { TPermissions } from "../../types";
 
 import { db } from "@/src/db";
 import { roles, rolePermissions, permissions } from "@/src/db/schemas";

@@ -1,8 +1,8 @@
-import { ClientNewPostRedirect } from "@/src/app/components/pages/Dashboard/NewPostPage/ClientNewPostRedirect";
+import { NewPostRedirect } from "@/src/app/components/pages/Dashboard/NewPostPage/NewPostRedirect";
 import { db } from "@/src/db";
 import { posts, users } from "@/src/db/schemas";
 import { getSession } from "@/src/lib/auth/next-auth";
-import { checkPermission } from "@/src/middlewares/check-permission";
+import { checkPermission } from "@/src/lib/auth/check-permission";
 import { PostSelect } from "@/src/types";
 import { shortIdGenerator } from "@/src/utils";
 import { eq } from "drizzle-orm";
@@ -13,19 +13,16 @@ export const metadata: Metadata = {
 };
 export default async function DashboardNewPostPage() {
   const shortId = shortIdGenerator.bigIntId().substring(6, 12);
-  let createdPost: PostSelect | null = null;
   try {
     const session = await getSession();
     if (!session?.user?.email) {
       throw new Error("No user session found");
     }
-    const user = await db.query.users.findFirst({
-      where: eq(users.email, session?.user?.email as string),
-    });
+
     const newPost = {
       title: "Untitled post",
       slug: "untitled-" + shortId,
-      author_id: user?.auth_id as string,
+      author_id: session?.user?.id as string,
     };
 
     const createdPost = (await checkPermission(
@@ -43,15 +40,6 @@ export default async function DashboardNewPostPage() {
           .$returningId();
         return await db.query.posts.findFirst({
           where: eq(posts.id, insertResponse.id),
-          with: {
-            author: {
-              columns: {
-                username: true,
-                name: true,
-                avatar: true,
-              },
-            },
-          },
         });
       },
       true
@@ -61,7 +49,7 @@ export default async function DashboardNewPostPage() {
       return <div>Failed to create post</div>;
     }
 
-    return <ClientNewPostRedirect postId={createdPost?.post_id as string} />;
+    return <NewPostRedirect postId={createdPost?.post_id as string} />;
   } catch (error) {
     console.error("Error creating post:", error);
     return <div>Failed to create post</div>;

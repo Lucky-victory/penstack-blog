@@ -1,6 +1,6 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
-import { checkPermission } from "@/src/middlewares/check-permission";
+import { checkPermission } from "@/src/lib/auth/check-permission";
 import { PostSelect } from "@/src/types";
 import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -81,11 +81,7 @@ export async function GET(req: NextRequest) {
           },
         },
         author: {
-          columns: {
-            name: true,
-            avatar: true,
-            username: true,
-          },
+          columns: { auth_id: true, name: true, avatar: true, username: true },
         },
       },
     });

@@ -4,7 +4,7 @@ import { medias } from "@/src/db/schemas"; // Your schema
 import { MediaType } from "@/src/types";
 import { eq } from "drizzle-orm";
 import { determineFileType } from "@/src/utils/upload";
-import { checkPermission } from "@/src/middlewares/check-permission";
+import { checkPermission } from "@/src/lib/auth/check-permission";
 
 export async function POST(request: Request) {
   return await checkPermission("media:upload", async () => {

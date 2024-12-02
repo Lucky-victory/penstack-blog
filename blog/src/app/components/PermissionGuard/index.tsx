@@ -7,18 +7,35 @@ import { redirect } from "next/navigation";
 export function PermissionGuard({
   requiredPermission,
   children,
+  shouldRedirect,
+  isOwner,
 }: {
   requiredPermission: TPermissions;
   children: React.ReactNode;
+  shouldRedirect?: boolean;
+  isOwner?: boolean;
 }) {
   const { hasPermission, loading } = usePermissions(requiredPermission);
 
-  if (loading)
+  if (loading) {
     return (
       <div>
         <Spinner size={"sm"} />
       </div>
     );
-  if (!loading && !hasPermission) redirect("/");
+  }
+
+  if (isOwner) {
+    return <>{children}</>;
+  }
+
+  if (!hasPermission && shouldRedirect) {
+    redirect("/");
+  }
+
+  if (!hasPermission) {
+    return null;
+  }
+
   return <>{children}</>;
 }

@@ -1,6 +1,6 @@
 import { db } from "@/src/db";
 import { roles } from "@/src/db/schemas/users.sql";
-import { checkPermission } from "@/src/middlewares/check-permission";
+import { checkPermission } from "@/src/lib/auth/check-permission";
 import { NextResponse } from "next/server";
 
 export async function GET() {

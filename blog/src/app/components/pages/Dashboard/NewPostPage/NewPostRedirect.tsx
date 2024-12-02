@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { Stack } from "@chakra-ui/react";
 import Loader from "../../../Loader";
 
-interface ClientNewPostRedirectProps {
+interface NewPostRedirectProps {
   postId: string;
 }
 
-export function ClientNewPostRedirect({ postId }: ClientNewPostRedirectProps) {
+export function NewPostRedirect({ postId }: NewPostRedirectProps) {
   const router = useRouter();
 
   useEffect(() => {

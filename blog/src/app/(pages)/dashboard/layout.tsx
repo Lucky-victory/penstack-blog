@@ -50,7 +50,7 @@ export default function DashLayout({ children }: { children: ReactNode }) {
 
   return (
     <NetworkAvailabiltyCheck>
-      <PermissionGuard requiredPermission="dashboard:access">
+      <PermissionGuard requiredPermission="dashboard:access" shouldRedirect>
         <Box
           minH="var(--chakra-vh)"
           bg={useColorModeValue("gray.100", "gray.900")}

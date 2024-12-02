@@ -4,6 +4,7 @@ import { Editor } from "@tiptap/react";
 import { IconType } from "react-icons";
 import { medias, newsletters, permissions, roles, users } from "../db/schemas";
 import { useFormik } from "formik";
+import { ElementType } from "react";
 export type UserSelect = InferSelectModel<typeof users>;
 export type UserInsert = InferInsertModel<typeof users>;
 export type RolesSelect = InferSelectModel<typeof roles>;
@@ -109,3 +110,22 @@ export type EDITOR_CONTEXT_STATE = {
     characterCount: number;
   };
 };
+export interface NavItem {
+  icon: ElementType;
+  label: string;
+  href: string;
+  permission?: TPermissions;
+  children?: Array<{
+    label: string;
+    href: string;
+    permission?: TPermissions;
+  }>;
+}
+export const navPermissionMapping = {
+  VIEW_DASHBOARD: "dashboard:view",
+  VIEW_POSTS: "posts:read",
+  CREATE_POST: "posts:create",
+  VIEW_USERS: "users:read",
+  VIEW_MEDIA: "media:read",
+  VIEW_SETTINGS: "settings:read",
+} as const;

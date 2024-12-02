@@ -1,6 +1,6 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
-import { checkPermission } from "@/src/middlewares/check-permission";
+import { checkPermission } from "@/src/lib/auth/check-permission";
 import { or, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 

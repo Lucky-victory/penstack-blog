@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/src/db";
 import { categories } from "@/src/db/schemas/posts.sql";
 import { eq, sql } from "drizzle-orm";
-import { checkPermission } from "@/src/middlewares/check-permission";
+import { checkPermission } from "@/src/lib/auth/check-permission";
 
 export async function GET() {
   try {

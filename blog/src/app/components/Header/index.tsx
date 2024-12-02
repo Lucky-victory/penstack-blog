@@ -36,6 +36,7 @@ import { useRouter } from "next/navigation";
 import { useQueryParams } from "@/src/hooks";
 import { Link } from "@chakra-ui/next-js";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
+import { AuthButtons } from "./AuthButtons";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -156,7 +157,7 @@ const Header = () => {
             </Menu>
             {/* Search Area */}
             <form onSubmit={handleFormSubmit}>
-              <InputGroup maxW="300px">
+              <InputGroup maxW="250px">
                 <Input
                   rounded={"full"}
                   placeholder="Search articles..."
@@ -184,6 +185,7 @@ const Header = () => {
           <HStack spacing={4}>
             {/* Social Icons */}
             <HStack spacing={2} display={{ base: "none", lg: "flex" }}>
+              <AuthButtons />
               <IconButton
                 rounded={"full"}
                 as={Link}
@@ -306,6 +308,7 @@ const Header = () => {
                   variant="ghost"
                 />
               </HStack>
+              <AuthButtons />
             </VStack>
           </DrawerBody>
         </DrawerContent>

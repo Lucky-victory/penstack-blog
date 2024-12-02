@@ -53,6 +53,8 @@ import { formatPostPermalink } from "@/src/utils";
 import Loader from "../../../Loader";
 import { Link } from "@chakra-ui/next-js";
 import { format } from "date-fns";
+import { PermissionGuard } from "../../../PermissionGuard";
+import { useAuth } from "@/src/hooks/useAuth";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -65,8 +67,7 @@ const PostsDashboard = () => {
     status: "all",
     limit: 20,
   });
-  const router = useRouter();
-
+  const { user } = useAuth();
   const handleDelete = (post: PostSelect) => {
     setSelectedPost(post);
     onOpen();
@@ -261,23 +262,32 @@ const PostsDashboard = () => {
                                     >
                                       View
                                     </MenuItem>
-                                    <MenuItem
-                                      icon={<EditIcon />}
-                                      as={Link}
-                                      isExternal
-                                      rounded="full"
-                                      href={`/dashboard/posts/edit/${post.post_id}`}
+                                    <PermissionGuard
+                                      requiredPermission="posts:edit"
+                                      isOwner={
+                                        post.author?.auth_id === user?.id
+                                      }
                                     >
-                                      Edit
-                                    </MenuItem>
-                                    <MenuItem
-                                      rounded="full"
-                                      icon={<DeleteIcon />}
-                                      onClick={() => handleDelete(post)}
-                                      color="red.500"
-                                    >
-                                      Delete
-                                    </MenuItem>
+                                      <MenuItem
+                                        icon={<EditIcon />}
+                                        as={Link}
+                                        isExternal
+                                        rounded="full"
+                                        href={`/dashboard/posts/edit/${post.post_id}`}
+                                      >
+                                        Edit
+                                      </MenuItem>
+                                    </PermissionGuard>
+                                    <PermissionGuard requiredPermission="posts:delete">
+                                      <MenuItem
+                                        rounded="full"
+                                        icon={<DeleteIcon />}
+                                        onClick={() => handleDelete(post)}
+                                        color="red.500"
+                                      >
+                                        Delete
+                                      </MenuItem>
+                                    </PermissionGuard>
                                   </MenuList>
                                 </Menu>
                               </Td>

@@ -34,32 +34,12 @@ import {
   LuSettings,
   LuUsers,
 } from "react-icons/lu";
-import { TPermissions } from "@/src/types";
+import { NavItem, navPermissionMapping, TPermissions } from "@/src/types";
 import { PermissionGuard } from "../../PermissionGuard";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
 import { UserInfoComp } from "../UserInfoComp";
 
-interface NavItem {
-  icon: ElementType;
-  label: string;
-  href: string;
-  permission?: TPermissions;
-  children?: Array<{
-    label: string;
-    href: string;
-    permission?: TPermissions;
-  }>;
-}
-const navPermissionMapping = {
-  VIEW_DASHBOARD: "dashboard:view",
-  VIEW_POSTS: "posts:read",
-  CREATE_POST: "posts:create",
-  VIEW_USERS: "users:read",
-  VIEW_MEDIA: "media:read",
-  VIEW_SETTINGS: "settings:read",
-} as const;
-
-const navItems: NavItem[] = [
+export const navItems: NavItem[] = [
   {
     icon: LuHome,
     label: "Overview",
