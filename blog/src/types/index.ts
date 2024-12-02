@@ -2,11 +2,13 @@ import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { posts } from "@/src/db/schemas/posts.sql";
 import { Editor } from "@tiptap/react";
 import { IconType } from "react-icons";
-import { medias, permissions, roles, users } from "../db/schemas";
+import { medias, newsletters, permissions, roles, users } from "../db/schemas";
 import { useFormik } from "formik";
 export type UserSelect = InferSelectModel<typeof users>;
 export type UserInsert = InferInsertModel<typeof users>;
 export type RolesSelect = InferSelectModel<typeof roles>;
+export type NewsletterInsert = InferInsertModel<typeof newsletters>;
+export type NewsletterSelect = InferSelectModel<typeof newsletters>;
 export type PostToPost = PostInsert & {
   categories: string[];
   tags: string[];

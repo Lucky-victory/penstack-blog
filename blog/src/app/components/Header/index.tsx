@@ -26,8 +26,6 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 import {
-  LuSun,
-  LuMoon,
   LuMenu,
   LuChevronDown,
   LuGithub,
@@ -104,7 +102,7 @@ const Header = () => {
           </Text>
 
           {/* Desktop Navigation */}
-          <HStack spacing={8} display={{ base: "none", md: "flex" }}>
+          <HStack spacing={8} display={{ base: "none", lg: "flex" }}>
             {/* Topics Dropdown */}
             <Menu>
               <MenuButton
@@ -185,7 +183,7 @@ const Header = () => {
           {/* Right Side Actions */}
           <HStack spacing={4}>
             {/* Social Icons */}
-            <HStack spacing={2} display={{ base: "none", md: "flex" }}>
+            <HStack spacing={2} display={{ base: "none", lg: "flex" }}>
               <IconButton
                 rounded={"full"}
                 as={Link}
@@ -211,11 +209,11 @@ const Header = () => {
             </HStack>
 
             {/* Theme Toggle */}
-<LightDarkModeSwitch/>
+            <LightDarkModeSwitch />
             {/* Mobile Menu Button */}
             <IconButton
               colorScheme="black"
-              display={{ base: "flex", md: "none" }}
+              display={{ base: "flex", lg: "none" }}
               aria-label="Open menu"
               icon={<LuMenu size={20} />}
               onClick={onOpen}

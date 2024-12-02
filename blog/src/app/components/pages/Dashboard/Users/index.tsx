@@ -166,6 +166,11 @@ const UsersDashboard = () => {
       });
       onClose();
     } catch (error) {
+      toast({
+        title: currentUser?.id ? "Error updating User" : "Error creating User",
+        status: "error",
+        duration: 3000,
+      });
     } finally {
       setIsUpdating(false);
     }

@@ -60,7 +60,7 @@ export const CalendarPicker = ({
         schedule: {
           ...dateTimeToCronJobSchedule(new Date(date)),
           timezone,
-          expiresAt: addMinutes(new Date(date), 20).getMilliseconds(),
+          expiresAt: addMinutes(new Date(date), 60).getMilliseconds(),
         },
         saveResponses: true,
         requestMethod: CRON_REQUEST_METHOD.POST,

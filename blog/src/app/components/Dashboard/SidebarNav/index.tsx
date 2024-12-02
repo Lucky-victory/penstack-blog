@@ -30,6 +30,7 @@ import {
   LuFileImage,
   LuFileStack,
   LuHome,
+  LuMail,
   LuSettings,
   LuUsers,
 } from "react-icons/lu";
@@ -94,6 +95,12 @@ const navItems: NavItem[] = [
     label: "Media",
     href: "/dashboard/media",
     permission: navPermissionMapping.VIEW_MEDIA,
+  },
+  {
+    icon: LuMail,
+    label: "Newsletter",
+    href: "/dashboard/newsletter",
+    permission: navPermissionMapping.VIEW_DASHBOARD,
   },
   {
     icon: LuSettings,
