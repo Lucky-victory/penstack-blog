@@ -18,6 +18,10 @@ import {
   CardFooter,
   useColorModeValue,
   HStack,
+  IconButton,
+  VStack,
+  Center,
+  DarkMode,
 } from "@chakra-ui/react";
 import { formatBytes } from "@/src/utils";
 import { Image } from "@chakra-ui/react";
@@ -39,7 +43,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   const [mediaToPreview, setMediaToPreview] = useState<MediaResponse | null>(
     null
   );
-
+  const cardBgColor = useColorModeValue("gray.50", "black");
   const getIcon = () => {
     switch (media.type) {
       case "image":
@@ -69,7 +73,20 @@ export const MediaCard: React.FC<MediaCardProps> = ({
       <Card
         pos={"relative"}
         rounded={20}
+        overflow={"hidden"}
         boxShadow={selected ? "outline" : "none"}
+        sx={{
+          "&:hover": {
+            ".media-card-select": {
+              zIndex: 10,
+              transform: "translateX(0)",
+            },
+            ".media-card-overlay": {
+              zIndex: 10,
+              transform: "translateY(0)",
+            },
+          },
+        }}
         _hover={
           selected
             ? {}
@@ -78,55 +95,62 @@ export const MediaCard: React.FC<MediaCardProps> = ({
                 ring: "2",
               }
         }
-        className={`
-        cursor-pointer transition-all duration-200
-      `}
-        // onClick={handleSelectClick}
-        bg={useColorModeValue("gray.50", "black")}
+        bg={cardBgColor}
       >
-        <CardBody p={2} pos={"relative"}>
-          <Box
-            zIndex={10}
-            bottom={0}
-            right={0}
-            position={"absolute"}
-            left={0}
-            p={3}
-            bg={useColorModeValue("gray.50", "black")}
+        <Box
+          pos="absolute"
+          top={4}
+          right={4}
+          zIndex={!selected ? -1 : 10}
+          transform={!selected ? "translateX(100%)" : "none"}
+          className="media-card-select"
+          transition={"transform 0.2s ease-in-out"}
+        >
+          <IconButton
+            size="sm"
+            aria-label="Select"
+            colorScheme={selected ? "blue" : "gray"}
+            icon={selected ? <LuCheckSquare /> : <LuBoxSelect />}
+            rounded={"full"}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect?.(media);
+            }}
+          ></IconButton>
+        </Box>
+        <VStack
+          transition={"transform 0.2s ease-in-out"}
+          zIndex={-1}
+          bottom={0}
+          right={0}
+          position={"absolute"}
+          left={0}
+          p={3}
+          className="media-card-overlay"
+          borderTop={"2px solid"}
+          borderColor={"gray.400"}
+          roundedBottom={20}
+          shadow={"lg"}
+          bg={cardBgColor}
+          transform={"translateY(100%)"}
+        >
+          <Button
+            size="sm"
+            variant="outline"
+            rounded={"full"}
+            colorScheme="black"
+            leftIcon={<LuEye />}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePreviewClick(media);
+            }}
           >
-            <HStack justify={"stretch"}>
-              <Button
-                size="sm"
-                colorScheme={selected ? "blue" : "gray"}
-                // variant={selected ? "solid" : "ghost"}
-                leftIcon={selected ? <LuCheckSquare /> : <LuBoxSelect />}
-                rounded={"full"}
-                flex={1}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelect?.(media);
-                }}
-              >
-                Select
-              </Button>
-              <Button
-                flex={1}
-                size="sm"
-                variant="outline"
-                rounded={"full"}
-                colorScheme="black"
-                leftIcon={<LuEye />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePreviewClick(media);
-                }}
-              >
-                Preview
-              </Button>
-            </HStack>
-          </Box>
+            Preview
+          </Button>
+        </VStack>
+        <CardBody pos={"relative"}>
           {media.type === "image" && (
-            <Box rounded={"md"} overflow={"hidden"}>
+            <Box rounded={"md"} h={200}>
               <Image
                 src={media.url}
                 alt={media.alt_text || media.name}
@@ -137,12 +161,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             </Box>
           )}
           {media.type === "video" && (
-            <Box
-              rounded={"md"}
-              position="relative"
-              aspectRatio={"1/1"}
-              overflow={"hidden"}
-            >
+            <Box rounded={"md"} position="relative" h={200}>
               <Box
                 as="video"
                 controls
@@ -154,9 +173,12 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             </Box>
           )}
           {media.type !== "video" && media.type !== "image" && (
-            <div className="aspect-square rounded-md bg-gray-100 flex items-center justify-center">
+            <Box
+              h={200}
+              className=" rounded-md bg-gray-100 flex items-center justify-center"
+            >
               {getIcon()}
-            </div>
+            </Box>
           )}
         </CardBody>
         <CardFooter className="p-2 text-sm">
