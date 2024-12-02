@@ -34,6 +34,7 @@ import {
   LuType,
   LuMessageSquare,
   LuRadioReceiver,
+  LuClock,
 } from "react-icons/lu";
 import { FeaturedImageCard } from "@/src/app/components/TipTapEditor/FeaturedImageCard";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
@@ -212,51 +213,55 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                     Edit
                   </Button>
                 </HStack>
-                <HStack justify={"space-between"}>
-                  <HStack>
-                    <Text as={"span"} color="gray.500">
-                      <Icon as={LuEye} mr={1} />
-                      Schedule:
-                    </Text>
-                    <Text
-                      as={"span"}
-                      fontWeight="semibold"
-                      textTransform={"capitalize"}
-                    >
-                      {activePost?.scheduled_at ? (
-                        <>
-                          <Text fontSize={"small"}>
-                            {format(
-                              new Date(activePost?.scheduled_at as Date),
-                              "MMM d, yyyy hh:mm a"
-                            )}
-                          </Text>
-                        </>
-                      ) : (
-                        "Off"
-                      )}
-                    </Text>
-                  </HStack>
-                  <CalendarPicker
-                    defaultValue={
-                      activePost?.scheduled_at
-                        ? new Date(activePost.scheduled_at as Date)
-                        : undefined
-                    }
-                    isOpen={isOpen}
-                    onClose={onClose}
-                    trigger={
-                      <Button
-                        variant={"ghost"}
-                        size={"xs"}
-                        onClick={() => onToggle()}
-                      >
-                        Edit
-                      </Button>
-                    }
-                  />
-                </HStack>
               </ListItem>
+              <PermissionGuard requiredPermission={"posts:publish"}>
+                <ListItem>
+                  <HStack justify={"space-between"}>
+                    <HStack>
+                      <Text as={"span"} color="gray.500">
+                        <Icon as={LuClock} mr={1} />
+                        Schedule:
+                      </Text>
+                      <Text
+                        as={"span"}
+                        fontWeight="semibold"
+                        textTransform={"capitalize"}
+                      >
+                        {activePost?.scheduled_at ? (
+                          <>
+                            <Text fontSize={"small"}>
+                              {format(
+                                new Date(activePost?.scheduled_at as Date),
+                                "MMM d, yyyy hh:mm a"
+                              )}
+                            </Text>
+                          </>
+                        ) : (
+                          "Off"
+                        )}
+                      </Text>
+                    </HStack>
+                    <CalendarPicker
+                      defaultValue={
+                        activePost?.scheduled_at
+                          ? new Date(activePost.scheduled_at as Date)
+                          : undefined
+                      }
+                      isOpen={isOpen}
+                      onClose={onClose}
+                      trigger={
+                        <Button
+                          variant={"ghost"}
+                          size={"xs"}
+                          onClick={() => onToggle()}
+                        >
+                          Edit
+                        </Button>
+                      }
+                    />
+                  </HStack>
+                </ListItem>
+              </PermissionGuard>
               <ListItem>
                 <HStack>
                   <Text as={"span"} color="gray.500">
