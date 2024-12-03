@@ -24,6 +24,7 @@ import {
   InputGroup,
   Input,
   InputRightElement,
+  Icon,
 } from "@chakra-ui/react";
 import {
   LuMenu,
@@ -32,11 +33,12 @@ import {
   LuTwitter,
   LuSearch,
 } from "react-icons/lu";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useQueryParams } from "@/src/hooks";
 import { Link } from "@chakra-ui/next-js";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
+import { isActive } from "@tiptap/core";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -46,8 +48,8 @@ const Header = () => {
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("gray.700", "gray.200");
-  const hoverBgColor = useColorModeValue("gray.50", "gray.700");
-
+  const hoverBgColor = useColorModeValue("blue.500", "blue.500");
+  const pathname = usePathname();
   const topics = [
     { name: "React", href: "/topic/react" },
     { name: "TypeScript", href: "/topic/typescript" },
@@ -74,6 +76,9 @@ const Header = () => {
 
     setSearchValue(value);
   }
+  function isActiveUrl(url: string) {
+    return pathname === url;
+  }
   return (
     <Box
       as="header"
@@ -89,7 +94,12 @@ const Header = () => {
         "rgba(26, 32, 44, 0.8)"
       )}
     >
-      <Container maxW="container.xl" py={2}>
+      <Container
+        maxW="container.xl"
+        py={2}
+        borderBottom="2px"
+        borderColor={borderColor}
+      >
         <HStack justify="space-between" align="center">
           {/* Logo */}
           <Text
@@ -103,59 +113,135 @@ const Header = () => {
           </Text>
 
           {/* Desktop Navigation */}
-          <HStack spacing={8} display={{ base: "none", lg: "flex" }}>
+          <HStack spacing={8} display={{ base: "none", lg: "flex" }}></HStack>
+
+          {/* Right Side Actions */}
+          <HStack spacing={4}>
+            {/* Social Icons */}
+            <HStack spacing={2} display={{ base: "none", lg: "flex" }}>
+              <IconButton
+                rounded={"full"}
+                as={Link}
+                isExternal
+                href="https://github.com/lucky-victory"
+                aria-label="GitHub"
+                icon={<LuGithub size={20} />}
+                variant="ghost"
+                _hover={{ bg: hoverBgColor }}
+                colorScheme="black"
+              />
+              <IconButton
+                rounded={"full"}
+                as={Link}
+                isExternal
+                href="https://twitter.com/lucky_victory1"
+                aria-label="Twitter"
+                icon={<LuTwitter size={20} />}
+                variant="ghost"
+                _hover={{ bg: hoverBgColor }}
+                colorScheme="black"
+              />
+              <LightDarkModeSwitch />
+              <AuthButtons />
+            </HStack>
+
+            {/* Theme Toggle */}
+            {/* Mobile Menu Button */}
+            <IconButton
+              colorScheme="black"
+              display={{ base: "flex", lg: "none" }}
+              aria-label="Open menu"
+              icon={<LuMenu size={20} />}
+              onClick={onOpen}
+              variant="ghost"
+              _hover={{ bg: hoverBgColor }}
+            />
+          </HStack>
+        </HStack>
+      </Container>
+      <Container maxW="container.xl">
+        <HStack
+          align="center"
+          spacing={4}
+          display={{ base: "none", lg: "flex" }}
+          py={2}
+        >
+          <Link
+            textTransform="uppercase"
+            fontWeight={500}
+            href={"/"}
+            bg={isActiveUrl("/") ? "blue.500" : ""}
+            color={isActiveUrl("/") ? "white" : ""}
+            rounded={"full"}
+            px={5}
+            py={2}
+            _hover={{
+              bg: isActiveUrl("/") ? "blue.600" : hoverBgColor,
+              color: "white",
+            }}
+          >
+            Home
+          </Link>
+          {resources.map((resource) => (
+            <Link
+              key={resource.name}
+              textTransform="uppercase"
+              fontWeight={500}
+              href={resource.href}
+              rounded={"full"}
+              px={5}
+              py={2}
+              bg={isActiveUrl(resource.href) ? "blue.500" : ""}
+              color={isActiveUrl(resource.href) ? "white" : ""}
+              _hover={{
+                bg: isActiveUrl(resource.href) ? "blue.600" : hoverBgColor,
+                color: "white",
+              }}
+            >
+              {resource.name}
+            </Link>
+          ))}
+
+          {/* Search Area */}
+          <HStack ml="auto" spacing={4} display={{ base: "none", lg: "flex" }}>
             {/* Topics Dropdown */}
             <Menu>
-              <MenuButton
-                as={Button}
-                rounded={"full"}
-                colorScheme="black"
-                variant="ghost"
-                rightIcon={<LuChevronDown size={16} />}
-                _hover={{ bg: hoverBgColor }}
-              >
-                Topics
-              </MenuButton>
-              <MenuList>
-                {topics.map((topic) => (
-                  <MenuItem
-                    key={topic.name}
-                    as={Link}
-                    href={topic.href}
+              {({ isOpen }) => (
+                <>
+                  <MenuButton
+                    as={Button}
+                    rounded={"full"}
+                    textTransform="uppercase"
+                    fontWeight={500}
+                    size="sm"
+                    colorScheme="black"
+                    variant="outline"
                     _hover={{ bg: hoverBgColor }}
                   >
-                    {topic.name}
-                  </MenuItem>
-                ))}
-              </MenuList>
+                    <HStack>
+                      <Text>All Categories</Text>
+                      <Icon
+                        as={LuChevronDown}
+                        transition={"0.2s ease-out"}
+                        transform={isOpen ? "rotate(-180deg)" : "rotate(0deg)"}
+                      ></Icon>
+                    </HStack>
+                  </MenuButton>
+                  <MenuList rounded="xl">
+                    {topics.map((topic) => (
+                      <MenuItem
+                        key={topic.name}
+                        as={Link}
+                        href={topic.href}
+                        _hover={{ bg: hoverBgColor }}
+                      >
+                        {topic.name}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </>
+              )}
             </Menu>
-
-            {/* Resources Dropdown */}
-            <Menu>
-              <MenuButton
-                rounded={"full"}
-                as={Button}
-                variant="ghost"
-                colorScheme="black"
-                rightIcon={<LuChevronDown size={16} />}
-                _hover={{ bg: hoverBgColor }}
-              >
-                Resources
-              </MenuButton>
-              <MenuList>
-                {resources.map((resource) => (
-                  <MenuItem
-                    key={resource.name}
-                    as={Link}
-                    href={resource.href}
-                    _hover={{ bg: hoverBgColor }}
-                  >
-                    {resource.name}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
-            {/* Search Area */}
             <form onSubmit={handleFormSubmit}>
               <InputGroup maxW="250px">
                 <Input
@@ -180,52 +266,8 @@ const Header = () => {
               </InputGroup>
             </form>
           </HStack>
-
-          {/* Right Side Actions */}
-          <HStack spacing={4}>
-            {/* Social Icons */}
-            <HStack spacing={2} display={{ base: "none", lg: "flex" }}>
-              <AuthButtons />
-              <IconButton
-                rounded={"full"}
-                as={Link}
-                isExternal
-                href="https://github.com/yourusername"
-                aria-label="GitHub"
-                icon={<LuGithub size={20} />}
-                variant="ghost"
-                _hover={{ bg: hoverBgColor }}
-                colorScheme="black"
-              />
-              <IconButton
-                rounded={"full"}
-                as={Link}
-                isExternal
-                href="https://twitter.com/yourusername"
-                aria-label="Twitter"
-                icon={<LuTwitter size={20} />}
-                variant="ghost"
-                _hover={{ bg: hoverBgColor }}
-                colorScheme="black"
-              />
-            </HStack>
-
-            {/* Theme Toggle */}
-            <LightDarkModeSwitch />
-            {/* Mobile Menu Button */}
-            <IconButton
-              colorScheme="black"
-              display={{ base: "flex", lg: "none" }}
-              aria-label="Open menu"
-              icon={<LuMenu size={20} />}
-              onClick={onOpen}
-              variant="ghost"
-              _hover={{ bg: hoverBgColor }}
-            />
-          </HStack>
         </HStack>
       </Container>
-
       {/* Mobile Menu Drawer */}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
@@ -235,7 +277,7 @@ const Header = () => {
           <DrawerBody>
             <VStack align="stretch" spacing={4}>
               <Text fontWeight="bold" color={textColor}>
-                Topics
+                Categories
               </Text>
               {topics.map((topic) => (
                 <Button

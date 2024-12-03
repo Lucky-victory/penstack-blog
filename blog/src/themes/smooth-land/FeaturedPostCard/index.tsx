@@ -74,7 +74,11 @@ export default function FeaturedPostCard() {
             // zIndex={20}
             h={"full"}
             minH={450}
-            backgroundImage="linear-gradient(130deg, transparent, rgba(0, 0, 0, 1))"
+            backgroundImage={
+              featuredPost?.featured_image?.url
+                ? "linear-gradient(130deg, transparent, rgba(0, 0, 0, 1))"
+                : ""
+            }
           >
             <VStack
               align="start"

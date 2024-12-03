@@ -64,7 +64,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
           >
             signout{" "}
           </Button> */}
-          <Container maxW="6xl">
+          <Container maxW="container.xl">
             <Box minH={300}>
               <ChakraImage
                 src={

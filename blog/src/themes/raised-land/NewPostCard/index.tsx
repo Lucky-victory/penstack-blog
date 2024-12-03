@@ -1,5 +1,5 @@
 import { PostSelect } from "@/src/types";
-import { formatPostPermalink, nativeFormatDate, stripHtml } from "@/src/utils";
+import { formatPostPermalink, nativeFormatDate, objectToQueryParams, stripHtml } from "@/src/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Avatar,
@@ -51,7 +51,19 @@ export default function NewPostCard({
       {post.featured_image?.url && (
         <Box pos="relative" h="200px">
           <Image
-            src={post.featured_image?.url || "https://picsum.photos/500/400"}
+            src={
+              (post.featured_image?.url as string) ||
+              `/api/og?${objectToQueryParams({
+                title: post.title,
+                date: post?.published_at
+                  ? post?.published_at
+                  : post?.created_at,
+                username: post?.author?.username,
+                avatar: post?.author?.avatar,
+                name: post?.author?.name,
+                category: post?.category?.name,
+              })}`
+            }
             alt={post.featured_image?.alt_text || (post.title as string)}
             w="full"
             h="full"

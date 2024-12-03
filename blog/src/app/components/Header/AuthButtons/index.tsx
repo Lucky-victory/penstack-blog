@@ -1,9 +1,9 @@
 import { Link } from "@chakra-ui/next-js";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { Button, ButtonGroup, HStack } from "@chakra-ui/react";
 
 export const AuthButtons = () => {
   return (
-    <ButtonGroup spacing={4}>
+    <HStack spacing={4}>
       <Button
         rounded="full"
         variant="outline"
@@ -11,18 +11,22 @@ export const AuthButtons = () => {
         colorScheme="blue"
         href={"/auth/signin"}
         _hover={{ textDecor: "none" }}
+        py={"7px"}
+        h="auto"
       >
-        Sign In
+        Log In
       </Button>
       <Button
         rounded="full"
         colorScheme="blue"
         as={Link}
+        py={2}
+        h="auto"
         href={"/auth/sign-up"}
         _hover={{ textDecor: "none" }}
       >
-        Sign Up
+        Sign up
       </Button>
-    </ButtonGroup>
+    </HStack>
   );
 };
