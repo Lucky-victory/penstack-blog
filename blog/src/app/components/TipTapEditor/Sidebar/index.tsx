@@ -284,38 +284,42 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                   </Text>
                 </HStack>
               </ListItem>
-              <ListItem>
-                <HStack>
-                  <Text as={"span"} color="gray.500">
-                    <Icon as={LuMessageSquare} mr={1} />
-                    Allow Comments:
-                  </Text>
-                  <Switch
-                    isChecked={activePost?.allow_comments as boolean}
-                    onChange={() => {
-                      updateField(
-                        "allow_comments",
-                        !activePost?.allow_comments,
-                        true
-                      );
-                    }}
-                  />
-                </HStack>
-              </ListItem>
-              <ListItem>
-                <HStack>
-                  <Text as={"span"} color="gray.500">
-                    <Icon as={LuPin} mr={1} />
-                    Pinned:
-                  </Text>
-                  <Switch
-                    isChecked={activePost?.is_sticky as boolean}
-                    onChange={() => {
-                      updateField("is_sticky", !activePost?.is_sticky, true);
-                    }}
-                  />
-                </HStack>
-              </ListItem>
+              <PermissionGuard requiredPermission="posts:publish">
+                <ListItem>
+                  <HStack>
+                    <Text as={"span"} color="gray.500">
+                      <Icon as={LuMessageSquare} mr={1} />
+                      Allow Comments:
+                    </Text>
+                    <Switch
+                      isChecked={activePost?.allow_comments as boolean}
+                      onChange={() => {
+                        updateField(
+                          "allow_comments",
+                          !activePost?.allow_comments,
+                          true
+                        );
+                      }}
+                    />
+                  </HStack>
+                </ListItem>
+              </PermissionGuard>
+              <PermissionGuard requiredPermission="posts:publish">
+                <ListItem>
+                  <HStack>
+                    <Text as={"span"} color="gray.500">
+                      <Icon as={LuPin} mr={1} />
+                      Pinned:
+                    </Text>
+                    <Switch
+                      isChecked={activePost?.is_sticky as boolean}
+                      onChange={() => {
+                        updateField("is_sticky", !activePost?.is_sticky, true);
+                      }}
+                    />
+                  </HStack>
+                </ListItem>
+              </PermissionGuard>
             </Stack>
           </Box>
         </SectionCard>

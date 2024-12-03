@@ -47,9 +47,11 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
   const [activeIndex, setActiveIndex] = useState<number>(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const optionsRef = useRef<(HTMLLIElement | null)[]>([]);
-  const iconColorValue = useColorModeValue("gray.500", "gray.200");
-  const activeTextColorValue = useColorModeValue("white", "white");
+  const iconColor = useColorModeValue("gray.500", "gray.200");
+  const activeTextColor = useColorModeValue("white", "white");
+  const textColor = useColorModeValue("black", "white");
   const bgColor = useColorModeValue("white", "gray.900");
+  const hoverBgColor = useColorModeValue("blue.100", "blue.400");
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
   useEffect(() => {
@@ -148,7 +150,7 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
           {selectedOption &&
             selectedOption?.icon &&
             React.createElement(selectedOption?.icon, {
-              color: iconColorValue,
+              color: iconColor,
             })}
           <LuChevronsUpDown />
         </HStack>
@@ -195,10 +197,10 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
                 py={2}
                 px={4}
                 cursor={"pointer"}
-                bg={isActive ? "blue.100" : isSelected ? "blue.500" : ""}
-                color={isSelected ? activeTextColorValue : "black"}
+                bg={isActive ? hoverBgColor : isSelected ? "blue.600" : ""}
+                color={isSelected ? activeTextColor : textColor}
                 _hover={{
-                  bg: isSelected ? "blue.400" : "blue.100",
+                  bg: isSelected ? "blue.600" : hoverBgColor,
                 }}
                 rounded={"xl"}
                 role="option"

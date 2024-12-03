@@ -12,6 +12,7 @@ import isEmpty from "just-is-empty";
 import { usePostManager } from "../hooks/usePostManager";
 
 const AppEditorContext = createContext<EDITOR_CONTEXT_STATE>({
+  hasError: false,
   isSaving: false,
   isDirty: false,
   updateField: () => {},
@@ -68,6 +69,7 @@ export const AppEditorContextProvider = ({
     savePost,
     isDirty,
     isSaving,
+    hasError,
   } = usePostManager(initialPost);
 
   useEffect(() => {
@@ -97,6 +99,7 @@ export const AppEditorContextProvider = ({
     editor,
     setEditor,
     meta,
+    hasError,
   };
 
   return (

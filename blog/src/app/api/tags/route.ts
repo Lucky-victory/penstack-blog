@@ -20,7 +20,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  await checkPermission("posts:create", async () => {
+  await checkPermission({ requiredPermission: "posts:create" }, async () => {
     try {
       const { name, slug } = await request.json();
 

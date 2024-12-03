@@ -45,7 +45,10 @@ async function getPublicPermissions(): Promise<string[]> {
 }
 
 export async function checkPermission<T = NextResponse>(
-  requiredPermission: TPermissions,
+  {
+    isOwner,
+    requiredPermission,
+  }: { requiredPermission: TPermissions; isOwner?: boolean },
   handler: () => Promise<T>,
   isServerComp: boolean = false
 ) {
@@ -64,7 +67,7 @@ export async function checkPermission<T = NextResponse>(
   }
 
   const userPermissions = await getUserPermissions(session.user.email);
-
+  if (isOwner) return handler();
   if (!userPermissions.includes(requiredPermission)) {
     if (isServerComp) throw new Error("Forbidden");
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });

@@ -26,7 +26,7 @@ export default async function DashboardNewPostPage() {
     };
 
     const createdPost = (await checkPermission(
-      "posts:create",
+      { requiredPermission: "posts:create" },
       async () => {
         const [insertResponse] = await db
           .insert(posts)

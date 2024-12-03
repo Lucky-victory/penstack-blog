@@ -120,7 +120,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  await checkPermission("posts:create", async () => {
+  await checkPermission({ requiredPermission: "posts:create" }, async () => {
     const {
       title,
       content,

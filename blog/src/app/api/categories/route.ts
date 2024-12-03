@@ -20,30 +20,33 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  return await checkPermission("posts:create", async () => {
-    try {
-      const { name, slug } = await request.json();
+  return await checkPermission(
+    { requiredPermission: "posts:create" },
+    async () => {
+      try {
+        const { name, slug } = await request.json();
 
-      if (!name || !slug) {
+        if (!name || !slug) {
+          return NextResponse.json(
+            { error: "Name and slug are required" },
+            { status: 400 }
+          );
+        }
+
+        const newCategory = await db
+          .insert(categories)
+          .values({ name, slug })
+          .onDuplicateKeyUpdate({ set: { name: sql`name`, slug: sql`slug` } });
         return NextResponse.json(
-          { error: "Name and slug are required" },
-          { status: 400 }
+          { data: newCategory, message: "Category created successfully" },
+          { status: 201 }
+        );
+      } catch (error) {
+        return NextResponse.json(
+          { data: null, error: "Failed to create category" },
+          { status: 500 }
         );
       }
-
-      const newCategory = await db
-        .insert(categories)
-        .values({ name, slug })
-        .onDuplicateKeyUpdate({ set: { name: sql`name`, slug: sql`slug` } });
-      return NextResponse.json(
-        { data: newCategory, message: "Category created successfully" },
-        { status: 201 }
-      );
-    } catch (error) {
-      return NextResponse.json(
-        { data: null, error: "Failed to create category" },
-        { status: 500 }
-      );
     }
-  });
+  );
 }

@@ -27,7 +27,7 @@ import { UserInfoComp } from "../../Dashboard/UserInfoComp";
 
 function EditorHeader({ editor }: { editor: Editor | null }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { activePost } = useCustomEditorContext();
+  const { activePost, hasError, isDirty } = useCustomEditorContext();
   const lastUpdate = useMemo(() => {
     return activePost?.updated_at;
   }, [activePost?.updated_at]);
@@ -38,10 +38,19 @@ function EditorHeader({ editor }: { editor: Editor | null }) {
           <Text fontSize="2xl" fontWeight={600} as="span">
             Create Post
           </Text>
-          <Text as="span" fontSize="sm" color="gray.500">
-            Last updated:{" "}
-            {lastUpdate ? formatDate(new Date(lastUpdate)) : "Not saved yet"}
-          </Text>
+          {hasError && (
+            <Text as="span" fontSize="sm" color="red.500">
+              Error saving post. Please try again.
+            </Text>
+          )}
+          {!hasError && (
+            <Text as="span" fontSize="sm" color="gray.500">
+              Last saved:{" "}
+              {lastUpdate
+                ? formatDate(new Date(lastUpdate))
+                : isDirty && "You have Unsaved changes..."}
+            </Text>
+          )}
         </Stack>
         <Hide below="md">
           <Button

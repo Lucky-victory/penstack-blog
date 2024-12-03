@@ -24,7 +24,7 @@ export const usePostManager = (initialPost: PostSelect | null) => {
       : null
   );
   const [isDirty, setIsDirty] = useState(false);
-
+  const [hasError, setHasError] = useState(false);
   // Fields to exclude from API updates
   const excludedFields = [
     "featured_image",
@@ -62,6 +62,9 @@ export const usePostManager = (initialPost: PostSelect | null) => {
           message: string;
           lastUpdate: string | Date;
         }>(`/api/posts/${values.post_id}`, filteredValues);
+        if (response.status < 200 || response.status >= 300) {
+          throw new Error("Failed to update post");
+        }
         return response.data;
       } catch (error) {
         throw error;
@@ -74,8 +77,11 @@ export const usePostManager = (initialPost: PostSelect | null) => {
         author_id: data.data.author?.auth_id,
       }));
       setIsDirty(false);
+      setHasError(false);
     },
     onError: (error) => {
+      setIsDirty(true);
+      setHasError(true);
       console.error("Error saving post:", error);
     },
   });
@@ -137,5 +143,6 @@ export const usePostManager = (initialPost: PostSelect | null) => {
     savePost,
     isDirty,
     isSaving: isLoading,
+    hasError,
   };
 };

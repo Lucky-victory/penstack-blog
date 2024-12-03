@@ -80,6 +80,7 @@ export interface PaginatedResponse<T> {
   };
 }
 export type EDITOR_CONTEXT_STATE = {
+  hasError: boolean;
   editor: Editor | null;
   setEditor: (editor: Editor | null) => void;
   isSaving: boolean;
