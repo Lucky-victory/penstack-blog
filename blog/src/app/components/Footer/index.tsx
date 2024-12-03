@@ -15,7 +15,7 @@ import { Newsletter } from "../NewsLetter";
 const Footer = () => {
   const bgColor = useColorModeValue("black", "gray.900");
   const textColor = useColorModeValue("white", "gray.400");
-  const hoverColor = useColorModeValue("gray.700", "gray.300");
+  const hoverColor = useColorModeValue("gray.400", "gray.300");
 
   const navItems = [
     { label: "Home", href: "/" },

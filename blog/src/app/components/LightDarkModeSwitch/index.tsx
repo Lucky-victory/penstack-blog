@@ -11,7 +11,7 @@ import { LuMoon, LuSun } from "react-icons/lu";
 export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {
   const { colorMode, toggleColorMode } = useColorMode();
 
-  const hoverBgColor = useColorModeValue("gray.50", "gray.700");
+  const hoverBgColor = useColorModeValue("gray.100", "gray.700");
   return (
     <HStack ml={"2px"}>
       {!showLabel && (

@@ -25,6 +25,7 @@ import {
   Input,
   InputRightElement,
   Icon,
+  Hide,
 } from "@chakra-ui/react";
 import {
   LuMenu,
@@ -48,7 +49,8 @@ const Header = () => {
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("gray.700", "gray.200");
-  const hoverBgColor = useColorModeValue("blue.500", "blue.500");
+  const hoverBgColor = useColorModeValue("gray.100", "gray.700");
+  const navLinkHoverBgColor = useColorModeValue("blue.500", "blue.500");
   const pathname = usePathname();
   const topics = [
     { name: "React", href: "/topic/react" },
@@ -144,9 +146,10 @@ const Header = () => {
               <LightDarkModeSwitch />
               <AuthButtons />
             </HStack>
+            <Hide above="lg">
+              <LightDarkModeSwitch />
+            </Hide>
 
-            {/* Theme Toggle */}
-            {/* Mobile Menu Button */}
             <IconButton
               colorScheme="black"
               display={{ base: "flex", lg: "none" }}
@@ -176,7 +179,7 @@ const Header = () => {
             px={4}
             py={2}
             _hover={{
-              bg: isActiveUrl("/") ? "blue.600" : hoverBgColor,
+              bg: isActiveUrl("/") ? "blue.600" : navLinkHoverBgColor,
               color: "white",
             }}
           >
@@ -192,7 +195,7 @@ const Header = () => {
             px={4}
             py={2}
             _hover={{
-              bg: isActiveUrl("/articles") ? "blue.600" : hoverBgColor,
+              bg: isActiveUrl("/articles") ? "blue.600" : navLinkHoverBgColor,
               color: "white",
             }}
           >
@@ -210,7 +213,9 @@ const Header = () => {
               bg={isActiveUrl(resource.href) ? "blue.500" : ""}
               color={isActiveUrl(resource.href) ? "white" : ""}
               _hover={{
-                bg: isActiveUrl(resource.href) ? "blue.600" : hoverBgColor,
+                bg: isActiveUrl(resource.href)
+                  ? "blue.600"
+                  : navLinkHoverBgColor,
                 color: "white",
               }}
             >
@@ -232,7 +237,6 @@ const Header = () => {
                     size="sm"
                     colorScheme="black"
                     variant="outline"
-                    _hover={{ bg: hoverBgColor }}
                   >
                     <HStack>
                       <Text>All Categories</Text>
@@ -245,12 +249,7 @@ const Header = () => {
                   </MenuButton>
                   <MenuList rounded="xl">
                     {topics.map((topic) => (
-                      <MenuItem
-                        key={topic.name}
-                        as={Link}
-                        href={topic.href}
-                        _hover={{ bg: hoverBgColor }}
-                      >
+                      <MenuItem key={topic.name} as={Link} href={topic.href}>
                         {topic.name}
                       </MenuItem>
                     ))}
@@ -272,11 +271,10 @@ const Header = () => {
                 <InputRightElement>
                   <IconButton
                     aria-label="Search"
-                    colorScheme="black"
+                    // colorScheme="black"
                     rounded={"full"}
                     icon={<LuSearch size={16} />}
                     variant="ghost"
-                    _hover={{ bg: hoverBgColor }}
                   />
                 </InputRightElement>
               </InputGroup>

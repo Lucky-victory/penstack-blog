@@ -40,7 +40,7 @@ export const Newsletter = ({ title }: { title?: string }) => {
       setEmail("");
       setTimeout(() => {
         setStatus("");
-      }, 3000);
+      }, 5000);
     } catch (error) {}
   };
 
@@ -92,13 +92,9 @@ export const Newsletter = ({ title }: { title?: string }) => {
           </form>
         </Box>
         {status === "success" && (
-          <Toast
-            duration={3000}
-            colorScheme="green"
-            isClosable
-            color="green.500"
-            title={"Thanks for subscribing!"}
-          />
+          <Text color="green.500" fontWeight="medium">
+            🎉 Welcome aboard! Check your inbox to confirm subscription.
+          </Text>
         )}
       </VStack>
     </Box>

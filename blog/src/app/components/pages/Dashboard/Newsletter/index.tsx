@@ -32,7 +32,7 @@ import { useState, useEffect } from "react";
 import Loader from "../../../Loader";
 import { NewsletterSelect, PaginatedResponse } from "@/src/types";
 
-export const NewsletterPage = () => {
+export const DashboardNewsletterPage = () => {
   const [newsletters, setNewsletters] = useState<NewsletterSelect[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredNewsletters, setFilteredNewsletters] = useState<
