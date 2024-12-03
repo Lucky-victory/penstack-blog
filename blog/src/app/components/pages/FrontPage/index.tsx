@@ -1,17 +1,11 @@
 "use client";
 import React from "react";
-import { Box, Grid, Heading, Badge, useColorModeValue } from "@chakra-ui/react";
-import NewPostCard from "../../../../themes/raised-land/NewPostCard";
+import { Box, Heading } from "@chakra-ui/react";
 import FeaturedPostCard from "../../../../themes/smooth-land/FeaturedPostCard";
-import { usePosts } from "@/src/hooks";
-import { NewPostsCards } from "../../../../themes/raised-land/NewPostCards";
-import Header from "../../Header";
-import { Newsletter } from "../../NewsLetter";
 import PageWrapper from "../../PageWrapper";
 import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
 
 const FrontPage = () => {
-  // const bgColor = useColorModeValue("gray.100", "black");
   return (
     <PageWrapper>
       <Box mb={12}>
