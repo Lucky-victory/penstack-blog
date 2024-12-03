@@ -162,7 +162,7 @@ const Header = () => {
       <Container maxW="container.xl">
         <HStack
           align="center"
-          spacing={4}
+          spacing={3}
           display={{ base: "none", lg: "flex" }}
           py={2}
         >
@@ -173,7 +173,7 @@ const Header = () => {
             bg={isActiveUrl("/") ? "blue.500" : ""}
             color={isActiveUrl("/") ? "white" : ""}
             rounded={"full"}
-            px={5}
+            px={4}
             py={2}
             _hover={{
               bg: isActiveUrl("/") ? "blue.600" : hoverBgColor,
@@ -182,6 +182,22 @@ const Header = () => {
           >
             Home
           </Link>
+          <Link
+            textTransform="uppercase"
+            fontWeight={500}
+            href={"/"}
+            bg={isActiveUrl("/articles") ? "blue.500" : ""}
+            color={isActiveUrl("/articles") ? "white" : ""}
+            rounded={"full"}
+            px={4}
+            py={2}
+            _hover={{
+              bg: isActiveUrl("/articles") ? "blue.600" : hoverBgColor,
+              color: "white",
+            }}
+          >
+            Articles
+          </Link>
           {resources.map((resource) => (
             <Link
               key={resource.name}
@@ -189,7 +205,7 @@ const Header = () => {
               fontWeight={500}
               href={resource.href}
               rounded={"full"}
-              px={5}
+              px={4}
               py={2}
               bg={isActiveUrl(resource.href) ? "blue.500" : ""}
               color={isActiveUrl(resource.href) ? "white" : ""}

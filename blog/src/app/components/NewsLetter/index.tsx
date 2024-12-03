@@ -7,10 +7,14 @@ import {
   FormControl,
   Input,
   Button,
+  Toast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useColorModeValue } from "@chakra-ui/react";
 import { LuSend } from "react-icons/lu";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import isEmpty from "just-is-empty";
 
 export const Newsletter = ({ title }: { title?: string }) => {
   const [email, setEmail] = useState("");
@@ -18,10 +22,26 @@ export const Newsletter = ({ title }: { title?: string }) => {
   const formWrapBgColor = useColorModeValue("white", "black");
   const textColor = useColorModeValue("gray.400", "gray.300");
   const headingColor = useColorModeValue("inherit", "white");
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus("success");
-    // TODO: #1 Handle newsletter subscription logic here
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async (values: { email: string }) => {
+      const { data } = await axios.post("/api/newsletters", values);
+
+      return data;
+    },
+  });
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+      if (isEmpty(email)) {
+        return;
+      }
+      await mutateAsync({ email });
+      setStatus("success");
+      setEmail("");
+      setTimeout(() => {
+        setStatus("");
+      }, 3000);
+    } catch (error) {}
   };
 
   return (
@@ -59,6 +79,8 @@ export const Newsletter = ({ title }: { title?: string }) => {
               <Button
                 ml={{ md: -10 }}
                 type="submit"
+                isLoading={isPending}
+                isDisabled={isPending}
                 zIndex={2}
                 colorScheme="blue"
                 rounded={"full"}
@@ -70,7 +92,13 @@ export const Newsletter = ({ title }: { title?: string }) => {
           </form>
         </Box>
         {status === "success" && (
-          <Text color="green.500">Thanks for subscribing!</Text>
+          <Toast
+            duration={3000}
+            colorScheme="green"
+            isClosable
+            color="green.500"
+            title={"Thanks for subscribing!"}
+          />
         )}
       </VStack>
     </Box>

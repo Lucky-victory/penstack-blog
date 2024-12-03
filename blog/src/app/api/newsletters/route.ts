@@ -3,6 +3,7 @@ import { newsletters } from "@/src/db/schemas";
 import { NewsletterInsert } from "@/src/types";
 import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import { headers } from "next/headers";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -80,11 +81,24 @@ export async function POST(req: NextRequest) {
       verification_status,
       verification_token,
       verification_token_expires,
-      referrer,
     } = await req.json();
 
-    const subscriber = await db.transaction(async (tx) => {
-      const [insertResponse] = await tx
+    const referrer = await headers().get("referer");
+    // check if subscriber already exist and do nothing
+
+    const alreadySubscribed = await db.query.newsletters.findFirst({
+      where: eq(newsletters.email, email),
+    });
+
+    if (alreadySubscribed) {
+      return NextResponse.json({
+        data: null,
+        message: "Already subscribed",
+      });
+    }
+
+    await db.transaction(async (tx) => {
+      await tx
         .insert(newsletters)
         .values({
           email,
@@ -96,13 +110,10 @@ export async function POST(req: NextRequest) {
           referrer,
         })
         .$returningId();
-      return await tx.query.newsletters.findFirst({
-        where: eq(newsletters.id, insertResponse.id),
-      });
     });
 
     return NextResponse.json({
-      data: subscriber,
+      data: null,
       message: "Newsletter subscription created successfully",
     });
   } catch (error: any) {
