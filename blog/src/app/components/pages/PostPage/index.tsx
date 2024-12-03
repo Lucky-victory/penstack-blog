@@ -24,6 +24,7 @@ import PageWrapper from "../../PageWrapper";
 import { decode } from "html-entities";
 import { Link } from "@chakra-ui/next-js";
 import { useTrackView } from "@/src/hooks/useTrackView";
+import { objectToQueryParams } from "@/src/utils";
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   useTrackView(post.id);
@@ -67,7 +68,17 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             <Box minH={300}>
               <ChakraImage
                 src={
-                  post.featured_image!?.url ?? "https://picsum.photos/1200/600"
+                  (post.featured_image?.url as string) ||
+                  `/api/og?${objectToQueryParams({
+                    title: post.title,
+                    date: post?.published_at
+                      ? post?.published_at
+                      : post?.created_at,
+                    username: post?.author?.username,
+                    avatar: post?.author?.avatar,
+                    name: post?.author?.name,
+                    category: post?.category?.name,
+                  })}`
                 }
                 alt={post.featured_image!?.alt_text || ""}
                 w="full"

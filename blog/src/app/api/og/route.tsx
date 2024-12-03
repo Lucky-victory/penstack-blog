@@ -78,7 +78,7 @@ export async function GET(request: Request) {
     const title = searchParams.get("title") || "";
     const category = searchParams.get("category") || "";
     const publishDate = searchParams.get("date") || new Date().toISOString();
-    const readingTime = searchParams.get("readingTime") || "0";
+    const readingTime = searchParams.get("readingTime");
 
     return new ImageResponse(
       (
@@ -87,66 +87,12 @@ export async function GET(request: Request) {
             width: "100%",
             height: "100%",
             display: "flex",
-            background: "#1a1a1a",
+
+            background:
+              "linear-gradient(90deg, rgba(223, 113, 85, 1) 0%, rgba(59, 6, 66, 1) 100%)",
             position: "relative",
           }}
         >
-          {/* Background Gradient Section */}
-          <div
-            style={{
-              position: "absolute",
-              display: "flex",
-              width: "50%",
-              maxWidth: 450,
-              top: 30,
-              left: 720,
-              bottom: 30,
-              right: 30,
-              borderRadius: 20,
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                height: "110%",
-                width: "100%",
-                position: "absolute",
-                top: "-5%",
-                right: "-10%",
-                borderTopLeftRadius: "9999px",
-                borderBottomLeftRadius: "9999px",
-                background: `${getRandomColorSet()[0]} `,
-              }}
-            ></div>
-            <div
-              style={{
-                height: "95%",
-                width: "100%",
-                position: "absolute",
-                maxWidth: 350,
-                top: "2%",
-                right: "-10%",
-                borderTopLeftRadius: "9999px",
-                borderBottomLeftRadius: "9999px",
-                background: `${getRandomColorSet()[1]} `,
-              }}
-            ></div>
-            <div
-              style={{
-                height: "75%",
-                width: "100%",
-                maxWidth: 250,
-                position: "absolute",
-                // transform: "translateY(-50%)",
-                top: "10%",
-                right: "-10%",
-                borderTopLeftRadius: "9999px",
-                borderBottomLeftRadius: "9999px",
-                background: `${getRandomColorSet()[2]} `,
-              }}
-            ></div>
-          </div>
-
           {/* Content Section */}
           <div
             style={{
@@ -155,6 +101,10 @@ export async function GET(request: Request) {
               display: "flex",
               flexDirection: "column",
               padding: "60px",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              height: "100%",
             }}
           >
             {/* Category & Date */}
@@ -162,6 +112,7 @@ export async function GET(request: Request) {
               style={{
                 display: "flex",
                 alignItems: "center",
+                flexDirection: "column",
                 gap: "16px",
                 marginBottom: "24px",
               }}
@@ -169,41 +120,46 @@ export async function GET(request: Request) {
               {category && (
                 <div
                   style={{
-                    backgroundColor: "#007bff",
-                    padding: "8px 16px",
+                    background:
+                      "linear-gradient(90deg, rgba(223, 113, 85, 1) 0%, rgba(59, 6, 66, 1) 10%)",
+                    padding: "6px 14px",
                     borderRadius: "999px",
+                    border: "2px solid #1a1a1a",
                     display: "flex",
                     color: "white",
-                    fontSize: "24px",
+                    fontSize: "20px",
+                    fontWeight: "semibold",
                   }}
                 >
                   {category}
                 </div>
               )}
+
+              {/* Title */}
               <div
                 style={{
-                  color: "#ffffff99",
-                  fontSize: "24px",
+                  fontSize: "72px",
+                  fontWeight: "bold",
+                  color: "white",
                   display: "flex",
+                  lineHeight: 1.2,
+                  marginBottom: "18px",
+                  maxWidth: "80%",
                 }}
               >
-                {formatDate(publishDate)} · {readingTime + " min read time"}
+                {title}
               </div>
-            </div>
-
-            {/* Title */}
-            <div
-              style={{
-                fontSize: "72px",
-                fontWeight: "bold",
-                color: "white",
-                display: "flex",
-                lineHeight: 1.2,
-                marginBottom: "48px",
-                maxWidth: "80%",
-              }}
-            >
-              {title}
+              <div
+                style={{
+                  color: "#ffffffaa",
+                  fontSize: "24px",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                {formatDate(publishDate)}{" "}
+                {readingTime && `· ${readingTime} min read time`}
+              </div>
             </div>
 
             {/* Author Section */}
@@ -212,41 +168,54 @@ export async function GET(request: Request) {
                 display: "flex",
                 alignItems: "center",
                 gap: "16px",
-                marginTop: "auto",
+                marginTop: "60px",
               }}
             >
+              {name && (
+                <p
+                  style={{
+                    color: "white",
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  By
+                </p>
+              )}
               {avatar ? (
                 <img
                   src={avatar}
-                  width={56}
-                  height={56}
+                  width={50}
+                  height={50}
                   alt={name}
                   style={{
-                    width: "56px",
-                    height: "56px",
-                    borderRadius: "28px",
-                    border: "2px solid white",
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "128px",
+                    border: "2px solid #1a1a1a",
                   }}
                 />
               ) : (
                 name && (
                   <div
                     style={{
-                      width: "56px",
-                      height: "56px",
+                      width: "50px",
+                      height: "50px",
                       borderRadius: "128px",
-                      backgroundColor: "#007bff",
+
+                      background:
+                        "linear-gradient(90deg, rgba(223, 113, 85, 1) 0%, rgba(59, 6, 66, 1) 10%)",
                       color: "white",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "24px",
+                      fontSize: "20px",
                       fontWeight: "bold",
-                      border: "2px solid #f1f1f3",
+                      border: "2px solid #1a1a1a",
                       textTransform: "uppercase",
                     }}
                   >
-                    {getNameInitials(name)}
+                    <p>{getNameInitials(name)}</p>
                   </div>
                 )
               )}
@@ -283,26 +252,15 @@ export async function GET(request: Request) {
               </div>
             </div>
           </div>
-          <div
-            style={{
-              position: "absolute",
-              top: 30,
-              left: 30,
-              bottom: 30,
-              right: 30,
-              display: "flex",
-              border: "4px solid #f1f1f3",
-              borderRadius: 16,
-            }}
-          ></div>
+
           {/* Watermark/Brand */}
           <div
             style={{
               position: "absolute",
               bottom: "40px",
-              right: "35px",
+              right: "45px",
               display: "flex",
-              color: "#ffffff66",
+              color: "#ffffff99",
               fontSize: "20px",
             }}
           >
