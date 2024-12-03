@@ -8,6 +8,7 @@ import {
   LuEye,
   LuCheckSquare,
   LuBoxSelect,
+  LuSquare,
 } from "react-icons/lu";
 import {
   Box,
@@ -102,15 +103,15 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           top={4}
           right={4}
           zIndex={!selected ? -1 : 10}
-          transform={!selected ? "translateX(100%)" : "none"}
+          transform={!selected ? "translateX(150%)" : "none"}
           className="media-card-select"
           transition={"transform 0.2s ease-in-out"}
         >
           <IconButton
             size="sm"
             aria-label="Select"
-            colorScheme={selected ? "blue" : "gray"}
-            icon={selected ? <LuCheckSquare /> : <LuBoxSelect />}
+            // colorScheme={selected ? "blue" : "gray"}
+            icon={selected ? <LuCheckSquare /> : <LuSquare fontWeight={500} />}
             rounded={"full"}
             onClick={(e) => {
               e.stopPropagation();
@@ -138,7 +139,6 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             size="sm"
             variant="outline"
             rounded={"full"}
-            colorScheme="black"
             leftIcon={<LuEye />}
             onClick={(e) => {
               e.stopPropagation();
