@@ -209,7 +209,7 @@ const UsersDashboard = () => {
       case 3:
         return "yellow";
       case 4:
-        return "aqua";
+        return "teal";
       default:
         return "green";
     }

@@ -23,6 +23,7 @@ import {
   Stack,
   Center,
   useColorModeValue,
+  Tooltip,
 } from "@chakra-ui/react";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { SearchIcon } from "@chakra-ui/icons";
@@ -31,6 +32,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Loader from "../../../Loader";
 import { NewsletterSelect, PaginatedResponse } from "@/src/types";
+import { format } from "date-fns";
+import { shortenText } from "@/src/utils";
 
 export const DashboardNewsletterPage = () => {
   const [newsletters, setNewsletters] = useState<NewsletterSelect[]>([]);
@@ -127,6 +130,7 @@ export const DashboardNewsletterPage = () => {
                           <Td>
                             <Badge
                               rounded={"lg"}
+                              textTransform={"capitalize"}
                               colorScheme={
                                 subscriber.status === "subscribed"
                                   ? "green"
@@ -139,6 +143,7 @@ export const DashboardNewsletterPage = () => {
                           <Td>
                             <Badge
                               rounded={"lg"}
+                              textTransform={"capitalize"}
                               colorScheme={
                                 subscriber.verification_status === "verified"
                                   ? "green"
@@ -148,11 +153,20 @@ export const DashboardNewsletterPage = () => {
                               {subscriber.verification_status}
                             </Badge>
                           </Td>
-                          <Td>{subscriber.referrer || "-"}</Td>
+                          <Tooltip
+                            hasArrow
+                            label={subscriber.referrer}
+                            rounded={"lg"}
+                          >
+                            <Td>
+                              {shortenText(subscriber.referrer || "-", 20)}
+                            </Td>
+                          </Tooltip>
                           <Td>
-                            {new Date(
-                              subscriber.created_at as Date
-                            ).toLocaleDateString()}
+                            {format(
+                              new Date(subscriber.created_at as Date),
+                              "dd/MM/yyyy hh:mm a"
+                            )}
                           </Td>
                         </Tr>
                       ))}

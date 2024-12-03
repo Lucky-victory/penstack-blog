@@ -43,7 +43,7 @@ export const navItems: NavItem[] = [
   {
     icon: LuHome,
     label: "Overview",
-    href: "/dashboard",
+    href: "/dashboard/overview",
     permission: navPermissionMapping.VIEW_DASHBOARD,
   },
   {
