@@ -130,3 +130,29 @@ export const navPermissionMapping = {
   VIEW_MEDIA: "media:read",
   VIEW_SETTINGS: "settings:read",
 } as const;
+
+export interface Settings {
+  [key: string]: {
+    value: string;
+    enabled: boolean;
+  };
+}
+
+export const DEFAULT_SETTINGS: Settings = {
+  siteName: { value: "", enabled: true },
+  siteDescription: { value: "", enabled: true },
+  maintenanceMode: { value: "false", enabled: false },
+  gaId: { value: "", enabled: false },
+  gtmId: { value: "", enabled: false },
+  posthogKey: { value: "", enabled: false },
+  posthogHost: { value: "https://app.posthog.com", enabled: false },
+  sentryDsn: { value: "", enabled: false },
+  sentryEnvironment: { value: "production", enabled: false },
+  errorTracking: { value: "false", enabled: false },
+  performanceMonitoring: { value: "false", enabled: false },
+  cloudinaryName: { value: "", enabled: false },
+  maxUploadSize: { value: "10", enabled: true },
+  defaultMediaFolder: { value: "uploads", enabled: true },
+  apiRateLimit: { value: "100", enabled: true },
+  cacheDuration: { value: "5", enabled: true },
+};
