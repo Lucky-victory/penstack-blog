@@ -37,6 +37,7 @@ import {
   CardBody,
   VStack,
   TableContainer,
+  Tooltip,
 } from "@chakra-ui/react";
 import {
   EditIcon,
@@ -49,12 +50,13 @@ import {
 import { usePosts } from "@/src/hooks";
 import { PostSelect } from "@/src/types";
 import { useRouter } from "next/navigation";
-import { formatPostPermalink } from "@/src/utils";
+import { formatPostPermalink, shortenText } from "@/src/utils";
 import Loader from "../../../Loader";
 import { Link } from "@chakra-ui/next-js";
 import { format } from "date-fns";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { useAuth } from "@/src/hooks/useAuth";
+import { LuGlobe, LuGlobe2, LuLock, LuView } from "react-icons/lu";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -109,7 +111,7 @@ const PostsDashboard = () => {
   };
 
   const getVisibilityIcon = (visibility: PostSelect["visibility"]) => {
-    return visibility === "private" ? "🔒" : "👁️";
+    return visibility === "private" ? <LuLock /> : <LuGlobe2 />;
   };
 
   useEffect(() => {
@@ -192,6 +194,8 @@ const PostsDashboard = () => {
                     <Table variant="simple">
                       <Thead>
                         <Tr>
+                          <Th></Th>
+                          <Th>ID</Th>
                           <Th>Title</Th>
                           <Th>Status</Th>
                           <Th>Category</Th>
@@ -207,11 +211,22 @@ const PostsDashboard = () => {
                           filteredPosts.length > 0 &&
                           filteredPosts?.map((post) => (
                             <Tr key={post.id}>
+                              <Td maxW={40} px={1}>
+                                {getVisibilityIcon(post.visibility)}
+                              </Td>
                               <Td>
-                                <Flex align="center">
-                                  {getVisibilityIcon(post.visibility)}
-                                  <Text ml={2}>{post.title}</Text>
-                                </Flex>
+                                <Text>{post.id}</Text>
+                              </Td>
+                              <Td>
+                                <Tooltip
+                                  hasArrow
+                                  label={post.title}
+                                  rounded={"xl"}
+                                >
+                                  <Text>
+                                    {shortenText(post.title || "", 50)}
+                                  </Text>
+                                </Tooltip>
                               </Td>
                               <Td>
                                 <Badge

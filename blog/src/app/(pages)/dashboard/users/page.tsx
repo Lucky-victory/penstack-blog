@@ -3,9 +3,9 @@ import { PermissionGuard } from "@/src/app/components/PermissionGuard";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard |Users",
+  title: "Dashboard | Users",
 };
-export default function Users() {
+export default function DashboardUsersPage() {
   return (
     <PermissionGuard requiredPermission={"users:read"} shouldRedirect>
       <UsersDashboard />

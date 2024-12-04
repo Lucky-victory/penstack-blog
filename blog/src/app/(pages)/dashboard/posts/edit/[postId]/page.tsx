@@ -4,6 +4,6 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Dashboard | Editing Post",
 };
-export default function DashboardNewPostPage() {
+export default function DashboardEditPostPage() {
   return <EditPostPage />;
 }
