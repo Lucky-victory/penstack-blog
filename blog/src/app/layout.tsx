@@ -16,6 +16,9 @@ import { Providers } from "../providers/chakra";
 import ReactQueryClient from "../providers/react-query";
 import AuthProvider from "../providers/auth";
 import { getSession } from "../lib/auth/next-auth";
+import { SiteConfigProvider } from "../context/SiteConfig";
+import { getSettings } from "../lib/settings";
+import { DEFAULT_SETTINGS } from "../types";
 
 export default async function RootLayout({
   children,
@@ -23,17 +26,22 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getSession();
+  const initialConfig = await getSettings();
   return (
     <html
       lang="en"
       className={`${fonts.rubik.variable} ${fonts.karla.variable}`}
     >
       <body>
-        <AuthProvider session={session}>
-          <ReactQueryClient>
-            <Providers>{children}</Providers>
-          </ReactQueryClient>
-        </AuthProvider>
+        <SiteConfigProvider
+          initialConfig={{ ...DEFAULT_SETTINGS, ...initialConfig }}
+        >
+          <AuthProvider session={session}>
+            <ReactQueryClient>
+              <Providers>{children}</Providers>
+            </ReactQueryClient>
+          </AuthProvider>
+        </SiteConfigProvider>
       </body>
     </html>
   );
