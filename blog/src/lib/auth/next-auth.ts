@@ -144,7 +144,18 @@ const authOptions: AuthOptions = {
       const existingUser = await db.query.users.findFirst({
         where: eq(users.email, user.email),
       });
+
       if (existingUser) {
+        // Skip email verification for OAuth providers
+        if (account?.provider !== "credentials") {
+          return true;
+        }
+
+        // Check email verification for credentials login
+        if (!existingUser.email_verified) {
+          throw new Error("Please verify your email before signing in");
+        }
+
         const authTypeCheck = checkUserAuthType(
           user as CustomUser,
           account?.provider as "google" | "github" | "credentials"
@@ -154,8 +165,8 @@ const authOptions: AuthOptions = {
         }
         return true;
       }
+
       if (!existingUser && account?.provider !== "credentials") {
-        // Create user for OAuth providers if they don't exist
         await db.insert(users).values({
           email: user.email,
           name: user.name,
@@ -164,16 +175,14 @@ const authOptions: AuthOptions = {
           auth_type: (user as CustomUser).auth_type,
           role_id: (user as CustomUser).role_id,
           auth_id: (user as CustomUser).id,
+          email_verified: true, // OAuth providers are pre-verified
         });
         return true;
       }
 
-      if (!existingUser) {
-        throw new Error("Account not found. Please sign up.");
-      }
-
-      return true;
+      throw new Error("Account not found. Please sign up.");
     },
+
     async jwt({ token, user, account, trigger }) {
       return {
         ...token,

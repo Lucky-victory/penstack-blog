@@ -131,16 +131,36 @@ export const navPermissionMapping = {
   VIEW_SETTINGS: "settings:read",
 } as const;
 
-export interface Settings {
-  [key: string]: {
-    value: string;
-    enabled: boolean;
-  };
-}
+export type SettingEntry = {
+  value: string;
+  enabled: boolean;
+};
+
+export type Settings = {
+  siteName: SettingEntry;
+  siteDescription: SettingEntry;
+  siteOgImage: SettingEntry;
+  maintenanceMode: SettingEntry;
+  gaId: SettingEntry;
+  gtmId: SettingEntry;
+  posthogKey: SettingEntry;
+  posthogHost: SettingEntry;
+  sentryDsn: SettingEntry;
+  sentryEnvironment: SettingEntry;
+  errorTracking: SettingEntry;
+  performanceMonitoring: SettingEntry;
+  cloudinaryName: SettingEntry;
+  maxUploadSize: SettingEntry;
+  defaultMediaFolder: SettingEntry;
+  apiRateLimit: SettingEntry;
+  cacheDuration: SettingEntry;
+  [key: string]: SettingEntry;
+};
 
 export const DEFAULT_SETTINGS: Settings = {
-  siteName: { value: "", enabled: true },
+  siteName: { value: "Vida Blog Starter", enabled: true },
   siteDescription: { value: "", enabled: true },
+  siteOgImage: { value: "", enabled: true },
   maintenanceMode: { value: "false", enabled: false },
   gaId: { value: "", enabled: false },
   gtmId: { value: "", enabled: false },

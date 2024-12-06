@@ -5,7 +5,7 @@ import { DEFAULT_SETTINGS, Settings } from "../types";
 
 export const SiteConfigContext = createContext<Settings>(DEFAULT_SETTINGS);
 
-export async function SiteConfigProvider({
+export function SiteConfigProvider({
   children,
   initialConfig,
 }: {

@@ -24,21 +24,26 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Settings, DEFAULT_SETTINGS } from "@/src/types";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export default function SettingsPage() {
-  const toast = useToast();
+  const toast = useToast({ position: "top" });
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
+  const { data, isFetching } = useQuery({
+    queryKey: ["settings"],
+    queryFn: fetchSettings,
+  });
 
-  const fetchSettings = async () => {
+  async function fetchSettings() {
     try {
-      const response = await fetch("/api/settings");
-      const data = await response.json();
-      setSettings({ ...DEFAULT_SETTINGS, ...data });
+      const { data } = await axios<{ data: Settings; message?: string }>(
+        "/api/settings"
+      );
+      const fetchedData = data.data;
+      setSettings({ ...DEFAULT_SETTINGS, ...fetchedData });
     } catch (error) {
       toast({
         title: "Failed to load settings",
@@ -46,7 +51,7 @@ export default function SettingsPage() {
         duration: 3000,
       });
     }
-  };
+  }
 
   const handleInputChange = (key: string, value: string) => {
     setSettings((prev) => ({

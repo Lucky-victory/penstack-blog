@@ -2,123 +2,143 @@
 
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { Input } from "@chakra-ui/react";
+import { useSearchParams, useRouter } from "next/navigation";
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  Text,
+  VStack,
+  Alert,
+  AlertIcon,
+  useToast,
+  AbsoluteCenter,
+} from "@chakra-ui/react";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 export default function SignIn() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const toast = useToast();
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    const emailOrUsername = formData.get("emailOrUsername") as string;
-    const password = formData.get("password") as string;
+    const result = await signIn("credentials", {
+      emailOrUsername: formData.get("emailOrUsername"),
+      password: formData.get("password"),
+      redirect: false,
+      callbackUrl,
+    });
 
-    try {
-      const result = await signIn("credentials", {
-        emailOrUsername,
-        password,
-        callbackUrl,
-      });
-
-      if (result?.error) {
-        setError(result.error);
+    if (result?.error) {
+      if (result.error === "Please verify your email before signing in") {
+        router.push(`/auth/verify?email=${formData.get("emailOrUsername")}`);
+        return;
       }
-    } catch (error) {
-      console.log("error:", error);
-
-      setError("An error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
+      setError(result.error);
+    } else if (result?.url) {
+      router.push(result.url);
     }
+
+    setIsLoading(false);
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold">Sign in to your account</h2>
-        </div>
+    <Container maxW="md" py={{ base: 12, md: 24 }}>
+      <VStack spacing={8} align="stretch">
+        <VStack spacing={3}>
+          <Heading size="xl">Sign in</Heading>
+          <Text color="gray.500">Welcome back!</Text>
+        </VStack>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              htmlFor="emailOrUsername"
-              className="block text-sm font-medium"
+        <form onSubmit={handleSubmit}>
+          <VStack spacing={4}>
+            <FormControl>
+              <FormLabel>Email or Username</FormLabel>
+              <Input
+                name="emailOrUsername"
+                type="text"
+                required
+                size="lg"
+                borderRadius="xl"
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Password</FormLabel>
+              <Input
+                name="password"
+                type="password"
+                required
+                size="lg"
+                borderRadius="xl"
+              />
+            </FormControl>
+
+            {error && (
+              <Alert status="error" borderRadius="lg">
+                <AlertIcon />
+                {error}
+              </Alert>
+            )}
+
+            <Button
+              type="submit"
+              colorScheme="blue"
+              size="lg"
+              width="full"
+              borderRadius="xl"
+              isLoading={isLoading}
             >
-              Email address or Username
-            </label>
-            <Input
-              id="emailOrUsername"
-              name="emailOrUsername"
-              type="email"
-              placeholder="me@you.com"
-              rounded={"full"}
-              required
-              className="mt-1 block w-full rounded-md border p-2"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium">
-              Password
-            </label>
-            <Input
-              id="password"
-              name="password"
-              rounded={"full"}
-              placeholder="password"
-              type="password"
-              required
-              className="mt-1 block w-full rounded-md border p-2"
-            />
-          </div>
-
-          {error && (
-            <div className="rounded-md bg-red-50 p-4 text-red-500">{error}</div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {isLoading ? "Signing in..." : "Sign in"}
-          </button>
+              Sign in
+            </Button>
+          </VStack>
         </form>
 
-        <div className="relative mt-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-2 text-gray-500">
-              Or continue with
-            </span>
-          </div>
-        </div>
+        <Box position="relative" padding="10">
+          <Divider />
+          <AbsoluteCenter bg="white" px="4">
+            <Text color="gray.500">or continue with</Text>
+          </AbsoluteCenter>
+        </Box>
 
-        <div className="grid grid-cols-2 gap-4">
-          <button
+        <Stack direction="row" spacing={4}>
+          <Button
             onClick={() => signIn("github", { callbackUrl })}
-            className="flex items-center justify-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-white hover:bg-gray-800"
+            leftIcon={<FaGithub />}
+            width="full"
+            size="lg"
+            borderRadius="xl"
+            colorScheme="blackAlpha"
           >
             GitHub
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => signIn("google", { callbackUrl })}
-            className="flex items-center justify-center gap-2 rounded-full bg-red-600 px-4 py-2 text-white hover:bg-red-500"
+            leftIcon={<FaGoogle />}
+            width="full"
+            size="lg"
+            borderRadius="xl"
+            colorScheme="red"
           >
             Google
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Stack>
+      </VStack>
+    </Container>
   );
 }
