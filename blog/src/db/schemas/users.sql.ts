@@ -1,4 +1,5 @@
 import {
+  boolean,
   int,
   mysqlEnum,
   mysqlTable,
@@ -20,9 +21,14 @@ export const users = mysqlTable("Users", {
   username: varchar("username", { length: 255 }),
   avatar: varchar("avatar", { length: 255 }),
   social_id: int("social_id"),
+  account_status: varchar("account_status", {
+    length: 30,
+    enum: ["active", "deleted", "banned", "inactive"],
+  }).default("active"),
   auth_id: varchar("auth_id", { length: 100 }).$defaultFn(() =>
     shortIdGenerator.bigIntId()
   ),
+  email_verified: boolean("email_verified").default(false),
   auth_type: mysqlEnum("auth_type", [
     "local",
     "google",
