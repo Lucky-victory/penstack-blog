@@ -105,13 +105,13 @@ const authOptions: AuthOptions = {
         if (!isValid) {
           throw new Error("Invalid credentials");
         }
-        console.log("user:", user);
 
         return {
           name: user.name,
           email: user.email,
           id: user?.auth_id,
           image: user.avatar as string,
+          role_id: user.role_id,
         } as CustomUser;
       },
     }),
@@ -188,6 +188,7 @@ const authOptions: AuthOptions = {
         ...token,
         id: user?.id || (token?.sub as string),
         sub: user?.id || (token?.sub as string),
+        role_id: user?.role_id,
       };
     },
     async session({ session, token }) {
@@ -197,6 +198,7 @@ const authOptions: AuthOptions = {
           ...session.user,
           id: token?.id,
           sub: token?.id,
+          role_id: token?.role_id,
         },
       };
     },

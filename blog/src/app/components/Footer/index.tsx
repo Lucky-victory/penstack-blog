@@ -40,7 +40,7 @@ const Footer = () => {
   ];
 
   return (
-    <Box as="footer" px={4} pb={5}>
+    <Box as="footer" px={2} pb={5}>
       <Container
         maxW="container.xl"
         bg={bgColor}

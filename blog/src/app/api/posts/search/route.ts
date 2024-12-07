@@ -1,9 +1,10 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
-import { PostInsert, PostSelect } from "@/src/types";
-import { getServerSearchParams } from "@/src/utils";
-import { and, asc, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
+import { PostSelect } from "@/src/types";
+import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+
+export const revalidate = 3600; // revalidate every hour
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -92,11 +93,7 @@ export async function GET(req: NextRequest) {
           },
         },
         author: {
-          columns: {
-            name: true,
-            avatar: true,
-            username: true,
-          },
+          columns: { auth_id: true, name: true, avatar: true, username: true },
         },
       },
     });

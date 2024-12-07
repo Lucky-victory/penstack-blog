@@ -1,8 +1,12 @@
 import { db } from "@/src/db";
+import { posts } from "@/src/db/schemas";
+import { eq, or } from "drizzle-orm";
+import { cache } from "react";
 
-export async function getPost(slug: string) {
+export const getPost = cache(async (slugOrPostId: string) => {
   const post = await db.query.posts.findFirst({
-    where: (posts, { eq }) => eq(posts.slug, slug),
+    where: (posts, { eq }) =>
+      or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),
     with: {
       views: {
         columns: { id: true },
@@ -50,4 +54,9 @@ export async function getPost(slug: string) {
 
   const transformedPost = { ...post, tags, views: { count: viewsCount } };
   return transformedPost;
-}
+});
+export const getPlainPost = cache(async (slugOrPostId: string) => {
+  return await db.query.posts.findFirst({
+    where: or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),
+  });
+});

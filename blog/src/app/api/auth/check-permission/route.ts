@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/src/lib/auth/next-auth";
 import { getUserPermissions } from "@/src/lib/auth/permissions";
 import { getPublicPermissions } from "@/src/lib/auth/public-permissions"; // Separate file
+export const revalidate = 3600 * 4;
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,7 +19,6 @@ export async function POST(req: NextRequest) {
       });
     }
 
-  
     const session = await getSession();
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

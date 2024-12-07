@@ -21,6 +21,7 @@ import EditorActionsDropdown from "./EditorActionsDropdown";
 import { filterEditorActions } from "@/src/lib/editor-actions";
 import { MediaInsert } from "./MediaInsert";
 import { extractContentAndLinkMark } from "@/src/utils";
+import { PostCardButton } from "@/src/lib/editor/nodes/MiniPostCard/PostCardButton";
 
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
   const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);
@@ -154,23 +155,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           <LuRedo2 size={20} />
         </IconButton>
       </Tooltip>
-      {/* <Button
-        onClick={() => {
-          editor
-          .chain()
-          .focus()
-          .setMedia({
-            src: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1352&q=80",
-            alt: "A random image",
-            title: "A random image",
-            width: 600,
-            height: 400,
-            })
-            .run();
-            }}
-            >
-            add media
-            </Button> */}
+      <PostCardButton editor={editor} />
     </HStack>
   );
 };

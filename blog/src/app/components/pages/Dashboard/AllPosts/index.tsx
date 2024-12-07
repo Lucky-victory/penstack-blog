@@ -68,6 +68,7 @@ const PostsDashboard = () => {
   const { posts, loading, refetchPosts } = usePosts({
     status: "all",
     limit: 20,
+    access: "dashboard",
   });
   const { user } = useAuth();
   const handleDelete = (post: PostSelect) => {
@@ -286,7 +287,6 @@ const PostsDashboard = () => {
                                       <MenuItem
                                         icon={<EditIcon />}
                                         as={Link}
-                                        isExternal
                                         rounded="full"
                                         href={`/dashboard/posts/edit/${post.post_id}`}
                                       >

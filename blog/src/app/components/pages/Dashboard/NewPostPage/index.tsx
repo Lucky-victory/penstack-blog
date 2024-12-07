@@ -6,7 +6,7 @@ import { nullToEmptyString } from "@/src/utils";
 import { PostInsert, PostSelect } from "@/src/types";
 import { usePost } from "@/src/hooks";
 import { useFormik } from "formik";
-import { useParams, useRouter } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import Loader from "../../../Loader";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -24,15 +24,16 @@ export default function NewPostPage() {
   const postId = useParams().postId as string;
   const { post, loading } = usePost(postId);
 
-  if (loading || !post) {
+  if (loading) {
     return (
       <Stack h="full" align="center" justify="center">
         <Loader />
       </Stack>
     );
   }
+  if (!loading && !post) redirect("/not-found");
   return (
-    <AppEditorContextProvider post={post}>
+    <AppEditorContextProvider post={post!}>
       <PostEditor />
     </AppEditorContextProvider>
   );

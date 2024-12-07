@@ -2,9 +2,11 @@ import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { getSession } from "@/src/lib/auth/next-auth";
+import { getPlainPost, getPost } from "@/src/lib/queries/post";
 import { or, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
 export async function GET(
   req: NextRequest,
   { params }: { params: { slugOrPostId: string } }
@@ -12,59 +14,16 @@ export async function GET(
   try {
     const { slugOrPostId } = params;
 
-    const post = await db.query.posts.findFirst({
-      where: or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),
-      columns: {
-        author_id: false,
-      },
-      with: {
-        featured_image: {
-          columns: {
-            url: true,
-            alt_text: true,
-            id: true,
-            caption: true,
-          },
-        },
-        category: {
-          columns: {
-            name: true,
-            slug: true,
-            id: true,
-          },
-        },
-        author: {
-          columns: {
-            name: true,
-            username: true,
-
-            auth_id: true,
-            avatar: true,
-          },
-        },
-        tags: {
-          with: {
-            tag: {
-              columns: {
-                name: true,
-                slug: true,
-                id: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    const post = await getPost(slugOrPostId);
 
     if (!post)
       return NextResponse.json(
         { data: null, message: "Post not found" },
         { status: 404 }
       );
-    const tags = post.tags.length > 0 ? post.tags.map((t) => t.tag) : [];
 
     return NextResponse.json({
-      data: { ...post, tags },
+      data: post,
       message: "Post retrieved successfully",
     });
   } catch (error: any) {
@@ -82,9 +41,7 @@ export async function PUT(
   const { slugOrPostId } = params;
   const body = await req.json();
   const session = await getSession();
-  const oldPost = await db.query.posts.findFirst({
-    where: or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),
-  });
+  const oldPost = await getPlainPost(slugOrPostId);
   return await checkPermission(
     {
       requiredPermission: "posts:edit",
@@ -111,58 +68,11 @@ export async function PUT(
           .where(
             or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId))
           );
-        const post = await db.query.posts.findFirst({
-          where: or(
-            eq(posts.slug, slugOrPostId),
-            eq(posts.post_id, slugOrPostId)
-          ),
-          columns: {
-            author_id: false,
-          },
-          with: {
-            featured_image: {
-              columns: {
-                url: true,
-                alt_text: true,
-                id: true,
-                caption: true,
-              },
-            },
-            category: {
-              columns: {
-                name: true,
-                slug: true,
-                id: true,
-              },
-            },
-            author: {
-              columns: {
-                name: true,
-                username: true,
-
-                auth_id: true,
-                avatar: true,
-              },
-            },
-            tags: {
-              with: {
-                tag: {
-                  columns: {
-                    name: true,
-                    slug: true,
-                    id: true,
-                  },
-                },
-              },
-            },
-          },
-        });
-        const tags =
-          post && post?.tags?.length > 0 ? post?.tags.map((t) => t.tag) : [];
+        const post = await getPost(slugOrPostId);
 
         return NextResponse.json(
           {
-            data: { ...post, tags },
+            data: post,
             message: "Post updated successfully",
             lastUpdate: new Date().getTime(),
           },

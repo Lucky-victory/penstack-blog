@@ -6,7 +6,7 @@ import { getPost } from "@/src/lib/queries/post";
 import { decode } from "html-entities";
 import { objectToQueryParams, shortenText, stripHtml } from "@/src/utils";
 
-async function getData(slug: string, fromMetadata: boolean = false) {
+async function getData(slug: string) {
   try {
     return await getPost(slug);
   } catch (error) {
@@ -28,7 +28,7 @@ export async function generateMetadata(
   const slug = params.slug;
   const postSlug = slug[slug.length - 1];
 
-  const post = await getData(postSlug, true);
+  const post = await getData(postSlug);
   if (!post) return notFound();
 
   const previousImages = (await parent).openGraph?.images || [];

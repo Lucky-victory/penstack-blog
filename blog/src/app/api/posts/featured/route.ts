@@ -7,6 +7,8 @@ import {
 import { desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
+export const revalidate = 14400; // revalidate every 4 hours
+
 export async function GET(req: NextRequest) {
   try {
     const featuredPost = await db.query.posts.findFirst({

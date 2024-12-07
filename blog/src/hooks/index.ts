@@ -112,10 +112,12 @@ export function usePosts({
   limit = 10,
   page = 1,
   sortBy,
+  access,
 }: {
   status?: PostInsert["status"] | "all";
   limit?: number;
   page?: number;
+  access?: "dashboard";
   sortBy?: "created_at" | "published_at" | "updated_at" | "popular";
 } = {}) {
   const {
@@ -125,14 +127,14 @@ export function usePosts({
     error,
     refetch,
   } = useQuery({
-    queryKey: ["posts", status, limit, page, sortBy],
+    queryKey: ["posts", status, limit, page, sortBy, access],
     queryFn: async () => {
       const { data } = await axios.get<{ data: PostSelect[] }>(
-        `/api/posts?${objectToQueryParams({ status, limit, page, sortBy })}`
+        `/api/posts?${objectToQueryParams({ status, limit, page, sortBy, access })}`
       );
       return data.data;
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 30,
   });
 
   const refetchPosts = async () => {
@@ -156,7 +158,7 @@ export function useAuthor(username: string) {
       );
       return data.data;
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 30,
   });
 
   return { author, loading, isError, error, refetch };
@@ -190,7 +192,7 @@ export function useAuthorPosts({
       );
       return data.data;
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 30,
   });
 
   const refetchPosts = async () => {
@@ -215,7 +217,7 @@ export function usePost(slug: string) {
       );
       return data.data;
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 30,
   });
 
   const refetchPost = async () => {

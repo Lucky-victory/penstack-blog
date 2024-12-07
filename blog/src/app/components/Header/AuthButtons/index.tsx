@@ -1,8 +1,12 @@
+import { useAuth } from "@/src/hooks/useAuth";
 import { Link } from "@chakra-ui/next-js";
 import { Button, ButtonGroup, HStack } from "@chakra-ui/react";
 
 export const AuthButtons = () => {
-  return (
+  const { user } = useAuth();
+  return user ? (
+    <></>
+  ) : (
     <HStack spacing={4}>
       <Button
         rounded="full"

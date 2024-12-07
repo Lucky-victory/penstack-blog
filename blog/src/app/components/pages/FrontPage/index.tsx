@@ -9,7 +9,7 @@ const FrontPage = () => {
   return (
     <PageWrapper>
       <Box mb={12}>
-        <Box maxW="container.xl" mx="auto" px={{ base: 4, lg: 0 }} pt={2}>
+        <Box maxW="container.xl" mx="auto" px={{ base: 4, lg: 2 }} pt={2}>
           <FeaturedPostCard />
           <Heading my={8} size="lg">
             Recent Posts

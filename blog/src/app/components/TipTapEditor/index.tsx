@@ -21,6 +21,7 @@ import EditorHeader from "./Header";
 import ContentArea from "./ContentArea";
 import React from "react";
 import { debounce } from "lodash";
+import { PostCardExtension } from "@/src/lib/editor/extensions/post-card";
 
 function TipTapEditor({
   onUpdate,
@@ -51,6 +52,7 @@ function TipTapEditor({
       CharacterCount,
       TableOfContents,
       Media,
+      PostCardExtension,
     ],
     []
   );
