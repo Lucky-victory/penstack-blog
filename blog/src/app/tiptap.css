@@ -170,7 +170,7 @@
 
 .tiptap a {
   color: var(--chakra-colors-blue-500);
-  text-decoration: underline;
+  /* text-decoration: underline; */
 }
 
 @media (prefers-color-scheme: dark) {

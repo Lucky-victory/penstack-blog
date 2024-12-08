@@ -25,6 +25,7 @@ import { decode } from "html-entities";
 import { Link } from "@chakra-ui/next-js";
 import { useTrackView } from "@/src/hooks/useTrackView";
 import { objectToQueryParams } from "@/src/utils";
+import { ContentRenderer } from "../../ContentRenderer";
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   useTrackView(post.id);
@@ -197,10 +198,9 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                           {post.summary}
                         </Text>
                       )}
-                      <Box
-                        dangerouslySetInnerHTML={{
-                          __html: decode(post.content) as string,
-                        }}
+                      <ContentRenderer
+                        content={decode(post.content)}
+                        className="prose"
                       />
                     </Box>
                   </Box>
