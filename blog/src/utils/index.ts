@@ -2,6 +2,7 @@ import { formatDistanceToNowStrict, format } from "date-fns";
 import { SnowflakeIdGenerator } from "@green-auth/snowflake-unique-id";
 import { PostSelect } from "../types";
 import { type NextRequest } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 export function calculateReadingTime(content: string) {
   const wordsPerMinute = 238;
@@ -12,6 +13,7 @@ export function calculateReadingTime(content: string) {
 export function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, "");
 }
+
 type DatePart = "year" | "month" | "day" | "hour" | "minute" | "second";
 
 interface ConversionResult {
@@ -56,11 +58,14 @@ export function convertToDateFnsFormatAndSlug(input: string): ConversionResult {
   };
 }
 
-export const shortIdGenerator = new SnowflakeIdGenerator({
+export const snowflakeIdGenerator = new SnowflakeIdGenerator({
   nodeId: 10,
   sequenceBits: 20,
 });
-
+export const IdGenerator = {
+  bigIntId: snowflakeIdGenerator.bigIntId,
+  urlSafeId: () => uuidv4(),
+};
 export const debounce = <T extends (...args: any[]) => any>(
   func: T,
   wait: number
@@ -236,8 +241,8 @@ export function nullToEmptyString<T extends InputObject>(obj: T): T {
         item === null
           ? ""
           : typeof item === "object" && item !== null
-          ? nullToEmptyString(item as InputObject)
-          : item
+            ? nullToEmptyString(item as InputObject)
+            : item
       );
     } else if (typeof value === "object" && value !== null) {
       transformedValue =

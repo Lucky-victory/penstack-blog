@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import mysql from "mysql2/promise";
+import { v4 as uuidv4 } from "uuid";
 
 async function main() {
   const { DB_PORT, DB_USER_NAME, DB_USER_PASS, DB_HOST, DB_NAME } = process.env;
@@ -19,8 +20,8 @@ async function main() {
 
     console.log("Creating categories...");
     await db.query(
-      "INSERT INTO Categories (name,slug) VALUES (?,?) ON DUPLICATE KEY UPDATE name = VALUES(name), slug = VALUES(slug)",
-      ["Uncategorized", "uncategorized"]
+      "INSERT INTO Categories (id,name,slug) VALUES (?,?,?) ON DUPLICATE KEY UPDATE name = VALUES(name), slug = VALUES(slug)",
+      [1, "Uncategorized", "uncategorized"]
     );
 
     console.log("✅Categories created");
@@ -335,7 +336,7 @@ async function main() {
       console.log("✅ Admin user created:", adminUser);
       try {
         await db.query(
-          "INSERT INTO Posts (title,content,slug,author_id,status,category_id) VALUES(?,?,?,?,?,?)",
+          "INSERT INTO Posts (title,content,slug,author_id,status,category_id,post_id) VALUES(?,?,?,?,?,?,?)",
           [
             "Welcome to my blog",
             "This is your first post, edit or delete it",
@@ -343,6 +344,7 @@ async function main() {
             adminUser.auth_id,
             "published",
             1,
+            uuidv4(),
           ]
         );
         console.log("✅ Post created successfully");

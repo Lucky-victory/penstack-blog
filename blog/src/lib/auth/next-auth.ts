@@ -187,8 +187,8 @@ const authOptions: AuthOptions = {
       return {
         ...token,
         id: user?.id || (token?.sub as string),
-        sub: user?.id || (token?.sub as string),
-        role_id: user?.role_id,
+
+        role_id: user?.role_id || (token?.role_id as number),
       };
     },
     async session({ session, token }) {
@@ -197,7 +197,7 @@ const authOptions: AuthOptions = {
         user: {
           ...session.user,
           id: token?.id,
-          sub: token?.id,
+
           role_id: token?.role_id,
         },
       };

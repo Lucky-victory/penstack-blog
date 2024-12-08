@@ -6,7 +6,7 @@ import { PostSelect } from "@/src/types";
 import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
-export const revalidate = 3600; // revalidate every hour
+// export const revalidate = 3600; // revalidate every hour
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

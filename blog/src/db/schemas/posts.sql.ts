@@ -1,4 +1,4 @@
-import { shortIdGenerator } from "@/src/utils";
+import { IdGenerator } from "@/src/utils";
 import { relations, sql } from "drizzle-orm";
 import {
   mysqlTable,
@@ -25,7 +25,7 @@ export const posts = mysqlTable(
     summary: varchar("summary", { length: 255 }),
     seo_meta_id: int("meta_id"),
     post_id: varchar("post_id", { length: 255 }).$defaultFn(() =>
-      shortIdGenerator.urlSafeId(18)
+      IdGenerator.urlSafeId(18)
     ),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     status: mysqlEnum("status", ["draft", "published", "deleted"]).default(

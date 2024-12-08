@@ -4,7 +4,7 @@ import { posts, users } from "@/src/db/schemas";
 import { getSession } from "@/src/lib/auth/next-auth";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { PostSelect } from "@/src/types";
-import { shortIdGenerator } from "@/src/utils";
+import { IdGenerator } from "@/src/utils";
 import { eq } from "drizzle-orm";
 import { Metadata } from "next";
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Dashboard | New Post",
 };
 export default async function DashboardNewPostPage() {
-  const shortId = shortIdGenerator.bigIntId().substring(6, 12);
+  const shortId = IdGenerator.bigIntId().substring(6, 12);
   try {
     const session = await getSession();
     if (!session?.user?.email) {

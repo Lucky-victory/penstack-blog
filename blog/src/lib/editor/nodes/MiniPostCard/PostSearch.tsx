@@ -11,19 +11,32 @@ import {
   HStack,
   Image,
   Text,
+  VStack,
+  useColorModeValue,
+  Button,
 } from "@chakra-ui/react";
+import { Editor } from "@tiptap/react";
 import { debounce } from "lodash";
 import { useState, useCallback } from "react";
 import { LuSearch } from "react-icons/lu";
 
-export const PostSearch = ({
-  onSelect,
+interface PostCardAttrs {
+  postId: number | null;
+  customTitle?: string;
+}
+
+export const PostSearchBlock = ({
+  editor,
+  node,
+  getPos,
 }: {
-  onSelect: (post: PostSelect) => void;
+  editor: Editor;
+  node: { attrs: PostCardAttrs };
+  getPos: () => number;
 }) => {
-  const [query, setQuery] = useState("");
-  const [posts, setPosts] = useState<PostSelect[]>([]);
   const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState<PostSelect[]>([]);
+  const [query, setQuery] = useState("");
 
   const searchPosts = useCallback(
     debounce(async (searchQuery: string) => {
@@ -37,7 +50,7 @@ export const PostSearch = ({
           `/api/posts/search?q=${searchQuery}&limit=5`
         );
         const { data } = await response.json();
-        setPosts(data);
+        setPosts(data.data);
       } catch (error) {
         console.error("Search failed:", error);
       }
@@ -45,34 +58,57 @@ export const PostSearch = ({
     }, 300),
     []
   );
-  console.log(posts);
-  return (
-    <Box position="relative" width="100%">
-      <InputGroup>
-        <Input
-          placeholder="Search posts..."
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            searchPosts(e.target.value);
-          }}
-        />
-        <InputRightElement>
-          {loading ? <Spinner size="sm" /> : <LuSearch />}
-        </InputRightElement>
-      </InputGroup>
 
-      {posts.length > 0 && (
-        <Menu isOpen>
-          <MenuList maxH="300px" overflowY="auto">
+  const selectPost = (post: PostSelect) => {
+    const pos = getPos();
+    editor
+      .chain()
+      .focus()
+      .setNodeSelection(pos)
+      .command(({ tr }) => {
+        tr.setNodeMarkup(pos, undefined, {
+          ...node.attrs,
+          postId: post.id,
+        });
+        return true;
+      })
+      .run();
+  };
+
+  return (
+    <Box
+      p={4}
+      border="2px"
+      borderStyle="dashed"
+      borderColor={useColorModeValue("gray.200", "gray.700")}
+      rounded="lg"
+    >
+      <VStack spacing={4}>
+        <Text>Search and select a post to embed</Text>
+        <InputGroup>
+          <Input
+            placeholder="Search posts..."
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              searchPosts(e.target.value);
+            }}
+          />
+          <InputRightElement>
+            {loading ? <Spinner size="sm" /> : <LuSearch />}
+          </InputRightElement>
+        </InputGroup>
+
+        {posts.length > 0 && (
+          <VStack align="stretch" width="100%">
             {posts.map((post) => (
-              <MenuItem
+              <Button
                 key={post.id}
-                onClick={() => {
-                  onSelect(post);
-                  setQuery("");
-                  setPosts([]);
-                }}
+                onClick={() => selectPost(post)}
+                variant="ghost"
+                justifyContent="flex-start"
+                height="auto"
+                py={2}
               >
                 <HStack spacing={3}>
                   {post.featured_image && (
@@ -86,11 +122,11 @@ export const PostSearch = ({
                   )}
                   <Text>{post.title}</Text>
                 </HStack>
-              </MenuItem>
+              </Button>
             ))}
-          </MenuList>
-        </Menu>
-      )}
+          </VStack>
+        )}
+      </VStack>
     </Box>
   );
 };

@@ -18,7 +18,6 @@ import AuthProvider from "../providers/auth";
 import { getSession } from "../lib/auth/next-auth";
 import { SiteConfigProvider } from "../context/SiteConfig";
 import { getSettings } from "../lib/settings";
-import { DEFAULT_SETTINGS } from "../types";
 
 export default async function RootLayout({
   children,
@@ -33,9 +32,7 @@ export default async function RootLayout({
       className={`${fonts.rubik.variable} ${fonts.karla.variable}`}
     >
       <body>
-        <SiteConfigProvider
-          initialConfig={{ ...DEFAULT_SETTINGS, ...initialConfig }}
-        >
+        <SiteConfigProvider initialConfig={initialConfig}>
           <AuthProvider session={session}>
             <ReactQueryClient>
               <Providers>{children}</Providers>

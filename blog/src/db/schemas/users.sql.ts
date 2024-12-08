@@ -9,7 +9,7 @@ import {
 import { relations } from "drizzle-orm";
 
 import { posts } from "./posts.sql";
-import { shortIdGenerator } from "@/src/utils";
+import { IdGenerator } from "@/src/utils";
 
 export const users = mysqlTable("Users", {
   id: int("id").autoincrement().primaryKey(),
@@ -26,7 +26,7 @@ export const users = mysqlTable("Users", {
     enum: ["active", "deleted", "banned", "inactive"],
   }).default("active"),
   auth_id: varchar("auth_id", { length: 100 }).$defaultFn(() =>
-    shortIdGenerator.bigIntId()
+    IdGenerator.bigIntId()
   ),
   email_verified: boolean("email_verified").default(false),
   auth_type: mysqlEnum("auth_type", [

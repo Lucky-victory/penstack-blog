@@ -47,6 +47,7 @@
     "formik": "^2.4.6",
     "framer-motion": "^11.3.13",
     "html-entities": "^2.5.2",
+    "html-react-parser": "^5.2.0",
     "just-is-empty": "^3.4.1",
     "lowlight": "^3.1.0",
     "mysql2": "^3.10.3",
@@ -69,7 +70,8 @@
     "swiper": "^11.1.15",
     "tippy.js": "^6.3.7",
     "turndown": "^7.2.0",
-    "ua-parser-js": "2.0.0-rc.1"
+    "ua-parser-js": "2.0.0-rc.1",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

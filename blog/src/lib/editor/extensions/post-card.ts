@@ -4,7 +4,7 @@ import { PostCard } from "../nodes/MiniPostCard/PostCard";
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     post: {
-      insertPostCard: (postId: number | string) => ReturnType;
+      insertPostCard: (postId?: number | string | null) => ReturnType;
     };
   }
 }
@@ -12,6 +12,7 @@ export const PostCardExtension = Node.create({
   name: "postCard",
   group: "block",
   atom: true,
+
   addAttributes() {
     return {
       postId: { default: null },
@@ -41,11 +42,11 @@ export const PostCardExtension = Node.create({
   addCommands() {
     return {
       insertPostCard:
-        (postId: number | string) =>
+        () =>
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
-            attrs: { postId },
+            attrs: { postId: null },
           });
         },
     };
