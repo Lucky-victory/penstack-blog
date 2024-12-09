@@ -63,7 +63,7 @@ export const snowflakeIdGenerator = new SnowflakeIdGenerator({
   sequenceBits: 20,
 });
 export const IdGenerator = {
-  bigIntId: snowflakeIdGenerator.bigIntId,
+  bigIntId: () => snowflakeIdGenerator.bigIntId(),
   urlSafeId: () => uuidv4(),
 };
 export const debounce = <T extends (...args: any[]) => any>(

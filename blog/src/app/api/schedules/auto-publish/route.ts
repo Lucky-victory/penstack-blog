@@ -3,7 +3,7 @@ import { posts } from "@/src/db/schemas";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function PUT(req: NextRequest) {
   try {
     const { post_id } = (await req.json()) as { post_id: string };
     if (!post_id) {

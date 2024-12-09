@@ -8,7 +8,7 @@ export interface CronJobPayload {
     saveResponses?: boolean;
     schedule?: {
       timezone?: string;
-      expiresAt?: number;
+      expiresAt?: number | string;
       hours?: number[];
       mdays?: number[];
       minutes?: number[];
