@@ -22,6 +22,7 @@ import { filterEditorActions } from "@/src/lib/editor-actions";
 import { MediaInsert } from "./MediaInsert";
 import { extractContentAndLinkMark } from "@/src/utils";
 import { PostCardButton } from "@/src/lib/editor/nodes/MiniPostCard/PostCardButton";
+import { MediaButton } from "@/src/lib/editor/nodes/media/MediaButton";
 
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
   const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);
@@ -156,6 +157,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         </IconButton>
       </Tooltip>
       <PostCardButton editor={editor} />
+      <MediaButton editor={editor} />
     </HStack>
   );
 };

@@ -13,7 +13,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
 
 import { TableOfContents } from "@/src/lib/editor/extensions/toc";
-import { Media } from "@/src/lib/editor/extensions/media";
+import { MediaExtension } from "@/src/lib/editor/extensions/media";
 import MenuBar from "./MenuBar";
 import { SidebarContent } from "./Sidebar";
 import { EditorWrapper } from "./Wrapper";
@@ -51,7 +51,7 @@ function TipTapEditor({
       Highlight,
       CharacterCount,
       TableOfContents,
-      Media,
+      MediaExtension,
       PostCardExtension,
     ],
     []

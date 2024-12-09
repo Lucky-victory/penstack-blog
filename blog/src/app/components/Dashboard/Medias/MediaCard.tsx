@@ -76,6 +76,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({
         rounded={20}
         overflow={"hidden"}
         boxShadow={selected ? "outline" : "none"}
+        onClick={() => {
+          handleSelectClick();
+        }}
         sx={{
           "&:hover": {
             ".media-card-select": {

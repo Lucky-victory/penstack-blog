@@ -60,8 +60,13 @@ const FilePreview = ({
         );
       case "video":
         return (
-          <video className="w-full rounded-lg" controls preload="metadata">
-            <source src={file.url} type={file.mime_type || ""} />
+          <video
+            className="w-full rounded-lg max-h-96"
+            controls
+            preload="metadata"
+            src={file.url}
+          >
+            {/* <source src={file.url} type={file.mime_type || ""} /> */}
             Your browser does not support the video tag.
           </video>
         );
@@ -120,14 +125,14 @@ const FilePreview = ({
                     <p className="text-gray-500">Type</p>
                     <p className="font-medium">{file.mime_type}</p>
                   </div>
+                  <div>
+                    <p className="text-gray-500">Dimensions</p>
+                    <p className="font-medium">
+                      {file.width} × {file.height}
+                    </p>
+                  </div>
                   {file.type === "image" && (
                     <>
-                      <div>
-                        <p className="text-gray-500">Dimensions</p>
-                        <p className="font-medium">
-                          {file.width} × {file.height}
-                        </p>
-                      </div>
                       <div>
                         <p className="text-gray-500">Alt Text</p>
                         <p className="font-medium">{file.alt_text || "None"}</p>

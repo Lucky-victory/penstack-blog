@@ -1,66 +1,53 @@
-import { Node, mergeAttributes } from "@tiptap/core";
-import { ReactNodeViewRenderer } from "@tiptap/react";
-import { MediaComponent } from "../nodes/MediaComponent";
+import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
+import { MediaComponent } from "../nodes/media/MediaComponent";
 
-export interface MediaOptions {
-  HTMLAttributes: Record<string, any>;
-}
+type MediaPosition = "inline" | "block" | "left" | "right" | "center";
+type MediaSize = "small" | "large" | "full";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     media: {
-      setMedia: (options: {
-        src: string;
-        alt?: string;
-        title?: string;
+      insertMedia: (options: {
+        url?: string;
+        type?: "image" | "video";
+        position?: MediaPosition;
+        size?: MediaSize;
         width?: number;
         height?: number;
-        align?: "left" | "center" | "right";
+        alt?: string;
       }) => ReturnType;
     };
   }
 }
 
-export const Media = Node.create<MediaOptions>({
-  name: "mediaBlock",
+export const MediaExtension = Node.create({
+  name: "media",
   group: "block",
-  draggable: true,
-  selectable: true,
+  atom: true,
 
   addAttributes() {
     return {
-      src: {
-        default: null,
-      },
-      alt: {
-        default: null,
-      },
-      title: {
-        default: null,
-      },
-      width: {
-        default: "auto",
-      },
-      height: {
-        default: "auto",
-      },
-      align: {
-        default: "center",
-        rendered: false,
-      },
+      url: { default: null },
+      type: { default: "image" },
+      position: { default: "block" },
+      size: { default: "large" },
+      width: { default: null },
+      height: { default: null },
+      alt: { default: "" },
+      caption: { default: "" },
     };
   },
 
   parseHTML() {
     return [
       {
-        tag: 'img[data-type="media"]',
+        tag: 'div[data-type="media"]',
       },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["img", mergeAttributes(HTMLAttributes, { "data-type": "media" })];
+    return ["div", mergeAttributes(HTMLAttributes, { "data-type": "media" })];
   },
 
   addNodeView() {
@@ -69,12 +56,12 @@ export const Media = Node.create<MediaOptions>({
 
   addCommands() {
     return {
-      setMedia:
-        (options) =>
+      insertMedia:
+        (options = {}) =>
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
-            attrs: options,
+            attrs: { ...options },
           });
         },
     };
