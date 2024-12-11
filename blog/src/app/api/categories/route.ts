@@ -1,14 +1,72 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/src/db";
-import { categories } from "@/src/db/schemas/posts.sql";
-import { eq, sql } from "drizzle-orm";
+import { categories, posts } from "@/src/db/schemas/posts.sql";
+import { and, eq, sql } from "drizzle-orm";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 20;
+  const sort = searchParams.get("sort") || "name";
+  const offset = (page - 1) * limit;
+
   try {
-    const allCategories = await db.select().from(categories);
+    const totalResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(categories);
+    const total = Number(totalResult[0].count);
+
+    let query = db.query.categories.findMany({
+      limit,
+      offset,
+      with: {
+        posts: {
+          columns: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    let allCategories;
+
+    if (sort === "popular") {
+      const categoriesWithCount = db.$with("categoriesWithCount").as(
+        db
+          .select({
+            id: categories.id,
+            name: categories.name,
+            slug: categories.slug,
+            postCount: sql<number>`count(posts.id)`.as("post_count"),
+          })
+          .from(categories)
+          .leftJoin(posts, eq(posts.category_id, categories.id))
+          .groupBy(categories.id)
+          .orderBy(sql`post_count DESC`)
+          .limit(limit)
+          .offset(offset)
+      );
+
+      allCategories = await db
+        .with(categoriesWithCount)
+        .select()
+        .from(categoriesWithCount);
+    } else {
+      allCategories = await query;
+    }
+
     return NextResponse.json(
-      { data: allCategories, message: "All categories fetched successfully" },
+      {
+        data: allCategories,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+        message: "All categories fetched successfully",
+      },
       { status: 200 }
     );
   } catch (error) {
@@ -18,7 +76,6 @@ export async function GET() {
     );
   }
 }
-
 export async function POST(request: NextRequest) {
   return await checkPermission(
     { requiredPermission: "posts:create" },

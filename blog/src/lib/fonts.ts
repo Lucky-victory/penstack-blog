@@ -1,12 +1,12 @@
-import { Rubik, Karla, Fira_Sans } from "next/font/google";
+import { Rubik, Gabarito } from "next/font/google";
 
 const rubik = Rubik({
   subsets: ["latin"],
   variable: "--font-rubik",
 });
-const karla = Fira_Sans({
+const karla = Gabarito({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-karla",
 });
 export const fonts = {

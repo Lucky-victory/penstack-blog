@@ -84,40 +84,6 @@ export const MediaComponent: React.FC<MediaComponentProps> = ({
         >
           <VStack spacing={4}>
             <FormControl>
-              <FormLabel>Media URL</FormLabel>
-              <Input
-                placeholder="Enter media URL..."
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>Type</FormLabel>
-              <Select
-                value={node.attrs.type}
-                onChange={(e) => updateAttributes({ type: e.target.value })}
-              >
-                <option value="image">Image</option>
-                <option value="video">Video</option>
-              </Select>
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>Position</FormLabel>
-              <Select
-                value={node.attrs.position}
-                onChange={(e) => updateAttributes({ position: e.target.value })}
-              >
-                <option value="block">Block</option>
-                <option value="inline">Inline</option>
-                <option value="left">Left</option>
-                <option value="right">Right</option>
-                <option value="center">Center</option>
-              </Select>
-            </FormControl>
-
-            <FormControl>
               <FormLabel>Size</FormLabel>
               <Select
                 value={node.attrs.size}

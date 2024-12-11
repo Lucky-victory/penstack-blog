@@ -4,12 +4,13 @@ import { objectToQueryParams } from "../utils";
 
 export const useCategories = (
   params: {
-    sort?: "relevant" | "recent" | "popular";
+    sort?: "name" | "popular";
     page?: number;
+    limit?: number;
   } = {}
 ) => {
   return useQuery({
-    queryKey: ["categories"],
+    queryKey: ["categories", params],
     queryFn: async () => {
       const { data } = await axios.get<{
         data: { id: number; name: string; slug: string }[];

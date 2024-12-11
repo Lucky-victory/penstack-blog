@@ -16,6 +16,7 @@ import {
   Select,
   useColorModeValue,
   Skeleton,
+  Spinner,
 } from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
 import { useQueryParams } from "@/src/hooks";
@@ -87,7 +88,7 @@ const SearchResults = () => {
               bg={bgColor}
               borderColor={borderColor}
               onChange={handleSearch}
-              value={queryParams?.q}
+              value={queryParams?.q || ""}
               _hover={{
                 borderColor: useColorModeValue("blue.500", "blue.300"),
               }}
@@ -95,7 +96,7 @@ const SearchResults = () => {
             <InputRightElement>
               <IconButton
                 aria-label="Search"
-                icon={<LuSearch />}
+                icon={isLoading ? <Spinner size="sm" /> : <LuSearch />}
                 variant="ghost"
               />
             </InputRightElement>
@@ -154,7 +155,7 @@ const SearchResults = () => {
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
           {!isLoading &&
             searchResults?.map((post) => (
-              <NewPostCard key={post.id} post={post} showBookmark={false} />
+              <PostCard key={post.id} post={post} />
             ))}
           {isLoading &&
             [...Array(6)].map((_, i) => (

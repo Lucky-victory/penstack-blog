@@ -1,7 +1,8 @@
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
-import { MediaComponent } from "../nodes/media/MediaComponent";
+import { MediaComp2 } from "../nodes/media/MediaComp2";
 
 type MediaPosition = "inline" | "block" | "left" | "right" | "center";
+type MediaAlign = "left" | "right" | "center";
 type MediaSize = "small" | "large" | "full";
 
 declare module "@tiptap/core" {
@@ -11,10 +12,12 @@ declare module "@tiptap/core" {
         url?: string;
         type?: "image" | "video";
         position?: MediaPosition;
+        align?: MediaAlign;
         size?: MediaSize;
         width?: number;
         height?: number;
         alt?: string;
+        caption?: string;
       }) => ReturnType;
     };
   }
@@ -51,7 +54,7 @@ export const MediaExtension = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(MediaComponent);
+    return ReactNodeViewRenderer(MediaComp2);
   },
 
   addCommands() {

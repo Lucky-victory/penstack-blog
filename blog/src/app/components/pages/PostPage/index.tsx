@@ -58,13 +58,6 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
           maxW={1400}
           mx="auto"
         >
-          {/* <Button
-            onClick={() => {
-              signOut();
-            }}
-          >
-            signout{" "}
-          </Button> */}
           <Container maxW="container.xl">
             <Box minH={300}>
               <ChakraImage
@@ -87,21 +80,11 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                 maxH={600}
                 minH={"300px"}
                 objectFit={"cover"}
-                roundedTop={{ base: 20, md: 24 }}
               />
             </Box>
 
-            <Box
-              // mt={{ base: -16, md: -20 }}
-              pos={"relative"}
-              // px={{ base: 2, sm: 3, md: 3, lg: 5 }}
-              zIndex={2}
-            >
-              <Box
-                bg={postContentBg}
-                // rounded={{ base: 20, md: 24 }}
-                p={{ base: 2, sm: 3, md: 4, lg: 6 }}
-              >
+            <Box pos={"relative"} zIndex={2}>
+              <Box bg={postContentBg}>
                 <Flex gap={{ base: 4, md: 6 }}>
                   <VStack
                     shadow={{ base: "lg", md: "none" }}
@@ -143,7 +126,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                       </Text>
                     </Box>
                   </VStack>
-                  <Box as="article" px={4}>
+                  <Box as="article">
                     <HStack my={4} gap={{ base: 5, md: 7 }} ml={0}>
                       {post?.category?.name && (
                         <Tag
@@ -152,8 +135,6 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                           borderRadius="md"
                           px={3}
                           py={1}
-                          // bg={useColorModeValue("blue.50", "black")}
-                          // color={useColorModeValue("blue.600", "blue.300")}
                           textTransform={"capitalize"}
                         >
                           {post.category.name}
@@ -209,23 +190,19 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             </Box>
 
             <Box
-              // mt={-10}
               pos={"relative"}
-              px={{ base: 3, md: 4 }}
               py={{ base: 4, md: 6 }}
               borderTop={"1px"}
               borderColor={borderColor}
-              // pt={10}
               bg={postContentBg}
-              roundedBottom={{ base: 20, md: 24 }}
             >
-              <VStack align={"start"} px={{ base: 2, md: 3 }} py={4}>
+              <VStack align={"start"} py={4}>
                 <Heading size="md">Written By</Heading>
 
                 <Flex mb={4}>
                   <Link href={`/author/${post.author.username}`}>
                     <Avatar
-                      rounded={"md"}
+                      rounded={"full"}
                       src={post.author.avatar}
                       name={post.author.name}
                       mr={4}
