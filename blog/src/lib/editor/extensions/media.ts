@@ -1,5 +1,6 @@
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
 import { MediaComp2 } from "../nodes/media/MediaComp2";
+import { MediaComponent } from "../nodes/media/MediaComponent";
 
 type MediaPosition = "inline" | "block" | "left" | "right" | "center";
 type MediaAlign = "left" | "right" | "center";
@@ -49,12 +50,12 @@ export const MediaExtension = Node.create({
     ];
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ HTMLAttributes, node }) {
     return ["div", mergeAttributes(HTMLAttributes, { "data-type": "media" })];
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(MediaComp2);
+    return ReactNodeViewRenderer(MediaComponent);
   },
 
   addCommands() {

@@ -1,4 +1,4 @@
-import { useEditor } from "@tiptap/react";
+import { BubbleMenu, FloatingMenu, useEditor } from "@tiptap/react";
 import { Box, Flex, Hide } from "@chakra-ui/react";
 
 import { useMemo } from "react";
@@ -83,6 +83,13 @@ function TipTapEditor({
         <EditorWrapper>
           <MenuBar editor={editor} />
           <ContentArea editor={editor} />
+          <FloatingMenu editor={editor}>this is a floating menu</FloatingMenu>
+          <BubbleMenu
+            editor={editor}
+            shouldShow={(props) => props.editor.isActive("media")}
+          >
+            this is a bubble menu
+          </BubbleMenu>
         </EditorWrapper>
         <Hide below="lg">
           <SidebarContent editor={editor} />

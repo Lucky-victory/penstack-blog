@@ -1,21 +1,14 @@
 import React, { useCallback, useState } from "react";
-import {
-  Box,
-  Input,
-  VStack,
-  Image,
-  Button,
-  AspectRatio,
-  Select,
-  NumberInput,
-  NumberInputField,
-  FormControl,
-  FormLabel,
-  useColorModeValue,
-  useDisclosure,
-} from "@chakra-ui/react";
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react";
-import { MediaModal } from "@/src/app/components/TipTapEditor/MenuBar/MediaInsert";
+import {
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  Trash2,
+  Image as ImageIcon,
+  GripVertical,
+} from "lucide-react";
 import { MediaResponse } from "@/src/types";
 
 interface MediaComponentProps extends NodeViewProps {
@@ -31,119 +24,141 @@ const sizeToWidth = {
 export const MediaComponent: React.FC<MediaComponentProps> = ({
   node,
   updateAttributes,
+  deleteNode,
 }) => {
-  const {
-    isOpen: isMediaModalOpen,
-    onClose: onMediaModalClose,
-    onOpen: onMediaModalOpen,
-  } = useDisclosure();
+  const [isDragging, setIsDragging] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [dimensions, setDimensions] = useState({
+    width: node.attrs.width || sizeToWidth[node.attrs.size],
+    height: node.attrs.height || "auto",
+  });
 
-  const [url, setUrl] = useState(node?.attrs?.url || "");
-  const bgColor = useColorModeValue("gray.50", "gray.800");
-  const borderColor = useColorModeValue("gray.200", "gray.700");
-  const [medias, setMedias] = useState<MediaResponse[]>([]);
-  const getPositionStyles = (position: string) => {
-    switch (position) {
-      case "left":
-        return { float: "left", marginRight: "1rem" };
-      case "right":
-        return { float: "right", marginLeft: "1rem" };
-      case "center":
-        return { margin: "0 auto" };
-      case "inline":
-        return { display: "inline-block", verticalAlign: "middle" };
-      default:
-        return { display: "block" };
-    }
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    setStartPos({ x: e.clientX, y: e.clientY });
   };
-  const handleMediasSelect = useCallback(
-    (medias: MediaResponse | MediaResponse[]) => {
-      if (Array.isArray(medias) && medias.length > 0) {
-        setMedias(medias);
-        medias.map((media) => {
-          updateAttributes({
-            url: media?.url,
-            alt: media?.name,
-            title: media?.caption as string,
-            type: media.type,
-          });
-        });
-      }
+
+  const handleResize = useCallback(
+    (e: MouseEvent) => {
+      if (!isDragging) return;
+
+      const deltaX = e.clientX - startPos.x;
+      const currentWidth = parseFloat(dimensions.width);
+      const newWidth = Math.max(200, currentWidth + deltaX);
+
+      setDimensions((prev) => ({
+        ...prev,
+        width: `${newWidth}px`,
+      }));
+
+      updateAttributes({ width: `${newWidth}px` });
     },
-    []
+    [isDragging, startPos, dimensions, updateAttributes]
   );
+
+  const handleResizeEnd = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  React.useEffect(() => {
+    if (isDragging) {
+      window.addEventListener("mousemove", handleResize);
+      window.addEventListener("mouseup", handleResizeEnd);
+      return () => {
+        window.removeEventListener("mousemove", handleResize);
+        window.removeEventListener("mouseup", handleResizeEnd);
+      };
+    }
+  }, [isDragging, handleResize, handleResizeEnd]);
+
+  const handleAlign = (position: string) => {
+    updateAttributes({ position });
+  };
+
   if (!node.attrs.url) {
     return (
       <NodeViewWrapper>
-        <Box
-          p={4}
-          border="2px"
-          borderStyle="dashed"
-          borderColor={borderColor}
-          rounded="lg"
-        >
-          <VStack spacing={4}>
-            <FormControl>
-              <FormLabel>Size</FormLabel>
-              <Select
-                value={node.attrs.size}
-                onChange={(e) => updateAttributes({ size: e.target.value })}
-              >
-                <option value="small">Small</option>
-                <option value="large">Large</option>
-                <option value="full">Full Width</option>
-              </Select>
-            </FormControl>
-
-            <Button colorScheme="blue" onClick={() => onMediaModalOpen()}>
-              Insert Media
-            </Button>
-          </VStack>
-        </Box>
-        <MediaModal
-          isOpen={isMediaModalOpen}
-          onClose={onMediaModalClose}
-          onSelect={(medias) => {
-            handleMediasSelect(medias);
-            onMediaModalClose();
-          }}
-        />
+        <div className="flex items-center justify-center w-full p-4 border-2 border-dashed border-gray-300 rounded-lg">
+          <button
+            onClick={() => {
+              /* Implement media modal open */
+            }}
+            className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
+          >
+            <ImageIcon className="w-4 h-4 mr-2 inline-block" />
+            Insert Media
+          </button>
+        </div>
       </NodeViewWrapper>
     );
   }
 
-  const containerStyle = {
-    ...getPositionStyles(node.attrs.position),
-    width: node.attrs.width || sizeToWidth[node.attrs.size],
-    maxWidth: "100%",
-  };
-
   return (
-    <>
-      <NodeViewWrapper>
-        <Box
-          style={containerStyle}
-          position="relative"
-          className="media-container"
-        >
+    <NodeViewWrapper>
+      <div className="group relative" style={{ width: dimensions.width }}>
+        {/* Floating Toolbar */}
+        <div className="absolute -top-10 left-0 hidden group-hover:flex items-center gap-2 bg-white shadow-lg rounded-lg p-2 z-50">
+          <button
+            onClick={() => handleAlign("left")}
+            className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "left" ? "bg-gray-200" : ""}`}
+          >
+            <AlignLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => handleAlign("center")}
+            className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "center" ? "bg-gray-200" : ""}`}
+          >
+            <AlignCenter className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => handleAlign("right")}
+            className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "right" ? "bg-gray-200" : ""}`}
+          >
+            <AlignRight className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => handleAlign("inline")}
+            className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "inline" ? "bg-gray-200" : ""}`}
+          >
+            <AlignJustify className="w-4 h-4" />
+          </button>
+          <div className="w-px h-4 bg-gray-200" />
+          <button
+            onClick={() => deleteNode()}
+            className="p-1 rounded hover:bg-red-100 text-red-600"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Media Content */}
+        <div className="relative">
           {node.attrs.type === "image" ? (
-            <Image
+            <img
               src={node.attrs.url}
               alt={node.attrs.alt}
-              width="100%"
-              height={node.attrs.height || "auto"}
-              objectFit="cover"
+              className="w-full h-auto object-cover"
+              style={{ height: dimensions.height }}
             />
           ) : (
-            <AspectRatio ratio={16 / 9}>
-              <video controls width="100%" height={node.attrs.height || "auto"}>
+            <div className="aspect-w-16 aspect-h-9">
+              <video controls className="w-full h-full">
                 <source src={node.attrs.url} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-            </AspectRatio>
+            </div>
           )}
-        </Box>
-      </NodeViewWrapper>
-    </>
+
+          {/* Resize Handle */}
+          <div
+            className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize opacity-0 group-hover:opacity-100"
+            onMouseDown={handleResizeStart}
+          >
+            <GripVertical className="w-4 h-4 text-gray-500" />
+          </div>
+        </div>
+      </div>
+    </NodeViewWrapper>
   );
 };
