@@ -20,7 +20,7 @@ import { debounce } from "lodash";
 import { LuSearch } from "react-icons/lu";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { MiniPostCardRenderer } from "@/src/app/components/ContentRenderer/MiniPostCardRenderer";
+import { MiniPostCardRenderer } from "@/src/app/components/Renderers/MiniPostCardRenderer";
 
 interface PostCardProps extends NodeViewProps {
   isRendering?: boolean;

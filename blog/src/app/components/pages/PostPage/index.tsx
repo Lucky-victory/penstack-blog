@@ -25,7 +25,7 @@ import { decode } from "html-entities";
 import { Link } from "@chakra-ui/next-js";
 import { useTrackView } from "@/src/hooks/useTrackView";
 import { objectToQueryParams } from "@/src/utils";
-import { ContentRenderer } from "../../ContentRenderer";
+import { ContentRenderer } from "../../Renderers/ContentRenderer";
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   useTrackView(post.id);

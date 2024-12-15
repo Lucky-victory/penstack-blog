@@ -22,6 +22,7 @@ import ContentArea from "./ContentArea";
 import React from "react";
 import { debounce } from "lodash";
 import { PostCardExtension } from "@/src/lib/editor/extensions/post-card";
+import { YouTubeExtension } from "@/src/lib/editor/extensions/youtube-embed";
 
 function TipTapEditor({
   onUpdate,
@@ -53,6 +54,7 @@ function TipTapEditor({
       TableOfContents,
       MediaExtension,
       PostCardExtension,
+      YouTubeExtension,
     ],
     []
   );

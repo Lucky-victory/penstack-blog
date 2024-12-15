@@ -4,7 +4,8 @@ import parse, {
   HTMLReactParserOptions,
   Element,
 } from "html-react-parser";
-import { MiniPostCardRenderer } from "./MiniPostCardRenderer";
+import { MiniPostCardRenderer } from "../MiniPostCardRenderer";
+import { YouTubeEmbed } from "../YoutubeEmbedRenderer";
 
 interface ContentRendererProps {
   content: string;
@@ -26,6 +27,18 @@ export const ContentRenderer: React.FC<ContentRendererProps> = ({
                 attrs: {
                   postId: domNode.attribs.postid,
                   customTitle: domNode.attribs.customtitle,
+                },
+              }}
+            />
+          );
+        }
+        if (domNode.attribs["data-type"] === "youtube-embed") {
+          return (
+            <YouTubeEmbed isEditing={false}
+              node={{
+                attrs: {
+                  videoId: domNode.attribs.videoid,
+                  title: domNode.attribs.title,
                 },
               }}
             />
