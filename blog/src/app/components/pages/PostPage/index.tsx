@@ -28,7 +28,7 @@ import { objectToQueryParams } from "@/src/utils";
 import { ContentRenderer } from "../../Renderers/ContentRenderer";
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
-  useTrackView(post.id);
+  // useTrackView(post.id);
   const postContentBg = useColorModeValue("white", "gray.900");
   const borderColor = useColorModeValue("gray.200", "gray.800");
   const authorTextColor = useColorModeValue("gray.800", "gray.300");
@@ -89,6 +89,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                   <VStack
                     shadow={{ base: "lg", md: "none" }}
                     gap={{ base: 8, md: 12 }}
+                    zIndex={{ base: 1000, md: 0 }}
                     pos={{ base: "fixed", md: "relative" }}
                     top={"50%"}
                     transform={{ base: "translateY(-50%)", md: "none" }}
@@ -126,7 +127,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                       </Text>
                     </Box>
                   </VStack>
-                  <Box as="article">
+                  <Box as="article" flex={1}>
                     <HStack my={4} gap={{ base: 5, md: 7 }} ml={0}>
                       {post?.category?.name && (
                         <Tag
@@ -168,7 +169,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                       )}
                     </Box>
 
-                    <Box className="prose" maxW="none" pb={8}>
+                    <Box maxW="none" pb={8}>
                       {post.summary && (
                         <Text
                           fontSize="xl"
@@ -179,10 +180,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                           {post.summary}
                         </Text>
                       )}
-                      <ContentRenderer
-                        content={decode(post.content)}
-                        className="prose"
-                      />
+                      <ContentRenderer content={decode(post.content)} />
                     </Box>
                   </Box>
                 </Flex>

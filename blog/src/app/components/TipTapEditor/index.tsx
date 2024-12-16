@@ -23,6 +23,7 @@ import React from "react";
 import { debounce } from "lodash";
 import { PostCardExtension } from "@/src/lib/editor/extensions/post-card";
 import { YouTubeExtension } from "@/src/lib/editor/extensions/youtube-embed";
+import { TwitterExtension } from "@/src/lib/editor/extensions/tweet-embed";
 
 function TipTapEditor({
   onUpdate,
@@ -55,6 +56,7 @@ function TipTapEditor({
       MediaExtension,
       PostCardExtension,
       YouTubeExtension,
+      // TwitterExtension,
     ],
     []
   );

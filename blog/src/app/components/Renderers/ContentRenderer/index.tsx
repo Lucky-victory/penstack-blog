@@ -6,6 +6,8 @@ import parse, {
 } from "html-react-parser";
 import { MiniPostCardRenderer } from "../MiniPostCardRenderer";
 import { YouTubeEmbed } from "../YoutubeEmbedRenderer";
+import { TwitterEmbed } from "../TwitterEmbedRenderer";
+import { Box } from "@chakra-ui/react";
 
 interface ContentRendererProps {
   content: string;
@@ -34,11 +36,25 @@ export const ContentRenderer: React.FC<ContentRendererProps> = ({
         }
         if (domNode.attribs["data-type"] === "youtube-embed") {
           return (
-            <YouTubeEmbed isEditing={false}
+            <YouTubeEmbed
+              isEditing={false}
               node={{
                 attrs: {
                   videoId: domNode.attribs.videoid,
                   title: domNode.attribs.title,
+                },
+              }}
+            />
+          );
+        }
+        if (domNode.attribs["data-type"] === "twitter-embed") {
+          return (
+            <TwitterEmbed
+              isEditing={false}
+              node={{
+                attrs: {
+                  tweetId: domNode.attribs.tweetid,
+                  caption: domNode.attribs.caption,
                 },
               }}
             />
@@ -59,5 +75,5 @@ export const ContentRenderer: React.FC<ContentRendererProps> = ({
     },
   };
 
-  return <div className={className}>{parse(content, options)}</div>;
+  return <Box className={className}>{parse(content, options)}</Box>;
 };
