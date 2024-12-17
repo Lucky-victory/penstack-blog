@@ -364,30 +364,26 @@ const UsersDashboard = () => {
                             {new Date(user.created_at!).toLocaleDateString()}
                           </Td>
                           <Td>
-                            <Menu>
-                              <MenuButton
-                                as={IconButton}
-                                icon={<ChevronDownIcon />}
-                                variant="ghost"
+                            <HStack>
+                              <IconButton
+                                rounded={"full"}
+                                icon={<EditIcon />}
                                 size="sm"
-                              />
-                              <MenuList rounded={"xl"} p={2}>
-                                <MenuItem
-                                  rounded={"full"}
-                                  icon={<EditIcon />}
-                                  onClick={() => openUserModal(user)}
-                                >
-                                  Edit
-                                </MenuItem>
-                                <MenuItem
-                                  rounded={"full"}
-                                  icon={<DeleteIcon />}
-                                  color="red.500"
-                                >
-                                  Delete
-                                </MenuItem>
-                              </MenuList>
-                            </Menu>
+                                variant="ghost"
+                                aria-label="Edit"
+                                onClick={() => openUserModal(user)}
+                              ></IconButton>
+                              <IconButton
+                                aria-label="Delete"
+                                rounded={"full"}
+                                icon={<DeleteIcon />}
+                                color="red.500"
+                                size="sm"
+                                variant="ghost"
+                              >
+                                Delete
+                              </IconButton>
+                            </HStack>
                           </Td>
                         </Tr>
                       ))}

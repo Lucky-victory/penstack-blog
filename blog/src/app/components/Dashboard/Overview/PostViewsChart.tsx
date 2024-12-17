@@ -109,9 +109,9 @@ const PostViewsChart = () => {
             <Bar
               dataKey="views"
               fill="#3b82f6"
-              barSize={24}
-              radius={[12, 12, 0, 0]}
-              style={{ borderRadius: "12px", backgroundColor: "red" }}
+              barSize={32}
+              radius={[8, 8, 0, 0]}
+              markerHeight={30}
             />
           </BarChart>
         </ResponsiveContainer>

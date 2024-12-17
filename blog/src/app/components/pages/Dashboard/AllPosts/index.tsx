@@ -2,41 +2,35 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
+  Grid,
   Heading,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  IconButton,
+  Card,
+  CardBody,
+  Image,
+  Stack,
+  Text,
+  Button,
+  HStack,
   Badge,
+  InputGroup,
+  InputLeftAddon,
+  Input,
+  Select,
+  IconButton,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  Button,
+  VStack,
   useToast,
-  Flex,
-  Input,
-  Select,
-  Stack,
-  Text,
-  useDisclosure,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  InputGroup,
-  InputLeftAddon,
+  useDisclosure,
   Spinner,
-  HStack,
-  Card,
-  CardBody,
-  VStack,
-  TableContainer,
   Tooltip,
 } from "@chakra-ui/react";
 import {
@@ -47,30 +41,29 @@ import {
   AddIcon,
   SearchIcon,
 } from "@chakra-ui/icons";
-import { usePosts } from "@/src/hooks";
-import { PostSelect } from "@/src/types";
-import { useRouter } from "next/navigation";
-import { formatPostPermalink, shortenText } from "@/src/utils";
-import Loader from "../../../Loader";
-import { Link } from "@chakra-ui/next-js";
+import { LuGlobe2, LuLock } from "react-icons/lu";
 import { format } from "date-fns";
+import { Link } from "@chakra-ui/next-js";
 import { PermissionGuard } from "../../../PermissionGuard";
+import { usePosts } from "@/src/hooks";
 import { useAuth } from "@/src/hooks/useAuth";
-import { LuGlobe, LuGlobe2, LuLock, LuView } from "react-icons/lu";
+import { PostSelect } from "@/src/types";
+import { formatPostPermalink, objectToQueryParams } from "@/src/utils";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedPost, setSelectedPost] = useState<PostSelect | null>(null);
   const [filteredPosts, setFilteredPosts] = useState<PostSelect[]>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
   const { posts, loading, refetchPosts } = usePosts({
     status: "all",
     limit: 20,
     access: "dashboard",
   });
   const { user } = useAuth();
+
   const handleDelete = (post: PostSelect) => {
     setSelectedPost(post);
     onOpen();
@@ -102,35 +95,32 @@ const PostsDashboard = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    const colors = {
+  const getStatusColor = (status: PostSelect["status"]) =>
+    ({
       published: "green",
       draft: "gray",
       deleted: "red",
-    };
-    return colors[status as keyof typeof colors] || "gray";
-  };
+    })[status!] || "gray";
 
-  const getVisibilityIcon = (visibility: PostSelect["visibility"]) => {
-    return visibility === "private" ? <LuLock /> : <LuGlobe2 />;
-  };
+  const getVisibilityIcon = (visibility: PostSelect["visibility"]) =>
+    visibility === "private" ? <LuLock /> : <LuGlobe2 />;
 
   useEffect(() => {
-    const filteredPosts = posts?.filter((post) => {
-      const matchesSearch = (post.title as string)
+    const filtered = posts?.filter((post) => {
+      const matchesSearch = (post?.title as string)
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
       const matchesStatus =
         statusFilter === "all" || post.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-    if (filteredPosts && filteredPosts?.length > 0) {
-      setFilteredPosts(() => [...filteredPosts!]);
+    if (filtered && filtered.length > 0) {
+      setFilteredPosts([...filtered]);
     }
   }, [posts, searchTerm, statusFilter]);
 
   return (
-    <Box p={8}>
+    <Box p={6}>
       <Card rounded={{ base: 20, md: 24 }} mb={8}>
         <CardBody>
           <HStack justify="space-between" align="center">
@@ -138,43 +128,38 @@ const PostsDashboard = () => {
             <Button
               leftIcon={<AddIcon />}
               colorScheme="blue"
-              rounded={"full"}
+              rounded="full"
               as={Link}
-              _hover={{ textDecoration: "none" }}
               href="/dashboard/posts/new"
+              _hover={{ textDecoration: "none" }}
             >
               New Post
             </Button>
           </HStack>
         </CardBody>
       </Card>
+
       <Card rounded={{ base: 20, md: 24 }} mb={8}>
         <CardBody>
-          <Stack
-            rounded={{ base: 20, md: 24 }}
-            direction={{ base: "column", md: "row" }}
-            spacing={4}
-            mb={6}
-          >
-            <InputGroup rounded={"full"}>
-              <InputLeftAddon roundedLeft={"full"}>
+          <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
+            <InputGroup maxW={{ md: "320px" }}>
+              <InputLeftAddon roundedLeft="full">
                 <SearchIcon />
               </InputLeftAddon>
               <Input
-                disabled={!posts?.length}
-                rounded={"full"}
+                rounded="full"
                 placeholder="Search posts..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                maxW={{ md: "320px" }}
+                disabled={!posts?.length}
               />
             </InputGroup>
             <Select
               value={statusFilter}
-              disabled={!posts?.length}
-              rounded={"full"}
               onChange={(e) => setStatusFilter(e.target.value)}
-              maxW={{ md: "300px" }}
+              maxW={{ md: "200px" }}
+              rounded="full"
+              disabled={!posts?.length}
             >
               <option value="all">All Status</option>
               <option value="published">Published</option>
@@ -182,163 +167,164 @@ const PostsDashboard = () => {
               <option value="deleted">Deleted</option>
             </Select>
           </Stack>
+
           {loading && (
-            <VStack>
-              <Loader />
+            <VStack py={8}>
+              <Spinner />
+              <Text>Loading posts...</Text>
             </VStack>
           )}
+
           {filteredPosts && filteredPosts.length > 0 && (
-            <>
-              <Card rounded={{ base: 20, md: 24 }} mb={8}>
-                <CardBody>
-                  <TableContainer>
-                    <Table variant="simple">
-                      <Thead>
-                        <Tr>
-                          <Th></Th>
-                          <Th>ID</Th>
-                          <Th>Title</Th>
-                          <Th>Status</Th>
-                          <Th>Category</Th>
-                          <Th>Author</Th>
-                          <Th>Created Date</Th>
-                          <Th>Published Date</Th>
-                          <Th>Views</Th>
-                          <Th>Actions</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {filteredPosts &&
-                          filteredPosts.length > 0 &&
-                          filteredPosts?.map((post) => (
-                            <Tr key={post.id}>
-                              <Td maxW={40} px={1}>
-                                {getVisibilityIcon(post.visibility)}
-                              </Td>
-                              <Td>
-                                <Text>{post.id}</Text>
-                              </Td>
-                              <Td>
-                                <Tooltip
-                                  hasArrow
-                                  label={post.title}
-                                  rounded={"xl"}
-                                >
-                                  <Text>
-                                    {shortenText(post.title || "", 50)}
-                                  </Text>
-                                </Tooltip>
-                              </Td>
-                              <Td>
-                                <Badge
-                                  rounded={"lg"}
-                                  textTransform={"capitalize"}
-                                  px={2}
-                                  colorScheme={getStatusColor(
-                                    post.status as string
-                                  )}
-                                >
-                                  {post.status}
-                                </Badge>
-                              </Td>
-                              <Td>{post.category?.name || "-"}</Td>
-                              <Td>{post.author?.name}</Td>
-                              <Td fontSize={"15px"}>
-                                {post.created_at
-                                  ? format(
-                                      new Date(post.created_at),
-                                      "dd/MM/yyyy hh:mm a"
-                                    )
-                                  : "-"}
-                              </Td>
-                              <Td fontSize={"15px"}>
-                                {post.published_at
-                                  ? format(
-                                      new Date(post.published_at),
-                                      "dd/MM/yyyy hh:mm a"
-                                    )
-                                  : "-"}
-                              </Td>
-                              <Td>{post?.views?.count}</Td>
-                              <Td>
-                                <Menu>
-                                  <MenuButton
-                                    as={IconButton}
-                                    icon={<ChevronDownIcon />}
-                                    variant="ghost"
-                                    size="sm"
-                                  />
-                                  <MenuList rounded={"xl"} px={1}>
-                                    <MenuItem
-                                      rounded="full"
-                                      icon={<ViewIcon />}
-                                      as={Link}
-                                      isExternal
-                                      href={formatPostPermalink(post)}
-                                    >
-                                      View
-                                    </MenuItem>
-                                    <PermissionGuard
-                                      requiredPermission="posts:edit"
-                                      isOwner={
-                                        post.author?.auth_id === user?.id
-                                      }
-                                    >
-                                      <MenuItem
-                                        icon={<EditIcon />}
-                                        as={Link}
-                                        rounded="full"
-                                        href={`/dashboard/posts/edit/${post.post_id}`}
-                                      >
-                                        Edit
-                                      </MenuItem>
-                                    </PermissionGuard>
-                                    <PermissionGuard requiredPermission="posts:delete">
-                                      <MenuItem
-                                        rounded="full"
-                                        icon={<DeleteIcon />}
-                                        onClick={() => handleDelete(post)}
-                                        color="red.500"
-                                      >
-                                        Delete
-                                      </MenuItem>
-                                    </PermissionGuard>
-                                  </MenuList>
-                                </Menu>
-                              </Td>
-                            </Tr>
-                          ))}
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
+            <Grid
+              templateColumns={{
+                base: "1fr",
+                md: "repeat(2, 1fr)",
+                lg: "repeat(3, 1fr)",
+              }}
+              gap={6}
+            >
+              {filteredPosts.map((post) => (
+                <Card
+                  key={post.id}
+                  rounded="xl"
+                  overflow="hidden"
+                  transition="all 0.2s"
+                  _hover={{ transform: "translateY(-2px)", shadow: "lg" }}
+                >
+                  <Image
+                    src={
+                      post.featured_image?.url ||
+                      `/api/og?${objectToQueryParams({
+                        title: post.title,
+                        date: post?.published_at
+                          ? post?.published_at
+                          : post?.created_at,
+                        username: post?.author?.username,
+                        avatar: post?.author?.avatar,
+                        name: post?.author?.name,
+                        category: post?.category?.name,
+                      })}`
+                    }
+                    alt={post.title || ""}
+                    height="200px"
+                    objectFit="cover"
+                  />
+                  <CardBody>
+                    <VStack align="stretch" spacing={3}>
+                      <HStack justify="space-between">
+                        <Badge
+                          colorScheme={getStatusColor(post.status)}
+                          rounded="full"
+                          px={2}
+                          textTransform="capitalize"
+                        >
+                          {post.status}
+                        </Badge>
+                        {getVisibilityIcon(post.visibility)}
+                      </HStack>
 
-                  {loading && (
-                    <HStack my={8} justify={"center"}>
-                      <Spinner />
-                      <Text>Loading posts...</Text>
-                    </HStack>
-                  )}
+                      <Tooltip label={post.title} hasArrow>
+                        <Heading size="md" noOfLines={2}>
+                          {post.title}
+                        </Heading>
+                      </Tooltip>
 
-                  {!loading &&
-                    posts?.length === 0 &&
-                    filteredPosts?.length === 0 && (
-                      <Flex justify="center" my={8}>
-                        <Text>No posts found</Text>
-                      </Flex>
-                    )}
-                </CardBody>
-              </Card>
-            </>
+                      <HStack fontSize="sm" color="gray.500" spacing={2}>
+                        <Text>{post.author?.name}</Text>
+                        <Text>•</Text>
+                        <Text>
+                          {post.published_at
+                            ? format(
+                                new Date(post.published_at),
+                                "dd/MM/yyyy hh:mm a"
+                              )
+                            : "Not published"}
+                        </Text>
+                      </HStack>
+
+                      {post.category?.name && (
+                        <Text fontSize="sm" color="gray.600">
+                          {post.category.name}
+                        </Text>
+                      )}
+
+                      <Text fontSize="sm" color="gray.500">
+                        Created:{" "}
+                        {format(
+                          new Date(post.created_at as Date),
+                          "dd/MM/yyyy hh:mm a"
+                        )}
+                      </Text>
+
+                      <HStack justify="space-between" pt={2}>
+                        <Text fontSize="sm" color="gray.500">
+                          {post.views?.count || 0} views
+                        </Text>
+
+                        <Menu>
+                          <MenuButton
+                            as={Button}
+                            rightIcon={<ChevronDownIcon />}
+                            variant="ghost"
+                            size="sm"
+                            rounded="full"
+                          >
+                            Actions
+                          </MenuButton>
+                          <MenuList rounded="xl" px={1}>
+                            <MenuItem
+                              rounded="full"
+                              icon={<ViewIcon />}
+                              as={Link}
+                              isExternal
+                              href={formatPostPermalink(post)}
+                            >
+                              View
+                            </MenuItem>
+                            <PermissionGuard
+                              requiredPermission="posts:edit"
+                              isOwner={post.author?.auth_id === user?.id}
+                            >
+                              <MenuItem
+                                icon={<EditIcon />}
+                                as={Link}
+                                rounded="full"
+                                href={`/dashboard/posts/edit/${post.post_id}`}
+                              >
+                                Edit
+                              </MenuItem>
+                            </PermissionGuard>
+                            <PermissionGuard requiredPermission="posts:delete">
+                              <MenuItem
+                                rounded="full"
+                                icon={<DeleteIcon />}
+                                onClick={() => handleDelete(post)}
+                                color="red.500"
+                              >
+                                Delete
+                              </MenuItem>
+                            </PermissionGuard>
+                          </MenuList>
+                        </Menu>
+                      </HStack>
+                    </VStack>
+                  </CardBody>
+                </Card>
+              ))}
+            </Grid>
           )}
+
           {!loading && !filteredPosts.length && (
-            <VStack justify={"center"} h={"200"}>
-              <Text color={"gray.400"} fontWeight={500}>
+            <VStack justify="center" h="200px">
+              <Text color="gray.400" fontWeight={500}>
                 No posts yet
               </Text>
             </VStack>
           )}
         </CardBody>
       </Card>
+
       {/* Delete Confirmation Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

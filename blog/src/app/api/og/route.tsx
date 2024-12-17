@@ -88,8 +88,7 @@ export async function GET(request: Request) {
             height: "100%",
             display: "flex",
 
-            background:
-              "linear-gradient(90deg, rgba(223, 113, 85, 1) 0%, rgba(59, 6, 66, 1) 100%)",
+            background: "white",
             position: "relative",
           }}
         >
@@ -120,13 +119,13 @@ export async function GET(request: Request) {
               {category && (
                 <div
                   style={{
-                    background:
-                      "linear-gradient(90deg, rgba(223, 113, 85, 1) 0%, rgba(59, 6, 66, 1) 10%)",
+                    // background:
+                    //   "linear-gradient(90deg, rgba(223, 113, 85, 1) 0%, rgba(59, 6, 66, 1) 10%)",
                     padding: "6px 14px",
                     borderRadius: "999px",
                     border: "2px solid #1a1a1a",
                     display: "flex",
-                    color: "white",
+                    // color: "white",
                     fontSize: "20px",
                     fontWeight: "semibold",
                   }}
@@ -140,7 +139,7 @@ export async function GET(request: Request) {
                 style={{
                   fontSize: "72px",
                   fontWeight: "bold",
-                  color: "white",
+                  // color: "white",
                   display: "flex",
                   lineHeight: 1.2,
                   marginBottom: "18px",
@@ -151,7 +150,7 @@ export async function GET(request: Request) {
               </div>
               <div
                 style={{
-                  color: "#ffffffaa",
+                  // color: "#ffffffaa",
                   fontSize: "24px",
                   display: "flex",
                   justifyContent: "center",
@@ -174,7 +173,7 @@ export async function GET(request: Request) {
               {name && (
                 <p
                   style={{
-                    color: "white",
+                    // color: "white",
                     fontSize: "20px",
                     fontWeight: "bold",
                   }}
@@ -203,9 +202,9 @@ export async function GET(request: Request) {
                       height: "50px",
                       borderRadius: "128px",
 
-                      background:
-                        "linear-gradient(90deg, rgba(223, 113, 85, 1) 0%, rgba(59, 6, 66, 1) 10%)",
-                      color: "white",
+                      // background:
+                      //   "linear-gradient(90deg, rgba(223, 113, 85, 1) 0%, rgba(59, 6, 66, 1) 10%)",
+                      // color: "white",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -229,7 +228,7 @@ export async function GET(request: Request) {
                 {name && (
                   <div
                     style={{
-                      color: "white",
+                      // color: "white",
                       fontSize: "24px",
                       fontWeight: "bold",
                       display: "flex",
@@ -238,29 +237,41 @@ export async function GET(request: Request) {
                     {name}
                   </div>
                 )}
-                {username && (
-                  <div
-                    style={{
-                      color: "#ffffff99",
-                      fontSize: "20px",
-                      display: "flex",
-                    }}
-                  >
-                    @{username}
-                  </div>
-                )}
               </div>
             </div>
           </div>
 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1440 320"
+            style={{ position: "absolute", bottom: 0, left: 0 }}
+          >
+            <path
+              fill="#0099ff"
+              fill-opacity="1"
+              d="M0,256L80,245.3C160,235,320,213,480,208C640,203,800,213,960,186.7C1120,160,1280,96,1360,64L1440,32L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
+            ></path>
+          </svg>
+          <svg
+            style={{ position: "absolute", top: 0, left: 0 }}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1440 320"
+          >
+            <path
+              fill="#0099ff"
+              fill-opacity="1"
+              d="M0,224L80,202.7C160,181,320,139,480,112C640,85,800,75,960,90.7C1120,107,1280,149,1360,170.7L1440,192L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"
+            ></path>
+          </svg>
           {/* Watermark/Brand */}
           <div
             style={{
               position: "absolute",
               bottom: "40px",
-              right: "45px",
+              right: "50px",
               display: "flex",
-              color: "#ffffff99",
+              zIndex: 10,
+
               fontSize: "20px",
             }}
           >

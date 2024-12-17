@@ -61,7 +61,7 @@ export default function PostCard({
           }
           alt={post.featured_image?.alt_text}
           objectFit="cover"
-          height="200"
+          height="250"
           width="full"
         />
         {post?.category && post?.category?.name && (
