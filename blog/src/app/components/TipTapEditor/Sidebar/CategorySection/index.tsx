@@ -22,7 +22,6 @@ import slugify from "slugify";
 
 export const CategorySection = () => {
   const { activePost, content, updateField } = useCustomEditorContext();
-  console.log(content);
 
   const [newCategory, setNewCategory] = useState("");
   const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);

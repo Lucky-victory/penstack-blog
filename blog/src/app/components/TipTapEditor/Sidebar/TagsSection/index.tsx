@@ -6,76 +6,161 @@ import {
   Box,
   Input,
   Button,
+  List,
+  ListItem,
+  Spinner,
+  Text,
+  InputRightAddon,
+  InputGroup,
 } from "@chakra-ui/react";
 import { SectionCard } from "../../../Dashboard/SectionCard";
 import { useState } from "react";
 import axios from "axios";
 import slugify from "slugify";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCustomEditorContext } from "@/src/context/AppEditor";
 
 export const TagsSection = () => {
+  const { activePost } = useCustomEditorContext();
   const [isCreating, setIsCreating] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const queryClient = useQueryClient();
+  const postId = activePost?.post_id || "";
+  const { data: postTags, isLoading } = useQuery({
+    queryKey: ["postTags", postId],
+    queryFn: async () => {
+      const { data } = await axios.get(`/api/posts/${postId}/tags`);
+      return data;
+    },
+  });
 
-  const [newTag, setNewTag] = useState("");
-  const [tags, setTags] = useState<{ name: string }[]>([]);
-  const handleAddTag = async () => {
-    try {
-      setIsCreating(true);
+  const { data: searchResults, isLoading: isSearching } = useQuery({
+    queryKey: ["tagSearch", searchQuery],
+    queryFn: async () => {
+      const { data } = await axios.get(`/api/tags/search?q=${searchQuery}`);
+      return data;
+    },
+    enabled: searchQuery.length > 0,
+  });
 
-      await axios.post("/api/tags", {
-        name: newTag,
-        slug: slugify(newTag, { lower: true }),
+  const createTagMutation = useMutation({
+    mutationFn: async (tagName: string) => {
+      const { data } = await axios.post("/api/tags", {
+        name: tagName,
+        slug: slugify(tagName, { lower: true }),
       });
-      setNewTag("");
-      // await refetch();
-    } catch (error) {
-      console.log("Error adding category", error);
-    } finally {
-      setIsCreating(false);
-    }
+      return data?.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["tagSearch"]);
+      setSearchQuery("");
+      setShowDropdown(false);
+    },
+  });
 
-    setNewTag("");
-  };
-  function removeTag(tag: { name: string; id: number }) {}
+  const addTagToPostMutation = useMutation({
+    mutationFn: async (tagId: number) => {
+      await axios.post(`/api/posts/${postId}/tags`, { tagId });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["postTags", postId]);
+      setSearchQuery("");
+      setShowDropdown(false);
+    },
+  });
+
+  const removeTagFromPostMutation = useMutation({
+    mutationFn: async (tagId: number) => {
+      await axios.delete(`/api/posts/${postId}/tags/${tagId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["postTags", postId]);
+    },
+  });
 
   return (
     <SectionCard title="Tags">
       <HStack p={4} pb={0} gap={2} wrap={"wrap"}>
-        {tags.map((tag, index) => (
-          <Tag rounded={"full"} key={index} variant="solid">
-            <TagLabel>#{tag?.name}</TagLabel>{" "}
+        {postTags?.map((tag: { id: number; name: string }) => (
+          <Tag rounded={"full"} key={tag.id} variant="solid">
+            <TagLabel>#{tag.name}</TagLabel>
             <TagCloseButton
-              onClick={() => setTags(tags.filter((t) => t.name !== tag.name))}
-            ></TagCloseButton>
+              onClick={() => removeTagFromPostMutation.mutate(tag.id)}
+            />
           </Tag>
         ))}
       </HStack>
 
-      <Box p={4}>
-        <HStack align={"center"}>
+      <Box p={4} position="relative">
+        <InputGroup size={"sm"}>
           <Input
-            placeholder="Enter tag name"
+            placeholder="Search or create tag"
             size={"sm"}
-            value={newTag}
+            value={searchQuery}
             rounded={"full"}
-            onChange={(e) => setNewTag(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleAddTag();
-              }
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setShowDropdown(true);
             }}
           />
-          <Button
-            rounded={"full"}
-            isDisabled={!newTag}
-            onClick={handleAddTag}
-            size={"sm"}
-            variant={"outline"}
-            fontWeight={500}
-            fontSize={"13px"}
+          {searchQuery && (
+            <InputRightAddon>
+              {isSearching && <Spinner size="sm" />}
+              {!searchResults?.length && (
+                <Button
+                  rounded={"full"}
+                  onClick={() => createTagMutation.mutate(searchQuery)}
+                  size={"xs"}
+                  variant={"outline"}
+                  fontWeight={500}
+                  fontSize={"13px"}
+                  isLoading={createTagMutation.isPending}
+                >
+                  Create Tag
+                </Button>
+              )}
+            </InputRightAddon>
+          )}
+        </InputGroup>
+
+        {showDropdown && searchQuery && (
+          <List
+            position="absolute"
+            top="100%"
+            left={0}
+            right={0}
+            bg="white"
+            boxShadow="md"
+            borderRadius="md"
+            mt={2}
+            maxH="200px"
+            overflowY="auto"
+            zIndex={1}
           >
-            Add
-          </Button>
-        </HStack>{" "}
+            {isSearching ? (
+              <ListItem p={2}>
+                <Spinner size="sm" />
+              </ListItem>
+            ) : searchResults?.length ? (
+              searchResults.map((tag: { id: number; name: string }) => (
+                <ListItem
+                  key={tag.id}
+                  p={2}
+                  cursor="pointer"
+                  _hover={{ bg: "gray.100" }}
+                  onClick={() => addTagToPostMutation.mutate(tag.id)}
+                >
+                  #{tag.name}
+                </ListItem>
+              ))
+            ) : (
+              <ListItem p={2}>
+                <Text fontSize="sm">No tags found</Text>
+              </ListItem>
+            )}
+          </List>
+        )}
       </Box>
     </SectionCard>
   );

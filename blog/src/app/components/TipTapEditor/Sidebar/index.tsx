@@ -44,6 +44,7 @@ import { PermissionGuard } from "../../PermissionGuard";
 import { format } from "date-fns";
 import { CalendarPicker } from "../CalendarPicker";
 import { CategorySection } from "./CategorySection";
+import { TagsSection } from "./TagsSection";
 
 export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
   const { activePost, isSaving, updateField } = useCustomEditorContext();
@@ -380,6 +381,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
           </Stack>
         </SectionCard>
         <CategorySection />
+        <TagsSection />
       </Stack>
     </>
   );

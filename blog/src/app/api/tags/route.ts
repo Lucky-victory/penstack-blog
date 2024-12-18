@@ -4,11 +4,31 @@ import { tags } from "@/src/db/schemas/posts.sql";
 import { eq, sql } from "drizzle-orm";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 20;
+  const offset = (page - 1) * limit;
+
   try {
-    const allTags = await db.select().from(tags);
+    const totalResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(tags);
+    const total = Number(totalResult[0].count);
+
+    const allTags = await db.select().from(tags).limit(limit).offset(offset);
+
     return NextResponse.json(
-      { data: allTags, message: "All tags fetched successfully" },
+      {
+        data: allTags,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+        message: "All tags fetched successfully",
+      },
       { status: 200 }
     );
   } catch (error) {
