@@ -162,7 +162,7 @@ export const SidebarContentNav = ({
           variant="ghost"
           rounded={"full"}
           fontWeight={isActive ? "500" : "400"}
-          size={nested ? "sm" : "md"}
+          size={nested ? "sm" : "sm"}
           href={href}
           w="full"
           justifyContent={isMinimized ? "center" : "flex-start"}
@@ -177,7 +177,7 @@ export const SidebarContentNav = ({
           }}
         >
           {icon && (
-            <Icon mr={isMinimized ? "0" : "4"} fontSize="16" as={icon} />
+            <Icon mr={isMinimized ? "0" : "3"} fontSize="16" as={icon} />
           )}
           {label && label}
           {!isMinimized && children}
@@ -253,6 +253,7 @@ export const SidebarContentNav = ({
             roundedTop={openItems.includes(item.href) ? "2xl" : "full"}
             roundedBottom={openItems.includes(item.href) ? "0" : "full"}
             w="full"
+            size={"sm"}
             cursor="pointer"
             onClick={() => toggleOpen(item.href)}
             justifyContent={isMinimized ? "center" : "space-between"}
