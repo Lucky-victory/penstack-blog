@@ -1,6 +1,7 @@
 import { db } from "@/src/db";
 import { posts, postTags, tags } from "@/src/db/schemas/posts.sql";
-import { eq } from "drizzle-orm";
+import { getPlainPost } from "@/src/lib/queries/post";
+import { and, eq, inArray, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -10,10 +11,7 @@ export async function GET(
   try {
     const { slugOrPostId } = params;
 
-    const post = await db.query.posts.findFirst({
-      where: (posts) =>
-        eq(posts.slug, slugOrPostId) || eq(posts.post_id, slugOrPostId),
-    });
+    const post = await getPlainPost(slugOrPostId);
 
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
@@ -25,8 +23,8 @@ export async function GET(
         name: tags.name,
         slug: tags.slug,
       })
-      .from(postTags)
-      .innerJoin(tags, eq(tags.id, postTags.tag_id))
+      .from(tags)
+      .innerJoin(postTags, eq(tags.id, postTags.tag_id))
       .where(eq(postTags.post_id, post.id));
 
     return NextResponse.json({
@@ -57,10 +55,7 @@ export async function POST(
       );
     }
 
-    const post = await db.query.posts.findFirst({
-      where: (posts) =>
-        eq(posts.slug, slugOrPostId) || eq(posts.post_id, slugOrPostId),
-    });
+    const post = await getPlainPost(slugOrPostId);
 
     if (!post) {
       return NextResponse.json(
@@ -81,6 +76,48 @@ export async function POST(
     });
   } catch (error) {
     console.error("Error adding tags to post:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: { slugOrPostId: string } }
+) {
+  try {
+    const { slugOrPostId } = params;
+    const { tagIds } = await request.json();
+
+    if (!Array.isArray(tagIds)) {
+      return NextResponse.json(
+        { error: "tagIds must be an array" },
+        { status: 400 }
+      );
+    }
+
+    const post = await getPlainPost(slugOrPostId);
+
+    if (!post) {
+      return NextResponse.json(
+        { data: null, message: "Post not found" },
+        { status: 404 }
+      );
+    }
+
+    await db
+      .delete(postTags)
+      .where(
+        and(eq(postTags.post_id, post.id), inArray(postTags.tag_id, tagIds))
+      );
+
+    return NextResponse.json({
+      message: "Tags removed from post successfully",
+    });
+  } catch (error) {
+    console.error("Error removing tags from post:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

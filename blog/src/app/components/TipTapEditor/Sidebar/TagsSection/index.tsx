@@ -27,11 +27,12 @@ export const TagsSection = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const queryClient = useQueryClient();
   const postId = activePost?.post_id || "";
+
   const { data: postTags, isLoading } = useQuery({
     queryKey: ["postTags", postId],
     queryFn: async () => {
       const { data } = await axios.get(`/api/posts/${postId}/tags`);
-      return data;
+      return (data?.data || []) as { id: number; name: string; slug: string }[];
     },
   });
 
@@ -39,7 +40,7 @@ export const TagsSection = () => {
     queryKey: ["tagSearch", searchQuery],
     queryFn: async () => {
       const { data } = await axios.get(`/api/tags/search?q=${searchQuery}`);
-      return data;
+      return data?.data;
     },
     enabled: searchQuery.length > 0,
   });
@@ -50,10 +51,14 @@ export const TagsSection = () => {
         name: tagName,
         slug: slugify(tagName, { lower: true }),
       });
+      await addTagToPostMutation.mutateAsync(data?.data?.id);
       return data?.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["tagSearch"]);
+      queryClient.invalidateQueries({
+        queryKey: ["tagSearch", postId],
+        exact: true,
+      });
       setSearchQuery("");
       setShowDropdown(false);
     },
@@ -61,10 +66,15 @@ export const TagsSection = () => {
 
   const addTagToPostMutation = useMutation({
     mutationFn: async (tagId: number) => {
-      await axios.post(`/api/posts/${postId}/tags`, { tagId });
+      await axios.post(`/api/posts/${postId}/tags`, {
+        tagIds: [tagId],
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["postTags", postId]);
+      queryClient.invalidateQueries({
+        queryKey: ["postTags", postId],
+        exact: true,
+      });
       setSearchQuery("");
       setShowDropdown(false);
     },
@@ -72,24 +82,31 @@ export const TagsSection = () => {
 
   const removeTagFromPostMutation = useMutation({
     mutationFn: async (tagId: number) => {
-      await axios.delete(`/api/posts/${postId}/tags/${tagId}`);
+      await axios.patch(`/api/posts/${postId}/tags`, {
+        tagIds: [tagId],
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["postTags", postId]);
+      queryClient.invalidateQueries({
+        queryKey: ["postTags", postId],
+        exact: true,
+      });
     },
   });
 
   return (
     <SectionCard title="Tags">
       <HStack p={4} pb={0} gap={2} wrap={"wrap"}>
-        {postTags?.map((tag: { id: number; name: string }) => (
-          <Tag rounded={"full"} key={tag.id} variant="solid">
-            <TagLabel>#{tag.name}</TagLabel>
-            <TagCloseButton
-              onClick={() => removeTagFromPostMutation.mutate(tag.id)}
-            />
-          </Tag>
-        ))}
+        {postTags &&
+          postTags?.length > 0 &&
+          postTags?.map((tag) => (
+            <Tag rounded={"full"} key={tag.id} variant="solid">
+              <TagLabel>#{tag.name}</TagLabel>
+              <TagCloseButton
+                onClick={() => removeTagFromPostMutation.mutate(tag.id)}
+              />
+            </Tag>
+          ))}
       </HStack>
 
       <Box p={4} position="relative">
@@ -105,9 +122,9 @@ export const TagsSection = () => {
             }}
           />
           {searchQuery && (
-            <InputRightAddon>
+            <InputRightAddon roundedRight={"full"}>
               {isSearching && <Spinner size="sm" />}
-              {!searchResults?.length && (
+              {!isSearching && !searchResults?.length && (
                 <Button
                   rounded={"full"}
                   onClick={() => createTagMutation.mutate(searchQuery)}

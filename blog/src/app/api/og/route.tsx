@@ -150,7 +150,7 @@ export async function GET(request: Request) {
               </div>
               <div
                 style={{
-                  // color: "#ffffffaa",
+                  color: "#4a4a4a",
                   fontSize: "24px",
                   display: "flex",
                   justifyContent: "center",
@@ -185,8 +185,8 @@ export async function GET(request: Request) {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={avatar}
-                  width={50}
-                  height={50}
+                  width={45}
+                  height={45}
                   alt={name}
                   style={{
                     width: "50px",
@@ -199,8 +199,8 @@ export async function GET(request: Request) {
                 name && (
                   <div
                     style={{
-                      width: "50px",
-                      height: "50px",
+                      width: "45px",
+                      height: "45px",
                       borderRadius: "128px",
 
                       // background:

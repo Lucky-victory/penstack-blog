@@ -14,7 +14,7 @@ export function PostCardLoader() {
       borderWidth={1}
       borderColor={"gray.300"}
     >
-      <Skeleton height="200px" />
+      <Skeleton height="220px" />
       <Box p={4}>
         <HStack>
           <SkeletonCircle size="10" />

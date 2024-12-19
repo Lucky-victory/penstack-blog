@@ -41,10 +41,10 @@ export default function PostCard({
       key={post.id}
       borderWidth="1px"
       borderColor={borderColor}
-      borderRadius="3xl"
+      borderRadius="2xl"
       overflow="hidden"
       transition="all 0.2s"
-      _hover={{ boxShadow: "0 0 0 4px var(--chakra-colors-blue-500)" }}
+      _hover={{ boxShadow: "0 0 0 3px var(--chakra-colors-blue-500)" }}
     >
       <Box position="relative">
         <Image
@@ -61,7 +61,7 @@ export default function PostCard({
           }
           alt={post.featured_image?.alt_text}
           objectFit="cover"
-          height="250"
+          height="220"
           width="full"
         />
         {post?.category && post?.category?.name && (
