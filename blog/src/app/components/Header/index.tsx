@@ -215,7 +215,7 @@ const Header = () => {
 
               <IconButton
                 as={Link}
-                href="search"
+                href="/search"
                 aria-label="Search"
                 // colorScheme="black"
                 rounded={"full"}

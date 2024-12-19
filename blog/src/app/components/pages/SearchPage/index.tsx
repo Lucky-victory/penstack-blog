@@ -72,7 +72,7 @@ const SearchResults = () => {
   };
   return (
     <Box
-      bg={useColorModeValue("gray.50", "gray.900")}
+      // bg={useColorModeValue("gray.50", "gray.900")}
       minH="calc(100vh - 180px)"
     >
       <Container maxW="7xl" py={8}>

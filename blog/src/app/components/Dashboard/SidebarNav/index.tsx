@@ -187,7 +187,7 @@ export const SidebarContentNav = ({
 
     if (permission) {
       return (
-        <PermissionGuard requiredPermission={permission}>
+        <PermissionGuard requiredPermission={permission} showLoader={false}>
           {content}
         </PermissionGuard>
       );

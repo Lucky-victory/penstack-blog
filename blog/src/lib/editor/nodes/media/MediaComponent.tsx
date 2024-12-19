@@ -1,15 +1,16 @@
 import React, { useCallback, useState } from "react";
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import {
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  AlignJustify,
-  Trash2,
-  Image as ImageIcon,
-  GripVertical,
-} from "lucide-react";
+  LuAlignLeft,
+  LuAlignCenter,
+  LuAlignRight,
+  LuAlignJustify,
+  LuTrash2,
+  LuImage,
+  LuGripVertical,
+} from "react-icons/lu";
 import { MediaResponse } from "@/src/types";
+import { Image } from "@chakra-ui/react";
 
 interface MediaComponentProps extends NodeViewProps {
   isRendering?: boolean;
@@ -103,39 +104,39 @@ export const MediaComponent: React.FC<MediaComponentProps> = ({
             onClick={() => handleAlign("left")}
             className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "left" ? "bg-gray-200" : ""}`}
           >
-            <AlignLeft className="w-4 h-4" />
+            <LuAlignLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleAlign("center")}
             className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "center" ? "bg-gray-200" : ""}`}
           >
-            <AlignCenter className="w-4 h-4" />
+            <LuAlignCenter className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleAlign("right")}
             className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "right" ? "bg-gray-200" : ""}`}
           >
-            <AlignRight className="w-4 h-4" />
+            <LuAlignRight className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleAlign("inline")}
             className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "inline" ? "bg-gray-200" : ""}`}
           >
-            <AlignJustify className="w-4 h-4" />
+            <LuAlignJustify className="w-4 h-4" />
           </button>
           <div className="w-px h-4 bg-gray-200" />
           <button
             onClick={() => deleteNode()}
             className="p-1 rounded hover:bg-red-100 text-red-600"
           >
-            <Trash2 className="w-4 h-4" />
+            <LuTrash2 className="w-4 h-4" />
           </button>
         </div>
 
         {/* Media Content */}
         <div className="relative">
           {node.attrs.type === "image" ? (
-            <img
+            <Image
               src={node.attrs.url}
               alt={node.attrs.alt}
               className="w-full h-auto object-cover"
@@ -155,7 +156,7 @@ export const MediaComponent: React.FC<MediaComponentProps> = ({
             className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize opacity-0 group-hover:opacity-100"
             onMouseDown={handleResizeStart}
           >
-            <GripVertical className="w-4 h-4 text-gray-500" />
+            <LuGripVertical className="w-4 h-4 text-gray-500" />
           </div>
         </div>
       </div>
