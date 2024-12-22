@@ -7,7 +7,7 @@ export default function DashHeader({
   showUserAvatar = false,
   ...rest
 }: {
-  children: ReactNode;
+  children?: ReactNode;
   isMinimized?: boolean;
   showUserAvatar?: boolean;
   [key: string]: any;

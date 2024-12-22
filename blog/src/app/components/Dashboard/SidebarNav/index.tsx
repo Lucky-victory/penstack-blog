@@ -408,7 +408,7 @@ export const SidebarContentNav = ({
       w={
         isMinimized
           ? "var(--dash-sidebar-mini-w)"
-          : { base: "auto", md: "var(--dash-sidebar-w)" }
+          : { base: "full", md: "var(--dash-sidebar-w)" }
       }
       pos="fixed"
       h="full"
@@ -421,7 +421,7 @@ export const SidebarContentNav = ({
           mx={6}
           mb={2}
           gap={4}
-          justify={"flex-end"}
+          justify={{ base: "center", md: "flex-end" }}
         >
           {!isMinimized && (
             <Text

@@ -1,4 +1,4 @@
-import Overview from "@/src/app/components/Dashboard/Overview";
+import Overview from "@/src/app/components/pages/Dashboard/Overview";
 import { PermissionGuard } from "@/src/app/components/PermissionGuard";
 import { Metadata } from "next";
 

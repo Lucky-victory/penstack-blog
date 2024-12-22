@@ -29,12 +29,13 @@ import { SidebarContentNav } from "../../components/Dashboard/SidebarNav";
 import { LuMenu } from "react-icons/lu";
 import NetworkAvailabiltyCheck from "../../components/NetworkAvailabiltyCheck";
 import { PermissionGuard } from "../../components/PermissionGuard";
+import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 
 export default function DashLayout({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isMinimized, setIsMinimized] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
-
+  const siteConfig = useSiteConfig();
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     handleResize();
@@ -67,13 +68,13 @@ export default function DashLayout({ children }: { children: ReactNode }) {
             onClose={onClose}
             returnFocusOnClose={false}
             onOverlayClick={onClose}
-            size={{ base: "full", md: "sm" }}
+            size={"xs"}
           >
             <DrawerOverlay />
             <DrawerContent>
-              <DrawerCloseButton />
-              <DrawerHeader>Menu</DrawerHeader>
-              <DrawerBody>
+              <DrawerCloseButton zIndex={2000} />
+
+              <DrawerBody px={0} p={0} mr={0}>
                 <SidebarContentNav
                   onClose={onClose}
                   isMinimized={false}
@@ -100,13 +101,8 @@ export default function DashLayout({ children }: { children: ReactNode }) {
             display={{ base: "flex", md: "none" }}
           >
             <Icon as={LuMenu} onClick={onOpen} fontSize="20" cursor="pointer" />
-            <Text
-              fontSize="2xl"
-              ml="4"
-              fontFamily="monospace"
-              fontWeight="bold"
-            >
-              BA
+            <Text fontSize="lg" ml="4" fontWeight="medium" letterSpacing={1}>
+              {siteConfig?.siteName?.value}
             </Text>
           </Flex>
           <Flex flexDir={"column"} h={"var(--chakra-vh)"}>
@@ -126,10 +122,10 @@ export default function DashLayout({ children }: { children: ReactNode }) {
                   ? "var(--dash-sidebar-mini-w)"
                   : "var(--dash-sidebar-w)",
               }}
-              maxW="1600px"
+              maxW="container.2xl"
               margin="0 auto"
               overflowY={"auto"}
-              px={{ base: 4, md: 5, lg: 6 }}
+              // px={{ base: 4, md: 5, lg: 6 }}
             >
               {children}
             </Box>

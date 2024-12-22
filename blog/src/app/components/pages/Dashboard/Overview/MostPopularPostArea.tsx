@@ -13,7 +13,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { LuArrowUp, LuEye, LuTrendingUp } from "react-icons/lu";
-import Loader from "../../Loader";
+import Loader from "../../../Loader";
 import { format } from "date-fns";
 import { Link } from "@chakra-ui/next-js";
 import { formatPostPermalink } from "@/src/utils";
