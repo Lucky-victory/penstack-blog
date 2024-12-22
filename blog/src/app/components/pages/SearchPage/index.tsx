@@ -26,6 +26,7 @@ import { useCallback } from "react";
 import debounce from "lodash/debounce";
 import { useCategories } from "@/src/hooks/useCategories";
 import NewPostCard from "../../../../themes/raised-land/NewPostCard";
+import { PostCardLoader } from "@/src/themes/smooth-land/PostCardLoader";
 
 const SearchResults = () => {
   const bgColor = useColorModeValue("white", "gray.800");
@@ -104,10 +105,10 @@ const SearchResults = () => {
         </VStack>
 
         {/* Filters */}
-        <HStack spacing={4} mb={8} wrap="wrap">
+        <HStack spacing={4} mb={8} wrap="wrap" justify={"center"} mx="auto">
           <Select
             placeholder="Category"
-            rounded={"full"}
+            rounded={"md"}
             maxW="200px"
             bg={bgColor}
             borderColor={borderColor}
@@ -127,7 +128,7 @@ const SearchResults = () => {
           <Select
             onChange={handleSortSelect}
             placeholder="Sort by"
-            rounded={"full"}
+            rounded={"md"}
             maxW="200px"
             bg={bgColor}
             borderColor={borderColor}
@@ -157,30 +158,7 @@ const SearchResults = () => {
             searchResults?.map((post) => (
               <PostCard key={post.id} post={post} />
             ))}
-          {isLoading &&
-            [...Array(6)].map((_, i) => (
-              <Box
-                key={i}
-                bg={bgColor}
-                p={6}
-                borderRadius="lg"
-                borderWidth="1px"
-                borderColor={borderColor}
-                transition="all 0.2s"
-                _hover={{ transform: "translateY(-4px)", shadow: "md" }}
-              >
-                <VStack align="stretch" spacing={4}>
-                  <Skeleton height="200px" borderRadius="md" />
-                  <Skeleton height="24px" width="100px" />
-                  <Skeleton height="36px" />
-                  <Skeleton height="60px" />
-                  <HStack justify="space-between">
-                    <Skeleton height="40px" width="150px" />
-                    <Skeleton height="40px" width="40px" borderRadius="md" />
-                  </HStack>
-                </VStack>
-              </Box>
-            ))}
+          {isLoading && [...Array(5)].map((_, i) => <PostCardLoader key={i} />)}
         </SimpleGrid>
       </Container>
     </Box>

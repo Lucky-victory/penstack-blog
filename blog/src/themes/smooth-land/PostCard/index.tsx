@@ -34,14 +34,15 @@ export default function PostCard({
   const textColor = useColorModeValue("gray.600", "gray.300");
   const tagBgColor = useColorModeValue("blue.50", "black");
   const tagColor = useColorModeValue("blue.600", "blue.300");
-  const bgColor = useColorModeValue("white", "gray.800");
+  const bgColor = useColorModeValue("white", "gray.900");
   return (
     <Card
       as={LinkBox}
       key={post.id}
+      bg={bgColor}
       borderWidth="1px"
       borderColor={borderColor}
-      borderRadius="2xl"
+      borderRadius="xl"
       overflow="hidden"
       transition="all 0.2s"
       _hover={{ boxShadow: "0 0 0 3px var(--chakra-colors-blue-500)" }}
@@ -88,7 +89,7 @@ export default function PostCard({
             href={formatPostPermalink(post)}
             _hover={{ textDecoration: "none" }}
           >
-            <Heading size={"md"} my={2}>
+            <Heading size={"md"} my={2} letterSpacing={1}>
               {post.title}
             </Heading>
           </LinkOverlay>

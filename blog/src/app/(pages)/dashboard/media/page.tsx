@@ -1,4 +1,4 @@
-import Medias from "@/src/app/components/Dashboard/Medias";
+import DashMediasPage from "@/src/app/components/pages/Dashboard/Medias";
 import { PermissionGuard } from "@/src/app/components/PermissionGuard";
 import { Metadata } from "next";
 
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function DashboardMediaPage() {
   return (
     <PermissionGuard requiredPermission={"media:read"} shouldRedirect>
-      <Medias />
+      <DashMediasPage />
     </PermissionGuard>
   );
 }

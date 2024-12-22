@@ -31,7 +31,7 @@ export default function Medias({
 }: MediasComponentProps) {
   const dividerBgColor = useColorModeValue("white", "gray.900");
   return (
-    <Box py={6} px={{ base: 0, md: 5 }} bg={dividerBgColor} minH={"100vh"}>
+    <Box py={6} px={{ base: 0, md: 5 }} bg={dividerBgColor} rounded={"lg"}>
       <Tabs isLazy h={"full"}>
         <TabList>
           <Tab>Media Library</Tab>

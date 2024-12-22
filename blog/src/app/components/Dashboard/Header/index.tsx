@@ -1,3 +1,4 @@
+"use client";
 import { Flex, useColorModeValue } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
@@ -12,6 +13,7 @@ export default function DashHeader({
   showUserAvatar?: boolean;
   [key: string]: any;
 }) {
+  const bg = useColorModeValue("white", "gray.900");
   return (
     <Flex
       // ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}
@@ -24,7 +26,7 @@ export default function DashHeader({
       top={0}
       zIndex={10}
       alignItems="center"
-      bg={useColorModeValue("white", "gray.900")}
+      bg={bg}
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue("gray.200", "gray.700")}
       justifyContent="space-between"

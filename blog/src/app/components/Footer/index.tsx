@@ -40,13 +40,10 @@ const Footer = () => {
   ];
 
   return (
-    <Box as="footer" px={2} pb={5}>
+    <Box as="footer" bg={bgColor}>
       <Container
         maxW="container.xl"
-        bg={bgColor}
         py={8}
-        rounded={"3xl"}
-        mb={5}
         minH={150}
         px={{ base: 4, md: 8, lg: 10 }}
         alignContent={"center"}

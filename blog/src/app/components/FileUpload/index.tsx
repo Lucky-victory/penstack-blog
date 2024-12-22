@@ -21,6 +21,7 @@ import {
   CircularProgress,
   CircularProgressLabel,
 } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface FileUploadProps {
   folder?: string;
@@ -43,6 +44,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   ],
 }) => {
   const [uploading, setUploading] = useState(false);
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = useState<{
@@ -108,6 +110,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         const savedMedia = await saveToDatabase(cloudinaryData);
         onUploadComplete?.(savedMedia);
       }
+      queryClient.invalidateQueries({
+        queryKey: ["media"],
+        refetchType: "active",
+      });
       toast({
         title: "Media uploaded successfully",
       });
@@ -125,16 +131,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      setError(null);
-      acceptedFiles.forEach((file) => {
-        uploadedImagesRef.current[file.name] = URL.createObjectURL(file);
-      });
-      setImages((prev) => [...prev, ...acceptedFiles]);
-    },
-    [getSignature, uploadToCloudinary, toast]
-  );
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    setError(null);
+    acceptedFiles.forEach((file) => {
+      uploadedImagesRef.current[file.name] = URL.createObjectURL(file);
+    });
+    setImages((prev) => [...prev, ...acceptedFiles]);
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,

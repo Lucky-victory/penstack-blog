@@ -39,7 +39,6 @@ import { useQueryParams } from "@/src/hooks";
 import { Link } from "@chakra-ui/next-js";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
-import { isActive } from "@tiptap/core";
 import { useCategories } from "@/src/hooks/useCategories";
 
 const Header = () => {

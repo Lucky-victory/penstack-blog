@@ -65,12 +65,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     queryKey: ["media", debouncedFilters],
     queryFn: fetchMedia,
     // enabled: !!debouncedFilters?.page,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 60 * 24,
   });
   const { data: folders } = useQuery({
     queryKey: ["folders"],
     queryFn: fetchFolders,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 60 * 24,
   });
 
   const bgColor = useColorModeValue("gray.100", "gray.700");
@@ -165,7 +165,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             p={{ base: 3, md: 4 }}
             templateColumns={{
               base: "repeat(auto-fill, minmax(200px, 1fr))",
-              md: "repeat(auto-fill, minmax(200px, 250px))",
+              md: "repeat(auto-fill, minmax(200px, 300px))",
             }}
             gap={{ base: 3, md: 4 }}
           >

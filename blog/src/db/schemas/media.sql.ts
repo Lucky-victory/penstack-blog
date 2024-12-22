@@ -1,9 +1,15 @@
-import { int, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
+import {
+  int,
+  mysqlTable,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/mysql-core";
 
 export const medias = mysqlTable("Medias", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
-  url: varchar("url", { length: 255 }).notNull(),
+  url: text("url").notNull(),
   type: varchar("type", {
     length: 100,
     enum: ["audio", "image", "video", "pdf", "doc"],

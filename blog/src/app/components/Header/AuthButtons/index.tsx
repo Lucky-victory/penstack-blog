@@ -9,7 +9,7 @@ export const AuthButtons = () => {
   ) : (
     <HStack spacing={4}>
       <Button
-        rounded="full"
+        rounded="md"
         variant="outline"
         as={Link}
         colorScheme="blue"
@@ -21,7 +21,7 @@ export const AuthButtons = () => {
         Log In
       </Button>
       <Button
-        rounded="full"
+        rounded="md"
         colorScheme="blue"
         as={Link}
         py={2}

@@ -127,7 +127,7 @@ export const NewsletterPage = ({ title }: { title?: string }) => {
   };
 
   return (
-    <Container maxW="4xl" py={12}>
+    <Container maxW="5xl" py={12}>
       <Box
         borderRadius="2xl"
         overflow="hidden"
