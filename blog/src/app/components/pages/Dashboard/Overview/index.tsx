@@ -21,6 +21,8 @@ import PostViewsChart from "./PostViewsChart";
 import MostPopularPosts from "./MostPopularPostArea";
 import { IconType } from "react-icons";
 import DashHeader from "../../../Dashboard/Header";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const OverviewCard = ({
   color,
@@ -31,7 +33,7 @@ export const OverviewCard = ({
   growthCount,
 }: {
   label: string;
-  value: string;
+  value: string | number;
   color?: string;
   icon: IconType;
   isUp?: boolean;
@@ -87,6 +89,54 @@ export const OverviewCard = ({
 export default function Overview() {
   const bgColor = useColorModeValue("white", "gray.700");
 
+  const { data: usersOverview } = useQuery({
+    staleTime: 1000 * 60 * 60 * 24,
+    queryKey: ["overview_users"],
+    queryFn: async () => {
+      const { data } = await axios<{
+        total: number;
+        weeklyGrowth: number;
+        isUp: boolean;
+      }>("/api/analytics/overview/users");
+      return data;
+    },
+  });
+  const { data: postsOverview } = useQuery({
+    staleTime: 1000 * 60 * 60 * 24,
+    queryKey: ["overview_posts_views"],
+    queryFn: async () => {
+      const { data } = await axios<{
+        total: number;
+        weeklyGrowth: number;
+        isUp: boolean;
+      }>("/api/analytics/overview/posts");
+      return data;
+    },
+  });
+  const { data: commentsOverview } = useQuery({
+    staleTime: 1000 * 60 * 60 * 24,
+    queryKey: ["overview_comments"],
+    queryFn: async () => {
+      const { data } = await axios<{
+        total: number;
+        weeklyGrowth: number;
+        isUp: boolean;
+      }>("/api/analytics/overview/comments");
+      return data;
+    },
+  });
+  const { data: subscribersOverview } = useQuery({
+    staleTime: 1000 * 60 * 60 * 24,
+    queryKey: ["overview_subscribers"],
+    queryFn: async () => {
+      const { data } = await axios<{
+        total: number;
+        weeklyGrowth: number;
+        isUp: boolean;
+      }>("/api/analytics/overview/subscribers");
+      return data;
+    },
+  });
   return (
     <Box>
       <DashHeader></DashHeader>
@@ -96,9 +146,9 @@ export default function Overview() {
             color="purple"
             label="Users"
             icon={LuUsers2}
-            value="142"
-            isUp
-            growthCount={12}
+            value={usersOverview?.total || 0}
+            isUp={usersOverview?.isUp}
+            growthCount={usersOverview?.weeklyGrowth || 0}
           />
           <OverviewCard
             color="orange"
