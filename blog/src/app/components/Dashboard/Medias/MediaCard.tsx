@@ -73,7 +73,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
 
       <Card
         pos={"relative"}
-        rounded={20}
+        rounded={"lg"}
         overflow={"hidden"}
         boxShadow={selected ? "outline" : "none"}
         onClick={() => {
@@ -131,9 +131,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           left={0}
           p={3}
           className="media-card-overlay"
-          borderTop={"2px solid"}
+          borderTop={"1px solid"}
           borderColor={"gray.400"}
-          roundedBottom={20}
+          roundedBottom={"lg"}
           shadow={"lg"}
           bg={cardBgColor}
           transform={"translateY(100%)"}
@@ -141,7 +141,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           <Button
             size="sm"
             variant="outline"
-            rounded={"full"}
+            rounded={"lg"}
             leftIcon={<LuEye />}
             onClick={(e) => {
               e.stopPropagation();

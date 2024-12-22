@@ -32,6 +32,10 @@ import {
   useDisclosure,
   Spinner,
   Tooltip,
+  useColorMode,
+  useColorModeValue,
+  Flex,
+  CardFooter,
 } from "@chakra-ui/react";
 import {
   EditIcon,
@@ -57,6 +61,7 @@ const PostsDashboard = () => {
   const [filteredPosts, setFilteredPosts] = useState<PostSelect[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+  const postCardBg = useColorModeValue("white", "black");
   const { posts, loading, refetchPosts } = usePosts({
     status: "all",
     limit: 20,
@@ -120,7 +125,7 @@ const PostsDashboard = () => {
   }, [posts, searchTerm, statusFilter]);
 
   return (
-    <Box p={6}>
+    <Box p={4}>
       <Card rounded={{ base: 20, md: 24 }} mb={8}>
         <CardBody>
           <HStack justify="space-between" align="center">
@@ -180,7 +185,7 @@ const PostsDashboard = () => {
               templateColumns={{
                 base: "1fr",
                 md: "repeat(2, 1fr)",
-                lg: "repeat(3, 1fr)",
+                // lg: "repeat(3, 1fr)",
               }}
               gap={6}
             >
@@ -190,73 +195,78 @@ const PostsDashboard = () => {
                   rounded="xl"
                   overflow="hidden"
                   transition="all 0.2s"
+                  bg={postCardBg}
                   _hover={{ transform: "translateY(-2px)", shadow: "lg" }}
                 >
-                  <Image
-                    src={
-                      post.featured_image?.url ||
-                      `/api/og?${objectToQueryParams({
-                        title: post.title,
-                        date: post?.published_at
-                          ? post?.published_at
-                          : post?.created_at,
-                        username: post?.author?.username,
-                        avatar: post?.author?.avatar,
-                        name: post?.author?.name,
-                        category: post?.category?.name,
-                      })}`
-                    }
-                    alt={post.title || ""}
-                    height="200px"
-                    objectFit="cover"
-                  />
-                  <CardBody>
-                    <VStack align="stretch" spacing={3}>
-                      <HStack justify="space-between">
-                        <Badge
-                          colorScheme={getStatusColor(post.status)}
-                          rounded="full"
-                          px={2}
-                          textTransform="capitalize"
-                        >
-                          {post.status}
-                        </Badge>
-                        {getVisibilityIcon(post.visibility)}
-                      </HStack>
+                  <CardBody p={0} h={200}>
+                    <Flex gap={4} h="160">
+                      <Image
+                        src={
+                          post.featured_image?.url ||
+                          `/api/og?${objectToQueryParams({
+                            title: post.title,
+                            date: post?.published_at
+                              ? post?.published_at
+                              : post?.created_at,
+                            username: post?.author?.username,
+                            avatar: post?.author?.avatar,
+                            name: post?.author?.name,
+                            category: post?.category?.name,
+                          })}`
+                        }
+                        alt={post.title || ""}
+                        h={"full"}
+                        w={"150px"}
+                        objectFit="cover"
+                      />
+                      <VStack align="stretch" spacing={3}>
+                        <HStack justify="space-between">
+                          <Badge
+                            colorScheme={getStatusColor(post.status)}
+                            rounded="full"
+                            px={2}
+                            textTransform="capitalize"
+                          >
+                            {post.status}
+                          </Badge>
+                          {getVisibilityIcon(post.visibility)}
+                        </HStack>
 
-                      <Tooltip label={post.title} hasArrow>
-                        <Heading size="md" noOfLines={2}>
-                          {post.title}
-                        </Heading>
-                      </Tooltip>
+                        <Tooltip label={post.title} hasArrow>
+                          <Heading size="md" noOfLines={2}>
+                            {post.title}
+                          </Heading>
+                        </Tooltip>
 
-                      <HStack fontSize="sm" color="gray.500" spacing={2}>
-                        <Text>{post.author?.name}</Text>
-                        <Text>•</Text>
-                        <Text>
-                          {post.published_at
-                            ? format(
-                                new Date(post.published_at),
-                                "dd/MM/yyyy hh:mm a"
-                              )
-                            : "Not published"}
-                        </Text>
-                      </HStack>
+                        <HStack fontSize="sm" color="gray.500" spacing={2}>
+                          <Text>{post.author?.name}</Text>
+                          <Text>•</Text>
+                          <Text>
+                            {post.published_at
+                              ? format(
+                                  new Date(post.published_at),
+                                  "dd/MM/yyyy hh:mm a"
+                                )
+                              : "Not published"}
+                          </Text>
+                        </HStack>
 
-                      {post.category?.name && (
-                        <Text fontSize="sm" color="gray.600">
-                          {post.category.name}
-                        </Text>
-                      )}
-
-                      <Text fontSize="sm" color="gray.500">
-                        Created:{" "}
-                        {format(
-                          new Date(post.created_at as Date),
-                          "dd/MM/yyyy hh:mm a"
+                        {post.category?.name && (
+                          <Text fontSize="sm" color="gray.600">
+                            {post.category.name}
+                          </Text>
                         )}
-                      </Text>
 
+                        <Text fontSize="sm" color="gray.500">
+                          Created:{" "}
+                          {format(
+                            new Date(post.created_at as Date),
+                            "dd/MM/yyyy hh:mm a"
+                          )}
+                        </Text>
+                      </VStack>
+                    </Flex>
+                    <CardFooter>
                       <HStack justify="space-between" pt={2}>
                         <Text fontSize="sm" color="gray.500">
                           {post.views?.count || 0} views
@@ -308,7 +318,7 @@ const PostsDashboard = () => {
                           </MenuList>
                         </Menu>
                       </HStack>
-                    </VStack>
+                    </CardFooter>
                   </CardBody>
                 </Card>
               ))}

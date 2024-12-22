@@ -129,6 +129,7 @@ export default function DashLayout({ children }: { children: ReactNode }) {
               maxW="1600px"
               margin="0 auto"
               overflowY={"auto"}
+              px={{ base: 4, md: 5, lg: 6 }}
             >
               {children}
             </Box>

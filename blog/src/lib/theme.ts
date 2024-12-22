@@ -14,7 +14,7 @@ export const theme = extendTheme(
       global: {
         ":root": {
           "--dash-sidebar-mini-w": "65px",
-          "--dash-sidebar-w": "250px",
+          "--dash-sidebar-w": "230px",
           "--dash-header-h": "65px",
           "--custom-accent-color": "#0070f3",
           "--card-raised-soft":

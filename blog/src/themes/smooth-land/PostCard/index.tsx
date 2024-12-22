@@ -88,7 +88,9 @@ export default function PostCard({
             href={formatPostPermalink(post)}
             _hover={{ textDecoration: "none" }}
           >
-            <Heading size={"md"}>{post.title}</Heading>
+            <Heading size={"md"} my={2}>
+              {post.title}
+            </Heading>
           </LinkOverlay>
           {showAuthor && (
             <Link href={`/author/${post.author?.username}`}>

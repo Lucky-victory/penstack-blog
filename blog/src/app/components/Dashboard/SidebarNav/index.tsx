@@ -27,6 +27,8 @@ import {
   LuChevronDown,
   LuChevronLeft,
   LuChevronRight,
+  LuChevronsLeft,
+  LuChevronsRight,
   LuFileImage,
   LuFileStack,
   LuHome,
@@ -38,6 +40,7 @@ import { NavItem, navPermissionMapping, TPermissions } from "@/src/types";
 import { PermissionGuard } from "../../PermissionGuard";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
 import { UserInfoComp } from "../UserInfoComp";
+import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 
 export const navItems: NavItem[] = [
   {
@@ -103,13 +106,15 @@ export const SidebarContentNav = ({
 }) => {
   const pathname = usePathname();
   const [openItems, setOpenItems] = useState<string[]>([]);
-  const bg = useColorModeValue("white", "gray.900");
+  const bg = "#326cdc";
+  const navBtnBg = "white";
+  const navBtnBgHover = "#f3f3f3";
   const popoverBg = useColorModeValue("gray.50", "gray.900");
   const borderColor = useColorModeValue("gray.200", "gray.700");
-  const textColor = useColorModeValue("gray.600", "gray.300");
-  const hoverBg = useColorModeValue("blue.500", "blue.800");
-  const activeHoverBg = useColorModeValue("blue.600", "blue.700");
-  const childrenBg = useColorModeValue("gray.200", "gray.800");
+  const textColor = useColorModeValue("gray.300", "gray.300");
+  const hoverTextColor = useColorModeValue("gray.600", "gray.600");
+  const childrenBg = "blackAlpha.400";
+  const siteConfig = useSiteConfig();
 
   useEffect(() => {
     const activeParent = navItems.find(
@@ -156,33 +161,69 @@ export const SidebarContentNav = ({
       (href.includes("/dashboard/posts/new") && pathname.match(href + "/*"));
 
     const content = (
-      <Flex borderRadius="lg" role="group">
-        <Button
-          as={Link}
-          variant="ghost"
-          rounded={"full"}
-          fontWeight={isActive ? "500" : "400"}
-          size={nested ? "sm" : "sm"}
-          href={href}
-          w="full"
-          justifyContent={isMinimized ? "center" : "flex-start"}
-          style={{ textDecoration: "none" }}
-          _focus={{ boxShadow: "none" }}
-          onClick={onClose}
-          color={isActive ? "white" : textColor}
-          bg={isActive ? "blue.500" : "transparent"}
+      <Link
+        display={"flex"}
+        variant="unstyled"
+        fontWeight={"500"}
+        size={nested ? "sm" : "md"}
+        pos={"relative"}
+        gap={5}
+        pl={isMinimized ? 3 : 6}
+        href={href}
+        style={{ textDecoration: "none" }}
+        onClick={onClose}
+        _hover={{
+          _before: {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "4px",
+            shadow: "md",
+            height: "100%",
+            backgroundColor: navBtnBgHover,
+            borderRadius: "1px",
+            transition: "background-color 0.2s ease-in-out",
+          },
+        }}
+        _after={{
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "4px",
+          shadow: "md",
+          height: "100%",
+          backgroundColor: navBtnBg,
+          borderRadius: "1px",
+          transition: "background-color 0.2s ease-in-out",
+          visibility: isActive ? "visible" : "hidden",
+        }}
+      >
+        <Flex
+          rounded={{ base: "sm", md: "md" }}
+          align={"center"}
+          justify={isMinimized ? "center" : "flex-start"}
+          gap={5}
+          shadow={isActive ? "md" : "none"}
+          color={isActive ? "black" : textColor}
+          py={nested ? "6px" : "10px"}
+          px={isMinimized ? 2 : nested ? 3 : 5}
+          fontSize={nested ? "small" : "medium"}
+          flex={1}
+          bg={isActive ? navBtnBg : "transparent"}
           _hover={{
-            bg: isActive ? activeHoverBg : hoverBg,
-            color: isActive ? "white" : "blue.50",
+            bg: navBtnBgHover,
+            color: isActive ? "black" : hoverTextColor,
           }}
         >
           {icon && (
-            <Icon mr={isMinimized ? "0" : "3"} fontSize="16" as={icon} />
+            <Icon fontSize="16" as={icon} color={isActive ? bg : "inherit"} />
           )}
           {label && label}
           {!isMinimized && children}
-        </Button>
-      </Flex>
+        </Flex>
+      </Link>
     );
 
     if (permission) {
@@ -214,10 +255,15 @@ export const SidebarContentNav = ({
                 </NavItem>
               </Box>
             </PopoverTrigger>
-            <PopoverContent ml={2} w="200px" rounded={"xl"} bg={popoverBg}>
+            <PopoverContent ml={2} w="200px" rounded={"md"} bg={bg}>
               <PopoverArrow bg={bg} />
-              <PopoverBody p={2}>
-                <VStack align="stretch" spacing={2} divider={<Divider />}>
+              <PopoverBody p={2} bg={childrenBg}>
+                <VStack
+                  align="stretch"
+                  spacing={2}
+                  divider={<Divider />}
+                  role="group"
+                >
                   {item.children?.map((child, idx) => (
                     <NavItem
                       key={idx}
@@ -245,42 +291,85 @@ export const SidebarContentNav = ({
       <PermissionGuard requiredPermission={item.permission!}>
         <Box>
           <Button
-            // alignItems="center"
-            fontWeight={isActive ? "500" : "400"}
-            py="2"
-            px="4"
-            mx="0"
-            roundedTop={openItems.includes(item.href) ? "2xl" : "full"}
-            roundedBottom={openItems.includes(item.href) ? "0" : "full"}
+            fontWeight={"500"}
+            variant={"unstyled"}
             w="full"
-            size={"sm"}
+            p={0}
+            pl={isMinimized ? 3 : 6}
+            _hover={{
+              _before: {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "4px",
+                shadow: "md",
+                height: "100%",
+                backgroundColor: navBtnBgHover,
+                borderRadius: "1px",
+                transition: "background-color 0.2s ease-in-out",
+              },
+            }}
+            _after={{
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "4px",
+              shadow: "md",
+              height: "100%",
+              backgroundColor: navBtnBg,
+              borderRadius: "1px",
+              transition: "background-color 0.2s ease-in-out",
+              visibility: isActive ? "visible" : "hidden",
+            }}
+            roundedBottom={openItems.includes(item.href) ? "0" : "md"}
+            size={"md"}
             cursor="pointer"
             onClick={() => toggleOpen(item.href)}
             justifyContent={isMinimized ? "center" : "space-between"}
-            _hover={{
-              bg: openItems.includes(item.href) ? activeHoverBg : hoverBg,
-              color: openItems.includes(item.href) ? "white" : "blue.50",
-            }}
-            bg={
-              item.children?.some((child) => pathname.startsWith(child.href))
-                ? "blue.500"
-                : "transparent"
-            }
-            color={
-              item.children?.some((child) => pathname.startsWith(child.href))
-                ? "white"
-                : textColor
-            }
           >
-            <HStack gap={0}>
-              <Icon mr="4" fontSize="16" as={item.icon} />
-              <Text flex="1">{item.label}</Text>
-            </HStack>
-            <Icon
-              as={LuChevronDown}
-              transition="all .25s ease-in-out"
-              transform={openItems.includes(item.href) ? "rotate(180deg)" : ""}
-            />
+            <Flex
+              rounded={{ base: "sm", md: "md" }}
+              align={"center"}
+              justify={isMinimized ? "center" : "space-between"}
+              gap={5}
+              shadow={isActive ? "md" : "none"}
+              py={"10px"}
+              px={isMinimized ? 2 : 5}
+              fontSize={"medium"}
+              w="full"
+              bg={
+                item.children?.some((child) =>
+                  pathname.startsWith(child.href)
+                ) || openItems.includes(item.href)
+                  ? navBtnBg
+                  : "transparent"
+              }
+              color={
+                item.children?.some((child) =>
+                  pathname.startsWith(child.href)
+                ) || openItems.includes(item.href)
+                  ? "black"
+                  : textColor
+              }
+              _hover={{
+                bg: openItems.includes(item.href) ? navBtnBg : navBtnBgHover,
+                color: openItems.includes(item.href) ? "black" : hoverTextColor,
+              }}
+            >
+              <HStack gap={0}>
+                <Icon mr="4" fontSize="16" as={item.icon} />
+                <Text flex="1">{item.label}</Text>
+              </HStack>
+              <Icon
+                as={LuChevronDown}
+                transition="all .25s ease-in-out"
+                transform={
+                  openItems.includes(item.href) ? "rotate(180deg)" : ""
+                }
+              />
+            </Flex>
           </Button>
           {openItems.includes(item.href) && (
             <VStack
@@ -289,6 +378,7 @@ export const SidebarContentNav = ({
               px={3}
               py={4}
               mt={-1}
+              ml={6}
               bg={childrenBg}
               roundedBottom="md"
             >
@@ -329,18 +419,26 @@ export const SidebarContentNav = ({
           h="var(--dash-header-h)"
           alignItems="center"
           mx={6}
-          justifyContent="space-between"
+          mb={2}
+          gap={4}
+          justify={"flex-end"}
         >
           {!isMinimized && (
-            <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-              BA
+            <Text
+              fontSize={"medium"}
+              fontWeight="medium"
+              letterSpacing={"1"}
+              color={"white"}
+            >
+              {siteConfig?.siteName?.value}
             </Text>
           )}
           <Icon
-            as={isMinimized ? LuChevronRight : LuChevronLeft}
+            as={isMinimized ? LuChevronsRight : LuChevronsLeft}
             onClick={toggleMinimized}
-            fontSize="24"
+            fontSize="20"
             cursor="pointer"
+            color={navBtnBg}
             display={{ base: "none", md: "block" }}
           />
         </Flex>
@@ -351,7 +449,7 @@ export const SidebarContentNav = ({
         h={"calc(100% - var(--dash-header-h))"}
         align="stretch"
         flex={1}
-        px={3}
+        pr={isMinimized ? 3 : 6}
         justifyContent={"space-between"}
       >
         {navItems.map((item, index) => (
@@ -369,7 +467,7 @@ export const SidebarContentNav = ({
             )}
           </Box>
         ))}
-        <Stack mt={"auto"} mb={5} pl={0}>
+        <Stack mt={"auto"} mb={5} pl={isMinimized ? 3 : 6}>
           <LightDarkModeSwitch showLabel={!isMinimized} />
           <UserInfoComp showLabel={!isMinimized} />
         </Stack>

@@ -23,16 +23,17 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
 }) => {
   return (
     <HStack
+      py={4}
       gap={4}
       wrap={{ base: "wrap", xl: "nowrap" }}
       justify={"space-between"}
     >
       <InputGroup maxW={500}>
-        <InputLeftAddon roundedLeft={"full"}>
+        <InputLeftAddon roundedLeft={"md"}>
           <LuSearch />
         </InputLeftAddon>
         <Input
-          roundedRight={"full"}
+          roundedRight={"md"}
           placeholder="Search media..."
           className="pl-10"
           onChange={(e) => onFilterChange({ search: e.target.value })}
@@ -40,7 +41,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
       </InputGroup>
       <HStack gap={4} wrap={{ base: "wrap", md: "nowrap" }}>
         <Select
-          rounded={"full"}
+          rounded={"md"}
           onChange={(e) =>
             onFilterChange({
               type: e.target.value ? [e.target.value as MediaType] : undefined,
@@ -58,7 +59,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
         </Select>
 
         <Select
-          rounded={"full"}
+          rounded={"md"}
           onChange={(e) =>
             onFilterChange({ folder: e.target.value || undefined })
           }
@@ -73,7 +74,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
         </Select>
 
         <Select
-          rounded={"full"}
+          rounded={"md"}
           onChange={(e) => {
             const value = e.target.value;
             if (!value) return;
@@ -95,7 +96,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
           flexShrink={0}
           ml="auto"
           size={"sm"}
-          rounded={"full"}
+          rounded={"md"}
           leftIcon={<LuRefreshCw />}
           onClick={() => {
             refetchMedia?.();

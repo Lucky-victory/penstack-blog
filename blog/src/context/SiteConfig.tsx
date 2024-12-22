@@ -13,7 +13,9 @@ export function SiteConfigProvider({
   initialConfig: Settings;
 }) {
   return (
-    <SiteConfigContext.Provider value={initialConfig}>
+    <SiteConfigContext.Provider
+      value={{ ...DEFAULT_SETTINGS, ...initialConfig }}
+    >
       {children}
     </SiteConfigContext.Provider>
   );

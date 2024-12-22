@@ -160,7 +160,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       {!loading && media && media?.data?.length > 0 && (
         <>
           <Grid
-            rounded={{ base: 20, md: 24 }}
+            rounded={"lg"}
             bg={bgColor}
             p={{ base: 3, md: 4 }}
             templateColumns={{
@@ -182,7 +182,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
           <HStack spacing={2} justify={"center"}>
             <IconButton
               aria-label="First page"
-              rounded={"full"}
+              rounded={"md"}
               variant="outline"
               onClick={() => setFilters((prev) => ({ ...prev, page: 1 }))}
               isDisabled={loading || media?.meta.page === 1}
@@ -191,7 +191,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             </IconButton>
             <IconButton
               aria-label="previous page"
-              rounded={"full"}
+              rounded={"md"}
               variant="outline"
               onClick={() =>
                 setFilters((prev) => ({
@@ -207,7 +207,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               Page {media?.meta.page} of {media?.meta.totalPages}
             </Text>
             <IconButton
-              rounded={"full"}
+              rounded={"md"}
               aria-label="next page"
               variant="outline"
               onClick={() =>
@@ -223,7 +223,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               <LuChevronRight className="h-4 w-4" />
             </IconButton>
             <IconButton
-              rounded={"full"}
+              rounded={"md"}
               variant="outline"
               aria-label="last page"
               onClick={() =>
@@ -252,7 +252,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
           left={0}
           right={0}
           p={4}
-          rounded={"lg"}
+          rounded={"md"}
         >
           <HStack
             direction={{ base: "column", md: "row" }}
@@ -271,7 +271,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               wrap={"wrap"}
             >
               <Button
-                rounded={"full"}
+                rounded={"md"}
                 onClick={() => setSelectedMedia([])}
                 colorScheme="red"
                 leftIcon={<LuTrash2 />}
@@ -279,10 +279,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               >
                 Clear
               </Button>
-              <Button
-                rounded={"full"}
-                onClick={() => onSelect?.(selectedMedia)}
-              >
+              <Button rounded={"md"} onClick={() => onSelect?.(selectedMedia)}>
                 Confirm Selection
               </Button>
             </HStack>
