@@ -13,8 +13,8 @@ export const theme = extendTheme(
     styles: {
       global: {
         ":root": {
-          "--dash-sidebar-mini-w": "65px",
-          "--dash-sidebar-w": "230px",
+          "--dash-sidebar-mini-w": "60px",
+          "--dash-sidebar-w": "240px",
           "--dash-header-h": "65px",
           "--custom-accent-color": "#0070f3",
           "--card-raised-soft":

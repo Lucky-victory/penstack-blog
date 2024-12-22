@@ -20,6 +20,9 @@ export default function DashHeader({
       minH="12"
       maxH={"var(--dash-header-h)"}
       flexShrink={0}
+      pos={"sticky"}
+      top={0}
+      zIndex={10}
       alignItems="center"
       bg={useColorModeValue("white", "gray.900")}
       borderBottomWidth="1px"

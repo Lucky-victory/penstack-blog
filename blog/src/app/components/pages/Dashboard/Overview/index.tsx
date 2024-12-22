@@ -20,6 +20,7 @@ import {
 import PostViewsChart from "./PostViewsChart";
 import MostPopularPosts from "./MostPopularPostArea";
 import { IconType } from "react-icons";
+import DashHeader from "../../../Dashboard/Header";
 
 export const OverviewCard = ({
   color,
@@ -58,7 +59,7 @@ export const OverviewCard = ({
           >
             {value}
           </Text>
-          <Text as={"span"} fontSize={"small"}>
+          <Text as={"span"} fontSize={"small"} fontWeight={500}>
             {label}
           </Text>
         </HStack>
@@ -87,54 +88,50 @@ export default function Overview() {
   const bgColor = useColorModeValue("white", "gray.700");
 
   return (
-    <Stack gap={{ base: 5, md: 6 }} py={5} px={4}>
-      <Grid
-        gap={6}
-        templateColumns={{
-          base: "1fr",
-          md: "repeat(2, 1fr)",
-          lg: "repeat(auto-fit, minmax(200px,1fr))",
-        }}
-      >
-        <OverviewCard
-          color="purple"
-          label="Users"
-          icon={LuUsers2}
-          value="142"
-          isUp
-          growthCount={12}
-        />
-        <OverviewCard
-          color="orange"
-          label="Subscribers"
-          icon={LuUserPlus2}
-          value="32"
-          isUp={false}
-          growthCount={14}
-        />
-        <OverviewCard
-          color="blue"
-          label="Posts"
-          icon={LuFileStack}
-          value="12"
-          isUp
-          growthCount={5}
-        />
-        <OverviewCard
-          color="green"
-          label="Comments"
-          icon={LuMessageCircle}
-          value="38"
-          isUp
-          growthCount={22}
-        />
-      </Grid>
-      <Box>
-        <PostViewsChart />
-      </Box>
-      <Box>
-        <MostPopularPosts />
-      </Box>
-    </Stack>
+    <Box>
+      <DashHeader></DashHeader>
+      <Stack gap={{ base: 5, md: 6 }} py={5} px={4}>
+        <Grid gap={6} templateColumns={"repeat(auto-fit, minmax(230px,1fr))"}>
+          <OverviewCard
+            color="purple"
+            label="Users"
+            icon={LuUsers2}
+            value="142"
+            isUp
+            growthCount={12}
+          />
+          <OverviewCard
+            color="orange"
+            label="Subscribers"
+            icon={LuUserPlus2}
+            value="32"
+            isUp={false}
+            growthCount={14}
+          />
+          <OverviewCard
+            color="blue"
+            label="Posts"
+            icon={LuFileStack}
+            value="12"
+            isUp
+            growthCount={5}
+          />
+          <OverviewCard
+            color="green"
+            label="Comments"
+            icon={LuMessageCircle}
+            value="38"
+            isUp
+            growthCount={22}
+          />
+        </Grid>
+        <Box>
+          <PostViewsChart />
+        </Box>
+        <Box>
+          <MostPopularPosts />
+        </Box>
+      </Stack>
+    </Box>
   );
 }

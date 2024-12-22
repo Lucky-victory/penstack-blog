@@ -62,7 +62,7 @@ const PostsDashboard = () => {
   const [filteredPosts, setFilteredPosts] = useState<PostSelect[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const postCardBg = useColorModeValue("white", "black");
+  const postCardBg = useColorModeValue("white", "#121212");
   const { posts, loading, refetchPosts } = usePosts({
     status: "all",
     limit: 20,

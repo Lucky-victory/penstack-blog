@@ -54,7 +54,7 @@ export default function DashLayout({ children }: { children: ReactNode }) {
       <PermissionGuard requiredPermission="dashboard:access" shouldRedirect>
         <Box
           minH="var(--chakra-vh)"
-          bg={useColorModeValue("gray.100", "gray.900")}
+          bg={useColorModeValue("gray.200", "#121212")}
         >
           <SidebarContentNav
             onClose={() => onClose}
