@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { TPermissions } from "../types";
 import { useAuth } from "./useAuth";
 import axios from "axios";
@@ -13,56 +13,80 @@ const permissionsCache = new Map<
 
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 
+const checkCachedPermissions = (
+  userEmail: string,
+  requiredPermission: TPermissions
+) => {
+  const now = Date.now();
+  const cachedPermissions = permissionsCache.get(userEmail);
+
+  if (cachedPermissions && now - cachedPermissions.timestamp < CACHE_DURATION) {
+    return {
+      isValid: true,
+      hasPermission: cachedPermissions.permissions.includes(requiredPermission),
+      permissions: cachedPermissions.permissions,
+    };
+  }
+
+  return { isValid: false };
+};
+
 export const usePermissions = (requiredPermission: TPermissions) => {
   const { user } = useAuth();
   const [hasPermission, setHasPermission] = useState(false);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    async function checkPermission() {
-      if (!user?.email) return false;
 
-      const userEmail = user.email;
-      const now = Date.now();
-      try {
-        // Check cache first
-        const cachedPermissions = permissionsCache.get(userEmail);
-        if (
-          cachedPermissions &&
-          now - cachedPermissions.timestamp < CACHE_DURATION
-        ) {
-          setHasPermission(
-            cachedPermissions.permissions.includes(requiredPermission)
-          );
-          return cachedPermissions.permissions.includes(requiredPermission);
-        }
+  const userEmail = useMemo(() => user?.email || "", [user?.email]);
 
-        const { data } = await axios.post<{
-          data: {
-            hasPermission: boolean;
-            permissions: TPermissions[];
-          };
-        }>("/api/auth/check-permission", { permission: requiredPermission });
+  const checkPermission = useCallback(async () => {
+    if (!userEmail) {
+      setHasPermission(false);
+      setLoading(false);
+      return;
+    }
 
-        // Update cache
-        permissionsCache.set(userEmail, {
-          permissions: data.data.permissions,
-          timestamp: now,
-        });
+    try {
+      const cachedResult = checkCachedPermissions(
+        userEmail,
+        requiredPermission
+      );
 
-        setHasPermission(data.data.hasPermission);
-        return data.data.hasPermission;
-      } catch (error) {
-        console.error("Permission check failed", error);
-        setHasPermission(false);
-        return false;
-      } finally {
+      if (cachedResult.isValid) {
+        setHasPermission(cachedResult.hasPermission as boolean);
         setLoading(false);
+        return;
       }
-    }
-    if (user) {
-      checkPermission();
-    }
-  }, [user, requiredPermission]);
 
-  return { hasPermission, loading };
+      const { data } = await axios.post<{
+        data: {
+          hasPermission: boolean;
+          permissions: TPermissions[];
+        };
+      }>("/api/auth/check-permission", { permission: requiredPermission });
+
+      permissionsCache.set(userEmail, {
+        permissions: data.data.permissions,
+        timestamp: Date.now(),
+      });
+
+      setHasPermission(data.data.hasPermission);
+    } catch (error) {
+      console.error("Permission check failed", error);
+      setHasPermission(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [userEmail, requiredPermission]);
+
+  useEffect(() => {
+    checkPermission();
+  }, [checkPermission]);
+
+  const clearCache = useCallback(() => {
+    if (userEmail) {
+      permissionsCache.delete(userEmail);
+    }
+  }, [userEmail]);
+
+  return { hasPermission, loading, clearCache };
 };

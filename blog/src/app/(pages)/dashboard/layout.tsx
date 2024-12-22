@@ -101,7 +101,7 @@ export default function DashLayout({ children }: { children: ReactNode }) {
             display={{ base: "flex", md: "none" }}
           >
             <Icon as={LuMenu} onClick={onOpen} fontSize="20" cursor="pointer" />
-            <Text fontSize="lg" ml="4" fontWeight="medium" letterSpacing={1}>
+            <Text fontSize="lg" ml="4" fontWeight="bold" letterSpacing={1}>
               {siteConfig?.siteName?.value}
             </Text>
           </Flex>

@@ -1,16 +1,8 @@
 "use client";
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { Box, useColorModeValue, Stack, useDisclosure } from "@chakra-ui/react";
-import slugify from "slugify";
-import { nullToEmptyString } from "@/src/utils";
-import { PostInsert, PostSelect } from "@/src/types";
+import { Box, Stack } from "@chakra-ui/react";
 import { usePost } from "@/src/hooks";
-import { useFormik } from "formik";
-import { redirect, useParams, useRouter } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import Loader from "../../../Loader";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { debounce } from "lodash";
 import { decode, encode } from "html-entities";
 import TipTapEditor from "@/src/app/components/TipTapEditor";
 import {

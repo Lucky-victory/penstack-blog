@@ -56,6 +56,7 @@ import { useQuery } from "@tanstack/react-query";
 import { PaginatedResponse, RolesSelect, UserSelect } from "@/src/types";
 import axios from "axios";
 import Loader from "../../../Loader";
+import DashHeader from "../../../Dashboard/Header";
 
 // Mock data and types (replace with actual types from your schema)
 interface User {
@@ -215,349 +216,352 @@ const UsersDashboard = () => {
     }
   }
   return (
-    <Box p={8}>
-      <Card rounded={{ base: 20, md: 24 }} mb={8}>
-        <CardBody>
-          <HStack justify="space-between" align="center">
-            <Heading size="lg">Users Management</Heading>
-            <Button
-              leftIcon={<AddIcon />}
-              colorScheme="blue"
-              rounded="full"
-              onClick={() => openUserModal()}
-            >
-              Add User
-            </Button>
-          </HStack>
-        </CardBody>
-      </Card>
-
-      <Card rounded={{ base: 20, md: 24 }} mb={8}>
-        <CardBody>
-          <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
-            <InputGroup>
-              <InputLeftAddon roundedLeft={"full"}>
-                <SearchIcon />
-              </InputLeftAddon>
-              <Input
-                maxW={{ md: "320px" }}
-                autoComplete="off"
-                placeholder="Search users..."
-                value={searchTerm}
-                roundedRight={"full"}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </InputGroup>
-            <Select
-              rounded={"full"}
-              maxW={{ md: "300px" }}
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-            >
-              <option value="all">All Roles</option>
-              {roles?.map((role) => (
-                <option key={role.id} value={role.id}>
-                  {role.name}
-                </option>
-              ))}
-            </Select>
-          </Stack>
-
-          {selectedUsers.length > 0 && (
-            <HStack mb={4}>
-              <Text>{selectedUsers.length} users selected</Text>
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  rightIcon={<ChevronDownIcon />}
-                  size="sm"
-                >
-                  Bulk Actions
-                </MenuButton>
-                <MenuList>
-                  <MenuItem onClick={() => performBulkAction("delete")}>
-                    Delete Selected
-                  </MenuItem>
-                  <MenuItem onClick={() => performBulkAction("activate")}>
-                    Activate
-                  </MenuItem>
-                  <MenuItem onClick={() => performBulkAction("deactivate")}>
-                    Deactivate
-                  </MenuItem>
-                </MenuList>
-              </Menu>
+    <Box>
+      <DashHeader></DashHeader>
+      <Box p={{ base: 4, md: 5 }}>
+        <Card rounded={"lg"} mb={8}>
+          <CardBody>
+            <HStack justify="space-between" align="center">
+              <Heading size="lg">Users Management</Heading>
+              <Button
+                leftIcon={<AddIcon />}
+                colorScheme="blue"
+                rounded="full"
+                onClick={() => openUserModal()}
+              >
+                Add User
+              </Button>
             </HStack>
-          )}
-          {isFetching ? (
-            <Center>
-              <Loader />
-            </Center>
-          ) : (
-            <>
-              <TableContainer>
-                <Table variant="simple">
-                  <Thead>
-                    <Tr>
-                      <Th>
-                        <Checkbox
-                          isChecked={
-                            selectedUsers.length === filteredUsers.length
-                          }
-                          onChange={selectAllUsers}
-                        />
-                      </Th>
-                      <Th>ID</Th>
-                      <Th>User</Th>
-                      <Th>Email</Th>
-                      <Th>Role</Th>
-                      <Th>Auth Type</Th>
-                      <Th>Created At</Th>
-                      <Th>Actions</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {filteredUsers &&
-                      filteredUsers?.length > 0 &&
-                      filteredUsers.map((user) => (
-                        <Tr key={user.id}>
-                          <Td>
-                            <Checkbox
-                              isChecked={selectedUsers.includes(user.id)}
-                              onChange={() => toggleUserSelection(user.id)}
-                            />
-                          </Td>
-                          <Td>{user.id}</Td>
-                          <Td>
-                            <Flex align="center">
-                              <Avatar
-                                size="sm"
-                                name={user.name}
-                                src={user.avatar || ""}
-                                mr={3}
-                              />
-                              <Text>{user.name}</Text>
-                            </Flex>
-                          </Td>
-                          <Td>{user.email}</Td>
-                          <Td>
-                            <Badge
-                              rounded={"lg"}
-                              textTransform={"capitalize"}
-                              px={2}
-                              colorScheme={getRoleColor(user.role_id)}
-                            >
-                              {getRoleName(user.role_id)}
-                            </Badge>
-                          </Td>
-                          <Td>
-                            <Badge
-                              variant="outline"
-                              rounded={"lg"}
-                              textTransform={"capitalize"}
-                              px={2}
-                              colorScheme="purple"
-                            >
-                              {user.auth_type}
-                            </Badge>
-                          </Td>
-                          <Td>
-                            {new Date(user.created_at!).toLocaleDateString()}
-                          </Td>
-                          <Td>
-                            <HStack>
-                              <IconButton
-                                rounded={"full"}
-                                icon={<EditIcon />}
-                                size="sm"
-                                variant="ghost"
-                                aria-label="Edit"
-                                onClick={() => openUserModal(user)}
-                              ></IconButton>
-                              <IconButton
-                                aria-label="Delete"
-                                rounded={"full"}
-                                icon={<DeleteIcon />}
-                                color="red.500"
-                                size="sm"
-                                variant="ghost"
-                              >
-                                Delete
-                              </IconButton>
-                            </HStack>
-                          </Td>
-                        </Tr>
-                      ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            </>
-          )}
-        </CardBody>
-      </Card>
+          </CardBody>
+        </Card>
 
-      {/* User Create/Edit Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-        <ModalOverlay />
-        <ModalContent rounded={"3xl"}>
-          <ModalHeader>
-            {currentUser?.id ? "Edit User" : "Add New User"}
-          </ModalHeader>
-          <ModalBody>
-            <VStack spacing={4} align={"start"}>
-              <FormControl>
-                <FormLabel>Name</FormLabel>
+        <Card rounded={"lg"} mb={8}>
+          <CardBody>
+            <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
+              <InputGroup>
+                <InputLeftAddon roundedLeft={"full"}>
+                  <SearchIcon />
+                </InputLeftAddon>
                 <Input
+                  maxW={{ md: "320px" }}
                   autoComplete="off"
-                  rounded={"full"}
-                  placeholder="Enter full name"
-                  type="text"
-                  name="name"
-                  value={currentUser?.name || ""}
-                  onChange={(e) =>
-                    setCurrentUser((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
+                  placeholder="Search users..."
+                  value={searchTerm}
+                  roundedRight={"full"}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Email</FormLabel>
-                <Input
-                  placeholder="Enter email"
-                  type="email"
-                  rounded={"full"}
-                  name="email"
-                  autoComplete="off"
-                  value={currentUser?.email || ""}
-                  onChange={(e) =>
-                    setCurrentUser((prev) => ({
-                      ...prev,
-                      email: e.target.value,
-                    }))
-                  }
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Password</FormLabel>
-                <Input
-                  placeholder="Enter password"
-                  type="password"
-                  name="password"
-                  autoComplete="off"
-                  rounded={"full"}
-                  value={currentUser?.password || ""}
-                  onChange={(e) =>
-                    setCurrentUser((prev) => ({
-                      ...prev,
-                      password: e.target.value,
-                    }))
-                  }
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Username</FormLabel>
-                <Input
-                  autoComplete="off"
-                  rounded={"full"}
-                  placeholder="Username"
-                  type="text"
-                  name="username"
-                  value={currentUser?.username || ""}
-                  onChange={(e) =>
-                    setCurrentUser((prev) => ({
-                      ...prev,
-                      username: e.target.value,
-                    }))
-                  }
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Role</FormLabel>
+              </InputGroup>
+              <Select
+                rounded={"full"}
+                maxW={{ md: "300px" }}
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value)}
+              >
+                <option value="all">All Roles</option>
+                {roles?.map((role) => (
+                  <option key={role.id} value={role.id}>
+                    {role.name}
+                  </option>
+                ))}
+              </Select>
+            </Stack>
 
+            {selectedUsers.length > 0 && (
+              <HStack mb={4}>
+                <Text>{selectedUsers.length} users selected</Text>
                 <Menu>
                   <MenuButton
-                    rounded={"full"}
                     as={Button}
-                    variant={"ghost"}
-                    w="full"
-                    colorScheme="black"
-                    textTransform={"capitalize"}
                     rightIcon={<ChevronDownIcon />}
-                    justifyContent={"start"}
-                    fontWeight={"normal"}
-                    textAlign={"left"}
-                    border={"1px solid"}
-                    borderColor={borderColor}
+                    size="sm"
                   >
-                    {getActiveRole()?.name || "Choose role"}
+                    Bulk Actions
                   </MenuButton>
-                  <MenuList rounded={"2xl"} px={2} py={2}>
-                    {roles &&
-                      roles?.length > 0 &&
-                      roles?.map((role) => (
-                        <MenuItem
-                          rounded={"full"}
-                          key={role.id}
-                          textTransform={"capitalize"}
-                          onClick={() => {
-                            setSelectedRole(role);
-                            setCurrentUser((prev) => ({
-                              ...prev,
-                              role_id: role.id,
-                            }));
-                          }}
-                        >
-                          <HStack justify={"space-between"} gap={4}>
-                            <Text>{role?.name}</Text>
-                            <Text
-                              as={"span"}
-                              fontSize={"smaller"}
-                              color={roleTextColor}
-                            >
-                              {role?.description}
-                            </Text>
-                          </HStack>
-                        </MenuItem>
-                      ))}
+                  <MenuList>
+                    <MenuItem onClick={() => performBulkAction("delete")}>
+                      Delete Selected
+                    </MenuItem>
+                    <MenuItem onClick={() => performBulkAction("activate")}>
+                      Activate
+                    </MenuItem>
+                    <MenuItem onClick={() => performBulkAction("deactivate")}>
+                      Deactivate
+                    </MenuItem>
                   </MenuList>
                 </Menu>
-              </FormControl>
-              <FormControl w={"full"}>
-                {!currentUser?.id && (
-                  <FormLabel
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                  >
-                    <Stack gap={0}>
-                      <Text>Notify User</Text>
-                      <Text fontSize={"small"} color={"gray.500"}>
-                        Sends an email with the account details to user.
-                      </Text>
-                    </Stack>
-                    <Switch />
-                  </FormLabel>
-                )}
-              </FormControl>
-            </VStack>
-          </ModalBody>
-          <ModalFooter>
-            <Button rounded={"full"} variant="ghost" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button
-              rounded={"full"}
-              colorScheme="blue"
-              onClick={saveUser}
-              isLoading={isUpdating}
-              loadingText={currentUser?.id ? "Updating..." : "Creating..."}
-            >
-              {currentUser?.id ? "Update" : "Create"}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+              </HStack>
+            )}
+            {isFetching ? (
+              <Center>
+                <Loader />
+              </Center>
+            ) : (
+              <>
+                <TableContainer>
+                  <Table variant="simple">
+                    <Thead>
+                      <Tr>
+                        <Th>
+                          <Checkbox
+                            isChecked={
+                              selectedUsers.length === filteredUsers.length
+                            }
+                            onChange={selectAllUsers}
+                          />
+                        </Th>
+                        <Th>ID</Th>
+                        <Th>User</Th>
+                        <Th>Email</Th>
+                        <Th>Role</Th>
+                        <Th>Auth Type</Th>
+                        <Th>Created At</Th>
+                        <Th>Actions</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {filteredUsers &&
+                        filteredUsers?.length > 0 &&
+                        filteredUsers.map((user) => (
+                          <Tr key={user.id}>
+                            <Td>
+                              <Checkbox
+                                isChecked={selectedUsers.includes(user.id)}
+                                onChange={() => toggleUserSelection(user.id)}
+                              />
+                            </Td>
+                            <Td>{user.id}</Td>
+                            <Td>
+                              <Flex align="center">
+                                <Avatar
+                                  size="sm"
+                                  name={user.name}
+                                  src={user.avatar || ""}
+                                  mr={3}
+                                />
+                                <Text>{user.name}</Text>
+                              </Flex>
+                            </Td>
+                            <Td>{user.email}</Td>
+                            <Td>
+                              <Badge
+                                rounded={"lg"}
+                                textTransform={"capitalize"}
+                                px={2}
+                                colorScheme={getRoleColor(user.role_id)}
+                              >
+                                {getRoleName(user.role_id)}
+                              </Badge>
+                            </Td>
+                            <Td>
+                              <Badge
+                                variant="outline"
+                                rounded={"lg"}
+                                textTransform={"capitalize"}
+                                px={2}
+                                colorScheme="purple"
+                              >
+                                {user.auth_type}
+                              </Badge>
+                            </Td>
+                            <Td>
+                              {new Date(user.created_at!).toLocaleDateString()}
+                            </Td>
+                            <Td>
+                              <HStack>
+                                <IconButton
+                                  rounded={"full"}
+                                  icon={<EditIcon />}
+                                  size="sm"
+                                  variant="ghost"
+                                  aria-label="Edit"
+                                  onClick={() => openUserModal(user)}
+                                ></IconButton>
+                                <IconButton
+                                  aria-label="Delete"
+                                  rounded={"full"}
+                                  icon={<DeleteIcon />}
+                                  color="red.500"
+                                  size="sm"
+                                  variant="ghost"
+                                >
+                                  Delete
+                                </IconButton>
+                              </HStack>
+                            </Td>
+                          </Tr>
+                        ))}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </>
+            )}
+          </CardBody>
+        </Card>
+
+        {/* User Create/Edit Modal */}
+        <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+          <ModalOverlay />
+          <ModalContent rounded={"3xl"}>
+            <ModalHeader>
+              {currentUser?.id ? "Edit User" : "Add New User"}
+            </ModalHeader>
+            <ModalBody>
+              <VStack spacing={4} align={"start"}>
+                <FormControl>
+                  <FormLabel>Name</FormLabel>
+                  <Input
+                    autoComplete="off"
+                    rounded={"full"}
+                    placeholder="Enter full name"
+                    type="text"
+                    name="name"
+                    value={currentUser?.name || ""}
+                    onChange={(e) =>
+                      setCurrentUser((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    placeholder="Enter email"
+                    type="email"
+                    rounded={"full"}
+                    name="email"
+                    autoComplete="off"
+                    value={currentUser?.email || ""}
+                    onChange={(e) =>
+                      setCurrentUser((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }))
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Password</FormLabel>
+                  <Input
+                    placeholder="Enter password"
+                    type="password"
+                    name="password"
+                    autoComplete="off"
+                    rounded={"full"}
+                    value={currentUser?.password || ""}
+                    onChange={(e) =>
+                      setCurrentUser((prev) => ({
+                        ...prev,
+                        password: e.target.value,
+                      }))
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Username</FormLabel>
+                  <Input
+                    autoComplete="off"
+                    rounded={"full"}
+                    placeholder="Username"
+                    type="text"
+                    name="username"
+                    value={currentUser?.username || ""}
+                    onChange={(e) =>
+                      setCurrentUser((prev) => ({
+                        ...prev,
+                        username: e.target.value,
+                      }))
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Role</FormLabel>
+
+                  <Menu>
+                    <MenuButton
+                      rounded={"full"}
+                      as={Button}
+                      variant={"ghost"}
+                      w="full"
+                      colorScheme="black"
+                      textTransform={"capitalize"}
+                      rightIcon={<ChevronDownIcon />}
+                      justifyContent={"start"}
+                      fontWeight={"normal"}
+                      textAlign={"left"}
+                      border={"1px solid"}
+                      borderColor={borderColor}
+                    >
+                      {getActiveRole()?.name || "Choose role"}
+                    </MenuButton>
+                    <MenuList rounded={"2xl"} px={2} py={2}>
+                      {roles &&
+                        roles?.length > 0 &&
+                        roles?.map((role) => (
+                          <MenuItem
+                            rounded={"full"}
+                            key={role.id}
+                            textTransform={"capitalize"}
+                            onClick={() => {
+                              setSelectedRole(role);
+                              setCurrentUser((prev) => ({
+                                ...prev,
+                                role_id: role.id,
+                              }));
+                            }}
+                          >
+                            <HStack justify={"space-between"} gap={4}>
+                              <Text>{role?.name}</Text>
+                              <Text
+                                as={"span"}
+                                fontSize={"smaller"}
+                                color={roleTextColor}
+                              >
+                                {role?.description}
+                              </Text>
+                            </HStack>
+                          </MenuItem>
+                        ))}
+                    </MenuList>
+                  </Menu>
+                </FormControl>
+                <FormControl w={"full"}>
+                  {!currentUser?.id && (
+                    <FormLabel
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                    >
+                      <Stack gap={0}>
+                        <Text>Notify User</Text>
+                        <Text fontSize={"small"} color={"gray.500"}>
+                          Sends an email with the account details to user.
+                        </Text>
+                      </Stack>
+                      <Switch />
+                    </FormLabel>
+                  )}
+                </FormControl>
+              </VStack>
+            </ModalBody>
+            <ModalFooter>
+              <Button rounded={"full"} variant="ghost" mr={3} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button
+                rounded={"full"}
+                colorScheme="blue"
+                onClick={saveUser}
+                isLoading={isUpdating}
+                loadingText={currentUser?.id ? "Updating..." : "Creating..."}
+              >
+                {currentUser?.id ? "Update" : "Create"}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Box>
     </Box>
   );
 };

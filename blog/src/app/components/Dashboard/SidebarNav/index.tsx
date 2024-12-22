@@ -426,8 +426,8 @@ export const SidebarContentNav = ({
           {!isMinimized && (
             <Text
               fontSize={"medium"}
-              fontWeight="medium"
-              letterSpacing={"1"}
+              fontWeight="bold"
+              letterSpacing={"2"}
               color={"white"}
             >
               {siteConfig?.siteName?.value}
