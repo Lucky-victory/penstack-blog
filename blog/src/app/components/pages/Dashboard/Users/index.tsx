@@ -226,7 +226,7 @@ const UsersDashboard = () => {
               <Button
                 leftIcon={<AddIcon />}
                 colorScheme="blue"
-                rounded="full"
+                rounded="md"
                 onClick={() => openUserModal()}
               >
                 Add User

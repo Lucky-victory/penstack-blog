@@ -61,7 +61,7 @@ const PostViewsChart = () => {
   };
   const tooltipContentBg = useColorModeValue("white", "black");
   return (
-    <Card rounded={"20px"}>
+    <Card rounded={"lg"}>
       <CardHeader>
         <HStack wrap={"wrap"} justify={"space-between"} gap={4}>
           <Heading size={"md"}>Post Views</Heading>

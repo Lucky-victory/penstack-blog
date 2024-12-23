@@ -21,6 +21,7 @@ import {
   Divider,
   Text,
   HStack,
+  FormHelperText,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Settings, DEFAULT_SETTINGS } from "@/src/types";
@@ -108,6 +109,7 @@ export default function SettingsPage() {
                 <Tab>Analytics</Tab>
                 <Tab>Monitoring</Tab>
                 <Tab>Media</Tab>
+                <Tab>Email (Resend)</Tab>
                 <Tab>Advanced</Tab>
               </TabList>
 
@@ -118,7 +120,7 @@ export default function SettingsPage() {
                       <FormLabel>Site Name</FormLabel>
                       <Input
                         maxW={600}
-                        rounded="full"
+                        rounded="md"
                         value={settings.siteName.value}
                         onChange={(e) =>
                           handleInputChange("siteName", e.target.value)
@@ -130,7 +132,7 @@ export default function SettingsPage() {
                       <FormLabel>Site Description</FormLabel>
                       <Input
                         maxW={600}
-                        rounded="full"
+                        rounded="md"
                         value={settings.siteDescription.value}
                         onChange={(e) =>
                           handleInputChange("siteDescription", e.target.value)
@@ -155,7 +157,7 @@ export default function SettingsPage() {
                         <FormLabel>Google Analytics 4 Measurement ID</FormLabel>
                         <Input
                           maxW={600}
-                          rounded="full"
+                          rounded="md"
                           value={settings.gaId.value}
                           onChange={(e) =>
                             handleInputChange("gaId", e.target.value)
@@ -180,7 +182,7 @@ export default function SettingsPage() {
                         <FormLabel>Google Tag Manager ID</FormLabel>
                         <Input
                           maxW={600}
-                          rounded="full"
+                          rounded="md"
                           value={settings.gtmId.value}
                           onChange={(e) =>
                             handleInputChange("gtmId", e.target.value)
@@ -204,7 +206,7 @@ export default function SettingsPage() {
                         <FormLabel>PostHog API Key</FormLabel>
                         <Input
                           maxW={600}
-                          rounded="full"
+                          rounded="md"
                           value={settings.posthogKey.value}
                           onChange={(e) =>
                             handleInputChange("posthogKey", e.target.value)
@@ -233,7 +235,7 @@ export default function SettingsPage() {
                         <FormLabel>Sentry DSN</FormLabel>
                         <Input
                           maxW={600}
-                          rounded="full"
+                          rounded="md"
                           value={settings.sentryDsn.value}
                           onChange={(e) =>
                             handleInputChange("sentryDsn", e.target.value)
@@ -270,14 +272,13 @@ export default function SettingsPage() {
                     </FormControl>
                   </VStack>
                 </TabPanel>
-
                 <TabPanel>
                   <VStack spacing={6} align="stretch">
                     <FormControl>
                       <FormLabel>Cloudinary Cloud Name</FormLabel>
                       <Input
                         maxW={600}
-                        rounded="full"
+                        rounded="md"
                         value={settings.cloudinaryName.value}
                         onChange={(e) =>
                           handleInputChange("cloudinaryName", e.target.value)
@@ -289,7 +290,7 @@ export default function SettingsPage() {
                       <FormLabel>Max Upload Size (MB)</FormLabel>
                       <Input
                         maxW={600}
-                        rounded="full"
+                        rounded="md"
                         type="number"
                         value={settings.maxUploadSize.value}
                         onChange={(e) =>
@@ -301,7 +302,7 @@ export default function SettingsPage() {
                       <FormLabel>Default Media Folder</FormLabel>
                       <Input
                         maxW={600}
-                        rounded="full"
+                        rounded="md"
                         value={settings.defaultMediaFolder.value}
                         onChange={(e) =>
                           handleInputChange(
@@ -317,11 +318,70 @@ export default function SettingsPage() {
 
                 <TabPanel>
                   <VStack spacing={6} align="stretch">
+                    <FormControl isRequired>
+                      <FormLabel>Email from</FormLabel>
+                      <FormHelperText>
+                        The address to send emails from
+                      </FormHelperText>
+                      <Input
+                        maxW={600}
+                        rounded="md"
+                        mt={2}
+                        type="email"
+                        value={settings.emailFrom.value}
+                        onChange={(e) =>
+                          handleInputChange("emailFrom", e.target.value)
+                        }
+                        placeholder="noreply@example.com"
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>Email From Title</FormLabel>
+                      <FormHelperText>
+                        The title to display in the from field of emails
+                      </FormHelperText>
+
+                      <Input
+                        mt={2}
+                        maxW={600}
+                        rounded="md"
+                        placeholder="My Blog"
+                        value={settings.emailFromTitle.value}
+                        onChange={(e) =>
+                          handleInputChange("emailFromTitle", e.target.value)
+                        }
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>Newsletter Email From (optional)</FormLabel>
+                      <FormHelperText>
+                        The address to send emails from for the newsletter
+                      </FormHelperText>
+
+                      <Input
+                        maxW={600}
+                        mt={2}
+                        rounded="md"
+                        value={settings.newsletterEmailFrom.value}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "newsletterEmailFrom",
+                            e.target.value
+                          )
+                        }
+                        placeholder="newsletter@example.com"
+                      />
+                    </FormControl>
+                  </VStack>
+                </TabPanel>
+
+                <TabPanel>
+                  <VStack spacing={6} align="stretch">
                     <FormControl>
                       <FormLabel>API Rate Limit</FormLabel>
                       <Input
                         maxW={600}
-                        rounded="full"
+                        rounded="md"
                         type="number"
                         value={settings.apiRateLimit.value}
                         onChange={(e) =>
@@ -333,7 +393,7 @@ export default function SettingsPage() {
                       <FormLabel>Cache Duration (minutes)</FormLabel>
                       <Input
                         maxW={600}
-                        rounded="full"
+                        rounded="md"
                         type="number"
                         value={settings.cacheDuration.value}
                         onChange={(e) =>
@@ -358,7 +418,7 @@ export default function SettingsPage() {
                 colorScheme="blue"
                 isLoading={isLoading}
                 onClick={handleSave}
-                rounded="full"
+                rounded="md"
               >
                 Save Changes
               </Button>

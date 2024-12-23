@@ -1,6 +1,8 @@
 "use client";
 import {
   Box,
+  Card,
+  CardBody,
   Grid,
   HStack,
   Icon,
@@ -43,52 +45,53 @@ export const OverviewCard = ({
   isLoading?: boolean;
 }) => {
   return (
-    <HStack
-      rounded={"md"}
-      bg={useColorModeValue("white", "gray.700")}
-      shadow={"md"}
-      borderTop={"4px solid var(--chakra-colors-" + color + "-500)"}
-      p={6}
-      minH={"60px"}
-    >
-      <VStack bg={color + ".100"} p={2} rounded={"full"}>
-        <Icon as={icon} size={20} color={color + ".500"} />
-      </VStack>
-      <Skeleton isLoaded={!isLoading}>
-        <Stack gap={1}>
-          <HStack gap={2}>
-            <Text
-              fontWeight={600}
-              fontSize={"x-large"}
-              color={color + ".500"}
-              as={"span"}
-            >
-              {value}
-            </Text>
-            <Text as={"span"} fontSize={"small"} fontWeight={500}>
-              {label}
-            </Text>
-          </HStack>
-          <HStack>
-            {isUp ? (
-              <HStack color={"green.500"} fontSize={"small"}>
-                <LuTrendingUp />{" "}
-                <Text as={"span"} fontWeight={500}>
-                  +{growthCount} this week
-                </Text>
-              </HStack>
-            ) : (
-              <HStack color={"red.500"} fontSize={"small"}>
-                <LuTrendingDown />{" "}
-                <Text as={"span"} fontWeight={500}>
-                  -{growthCount} this week
-                </Text>
-              </HStack>
-            )}
-          </HStack>
-        </Stack>
-      </Skeleton>
-    </HStack>
+    <Card>
+      <HStack
+        rounded={"md"}
+        bg={useColorModeValue("white", "gray.700")}
+        borderTop={"4px solid var(--chakra-colors-" + color + "-500)"}
+        p={6}
+        minH={"60px"}
+      >
+        <VStack bg={color + ".100"} p={2} rounded={"full"}>
+          <Icon as={icon} size={20} color={color + ".500"} />
+        </VStack>
+        <Skeleton isLoaded={!isLoading}>
+          <Stack gap={1}>
+            <HStack gap={2}>
+              <Text
+                fontWeight={600}
+                fontSize={"x-large"}
+                color={color + ".500"}
+                as={"span"}
+              >
+                {value}
+              </Text>
+              <Text as={"span"} fontSize={"small"} fontWeight={500}>
+                {label}
+              </Text>
+            </HStack>
+            <HStack>
+              {isUp ? (
+                <HStack color={"green.500"} fontSize={"small"}>
+                  <LuTrendingUp />{" "}
+                  <Text as={"span"} fontWeight={500}>
+                    +{growthCount} this week
+                  </Text>
+                </HStack>
+              ) : (
+                <HStack color={"red.500"} fontSize={"small"}>
+                  <LuTrendingDown />{" "}
+                  <Text as={"span"} fontWeight={500}>
+                    -{growthCount} this week
+                  </Text>
+                </HStack>
+              )}
+            </HStack>
+          </Stack>
+        </Skeleton>
+      </HStack>
+    </Card>
   );
 };
 export default function Overview() {
