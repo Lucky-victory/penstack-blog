@@ -1,16 +1,14 @@
-import { Resend } from "resend";
 import { db } from "@/src/db";
 import { verificationTokens, users } from "@/src/db/schemas";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
 import { VerificationEmail } from "@/src/app/components/Emails/Verification";
-import { getSession } from "@/src/lib/auth/next-auth";
 import { addMinutes } from "date-fns";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { getSettings } from "@/src/lib/settings";
 import { DEFAULT_SETTINGS } from "@/src/types";
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendEmail } from "@/src/lib/send-email";
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
@@ -49,8 +47,7 @@ export async function POST(req: NextRequest) {
 
   const verificationLink = `${appUrl}/verify-email?token=${token}`;
 
-  await resend.emails.send({
-    from: `${siteSettings?.siteName?.value || DEFAULT_SETTINGS?.siteName?.value} <mail@devvick.com>`,
+  await sendEmail({
     to: user?.email as string,
     subject: "Verify your email address",
     react: VerificationEmail({ verificationLink }),

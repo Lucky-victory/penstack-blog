@@ -7,13 +7,15 @@ import { Settings, DEFAULT_SETTINGS } from "@/src/types";
 export const getSettings = cache(async () => {
   const settings = await db.select().from(siteSettings);
 
-  return settings.reduce((acc, setting) => {
+  const settingsObj = settings.reduce((acc, setting) => {
     acc[setting.key] = {
       value: setting.value || "",
       enabled: setting.enabled as boolean,
     };
     return acc;
   }, {} as Settings);
+
+  return { DEFAULT_SETTINGS, ...settingsObj };
 });
 
 export async function updateSettings(newSettings: Settings) {

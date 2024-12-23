@@ -154,6 +154,9 @@ export type Settings = {
   defaultMediaFolder: SettingEntry;
   apiRateLimit: SettingEntry;
   cacheDuration: SettingEntry;
+  newsletterEmailFrom: SettingEntry;
+  emailFrom: SettingEntry;
+  emailFromTitle: SettingEntry;
   [key: string]: SettingEntry;
 };
 
@@ -175,4 +178,7 @@ export const DEFAULT_SETTINGS: Settings = {
   defaultMediaFolder: { value: "uploads", enabled: true },
   apiRateLimit: { value: "100", enabled: true },
   cacheDuration: { value: "5", enabled: true },
+  emailFrom: { value: "noreply@example.com", enabled: true },
+  newsletterEmailFrom: { value: "", enabled: false },
+  emailFromTitle: { value: "", enabled: true },
 };

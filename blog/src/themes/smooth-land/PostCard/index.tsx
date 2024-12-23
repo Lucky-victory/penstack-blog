@@ -89,7 +89,7 @@ export default function PostCard({
             href={formatPostPermalink(post)}
             _hover={{ textDecoration: "none" }}
           >
-            <Heading size={"md"} my={2} letterSpacing={1}>
+            <Heading size={"md"} my={2} letterSpacing={0.7}>
               {post.title}
             </Heading>
           </LinkOverlay>
