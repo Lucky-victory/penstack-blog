@@ -33,7 +33,7 @@ export const VerificationEmail = ({
             Verify Email
           </Button>
           <Text>
-            if the button above doesn't work, please copy this link and paste it
+            if the button above doesn&apos;t work, please copy this link and paste it
             in your browser{" "}
           </Text>
           <Text>{verificationLink}</Text>
