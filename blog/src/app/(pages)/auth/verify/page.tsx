@@ -59,7 +59,7 @@ export default function VerifyEmail() {
         <VStack spacing={3} textAlign="center">
           <Heading size="xl">Verify Your Email</Heading>
           <Text color="gray.500">
-            Please verify your email address to continue. Haven't received the
+            Please verify your email address to continue. Haven&apps;t received the
             email?
           </Text>
         </VStack>
