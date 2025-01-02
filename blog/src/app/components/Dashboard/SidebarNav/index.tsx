@@ -204,11 +204,11 @@ export const SidebarContentNav = ({
           rounded={{ base: "sm", md: "md" }}
           align={"center"}
           justify={isMinimized ? "center" : "flex-start"}
-          gap={5}
+          gap={4}
           shadow={isActive ? "md" : "none"}
           color={isActive ? "black" : textColor}
-          py={nested ? "6px" : "10px"}
-          px={isMinimized ? 2 : nested ? 3 : 5}
+          py={nested ? "6px" : "8px"}
+          px={isMinimized ? 2 : nested ? 3 : 4}
           fontSize={nested ? "small" : "medium"}
           flex={1}
           bg={isActive ? navBtnBg : "transparent"}
@@ -420,7 +420,7 @@ export const SidebarContentNav = ({
           alignItems="center"
           mx={6}
           mb={2}
-          gap={4}
+          gap={3}
           justify={{ base: "center", md: "flex-end" }}
         >
           {!isMinimized && (

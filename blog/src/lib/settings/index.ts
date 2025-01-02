@@ -1,8 +1,8 @@
 import { cache } from "react";
 import { db } from "@/src/db";
 import { siteSettings } from "@/src/db/schemas";
-import { eq } from "drizzle-orm";
-import { Settings, DEFAULT_SETTINGS } from "@/src/types";
+import { SiteSettings } from "@/src/types";
+import { DEFAULT_SETTINGS } from "./config";
 
 export const getSettings = cache(async () => {
   const settings = await db.select().from(siteSettings);
@@ -13,12 +13,12 @@ export const getSettings = cache(async () => {
       enabled: setting.enabled as boolean,
     };
     return acc;
-  }, {} as Settings);
+  }, {} as SiteSettings);
 
-  return { DEFAULT_SETTINGS, ...settingsObj };
+  return { ...DEFAULT_SETTINGS, ...settingsObj };
 });
 
-export async function updateSettings(newSettings: Settings) {
+export async function updateSettings(newSettings: SiteSettings) {
   const operations = Object.entries(newSettings).map(([key, setting]) => {
     return db
       .insert(siteSettings)

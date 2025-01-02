@@ -1,6 +1,5 @@
 "use server";
 
-import { DEFAULT_SETTINGS } from "@/src/types";
 import { Resend } from "resend";
 import { getSettings } from "../settings";
 import isEmpty from "just-is-empty";
@@ -24,7 +23,7 @@ export const sendEmail = async ({
 
   if (isEmpty(from)) {
     const siteSettings = await getSettings();
-    defaultFrom = `${siteSettings?.emailFromTitle.value || siteSettings?.siteName?.value} <${siteSettings?.emailFrom.value}>`;
+    defaultFrom = `${siteSettings?.emailFromName.value || siteSettings?.siteName?.value} <${siteSettings?.emailFrom.value}>`;
   }
   return await resend.emails.send({
     from: from || defaultFrom,

@@ -1,16 +1,17 @@
 "use client";
 
 import { createContext } from "react";
-import { DEFAULT_SETTINGS, Settings } from "../types";
+import { SiteSettings } from "../types";
+import { DEFAULT_SETTINGS } from "../lib/settings/config";
 
-export const SiteConfigContext = createContext<Settings>(DEFAULT_SETTINGS);
+export const SiteConfigContext = createContext<SiteSettings>(DEFAULT_SETTINGS);
 
 export function SiteConfigProvider({
   children,
   initialConfig,
 }: {
   children: React.ReactNode;
-  initialConfig: Settings;
+  initialConfig: SiteSettings;
 }) {
   return (
     <SiteConfigContext.Provider

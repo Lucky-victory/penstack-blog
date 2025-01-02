@@ -22,17 +22,21 @@ import {
   Text,
   HStack,
   FormHelperText,
+  Textarea,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { Settings, DEFAULT_SETTINGS } from "@/src/types";
+import { SiteSettings } from "@/src/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import DashHeader from "../../../Dashboard/Header";
+import { DEFAULT_SETTINGS } from "../../../../../lib/settings/config";
+import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 
 export default function SettingsPage() {
   const toast = useToast({ position: "top" });
   const [isLoading, setIsLoading] = useState(false);
-  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const settingsContext = useSiteConfig();
+  const [settings, setSettings] = useState<SiteSettings>(settingsContext);
 
   const { data, isFetching } = useQuery({
     queryKey: ["settings"],
@@ -41,11 +45,11 @@ export default function SettingsPage() {
 
   async function fetchSettings() {
     try {
-      const { data } = await axios<{ data: Settings; message?: string }>(
+      const { data } = await axios<{ data: SiteSettings; message?: string }>(
         "/api/settings"
       );
       const fetchedData = data.data;
-      setSettings({ ...DEFAULT_SETTINGS, ...fetchedData });
+      setSettings({ ...fetchedData });
     } catch (error) {
       toast({
         title: "Failed to load settings",
@@ -130,7 +134,8 @@ export default function SettingsPage() {
                     </FormControl>
                     <FormControl>
                       <FormLabel>Site Description</FormLabel>
-                      <Input
+                      <Textarea
+                        maxH={110}
                         maxW={600}
                         rounded="md"
                         value={settings.siteDescription.value}
@@ -140,6 +145,24 @@ export default function SettingsPage() {
                         placeholder="A brief description of your site"
                       />
                     </FormControl>
+                    <Box>
+                      <FormControl>
+                        <FormLabel>Site Logo</FormLabel>
+                        <FormHelperText>
+                          Recommended size 500x500
+                        </FormHelperText>
+                      </FormControl>
+                    </Box>
+                    <Box>
+                      <FormControl>
+                        <FormLabel>Site Favicon</FormLabel>
+                      </FormControl>
+                    </Box>
+                    <Box>
+                      <FormControl>
+                        <FormLabel>Site Opengraph Image</FormLabel>
+                      </FormControl>
+                    </Box>
                     <FormControl display="flex" alignItems="center">
                       <FormLabel mb={0}>Maintenance Mode</FormLabel>
                       <Switch
@@ -152,22 +175,10 @@ export default function SettingsPage() {
 
                 <TabPanel>
                   <VStack spacing={6} align="stretch">
-                    <HStack>
-                      <FormControl>
-                        <FormLabel>Google Analytics 4 Measurement ID</FormLabel>
-                        <Input
-                          maxW={600}
-                          rounded="md"
-                          value={settings.gaId.value}
-                          onChange={(e) =>
-                            handleInputChange("gaId", e.target.value)
-                          }
-                          placeholder="G-XXXXXXXXXX"
-                        />
-                      </FormControl>
-                      <HStack>
+                    <FormControl>
+                      <FormLabel>Google Analytics 4 Measurement ID</FormLabel>
+                      <HStack mb={1}>
                         <Text>
-                          {" "}
                           {settings.gaId.enabled ? "Enabled" : "Disabled"}
                         </Text>
                         <Switch
@@ -176,21 +187,19 @@ export default function SettingsPage() {
                           onChange={() => handleToggle("gaId")}
                         />
                       </HStack>
-                    </HStack>
-                    <HStack>
-                      <FormControl>
-                        <FormLabel>Google Tag Manager ID</FormLabel>
-                        <Input
-                          maxW={600}
-                          rounded="md"
-                          value={settings.gtmId.value}
-                          onChange={(e) =>
-                            handleInputChange("gtmId", e.target.value)
-                          }
-                          placeholder="GTM-XXXXXXX"
-                        />
-                      </FormControl>
-                      <HStack>
+                      <Input
+                        maxW={600}
+                        rounded="md"
+                        value={settings.gaId.value}
+                        onChange={(e) =>
+                          handleInputChange("gaId", e.target.value)
+                        }
+                        placeholder="G-XXXXXXXXXX"
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>Google Tag Manager ID</FormLabel>
+                      <HStack mb={1}>
                         <Text>
                           {settings.gtmId.enabled ? "Enabled" : "Disabled"}
                         </Text>
@@ -200,21 +209,19 @@ export default function SettingsPage() {
                           onChange={() => handleToggle("gtmId")}
                         />
                       </HStack>
-                    </HStack>
-                    <HStack>
-                      <FormControl>
-                        <FormLabel>PostHog API Key</FormLabel>
-                        <Input
-                          maxW={600}
-                          rounded="md"
-                          value={settings.posthogKey.value}
-                          onChange={(e) =>
-                            handleInputChange("posthogKey", e.target.value)
-                          }
-                          placeholder="phc_XXXXXXXXXXXXXXXXXX"
-                        />
-                      </FormControl>
-                      <HStack>
+                      <Input
+                        maxW={600}
+                        rounded="md"
+                        value={settings.gtmId.value}
+                        onChange={(e) =>
+                          handleInputChange("gtmId", e.target.value)
+                        }
+                        placeholder="GTM-XXXXXXX"
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>PostHog API Key</FormLabel>
+                      <HStack mb={1}>
                         <Text>
                           {settings.posthogKey.enabled ? "Enabled" : "Disabled"}
                         </Text>
@@ -224,26 +231,24 @@ export default function SettingsPage() {
                           onChange={() => handleToggle("posthogKey")}
                         />
                       </HStack>
-                    </HStack>
+                      <Input
+                        maxW={600}
+                        rounded="md"
+                        value={settings.posthogKey.value}
+                        onChange={(e) =>
+                          handleInputChange("posthogKey", e.target.value)
+                        }
+                        placeholder="phc_XXXXXXXXXXXXXXXXXX"
+                      />
+                    </FormControl>
                   </VStack>
                 </TabPanel>
 
                 <TabPanel>
                   <VStack spacing={6} align="stretch">
-                    <HStack>
-                      <FormControl>
-                        <FormLabel>Sentry DSN</FormLabel>
-                        <Input
-                          maxW={600}
-                          rounded="md"
-                          value={settings.sentryDsn.value}
-                          onChange={(e) =>
-                            handleInputChange("sentryDsn", e.target.value)
-                          }
-                          placeholder="https://xxxxx@xxxxx.ingest.sentry.io/xxxxx"
-                        />
-                      </FormControl>
-                      <HStack>
+                    <FormControl>
+                      <FormLabel>Sentry DSN</FormLabel>
+                      <HStack mb={1}>
                         <Text>
                           {settings.sentryDsn.enabled ? "Enabled" : "Disabled"}
                         </Text>
@@ -253,7 +258,16 @@ export default function SettingsPage() {
                           onChange={() => handleToggle("sentryDsn")}
                         />
                       </HStack>
-                    </HStack>
+                      <Input
+                        maxW={600}
+                        rounded="md"
+                        value={settings.sentryDsn.value}
+                        onChange={(e) =>
+                          handleInputChange("sentryDsn", e.target.value)
+                        }
+                        placeholder="https://xxxxx@xxxxx.ingest.sentry.io/xxxxx"
+                      />
+                    </FormControl>
                     <FormControl display="flex" alignItems="center">
                       <FormLabel mb={0}>Enable Error Tracking</FormLabel>
                       <Switch
@@ -274,7 +288,7 @@ export default function SettingsPage() {
                 </TabPanel>
                 <TabPanel>
                   <VStack spacing={6} align="stretch">
-                    <FormControl>
+                    <FormControl isRequired>
                       <FormLabel>Cloudinary Cloud Name</FormLabel>
                       <Input
                         maxW={600}
@@ -317,9 +331,9 @@ export default function SettingsPage() {
                 </TabPanel>
 
                 <TabPanel>
-                  <VStack spacing={6} align="stretch">
+                  <VStack spacing={4} align="stretch">
                     <FormControl isRequired>
-                      <FormLabel>Email from</FormLabel>
+                      <FormLabel>From Email</FormLabel>
                       <FormHelperText>
                         The address to send emails from
                       </FormHelperText>
@@ -336,7 +350,7 @@ export default function SettingsPage() {
                       />
                     </FormControl>
                     <FormControl>
-                      <FormLabel>Email From Title</FormLabel>
+                      <FormLabel>From Name</FormLabel>
                       <FormHelperText>
                         The title to display in the from field of emails
                       </FormHelperText>
@@ -346,16 +360,16 @@ export default function SettingsPage() {
                         maxW={600}
                         rounded="md"
                         placeholder="My Blog"
-                        value={settings.emailFromTitle.value}
+                        value={settings.emailFromName.value}
                         onChange={(e) =>
-                          handleInputChange("emailFromTitle", e.target.value)
+                          handleInputChange("emailFromName", e.target.value)
                         }
                       />
                     </FormControl>
                     <FormControl>
-                      <FormLabel>Newsletter Email From (optional)</FormLabel>
+                      <FormLabel>Newsletter From Email (optional)</FormLabel>
                       <FormHelperText>
-                        The address to send emails from for the newsletter
+                        The address to send newsletter emails from
                       </FormHelperText>
 
                       <Input

@@ -136,10 +136,11 @@ export type SettingEntry = {
   enabled: boolean;
 };
 
-export type Settings = {
+export type SiteSettings = {
   siteName: SettingEntry;
   siteDescription: SettingEntry;
   siteOgImage: SettingEntry;
+  siteFavicon: SettingEntry;
   maintenanceMode: SettingEntry;
   gaId: SettingEntry;
   gtmId: SettingEntry;
@@ -156,29 +157,6 @@ export type Settings = {
   cacheDuration: SettingEntry;
   newsletterEmailFrom: SettingEntry;
   emailFrom: SettingEntry;
-  emailFromTitle: SettingEntry;
+  emailFromName: SettingEntry;
   [key: string]: SettingEntry;
-};
-
-export const DEFAULT_SETTINGS: Settings = {
-  siteName: { value: "Vida Blog Starter", enabled: true },
-  siteDescription: { value: "", enabled: true },
-  siteOgImage: { value: "", enabled: true },
-  maintenanceMode: { value: "false", enabled: false },
-  gaId: { value: "", enabled: false },
-  gtmId: { value: "", enabled: false },
-  posthogKey: { value: "", enabled: false },
-  posthogHost: { value: "https://app.posthog.com", enabled: false },
-  sentryDsn: { value: "", enabled: false },
-  sentryEnvironment: { value: "production", enabled: false },
-  errorTracking: { value: "false", enabled: false },
-  performanceMonitoring: { value: "false", enabled: false },
-  cloudinaryName: { value: "", enabled: false },
-  maxUploadSize: { value: "10", enabled: true },
-  defaultMediaFolder: { value: "uploads", enabled: true },
-  apiRateLimit: { value: "100", enabled: true },
-  cacheDuration: { value: "5", enabled: true },
-  emailFrom: { value: "noreply@example.com", enabled: true },
-  newsletterEmailFrom: { value: "", enabled: false },
-  emailFromTitle: { value: "", enabled: true },
 };

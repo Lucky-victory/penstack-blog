@@ -6,13 +6,10 @@ import { VerificationEmail } from "@/src/app/components/Emails/Verification";
 import { addMinutes } from "date-fns";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-import { getSettings } from "@/src/lib/settings";
-import { DEFAULT_SETTINGS } from "@/src/types";
 import { sendEmail } from "@/src/lib/send-email";
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
-  const siteSettings = await getSettings();
   const user = await db.query.users.findFirst({
     where: eq(users.email, email),
   });
