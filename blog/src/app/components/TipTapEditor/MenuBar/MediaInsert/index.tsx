@@ -11,6 +11,7 @@ import {
 import Medias from "../../../Dashboard/Medias";
 import { type Editor } from "@tiptap/react";
 import { FC, PropsWithChildren } from "react";
+import { MediaModal } from "../../../Dashboard/Medias/MediaModal";
 
 interface MediaInsertProps {
   editor: Editor;
@@ -64,54 +65,5 @@ export const MediaInsert: FC<PropsWithChildren<MediaInsertProps>> = ({
       </MediaModal>
       {children}
     </>
-  );
-};
-interface MediaModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  maxSelection?: number;
-  defaultFilters?: Partial<FilterParams>;
-  onSelect?: (media: MediaResponse | MediaResponse[]) => void;
-}
-export const MediaModal: FC<PropsWithChildren<MediaModalProps>> = ({
-  isOpen,
-  onClose,
-  maxSelection,
-  children,
-  defaultFilters = {},
-  onSelect,
-}) => {
-  return (
-    <Modal
-      isOpen={isOpen}
-      isCentered
-      onClose={onClose}
-      size={{ base: "md", md: "3xl", lg: "5xl", xl: "6xl" }}
-      returnFocusOnClose={false}
-    >
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          <Heading>Select Media</Heading>
-          <ModalCloseButton />
-        </ModalHeader>
-        <ModalBody px={{ base: 0, md: undefined }}>
-          {children ? (
-            children
-          ) : (
-            <>
-              <Medias
-                defaultFilters={defaultFilters}
-                maxSelection={maxSelection}
-                onSelect={(media: MediaResponse | MediaResponse[]) => {
-                  onSelect?.(media);
-                  onClose();
-                }}
-              />
-            </>
-          )}
-        </ModalBody>
-      </ModalContent>
-    </Modal>
   );
 };

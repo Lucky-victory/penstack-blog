@@ -64,7 +64,6 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
   const { data: media, refetch } = useQuery({
     queryKey: ["media", debouncedFilters],
     queryFn: fetchMedia,
-    // enabled: !!debouncedFilters?.page,
     staleTime: 1000 * 60 * 60 * 24,
   });
   const { data: folders } = useQuery({
@@ -104,7 +103,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     setFilters((prev) => ({
       ...prev,
       ...newFilters,
-      page: 1, // Reset page when filters change
+      page: 1,
     }));
   };
 
@@ -115,15 +114,22 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
         if (isSelected) {
           return prev.filter((m) => m.id !== media.id);
         }
-
         if (maxSelection && prev.length >= maxSelection) {
-          const newArray = [...prev.slice(1), media];
-          return newArray;
+          return [...prev.slice(1), media];
         }
         return [...prev, media];
       });
     } else {
+      setSelectedMedia([media]);
       onSelect?.(media);
+    }
+  };
+
+  const handleConfirmSelection = () => {
+    if (multiple) {
+      onSelect?.(selectedMedia);
+    } else {
+      onSelect?.(selectedMedia[0]);
     }
   };
 
@@ -238,11 +244,11 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             >
               <LuChevronsRight className="h-4 w-4" />
             </IconButton>
-          </HStack>{" "}
+          </HStack>
         </>
       )}
 
-      {multiple && selectedMedia.length > 0 && (
+      {selectedMedia.length > 0 && (
         <Box
           bottom={"env(safe-area-inset-bottom,0px)"}
           pos={"sticky"}
@@ -260,7 +266,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             mx={"auto"}
             justify={"space-between"}
           >
-            {(!maxSelection || maxSelection > 1) && (
+            {multiple && (!maxSelection || maxSelection > 1) && (
               <Text>{selectedMedia.length} items selected</Text>
             )}
             <HStack
@@ -279,7 +285,8 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               >
                 Clear
               </Button>
-              <Button rounded={"md"} onClick={() => onSelect?.(selectedMedia)}>
+
+              <Button rounded={"md"} onClick={handleConfirmSelection}>
                 Confirm Selection
               </Button>
             </HStack>

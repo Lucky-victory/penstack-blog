@@ -25,14 +25,17 @@ import {
   Textarea,
   Alert,
   AlertIcon,
+  useDisclosure,
+  Image,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { SiteSettings } from "@/src/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import DashHeader from "../../../Dashboard/Header";
-import { DEFAULT_SETTINGS } from "../../../../../lib/settings/config";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
+import Loader from "@/src/app/components/Loader";
+import { MediaModal } from "@/src/app/components/Dashboard/Medias/MediaModal";
 
 export default function SettingsPage() {
   const toast = useToast({ position: "top" });
@@ -40,8 +43,13 @@ export default function SettingsPage() {
   const settingsContext = useSiteConfig();
   const [settings, setSettings] = useState<SiteSettings>(settingsContext);
   const [hasChanges, setHasChanges] = useState(false);
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const [originalSettings, setOriginalSettings] =
     useState<SiteSettings>(settingsContext);
+  const [mediaModalOpen, setMediaModalOpen] = useState(false);
+  const [currentMediaField, setCurrentMediaField] = useState<
+    "siteLogo" | "siteFavicon" | "siteOpengraph" | null
+  >(null);
 
   const { data, isFetching } = useQuery({
     queryKey: ["settings"],
@@ -85,6 +93,21 @@ export default function SettingsPage() {
     }));
   };
 
+  const handleMediaSelect = (url: string) => {
+    if (currentMediaField) {
+      handleInputChange(currentMediaField, url);
+    }
+    onClose();
+    setCurrentMediaField(null);
+  };
+
+  const openMediaModal = (
+    field: "siteLogo" | "siteFavicon" | "siteOpengraph"
+  ) => {
+    setCurrentMediaField(field);
+    onOpen();
+  };
+
   const handleSave = async () => {
     setIsLoading(true);
     try {
@@ -111,6 +134,10 @@ export default function SettingsPage() {
       setIsLoading(false);
     }
   };
+
+  if (isFetching) {
+    return <Loader loadingText="Loading settings" />;
+  }
 
   return (
     <Box>
@@ -146,12 +173,12 @@ export default function SettingsPage() {
         <Card rounded={"lg"}>
           <CardBody>
             <Tabs variant="enclosed">
-              <TabList>
+              <TabList overflowX={"auto"} className="no-scrollbar" pb={1}>
                 <Tab>General</Tab>
                 <Tab>Analytics</Tab>
                 <Tab>Monitoring</Tab>
                 <Tab>Media</Tab>
-                <Tab>Email (Resend)</Tab>
+                <Tab>Email</Tab>
                 <Tab>Advanced</Tab>
               </TabList>
 
@@ -189,16 +216,58 @@ export default function SettingsPage() {
                         <FormHelperText>
                           Recommended size 500x500
                         </FormHelperText>
+                        {settings.siteLogo?.value && (
+                          <Box mb={2}>
+                            <Image
+                              src={settings.siteLogo.value}
+                              alt="Site Logo"
+                              maxH="100px"
+                            />
+                          </Box>
+                        )}
+                        <Button onClick={() => openMediaModal("siteLogo")}>
+                          {settings.siteLogo?.value
+                            ? "Change Logo"
+                            : "Add Logo"}
+                        </Button>
                       </FormControl>
                     </Box>
                     <Box>
                       <FormControl>
                         <FormLabel>Site Favicon</FormLabel>
+                        {settings.siteFavicon?.value && (
+                          <Box mb={2}>
+                            <Image
+                              src={settings.siteFavicon.value}
+                              alt="Favicon"
+                              maxH="32px"
+                            />
+                          </Box>
+                        )}
+                        <Button onClick={() => openMediaModal("siteFavicon")}>
+                          {settings.siteFavicon?.value
+                            ? "Change Favicon"
+                            : "Add Favicon"}
+                        </Button>
                       </FormControl>
                     </Box>
                     <Box>
                       <FormControl>
                         <FormLabel>Site Opengraph Image</FormLabel>
+                        {settings.siteOpengraph?.value && (
+                          <Box mb={2}>
+                            <Image
+                              src={settings.siteOpengraph.value}
+                              alt="Opengraph"
+                              maxH="200px"
+                            />
+                          </Box>
+                        )}
+                        <Button onClick={() => openMediaModal("siteOpengraph")}>
+                          {settings.siteOpengraph?.value
+                            ? "Change Opengraph Image"
+                            : "Add Opengraph Image"}
+                        </Button>
                       </FormControl>
                     </Box>
                     <FormControl display="flex" alignItems="center">
@@ -392,7 +461,6 @@ export default function SettingsPage() {
                       <FormHelperText>
                         The title to display in the from field of emails
                       </FormHelperText>
-
                       <Input
                         mt={2}
                         maxW={600}
@@ -409,7 +477,6 @@ export default function SettingsPage() {
                       <FormHelperText>
                         The address to send newsletter emails from
                       </FormHelperText>
-
                       <Input
                         maxW={600}
                         mt={2}
@@ -465,6 +532,15 @@ export default function SettingsPage() {
           </CardBody>
         </Card>
       </Container>
+      <MediaModal
+        isOpen={isOpen}
+        onClose={onClose}
+        multiple={false}
+        maxSelection={1}
+        onSelect={(media) => {
+          if (!Array.isArray(media)) handleMediaSelect(media.url);
+        }}
+      />
     </Box>
   );
 }

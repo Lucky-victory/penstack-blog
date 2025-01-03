@@ -1,4 +1,6 @@
-export default function Loader() {
+import { Spinner, Text, VStack } from "@chakra-ui/react";
+
+export function LoaderSvg() {
   return (
     <svg className="loader-pl" width="240" height="240" viewBox="0 0 240 240">
       <circle
@@ -48,5 +50,16 @@ export default function Loader() {
         strokeLinecap="round"
       ></circle>
     </svg>
+  );
+}
+interface LoaderProps {
+  loadingText?: string;
+}
+export default function Loader({ loadingText }: LoaderProps) {
+  return (
+    <VStack py={8}>
+      <Spinner />
+      {loadingText && <Text>{loadingText}...</Text>}
+    </VStack>
   );
 }

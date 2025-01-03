@@ -18,6 +18,7 @@ import {
   Stack,
   HStack,
   Divider,
+  Image,
 } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { Link } from "@chakra-ui/next-js";
@@ -416,31 +417,50 @@ export const SidebarContentNav = ({
     >
       <Box>
         <Flex
-          h="var(--dash-header-h)"
           alignItems="center"
-          mx={6}
+          mx={"auto"}
           mb={2}
           gap={3}
-          justify={{ base: "center", md: "flex-end" }}
+          py={3}
+          justify={"center"}
         >
           {!isMinimized && (
-            <Text
-              fontSize={"medium"}
-              fontWeight="bold"
-              letterSpacing={"2"}
-              color={"white"}
-            >
-              {siteConfig?.siteName?.value}
-            </Text>
+            <>
+              {siteConfig?.siteLogo?.value && (
+                <Image
+                  src={siteConfig?.siteLogo?.value}
+                  alt="Logo"
+                  boxSize={"40px"}
+                />
+              )}
+              <Text
+                fontSize={"medium"}
+                fontWeight="bold"
+                letterSpacing={"2"}
+                color={"white"}
+              >
+                {siteConfig?.siteName?.value}
+              </Text>
+            </>
           )}
-          <Icon
-            as={isMinimized ? LuChevronsRight : LuChevronsLeft}
-            onClick={toggleMinimized}
-            fontSize="20"
-            cursor="pointer"
-            color={navBtnBg}
-            display={{ base: "none", md: "block" }}
-          />
+          <VStack>
+            {isMinimized && siteConfig?.siteLogo?.value && (
+              <Image
+                mt={4}
+                src={siteConfig?.siteLogo?.value}
+                alt="Logo"
+                boxSize={"30px"}
+              />
+            )}
+            <Icon
+              as={isMinimized ? LuChevronsRight : LuChevronsLeft}
+              onClick={toggleMinimized}
+              fontSize="20"
+              cursor="pointer"
+              color={navBtnBg}
+              display={{ base: "none", md: "block" }}
+            />
+          </VStack>
         </Flex>
       </Box>
 
