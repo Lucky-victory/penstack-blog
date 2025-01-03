@@ -23,6 +23,8 @@ import {
   HStack,
   FormHelperText,
   Textarea,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { SiteSettings } from "@/src/types";
@@ -37,6 +39,9 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const settingsContext = useSiteConfig();
   const [settings, setSettings] = useState<SiteSettings>(settingsContext);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [originalSettings, setOriginalSettings] =
+    useState<SiteSettings>(settingsContext);
 
   const { data, isFetching } = useQuery({
     queryKey: ["settings"],
@@ -50,6 +55,7 @@ export default function SettingsPage() {
       );
       const fetchedData = data.data;
       setSettings({ ...fetchedData });
+      setOriginalSettings({ ...fetchedData });
     } catch (error) {
       toast({
         title: "Failed to load settings",
@@ -58,6 +64,12 @@ export default function SettingsPage() {
       });
     }
   }
+
+  useEffect(() => {
+    const settingsChanged =
+      JSON.stringify(settings) !== JSON.stringify(originalSettings);
+    setHasChanges(settingsChanged);
+  }, [settings, originalSettings]);
 
   const handleInputChange = (key: string, value: string) => {
     setSettings((prev) => ({
@@ -76,13 +88,13 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
-      });
+      const { status } = await axios.post("/api/settings", settings);
 
-      if (!response.ok) throw new Error("Failed to save settings");
+      if (status < 200 || status >= 400)
+        throw new Error("Failed to save settings");
+
+      setOriginalSettings({ ...settings });
+      setHasChanges(false);
 
       toast({
         title: "Settings saved successfully",
@@ -103,8 +115,34 @@ export default function SettingsPage() {
   return (
     <Box>
       <DashHeader></DashHeader>
-      <Container maxW="container.xl" py={8}>
-        <Heading mb={6}>Settings</Heading>
+      <Container maxW="container.2xl" py={6}>
+        <Card mb={6}>
+          <CardBody>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Heading>Settings</Heading>
+              <Button
+                colorScheme="blue"
+                isLoading={isLoading}
+                onClick={handleSave}
+                rounded="md"
+                isDisabled={!hasChanges}
+              >
+                Save Changes
+              </Button>
+            </Box>
+          </CardBody>
+        </Card>
+
+        {hasChanges && (
+          <Alert status="info" mb={4} rounded="md">
+            <AlertIcon />
+            You have unsaved changes
+          </Alert>
+        )}
         <Card rounded={"lg"}>
           <CardBody>
             <Tabs variant="enclosed">
@@ -424,19 +462,6 @@ export default function SettingsPage() {
                 </TabPanel>
               </TabPanels>
             </Tabs>
-
-            <Divider my={6} />
-
-            <Box display="flex" justifyContent="flex-end">
-              <Button
-                colorScheme="blue"
-                isLoading={isLoading}
-                onClick={handleSave}
-                rounded="md"
-              >
-                Save Changes
-              </Button>
-            </Box>
           </CardBody>
         </Card>
       </Container>
