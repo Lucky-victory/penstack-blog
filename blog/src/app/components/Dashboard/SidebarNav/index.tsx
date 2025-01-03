@@ -42,6 +42,7 @@ import { PermissionGuard } from "../../PermissionGuard";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
 import { UserInfoComp } from "../UserInfoComp";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
+import { AppLogo } from "../../AppLogo";
 
 export const navItems: NavItem[] = [
   {
@@ -426,13 +427,8 @@ export const SidebarContentNav = ({
         >
           {!isMinimized && (
             <>
-              {siteConfig?.siteLogo?.value && (
-                <Image
-                  src={siteConfig?.siteLogo?.value}
-                  alt="Logo"
-                  boxSize={"40px"}
-                />
-              )}
+              <AppLogo src={siteConfig?.siteLogo?.value} size={"40px"} />
+
               <Text
                 fontSize={"medium"}
                 fontWeight="bold"
@@ -444,13 +440,8 @@ export const SidebarContentNav = ({
             </>
           )}
           <VStack>
-            {isMinimized && siteConfig?.siteLogo?.value && (
-              <Image
-                mt={4}
-                src={siteConfig?.siteLogo?.value}
-                alt="Logo"
-                boxSize={"30px"}
-              />
+            {isMinimized && (
+              <AppLogo src={siteConfig?.siteLogo?.value} size={"30px"} />
             )}
             <Icon
               as={isMinimized ? LuChevronsRight : LuChevronsLeft}

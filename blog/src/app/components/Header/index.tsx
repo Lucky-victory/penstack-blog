@@ -40,6 +40,8 @@ import { Link } from "@chakra-ui/next-js";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
 import { useCategories } from "@/src/hooks/useCategories";
+import { AppLogo } from "../AppLogo";
+import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -51,6 +53,7 @@ const Header = () => {
   const textColor = useColorModeValue("gray.700", "gray.200");
   const hoverBgColor = useColorModeValue("gray.100", "gray.700");
   const navLinkHoverBgColor = useColorModeValue("blue.500", "blue.300");
+  const siteConfig = useSiteConfig();
   const pathname = usePathname();
   const { data } = useCategories({ limit: 5 });
   const topics = data?.results;
@@ -94,17 +97,18 @@ const Header = () => {
     >
       <Container maxW="container.xl" py={2}>
         <HStack justify="space-between" align="center">
-          {/* Logo */}
-          <Text
-            as={Link}
-            href="/"
-            fontSize="2xl"
-            fontWeight="bold"
-            color={useColorModeValue("black", "white")}
-          >
-            TechBlog
-          </Text>
-
+          <HStack>
+            <AppLogo src={siteConfig?.siteLogo?.value} size={"40px"} />
+            <Text
+              as={Link}
+              href="/"
+              fontSize="2xl"
+              fontWeight="bold"
+              color={useColorModeValue("black", "white")}
+            >
+              {siteConfig?.siteName?.value}
+            </Text>
+          </HStack>
           {/* Desktop Navigation */}
           {/* <HStack spacing={8} display={{ base: "none", lg: "flex" }}></HStack> */}
 
