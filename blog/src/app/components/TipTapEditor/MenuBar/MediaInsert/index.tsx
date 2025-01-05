@@ -1,13 +1,4 @@
 import { FilterParams, MediaResponse } from "@/src/types";
-import {
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  Heading,
-  ModalCloseButton,
-  ModalContent,
-  ModalBody,
-} from "@chakra-ui/react";
 import Medias from "../../../Dashboard/Medias";
 import { type Editor } from "@tiptap/react";
 import { FC, PropsWithChildren } from "react";

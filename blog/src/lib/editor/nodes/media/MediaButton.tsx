@@ -1,4 +1,4 @@
-import { MediaModal } from "@/src/app/components/TipTapEditor/MenuBar/MediaInsert";
+import { MediaModal } from "@/src/app/components/Dashboard/Medias/MediaModal";
 import { MediaResponse } from "@/src/types";
 import { Button, useDisclosure } from "@chakra-ui/react";
 import { Editor } from "@tiptap/react";

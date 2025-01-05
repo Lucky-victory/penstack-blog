@@ -54,6 +54,7 @@ import { useAuth } from "@/src/hooks/useAuth";
 import { PostSelect } from "@/src/types";
 import { formatPostPermalink, objectToQueryParams } from "@/src/utils";
 import DashHeader from "../../../Dashboard/Header";
+import Loader from "../../../Loader";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -176,12 +177,7 @@ const PostsDashboard = () => {
               </Select>
             </Stack>
 
-            {loading && (
-              <VStack py={8}>
-                <Spinner />
-                <Text>Loading posts...</Text>
-              </VStack>
-            )}
+            {loading && <Loader loadingText={"Loading posts"} />}
 
             {filteredPosts && filteredPosts.length > 0 && (
               <Grid

@@ -14,8 +14,8 @@ import {
 import { useState, useCallback, memo } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import isEmpty from "just-is-empty";
-import { MediaModal } from "../MenuBar/MediaInsert";
 import { MediaResponse } from "@/src/types";
+import { MediaModal } from "../../Dashboard/Medias/MediaModal";
 
 export const FeaturedImageCard = ({
   image,

@@ -247,7 +247,6 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
           </HStack>
         </>
       )}
-
       {selectedMedia.length > 0 && (
         <Box
           bottom={"env(safe-area-inset-bottom,0px)"}
@@ -285,7 +284,6 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
               >
                 Clear
               </Button>
-
               <Button rounded={"md"} onClick={handleConfirmSelection}>
                 Confirm Selection
               </Button>

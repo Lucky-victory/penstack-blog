@@ -139,7 +139,7 @@ export type SettingEntry = {
 export type SiteSettings = {
   siteName: SettingEntry;
   siteDescription: SettingEntry;
-  siteOgImage: SettingEntry;
+  siteOpengraph: SettingEntry;
   siteFavicon: SettingEntry;
   maintenanceMode: SettingEntry;
   gaId: SettingEntry;

@@ -37,7 +37,7 @@ export async function generateMetadata(
       images: [
         {
           url:
-            siteConfig.siteOgImage?.value ||
+            siteConfig.siteOpengraph?.value ||
             `/api/og?title=${siteConfig.siteName?.value}`,
           width: 1200,
           height: 630,

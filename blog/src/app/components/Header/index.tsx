@@ -97,14 +97,14 @@ const Header = () => {
     >
       <Container maxW="container.xl" py={2}>
         <HStack justify="space-between" align="center">
-          <HStack>
+          <HStack as={Link} href="/">
             <AppLogo src={siteConfig?.siteLogo?.value} size={"40px"} />
             <Text
-              as={Link}
-              href="/"
-              fontSize="2xl"
+              hideBelow={"md"}
+              as={"span"}
+              fontSize="xl"
               fontWeight="bold"
-              color={useColorModeValue("black", "white")}
+              // color={useColorModeValue("black", "white")}
             >
               {siteConfig?.siteName?.value}
             </Text>
