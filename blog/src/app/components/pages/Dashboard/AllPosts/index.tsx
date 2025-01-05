@@ -63,7 +63,7 @@ const PostsDashboard = () => {
   const [filteredPosts, setFilteredPosts] = useState<PostSelect[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const postCardBg = useColorModeValue("white", "#121212");
+  const postCardBg = useColorModeValue("gray.200", "gray.600");
   const { posts, loading, refetchPosts } = usePosts({
     status: "all",
     limit: 20,
@@ -130,8 +130,8 @@ const PostsDashboard = () => {
     <Box>
       <DashHeader></DashHeader>
       <Box p={{ base: 4, md: 5 }}>
-        <Card rounded={"lg"} mb={8}>
-          <CardBody>
+        <Card rounded={"lg"} mb={6}>
+          <CardBody px={{ base: 3, lg: 4 }}>
             <HStack justify="space-between" align="center">
               <Heading size="lg">Posts</Heading>
               <Button
@@ -148,8 +148,8 @@ const PostsDashboard = () => {
           </CardBody>
         </Card>
 
-        <Card rounded={"lg"} mb={8}>
-          <CardBody>
+        <Card rounded={"lg"} mb={6}>
+          <CardBody px={{ base: 3, lg: 4 }}>
             <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
               <InputGroup maxW={{ md: "320px" }}>
                 <InputLeftAddon roundedLeft="md">
@@ -181,7 +181,10 @@ const PostsDashboard = () => {
 
             {filteredPosts && filteredPosts.length > 0 && (
               <Grid
-                templateColumns={"repeat(auto-fit, minmax(400px,1fr))"}
+                templateColumns={{
+                  md: "repeat(auto-fit, minmax(400px,1fr))",
+                  base: "repeat(auto-fit, minmax(300px,1fr))",
+                }}
                 gap={6}
               >
                 {filteredPosts.map((post) => (
@@ -190,7 +193,9 @@ const PostsDashboard = () => {
                     rounded="xl"
                     overflow="hidden"
                     transition="all 0.2s"
-                    bg={postCardBg}
+                    border={"1px solid"}
+                    borderColor={postCardBg}
+                    // bg={postCardBg}
                     _hover={{ transform: "translateY(-2px)", shadow: "lg" }}
                   >
                     <CardBody h={200}>
@@ -212,7 +217,7 @@ const PostsDashboard = () => {
                           alt={post.title || ""}
                           h={{ base: "180px", md: "130px" }}
                           rounded={"lg"}
-                          w={{ base: "full", md: "140px" }}
+                          w={{ base: "full", md: "130px" }}
                           objectFit="cover"
                         />
                         <Box>

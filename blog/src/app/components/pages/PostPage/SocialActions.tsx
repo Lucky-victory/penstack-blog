@@ -46,67 +46,64 @@ export const SocialActions: React.FC<SocialActionsProps> = ({ post }) => {
             aria-label="share this post"
           />
         </Tooltip>
-
-        <Tooltip label="Add reaction">
-          <Popover trigger={popoverTrigger} placement="right">
-            <PopoverTrigger>
-              <IconButton
-                icon={<LuHeart />}
-                variant="outline"
-                rounded="full"
-                aria-label="Add reaction"
-              />
-            </PopoverTrigger>
-            <PopoverContent rounded="xl" w="auto">
-              <PopoverBody>
-                <List display="flex" gap={4} alignItems="center">
-                  <ListItem>
-                    <Tooltip label="Like">
-                      <IconButton
-                        icon={
-                          <Text as="span" fontSize={24}>
-                            💖
-                          </Text>
-                        }
-                        variant="ghost"
-                        rounded="full"
-                        aria-label="Like"
-                      />
-                    </Tooltip>
-                  </ListItem>
-                  <ListItem>
-                    <Tooltip label="Grateful">
-                      <IconButton
-                        icon={
-                          <Text as="span" fontSize={24}>
-                            🙌
-                          </Text>
-                        }
-                        variant="ghost"
-                        rounded="full"
-                        aria-label="Grateful"
-                      />
-                    </Tooltip>
-                  </ListItem>
-                  <ListItem>
-                    <Tooltip label="Celebrate">
-                      <IconButton
-                        icon={
-                          <Text as="span" fontSize={24}>
-                            🥳
-                          </Text>
-                        }
-                        variant="ghost"
-                        rounded="full"
-                        aria-label="Celebrate"
-                      />
-                    </Tooltip>
-                  </ListItem>
-                </List>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-        </Tooltip>
+        <Popover trigger={popoverTrigger} placement="right">
+          <PopoverTrigger>
+            <IconButton
+              icon={<LuHeart />}
+              variant="outline"
+              rounded="full"
+              aria-label="Add reaction"
+            />
+          </PopoverTrigger>
+          <PopoverContent rounded="xl" w="auto">
+            <PopoverBody>
+              <List display="flex" gap={4} alignItems="center">
+                <ListItem>
+                  <Tooltip label="Like">
+                    <IconButton
+                      icon={
+                        <Text as="span" fontSize={24}>
+                          💖
+                        </Text>
+                      }
+                      variant="ghost"
+                      rounded="full"
+                      aria-label="Like"
+                    />
+                  </Tooltip>
+                </ListItem>
+                <ListItem>
+                  <Tooltip label="Grateful">
+                    <IconButton
+                      icon={
+                        <Text as="span" fontSize={24}>
+                          🙌
+                        </Text>
+                      }
+                      variant="ghost"
+                      rounded="full"
+                      aria-label="Grateful"
+                    />
+                  </Tooltip>
+                </ListItem>
+                <ListItem>
+                  <Tooltip label="Celebrate">
+                    <IconButton
+                      icon={
+                        <Text as="span" fontSize={24}>
+                          🥳
+                        </Text>
+                      }
+                      variant="ghost"
+                      rounded="full"
+                      aria-label="Celebrate"
+                    />
+                  </Tooltip>
+                </ListItem>
+              </List>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
       </VStack>
 
       <Box

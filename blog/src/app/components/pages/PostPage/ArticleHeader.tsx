@@ -41,8 +41,8 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
       <Heading
         as="h1"
         size="2xl"
-        bgGradient="linear(to-r, blue.400, purple.500)"
-        bgClip="text"
+        // bgGradient="linear(to-r, blue.400, purple.500)"
+        // bgClip="text"
       >
         {post.title}
       </Heading>

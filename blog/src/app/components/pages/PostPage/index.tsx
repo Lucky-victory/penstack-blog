@@ -4,39 +4,22 @@ import {
   Box,
   Container,
   Heading,
-  HStack,
-  Stack,
   VStack,
   Text,
   Flex,
-  Avatar,
-  Tag,
-  Image as ChakraImage,
+  Image,
   useColorModeValue,
-  IconButton,
-  Tooltip,
-  Popover,
-  PopoverTrigger,
   useBreakpointValue,
-  PopoverContent,
-  PopoverBody,
-  List,
-  ListItem,
-  Divider,
   Button,
   useToast,
   Textarea,
 } from "@chakra-ui/react";
-import { format } from "date-fns";
-import { LuBookmark, LuHeart, LuShare, LuMessageCircle } from "react-icons/lu";
+import { LuMessageCircle } from "react-icons/lu";
 import { PostSelect } from "@/src/types";
 import Loader from "../../Loader";
 import PageWrapper from "../../PageWrapper";
-import { decode } from "html-entities";
-import { Link } from "@chakra-ui/next-js";
 import { useTrackView } from "@/src/hooks/useTrackView";
 import { objectToQueryParams } from "@/src/utils";
-import { ContentRenderer } from "../../Renderers/ContentRenderer";
 import { motion } from "framer-motion";
 import { SocialActions } from "./SocialActions";
 import { ArticleHeader } from "./ArticleHeader";
@@ -47,7 +30,7 @@ import { CommentCard } from "./CommentCard";
 const MotionBox = motion(Box);
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
-  useTrackView(post.id);
+  // useTrackView(post.id);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,8 +109,8 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
         {/* Post Content Section */}
         <Container maxW="container.xl" py={8}>
           {/* Hero Image */}
-          <Box borderRadius="xl" overflow="hidden" mb={8} boxShadow="xl">
-            <ChakraImage
+          <Box borderRadius="xl" overflow="hidden" mb={8}>
+            <Image
               src={
                 post.featured_image?.url ||
                 `/api/og?${objectToQueryParams({
@@ -143,6 +126,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               w="full"
               h="auto"
               maxH={600}
+              aspectRatio={"16/9"}
               objectFit="cover"
             />
           </Box>

@@ -1,4 +1,10 @@
-import { formatPostPermalink, shortenText, stripHtml } from "@/src/utils";
+import { PostSelect } from "@/src/types";
+import {
+  formatPostPermalink,
+  objectToQueryParams,
+  shortenText,
+  stripHtml,
+} from "@/src/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Spinner,
@@ -31,19 +37,22 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
 }) => {
   const bgColor = useColorModeValue("gray.50", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
+  const textColor = useColorModeValue("gray.600", "gray.400");
 
-  const { data: post, isFetching } = useQuery({
-    queryKey: ["post_card_post", node?.attrs?.postId],
+  const { data: posts, isFetching } = useQuery({
+    queryKey: ["post_card_posts", node?.attrs?.postIds],
     queryFn: async () => {
-      const { data } = await axios(`/api/posts/${node?.attrs?.postId}`);
-      return data.data;
+      const { data } = await axios(
+        `/api/posts?${objectToQueryParams({ postIds: node?.attrs?.postIds })}`
+      );
+      return data.data as PostSelect[];
     },
-    enabled: !!node?.attrs?.postId,
+    enabled: !!node?.attrs?.postIds?.length,
     staleTime: Infinity,
   });
 
   if (isFetching) return <Spinner />;
-  if (!post) return null;
+  if (!posts) return null;
 
   return (
     <Box
@@ -74,37 +83,43 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
             }}
           />
         )}
-        <HStack
-          as={Link}
-          href={`${formatPostPermalink(post)}`}
-          spacing={4}
-          align={"start"}
-          onClick={(e) => {
-            if (isEditing) e.preventDefault();
-          }}
-        >
-          {post.featured_image && (
-            <Image
-              src={post.featured_image.url}
-              alt={post.featured_image.alt_text}
-              width="150px"
-              height="90.9px"
-              objectFit="cover"
-              rounded="md"
-            />
-          )}
-          <Stack align="start" spacing={2}>
-            <Text fontSize="xl" fontWeight="bold">
-              {post.title}
-            </Text>
-            <Text noOfLines={2}>
-              {shortenText(
-                post.summary || stripHtml(decode(post?.content)),
-                150
-              )}
-            </Text>
-          </Stack>
-        </HStack>
+        {posts?.length > 0 &&
+          posts.map((post) => (
+            <Link
+              key={post.id}
+              href={formatPostPermalink(post)}
+              _hover={{ textDecoration: "none" }}
+              onClick={(e) => {
+                if (isEditing) e.preventDefault();
+              }}
+            >
+              <HStack spacing={4} align="start">
+                {post.featured_image && (
+                  <Image
+                    src={post.featured_image.url}
+                    alt={post.featured_image.alt_text}
+                    boxSize={{ base: "80px", lg: "90px" }}
+                    objectFit="cover"
+                    rounded="md"
+                  />
+                )}
+                <Stack align="start" spacing={2}>
+                  <Text
+                    fontSize={{ base: "medium", lg: "large" }}
+                    fontWeight="bold"
+                  >
+                    {post.title}
+                  </Text>
+                  <Text
+                    fontSize={{ base: "small", lg: "medium" }}
+                    color={textColor}
+                  >
+                    {shortenText(stripHtml(decode(post.content)), 150)}
+                  </Text>
+                </Stack>
+              </HStack>
+            </Link>
+          ))}
       </VStack>
     </Box>
   );

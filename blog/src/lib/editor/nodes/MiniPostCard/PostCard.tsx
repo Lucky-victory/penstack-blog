@@ -12,6 +12,7 @@ import {
   InputGroup,
   Button,
   HStack,
+  Card,
 } from "@chakra-ui/react";
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -72,7 +73,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         .command(({ tr, state }) => {
           tr.setNodeMarkup(pos, undefined, {
             ...node.attrs,
-            postId: selectedPost.post_id,
+            postIds: [...node.attrs.postIds, selectedPost.post_id],
           });
           return true;
         })
@@ -81,61 +82,63 @@ export const PostCard: React.FC<PostCardProps> = ({
   };
 
   // Search Block UI
-  if (!node.attrs.postId) {
+  if (!node.attrs.postIds?.length) {
     return (
       <NodeViewWrapper>
-        <Box
-          p={4}
-          border="2px"
-          borderStyle="dashed"
-          borderColor={borderColor}
-          rounded="lg"
-        >
-          <VStack spacing={4}>
-            <Text>Search and select a post to embed</Text>
-            <InputGroup>
-              <Input
-                placeholder="Search posts..."
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  handleSearch(e.target.value);
-                }}
-              />
-              <InputRightElement>
-                {loading ? <Spinner size="sm" /> : <LuSearch />}
-              </InputRightElement>
-            </InputGroup>
+        <Card>
+          <Box
+            p={4}
+            border="2px"
+            borderStyle="dashed"
+            borderColor={borderColor}
+            rounded="lg"
+          >
+            <VStack spacing={4}>
+              <Text>Search and select a post to embed</Text>
+              <InputGroup>
+                <Input
+                  placeholder="Search posts..."
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    handleSearch(e.target.value);
+                  }}
+                />
+                <InputRightElement>
+                  {loading ? <Spinner size="sm" /> : <LuSearch />}
+                </InputRightElement>
+              </InputGroup>
 
-            {posts && posts?.length > 0 && (
-              <VStack align="stretch" width="100%">
-                {posts.map((searchPost) => (
-                  <Button
-                    key={searchPost.id}
-                    onClick={() => selectPost(searchPost)}
-                    variant="ghost"
-                    justifyContent="flex-start"
-                    height="auto"
-                    py={2}
-                  >
-                    <HStack spacing={3}>
-                      {searchPost.featured_image && (
-                        <Image
-                          src={searchPost.featured_image.url}
-                          alt={searchPost.featured_image.alt_text}
-                          boxSize="40px"
-                          objectFit="cover"
-                          rounded="md"
-                        />
-                      )}
-                      <Text>{searchPost.title}</Text>
-                    </HStack>
-                  </Button>
-                ))}
-              </VStack>
-            )}
-          </VStack>
-        </Box>
+              {posts && posts?.length > 0 && (
+                <VStack align="stretch" width="100%">
+                  {posts.map((searchPost) => (
+                    <Button
+                      key={searchPost.id}
+                      onClick={() => selectPost(searchPost)}
+                      variant="ghost"
+                      justifyContent="flex-start"
+                      height="auto"
+                      py={2}
+                    >
+                      <HStack spacing={3}>
+                        {searchPost.featured_image && (
+                          <Image
+                            src={searchPost.featured_image.url}
+                            alt={searchPost.featured_image.alt_text}
+                            boxSize="40px"
+                            objectFit="cover"
+                            rounded="md"
+                          />
+                        )}
+                        <Text>{searchPost.title}</Text>
+                      </HStack>
+                    </Button>
+                  ))}
+                </VStack>
+              )}
+            </VStack>
+          </Box>
+        </Card>
       </NodeViewWrapper>
     );
   }

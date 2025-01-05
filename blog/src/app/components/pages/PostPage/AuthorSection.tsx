@@ -32,15 +32,15 @@ export const AuthorSection: React.FC<AuthorSectionProps> = ({ post }) => {
     >
       <VStack align="start" spacing={4}>
         <Heading size="md">Written By</Heading>
-        <HStack spacing={4} w="full">
+        <HStack spacing={4} w="full" wrap={"wrap"}>
           <Link href={`/author/${post.author.username}`}>
             <Avatar
-              size="xl"
+              size={{ base: "md", md: "xl" }}
               src={post.author.avatar}
               name={post.author.name}
             />
           </Link>
-          <Box flex={1}>
+          <Box flex={1} minW={300}>
             <Link href={`/author/${post.author.username}`}>
               <Text fontWeight="bold" fontSize="xl">
                 {post.author.name}

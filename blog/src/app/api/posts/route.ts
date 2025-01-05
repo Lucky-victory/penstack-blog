@@ -3,7 +3,7 @@ import { posts } from "@/src/db/schemas";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { getSession } from "@/src/lib/auth/next-auth";
 import { PostSelect } from "@/src/types";
-import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, inArray, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 // export const revalidate = 3600; // revalidate every hour
@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
   const limit = Number(searchParams.get("limit")) || 20;
   const search = searchParams.get("search");
   const access = searchParams.get("access");
+  const postIds = searchParams.getAll("postIds") || [];
   const session = await getSession();
   const status =
     (searchParams.get("status") as NonNullable<PostSelect["status"] | "all">) ||
@@ -39,6 +40,9 @@ export async function GET(req: NextRequest) {
   }
   if (access === "dashboard" && session?.user?.role_id !== 1) {
     whereConditions.push(eq(posts.author_id, session?.user?.id as string));
+  }
+  if (postIds.length > 0) {
+    whereConditions.push(inArray(posts.post_id, postIds));
   }
   try {
     // Get total count

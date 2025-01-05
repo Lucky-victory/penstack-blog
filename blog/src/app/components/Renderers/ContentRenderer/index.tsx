@@ -27,7 +27,9 @@ export const ContentRenderer: React.FC<ContentRendererProps> = ({
             <MiniPostCardRenderer
               node={{
                 attrs: {
-                  postId: domNode.attribs.postid,
+                  postIds: domNode.attribs.postid
+                    ? [domNode.attribs.postid]
+                    : domNode.attribs.postids,
                   customTitle: domNode.attribs.customtitle,
                 },
               }}
