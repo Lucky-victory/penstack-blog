@@ -26,6 +26,8 @@ import { ArticleHeader } from "./ArticleHeader";
 import { ArticleContent } from "./ArticleContent";
 import { AuthorSection } from "./AuthorSection";
 import { CommentCard } from "./CommentCard";
+import axios from "axios";
+import { encode } from "html-entities";
 
 const MotionBox = motion(Box);
 
@@ -36,14 +38,8 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
-  // Theme colors
-  const postContentBg = useColorModeValue("white", "gray.900");
-  const borderColor = useColorModeValue("gray.200", "gray.800");
-  const mutedTextColor = useColorModeValue("gray.600", "gray.400");
   const highlightColor = useColorModeValue("blue.50", "blue.900");
 
-  // Responsive settings
-  const popoverTrigger = useBreakpointValue({ base: "click", md: "hover" });
   const sidebarWidth = useBreakpointValue({ base: "60px", md: "80px" });
 
   // Loading state
@@ -58,9 +54,9 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   // Fetch comments
   const fetchComments = async () => {
     try {
-      const response = await fetch(`/api/posts/${post.post_id}/comments`);
-      const data = await response.json();
-      setComments(data);
+      const { data } = await axios(`/api/posts/${post.post_id}/comments`);
+
+      setComments(data.data);
     } catch (error) {
       console.error("Failed to fetch comments:", error);
     }
@@ -74,7 +70,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
     try {
       const response = await fetch(`/api/posts/${post.post_id}/comments`, {
         method: "POST",
-        body: JSON.stringify({ content: newComment }),
+        body: JSON.stringify({ content: encode(newComment) }),
       });
 
       if (response.ok) {
@@ -137,7 +133,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             <VStack
               w={sidebarWidth}
               position="sticky"
-              top={4}
+              top={8}
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >

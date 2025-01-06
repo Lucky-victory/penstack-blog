@@ -40,15 +40,19 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
   const textColor = useColorModeValue("gray.600", "gray.400");
 
   const { data: posts, isFetching } = useQuery({
-    queryKey: ["post_card_posts", node?.attrs?.postIds],
+    queryKey: [
+      "post_card_posts",
+      node?.attrs?.postIds,
+      node?.attrs?.postIds?.length,
+    ],
     queryFn: async () => {
       const { data } = await axios(
         `/api/posts?${objectToQueryParams({ postIds: node?.attrs?.postIds })}`
       );
       return data.data as PostSelect[];
     },
-    enabled: !!node?.attrs?.postIds?.length,
-    staleTime: Infinity,
+    enabled: node?.attrs?.postIds?.length > 0,
+    // staleTime: Infinity,
   });
 
   if (isFetching) return <Spinner />;

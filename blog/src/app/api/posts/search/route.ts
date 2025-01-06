@@ -4,14 +4,13 @@ import { PostSelect } from "@/src/types";
 import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
-export const revalidate = 3600; // revalidate every hour
-
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page = Number(searchParams.get("page")) || 1;
   const limit = Number(searchParams.get("limit")) || 20;
 
   const query = searchParams.get("q");
+  const titleOnly = Boolean(searchParams.get("titleOnly")) || false;
   const category = Number(searchParams.get("category"));
   const sort = searchParams.get("sort") as "relevant" | "recent" | "popular";
   const status =
@@ -22,10 +21,12 @@ export async function GET(req: NextRequest) {
   // Build where conditions
   const whereConditions = [];
 
-  if (query) {
+  if (query && !titleOnly) {
     whereConditions.push(
       or(ilike(posts.title, `%${query}%`), ilike(posts.content, `%${query}%`))
     );
+  } else if (query && titleOnly) {
+    whereConditions.push(ilike(posts.title, `%${query}%`));
   }
 
   if (status && status !== "all") {
@@ -73,7 +74,8 @@ export async function GET(req: NextRequest) {
       offset,
 
       orderBy,
-      where: whereConditions?.length > 0 ? and(...whereConditions) : undefined,
+
+      where: whereConditions.length > 0 ? and(...whereConditions) : undefined,
       with: {
         views: {
           columns: { id: true },

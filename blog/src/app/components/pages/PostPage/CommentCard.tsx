@@ -9,8 +9,8 @@ import {
   useColorModeValue,
   Button,
 } from "@chakra-ui/react";
-import { format } from "date-fns";
 import { LuHeart, LuMessageCircle, LuFlag } from "react-icons/lu";
+import { formatDate } from "@/src/utils";
 
 interface CommentCardProps {
   comment: any; // Replace with proper comment type
@@ -39,7 +39,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
             <VStack align="start" spacing={0}>
               <Text fontWeight="bold">{comment.author?.name}</Text>
               <Text fontSize="sm" color="gray.500">
-                {format(new Date(comment.created_at), "MMM d, yyyy")}
+                {formatDate(new Date(comment.created_at))}
               </Text>
             </VStack>
             <IconButton

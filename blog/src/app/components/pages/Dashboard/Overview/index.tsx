@@ -61,7 +61,7 @@ export const OverviewCard = ({
             <HStack gap={2}>
               <Text
                 fontWeight={600}
-                fontSize={"x-large"}
+                fontSize={{ base: "lg", md: "x-large", lg: "xx-large" }}
                 color={color + ".500"}
                 as={"span"}
               >

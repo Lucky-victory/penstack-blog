@@ -1,5 +1,4 @@
 import { PostSelect } from "@/src/types";
-import { formatPostPermalink } from "@/src/utils";
 import {
   Box,
   Input,
@@ -13,15 +12,16 @@ import {
   Button,
   HStack,
   Card,
+  CardBody,
 } from "@chakra-ui/react";
-import { NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react";
-import React, { useCallback, useEffect, useState } from "react";
-import { PostSearchBlock } from "./PostSearch";
+import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
+import React, { useState } from "react";
 import { debounce } from "lodash";
 import { LuSearch } from "react-icons/lu";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { MiniPostCardRenderer } from "@/src/app/components/Renderers/MiniPostCardRenderer";
+import { objectToQueryParams } from "@/src/utils";
 
 interface PostCardProps extends NodeViewProps {
   isRendering?: boolean;
@@ -34,7 +34,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   getPos,
 }) => {
   const [customTitle, setCustomTitle] = useState(node?.attrs.customTitle || "");
-  const [loading, setLoading] = useState(false);
+
   const [query, setQuery] = useState("");
   const bgColor = useColorModeValue("gray.50", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
@@ -46,17 +46,19 @@ export const PostCard: React.FC<PostCardProps> = ({
   } = useMutation({
     mutationKey: ["search_posts", query],
     mutationFn: async (query: string) => {
-      setLoading(true);
       try {
         const { data } = await axios<{ data: PostSelect[] }>(
-          `/api/posts/search?q=${query}&limit=5`
+          `/api/posts/search?${objectToQueryParams({
+            q: query,
+            limit: 10,
+            titleOnly: true,
+          })}`
         );
 
         return data.data;
       } catch (error) {
         console.error("Search failed:", error);
       }
-      setLoading(false);
     },
   });
   const handleSearch = debounce(async (query: string) => {
@@ -73,7 +75,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         .command(({ tr, state }) => {
           tr.setNodeMarkup(pos, undefined, {
             ...node.attrs,
-            postIds: [...node.attrs.postIds, selectedPost.post_id],
+            postIds: [selectedPost.post_id],
           });
           return true;
         })
@@ -86,8 +88,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     return (
       <NodeViewWrapper>
         <Card>
-          <Box
-            p={4}
+          <CardBody
             border="2px"
             borderStyle="dashed"
             borderColor={borderColor}
@@ -105,7 +106,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                   }}
                 />
                 <InputRightElement>
-                  {loading ? <Spinner size="sm" /> : <LuSearch />}
+                  {isSearching ? <Spinner size="sm" /> : <LuSearch />}
                 </InputRightElement>
               </InputGroup>
 
@@ -137,7 +138,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                 </VStack>
               )}
             </VStack>
-          </Box>
+          </CardBody>
         </Card>
       </NodeViewWrapper>
     );

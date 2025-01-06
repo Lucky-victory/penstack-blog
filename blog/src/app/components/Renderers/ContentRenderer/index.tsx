@@ -25,11 +25,10 @@ export const ContentRenderer: React.FC<ContentRendererProps> = ({
         if (domNode.attribs["data-type"] === "post-card") {
           return (
             <MiniPostCardRenderer
+              isEditing={false}
               node={{
                 attrs: {
-                  postIds: domNode.attribs.postid
-                    ? [domNode.attribs.postid]
-                    : domNode.attribs.postids,
+                  postIds: domNode.attribs.postids,
                   customTitle: domNode.attribs.customtitle,
                 },
               }}
