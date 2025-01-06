@@ -1,3 +1,4 @@
+import { SearchPostsComponent } from "@/src/lib/editor/nodes/MiniPostCard/SearchPostsComponent";
 import { PostSelect } from "@/src/types";
 import {
   formatPostPermalink,
@@ -16,43 +17,55 @@ import {
   Input,
   HStack,
   Stack,
+  Button,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { NodeViewProps } from "@tiptap/react";
 import axios from "axios";
 import { decode } from "html-entities";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 
 interface MiniPostCardProps {
   isEditing?: boolean;
   node: Partial<NodeViewProps["node"]>;
   inputValue?: string;
+  updateAttributes?: NodeViewProps["updateAttributes"];
   onInputChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
   node,
   isEditing = false,
   inputValue,
+  updateAttributes,
   onInputChange,
 }) => {
   const bgColor = useColorModeValue("gray.50", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.400");
+  const [showPostSearch, setShowPostSearch] = useState(false);
 
-  const { data: posts, isFetching } = useQuery({
-    queryKey: [
-      "post_card_posts",
-      node?.attrs?.postIds,
-      node?.attrs?.postIds?.length,
-    ],
+  const postIds = (node?.attrs?.postIds as string)
+    ?.split(",")
+    .map((id) => id.trim());
+  console.log({ postIds, np: node?.attrs?.postIds });
+
+  const {
+    data: posts,
+    isFetching,
+    refetch,
+  } = useQuery({
+    queryKey: ["post_card_posts"],
     queryFn: async () => {
-      const { data } = await axios(
-        `/api/posts?${objectToQueryParams({ postIds: node?.attrs?.postIds })}`
+      const result = await Promise.all(
+        postIds.map(async (postId) => {
+          const { data } = await axios(`/api/posts/${postId}`);
+          return data.data as PostSelect;
+        })
       );
-      return data.data as PostSelect[];
+      return result;
     },
-    enabled: node?.attrs?.postIds?.length > 0,
-    // staleTime: Infinity,
+    enabled: postIds?.length > 0,
+    staleTime: Infinity,
   });
 
   if (isFetching) return <Spinner />;
@@ -61,7 +74,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
   return (
     <Box
       p={4}
-      rounded="lg"
+      rounded="md"
       bg={bgColor}
       my={4}
       maxW={600}
@@ -103,11 +116,11 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
                     src={post.featured_image.url}
                     alt={post.featured_image.alt_text}
                     boxSize={{ base: "80px", lg: "90px" }}
+                    maxH={{ base: "80px", lg: "90px" }}
                     objectFit="cover"
-                    rounded="md"
                   />
                 )}
-                <Stack align="start" spacing={2}>
+                <Stack align="start" spacing={1}>
                   <Text
                     fontSize={{ base: "medium", lg: "large" }}
                     fontWeight="bold"
@@ -124,6 +137,30 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
               </HStack>
             </Link>
           ))}
+        {isEditing && (
+          <>
+            {showPostSearch && (
+              <SearchPostsComponent
+                onPostSelect={(post) => {
+                  updateAttributes?.({
+                    postIds: node?.attrs?.postIds + "," + post.post_id,
+                  });
+                  setShowPostSearch(false);
+                  refetch();
+                }}
+              />
+            )}
+            <Button
+              size={"sm"}
+              alignSelf={"center"}
+              onClick={() => {
+                setShowPostSearch(true);
+              }}
+            >
+              Add more post
+            </Button>
+          </>
+        )}
       </VStack>
     </Box>
   );

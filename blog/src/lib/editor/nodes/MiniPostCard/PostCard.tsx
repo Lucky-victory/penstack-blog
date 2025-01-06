@@ -1,27 +1,11 @@
 import { PostSelect } from "@/src/types";
-import {
-  Box,
-  Input,
-  VStack,
-  Text,
-  Image,
-  Spinner,
-  useColorModeValue,
-  InputRightElement,
-  InputGroup,
-  Button,
-  HStack,
-  Card,
-  CardBody,
-} from "@chakra-ui/react";
+import { Card, CardBody, useColorModeValue } from "@chakra-ui/react";
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import React, { useState } from "react";
-import { debounce } from "lodash";
-import { LuSearch } from "react-icons/lu";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+
 import { MiniPostCardRenderer } from "@/src/app/components/Renderers/MiniPostCardRenderer";
-import { objectToQueryParams } from "@/src/utils";
+
+import { SearchPostsComponent } from "./SearchPostsComponent";
 
 interface PostCardProps extends NodeViewProps {
   isRendering?: boolean;
@@ -35,35 +19,7 @@ export const PostCard: React.FC<PostCardProps> = ({
 }) => {
   const [customTitle, setCustomTitle] = useState(node?.attrs.customTitle || "");
 
-  const [query, setQuery] = useState("");
-  const bgColor = useColorModeValue("gray.50", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
-
-  const {
-    data: posts,
-    isPending: isSearching,
-    mutateAsync,
-  } = useMutation({
-    mutationKey: ["search_posts", query],
-    mutationFn: async (query: string) => {
-      try {
-        const { data } = await axios<{ data: PostSelect[] }>(
-          `/api/posts/search?${objectToQueryParams({
-            q: query,
-            limit: 10,
-            titleOnly: true,
-          })}`
-        );
-
-        return data.data;
-      } catch (error) {
-        console.error("Search failed:", error);
-      }
-    },
-  });
-  const handleSearch = debounce(async (query: string) => {
-    mutateAsync(query);
-  }, 300);
 
   const selectPost = (selectedPost: PostSelect) => {
     if (typeof getPos === "function") {
@@ -72,18 +28,16 @@ export const PostCard: React.FC<PostCardProps> = ({
         .chain()
         .focus()
         .setNodeSelection(pos)
-        .command(({ tr, state }) => {
+        .command(({ tr }) => {
           tr.setNodeMarkup(pos, undefined, {
             ...node.attrs,
-            postIds: [selectedPost.post_id],
+            postIds: [selectedPost.post_id].join(","),
           });
           return true;
         })
         .run();
     }
   };
-
-  // Search Block UI
   if (!node.attrs.postIds?.length) {
     return (
       <NodeViewWrapper>
@@ -94,50 +48,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             borderColor={borderColor}
             rounded="lg"
           >
-            <VStack spacing={4}>
-              <Text>Search and select a post to embed</Text>
-              <InputGroup>
-                <Input
-                  placeholder="Search posts..."
-                  value={query}
-                  onChange={(e) => {
-                    setQuery(e.target.value);
-                    handleSearch(e.target.value);
-                  }}
-                />
-                <InputRightElement>
-                  {isSearching ? <Spinner size="sm" /> : <LuSearch />}
-                </InputRightElement>
-              </InputGroup>
-
-              {posts && posts?.length > 0 && (
-                <VStack align="stretch" width="100%">
-                  {posts.map((searchPost) => (
-                    <Button
-                      key={searchPost.id}
-                      onClick={() => selectPost(searchPost)}
-                      variant="ghost"
-                      justifyContent="flex-start"
-                      height="auto"
-                      py={2}
-                    >
-                      <HStack spacing={3}>
-                        {searchPost.featured_image && (
-                          <Image
-                            src={searchPost.featured_image.url}
-                            alt={searchPost.featured_image.alt_text}
-                            boxSize="40px"
-                            objectFit="cover"
-                            rounded="md"
-                          />
-                        )}
-                        <Text>{searchPost.title}</Text>
-                      </HStack>
-                    </Button>
-                  ))}
-                </VStack>
-              )}
-            </VStack>
+            <SearchPostsComponent onPostSelect={selectPost} />
           </CardBody>
         </Card>
       </NodeViewWrapper>
@@ -146,17 +57,16 @@ export const PostCard: React.FC<PostCardProps> = ({
 
   return (
     <NodeViewWrapper>
-      <>
-        <MiniPostCardRenderer
-          isEditing
-          node={node}
-          inputValue={customTitle}
-          onInputChange={(e) => {
-            setCustomTitle(e.target.value);
-            updateAttributes({ customTitle: e.target.value });
-          }}
-        />
-      </>
+      <MiniPostCardRenderer
+        isEditing
+        node={node}
+        updateAttributes={updateAttributes}
+        inputValue={customTitle}
+        onInputChange={(e) => {
+          setCustomTitle(e.target.value);
+          updateAttributes({ customTitle: e.target.value });
+        }}
+      />
     </NodeViewWrapper>
   );
 };

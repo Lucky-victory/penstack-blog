@@ -1,24 +1,22 @@
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
 import { PostCard } from "../nodes/MiniPostCard/PostCard";
-
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     post: {
-      insertPostCard: (postIds?: number[] | string[] | null) => ReturnType;
+      insertPostCard: (postIds?: string | null) => ReturnType;
     };
   }
 }
-export const PostCardExtension = Node.create<{
-  postIds: number[] | string[] | null;
-  customTitle: string;
-}>({
+export const PostCardExtension = Node.create({
   name: "postCard",
   group: "block",
   atom: true,
 
   addAttributes() {
     return {
-      postIds: { default: [] },
+      postIds: {
+        default: null,
+      },
       customTitle: { default: "" },
     };
   },
@@ -49,7 +47,7 @@ export const PostCardExtension = Node.create<{
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
-            attrs: { postIds: [] },
+            attrs: { postIds: null },
           });
         },
     };

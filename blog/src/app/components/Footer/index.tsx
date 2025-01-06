@@ -11,12 +11,14 @@ import {
 } from "@chakra-ui/react";
 import { LuGithub, LuTwitter, LuMail } from "react-icons/lu";
 import { Newsletter } from "../NewsLetter";
+import { useSiteConfig } from "@/src/hooks/useSiteConfig";
+import { AppLogo } from "../AppLogo";
 
 const Footer = () => {
   const bgColor = useColorModeValue("black", "gray.900");
   const textColor = useColorModeValue("white", "gray.400");
   const hoverColor = useColorModeValue("gray.400", "gray.300");
-
+  const siteConfig = useSiteConfig();
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Topics", href: "/topics" },
@@ -58,11 +60,15 @@ const Footer = () => {
           gap={{ base: 6, md: 0 }}
         >
           <VStack align={"start"} spacing={4}>
-            <Text fontSize="lg" fontWeight="bold" color={textColor}>
-              TechBlog
-            </Text>
+            <HStack>
+              <AppLogo size={"25px"} src={siteConfig?.siteLogo?.value} />
+              <Text fontSize="lg" fontWeight="bold" color={textColor}>
+                {siteConfig?.siteName?.value}
+              </Text>
+            </HStack>
             <Text fontSize="sm" color={textColor}>
-              &copy; {new Date().getFullYear()} TechBlog. All rights reserved.
+              &copy; {new Date().getFullYear()} {siteConfig?.siteName?.value}.
+              All rights reserved.
             </Text>
           </VStack>
 

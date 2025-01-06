@@ -141,6 +141,7 @@ export type SiteSettings = {
   siteDescription: SettingEntry;
   siteOpengraph: SettingEntry;
   siteFavicon: SettingEntry;
+  siteLogo: SettingEntry;
   maintenanceMode: SettingEntry;
   gaId: SettingEntry;
   gtmId: SettingEntry;
