@@ -22,23 +22,25 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
 
   return (
     <Box
-      p={4}
-      borderRadius="lg"
+      p={2}
+      borderRadius="xl"
       border="1px solid"
       borderColor={borderColor}
       bg={bgColor}
     >
-      <HStack spacing={4} align="start">
+      <HStack spacing={3} align="start">
         <Avatar
-          size="md"
+          size={"sm"}
           src={comment.author?.avatar}
           name={comment.author?.name}
         />
-        <VStack align="start" flex={1} spacing={2}>
+        <VStack align="start" flex={1} spacing={1}>
           <HStack justify="space-between" w="full">
             <VStack align="start" spacing={0}>
-              <Text fontWeight="bold">{comment.author?.name}</Text>
-              <Text fontSize="sm" color="gray.500">
+              <Text fontWeight="bold" fontSize={"14px"}>
+                {comment.author?.name}
+              </Text>
+              <Text fontSize="small" color="gray.500">
                 {formatDate(new Date(comment.created_at))}
               </Text>
             </VStack>
@@ -50,13 +52,13 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
             />
           </HStack>
 
-          <Text>{comment.content}</Text>
+          <Text fontSize={"14px"}>{comment.content}</Text>
 
           <HStack spacing={4}>
-            <Button leftIcon={<LuHeart />} size="sm" variant="ghost">
+            <Button leftIcon={<LuHeart />} size="xs" variant="ghost">
               Like
             </Button>
-            <Button leftIcon={<LuMessageCircle />} size="sm" variant="ghost">
+            <Button leftIcon={<LuMessageCircle />} size="xs" variant="ghost">
               Reply
             </Button>
           </HStack>

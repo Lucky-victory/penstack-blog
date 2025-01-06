@@ -135,9 +135,9 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
             <>
               <PermissionGuard requiredPermission={"posts:delete"}>
                 <Button
-                  size={"sm"}
+                  size={"xs"}
                   flex={1}
-                  rounded={"full"}
+                  rounded={"md"}
                   variant={"ghost"}
                   colorScheme="red"
                   color="red.500"
@@ -150,10 +150,10 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                 </Button>
               </PermissionGuard>
               <Button
-                size={"sm"}
+                size={"xs"}
                 flex={1}
                 variant={"outline"}
-                rounded={"full"}
+                rounded={"md"}
                 onClick={() => {
                   onDraft?.();
                 }}
@@ -162,12 +162,12 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
               </Button>
               <PermissionGuard requiredPermission={"posts:publish"}>
                 <Button
-                  size={"sm"}
+                  size={"xs"}
                   isDisabled={isPublishing}
                   isLoading={isPublishing}
                   loadingText={"Publishing..."}
                   flex={1}
-                  rounded={"full"}
+                  rounded={"md"}
                   onClick={() => {
                     onPublish?.();
                   }}

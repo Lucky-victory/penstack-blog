@@ -18,7 +18,7 @@ export const EditorWrapper = ({ children }: { children: ReactNode }) => {
       border="1px"
       borderColor={borderColor}
       overflowY="hidden"
-      rounded="26px"
+      rounded="lg"
       boxShadow="var(--card-raised)"
       gap={0}
     >

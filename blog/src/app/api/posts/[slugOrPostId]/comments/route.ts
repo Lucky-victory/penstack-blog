@@ -25,6 +25,12 @@ export async function GET(
           limit,
           //   offset,
           orderBy: (comments, { desc }) => [desc(comments.created_at)],
+          columns: {
+            content: true,
+            created_at: true,
+            id: true,
+            post_id: true,
+          },
           with: {
             author: {
               columns: {
@@ -39,7 +45,7 @@ export async function GET(
     });
 
     if (!post) {
-      return Response.json({ error: "Post not found" }, { status: 404 });
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
     const totalComments = await db

@@ -13,6 +13,8 @@ import {
   Button,
   useToast,
   Textarea,
+  Card,
+  CardBody,
 } from "@chakra-ui/react";
 import { LuMessageCircle } from "react-icons/lu";
 import { PostSelect } from "@/src/types";
@@ -28,12 +30,12 @@ import { AuthorSection } from "./AuthorSection";
 import { CommentCard } from "./CommentCard";
 import axios from "axios";
 import { encode } from "html-entities";
+import { useQuery } from "@tanstack/react-query";
 
 const MotionBox = motion(Box);
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   // useTrackView(post.id);
-  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
@@ -41,26 +43,24 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   const highlightColor = useColorModeValue("blue.50", "blue.900");
 
   const sidebarWidth = useBreakpointValue({ base: "60px", md: "80px" });
+  const bgColor = useColorModeValue("gray.50", "gray.800");
 
-  // Loading state
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    if (post) {
-      setIsLoading(false);
-      fetchComments();
-    }
-  }, [post]);
-
-  // Fetch comments
-  const fetchComments = async () => {
+  const {
+    data: comments,
+    isPending: isFetching,
+    refetch,
+  } = useQuery({
+    queryKey: ["comments", post?.post_id || ""],
+    queryFn: fetchComments,
+  });
+  async function fetchComments() {
     try {
       const { data } = await axios(`/api/posts/${post.post_id}/comments`);
-
-      setComments(data.data);
+      return data.data;
     } catch (error) {
       console.error("Failed to fetch comments:", error);
     }
-  };
+  }
 
   // Handle new comment submission
   const handleCommentSubmit = async () => {
@@ -68,18 +68,17 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/posts/${post.post_id}/comments`, {
-        method: "POST",
-        body: JSON.stringify({ content: encode(newComment) }),
+      const response = await axios.post(`/api/posts/${post.post_id}/comments`, {
+        content: encode(newComment),
       });
 
-      if (response.ok) {
+      if (response.status === 201) {
         toast({
           title: "Comment posted successfully",
           status: "success",
         });
         setNewComment("");
-        fetchComments();
+        refetch();
       }
     } catch (error) {
       toast({
@@ -91,7 +90,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
     }
   };
 
-  if (isLoading || !post) {
+  if (isFetching || !post) {
     return <Loader />;
   }
 
@@ -153,45 +152,50 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                 </Heading>
 
                 {/* New Comment Form */}
-                <Box mb={8}>
-                  <Textarea
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Share your thoughts..."
-                    size="lg"
-                    mb={4}
-                  />
-                  <Button
-                    colorScheme="blue"
-                    isLoading={isSubmitting}
-                    onClick={handleCommentSubmit}
-                  >
-                    Post Comment
-                  </Button>
-                </Box>
+                <Card mb={8} rounded="xl">
+                  <CardBody bg={bgColor} borderRadius="xl">
+                    <Textarea
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      placeholder="Share your thoughts..."
+                      size="lg"
+                      mb={4}
+                      maxH={200}
+                    />
+                    <Button
+                      colorScheme="blue"
+                      isLoading={isSubmitting}
+                      onClick={handleCommentSubmit}
+                    >
+                      Post Comment
+                    </Button>
+                  </CardBody>
+                </Card>
 
                 {/* Comments List */}
-                {comments.length > 0 ? (
+                {!isFetching && comments.length > 0 ? (
                   <VStack spacing={6} align="stretch">
                     {comments.map((comment: any) => (
                       <CommentCard key={comment.id} comment={comment} />
                     ))}
                   </VStack>
                 ) : (
-                  <Box
-                    p={8}
-                    textAlign="center"
-                    bg={highlightColor}
-                    borderRadius="xl"
-                  >
-                    <LuMessageCircle
-                      size={40}
-                      style={{ margin: "0 auto 16px" }}
-                    />
-                    <Text fontSize="lg">
-                      Be the first to share your thoughts!
-                    </Text>
-                  </Box>
+                  !isFetching && (
+                    <Box
+                      p={8}
+                      textAlign="center"
+                      bg={highlightColor}
+                      borderRadius="xl"
+                    >
+                      <LuMessageCircle
+                        size={40}
+                        style={{ margin: "0 auto 16px" }}
+                      />
+                      <Text fontSize="lg">
+                        Be the first to share your thoughts!
+                      </Text>
+                    </Box>
+                  )
                 )}
               </Box>
             </Box>

@@ -23,7 +23,7 @@ export const AuthorSection: React.FC<AuthorSectionProps> = ({ post }) => {
 
   return (
     <Box
-      p={6}
+      p={4}
       borderRadius="xl"
       border="1px solid"
       borderColor={borderColor}
@@ -33,9 +33,9 @@ export const AuthorSection: React.FC<AuthorSectionProps> = ({ post }) => {
       <VStack align="start" spacing={4}>
         <Heading size="md">Written By</Heading>
         <HStack spacing={4} w="full" wrap={"wrap"}>
-          <Link href={`/author/${post.author.username}`}>
+          <Link href={`/author/${post.author.username}`} alignSelf={"start"}>
             <Avatar
-              size={{ base: "md", md: "xl" }}
+              size={{ base: "md", md: "lg" }}
               src={post.author.avatar}
               name={post.author.name}
             />
@@ -48,7 +48,7 @@ export const AuthorSection: React.FC<AuthorSectionProps> = ({ post }) => {
               <Text color="gray.500">@{post.author.username}</Text>
             </Link>
             {post?.author?.bio && (
-              <Text mt={2} fontSize="md">
+              <Text mt={2} fontSize="small">
                 {post.author.bio}
               </Text>
             )}
