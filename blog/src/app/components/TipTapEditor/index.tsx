@@ -1,4 +1,9 @@
-import { BubbleMenu, FloatingMenu, useEditor } from "@tiptap/react";
+import {
+  BubbleMenu,
+  FloatingMenu,
+  mergeAttributes,
+  useEditor,
+} from "@tiptap/react";
 import { Box, Flex, Hide } from "@chakra-ui/react";
 
 import { useMemo } from "react";
@@ -21,9 +26,11 @@ import EditorHeader from "./Header";
 import ContentArea from "./ContentArea";
 import React from "react";
 import { debounce } from "lodash";
-import { PostCardExtension } from "@/src/lib/editor/extensions/post-card";
+import { PostCardExtension } from "@/src/lib/editor/extensions/mini-post-card";
 import { YouTubeExtension } from "@/src/lib/editor/extensions/youtube-embed";
 import { TwitterExtension } from "@/src/lib/editor/extensions/tweet-embed";
+import slugify from "slugify";
+import Heading from "@tiptap/extension-heading";
 
 function TipTapEditor({
   onUpdate,
@@ -34,9 +41,36 @@ function TipTapEditor({
 }) {
   const extensions = useMemo(
     () => [
-      StarterKit,
+      StarterKit.configure({
+        heading: false,
+      }),
+      Heading.extend({
+        priority: 1000,
+        onTransaction: (transaction) => {
+          console.log({ transaction });
+        },
+        addAttributes() {
+          return {
+            ...this?.parent?.(),
+            id: {
+              default: null,
+              parseHTML: (element) =>
+                element.getAttribute("id") ||
+                slugify(element.textContent || "", { lower: true }),
+
+              renderHTML: (attributes) => {
+                console.log({ attributes });
+
+                return {
+                  id: attributes.id,
+                };
+              },
+            },
+          };
+        },
+      }),
       Placeholder.configure({
-        placeholder: "Write something …",
+        placeholder: "Write something…",
       }),
       Link.configure({
         HTMLAttributes: {

@@ -2,7 +2,7 @@ import { Button } from "@chakra-ui/react";
 import { Editor } from "@tiptap/react";
 import { LuFileStack, LuSearch } from "react-icons/lu";
 
-export const PostCardButton = ({ editor }: { editor: Editor }) => {
+export const MiniPostCardButton = ({ editor }: { editor: Editor }) => {
   return (
     <Button
       size="sm"

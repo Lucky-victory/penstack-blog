@@ -21,7 +21,7 @@ import EditorActionsDropdown from "./EditorActionsDropdown";
 import { filterEditorActions } from "@/src/lib/editor-actions";
 import { MediaInsert } from "./MediaInsert";
 import { extractContentAndLinkMark } from "@/src/utils";
-import { PostCardButton } from "@/src/lib/editor/nodes/MiniPostCard/PostCardButton";
+import { MiniPostCardButton } from "@/src/lib/editor/nodes/MiniPostCard/MiniPostCardButton";
 import { MediaButton } from "@/src/lib/editor/nodes/media/MediaButton";
 
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
@@ -156,7 +156,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           <LuRedo2 size={20} />
         </IconButton>
       </Tooltip>
-      <PostCardButton editor={editor} />
+      <MiniPostCardButton editor={editor} />
       <MediaButton editor={editor} />
     </HStack>
   );

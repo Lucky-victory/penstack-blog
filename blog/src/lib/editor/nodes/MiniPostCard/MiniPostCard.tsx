@@ -7,11 +7,11 @@ import { MiniPostCardRenderer } from "@/src/app/components/Renderers/MiniPostCar
 
 import { SearchPostsComponent } from "./SearchPostsComponent";
 
-interface PostCardProps extends NodeViewProps {
+interface MiniPostCardProps extends NodeViewProps {
   isRendering?: boolean;
 }
 
-export const PostCard: React.FC<PostCardProps> = ({
+export const MiniPostCard: React.FC<MiniPostCardProps> = ({
   node,
   updateAttributes,
   editor,

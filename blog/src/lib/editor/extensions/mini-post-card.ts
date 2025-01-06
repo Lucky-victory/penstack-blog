@@ -1,5 +1,5 @@
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
-import { PostCard } from "../nodes/MiniPostCard/PostCard";
+import { MiniPostCard } from "../nodes/MiniPostCard/MiniPostCard";
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     post: {
@@ -37,7 +37,7 @@ export const PostCardExtension = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(PostCard);
+    return ReactNodeViewRenderer(MiniPostCard);
   },
 
   addCommands() {
