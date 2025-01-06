@@ -174,7 +174,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
 
                 {/* Comments List */}
                 {!isFetching && comments.length > 0 ? (
-                  <VStack spacing={6} align="stretch">
+                  <VStack spacing={6} align="stretch" bg={bgColor}>
                     {comments.map((comment: any) => (
                       <CommentCard key={comment.id} comment={comment} />
                     ))}

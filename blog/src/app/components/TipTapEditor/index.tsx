@@ -31,6 +31,7 @@ import { YouTubeExtension } from "@/src/lib/editor/extensions/youtube-embed";
 import { TwitterExtension } from "@/src/lib/editor/extensions/tweet-embed";
 import slugify from "slugify";
 import Heading from "@tiptap/extension-heading";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
 
 function TipTapEditor({
   onUpdate,
@@ -46,25 +47,49 @@ function TipTapEditor({
       }),
       Heading.extend({
         priority: 1000,
-        onTransaction: (transaction) => {
-          console.log({ transaction });
+        addProseMirrorPlugins() {
+          return [
+            new Plugin({
+              key: new PluginKey("heading-ids"),
+              appendTransaction: (transactions, oldState, newState) => {
+                const docChanged = transactions.some((tr) => tr.docChanged);
+                if (!docChanged) return;
+
+                const tr = newState.tr;
+                let modified = false;
+
+                newState.doc.descendants((node, pos) => {
+                  if (node.type.name === "heading") {
+                    const newId = slugify(node.textContent, {
+                      lower: true,
+                      strict: true,
+                      remove: /[*+~.()'"!:@]/g,
+                    });
+
+                    if (newId && node.attrs.id !== newId) {
+                      tr.setNodeMarkup(pos, undefined, {
+                        ...node.attrs,
+                        id: newId,
+                      });
+                      modified = true;
+                    }
+                  }
+                });
+
+                return modified ? tr : null;
+              },
+            }),
+          ];
         },
         addAttributes() {
           return {
-            ...this?.parent?.(),
+            ...this.parent?.(),
             id: {
               default: null,
-              parseHTML: (element) =>
-                element.getAttribute("id") ||
-                slugify(element.textContent || "", { lower: true }),
-
-              renderHTML: (attributes) => {
-                console.log({ attributes });
-
-                return {
-                  id: attributes.id,
-                };
-              },
+              parseHTML: (element) => element.getAttribute("id"),
+              renderHTML: (attributes) => ({
+                id: attributes.id,
+              }),
             },
           };
         },
