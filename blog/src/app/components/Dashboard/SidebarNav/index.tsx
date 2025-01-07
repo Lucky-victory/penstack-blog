@@ -43,6 +43,8 @@ import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
 import { UserInfoComp } from "../UserInfoComp";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 import { AppLogo } from "../../AppLogo";
+import { SidebarNavItem } from "./NavItem";
+import { NavItemWithChildren } from "./NavItemWithDropdown";
 
 export const navItems: NavItem[] = [
   {
@@ -106,301 +108,15 @@ export const SidebarContentNav = ({
   toggleMinimized: () => void;
   [key: string]: any;
 }) => {
-  const pathname = usePathname();
-  const [openItems, setOpenItems] = useState<string[]>([]);
-  const bg = "#326cdc";
-  const navBtnBg = "white";
-  const navBtnBgHover = "#f3f3f3";
-  const popoverBg = useColorModeValue("gray.50", "gray.900");
+  const bg = useColorModeValue("#fbfbfb", "#121212");
+  const navBtnBg = useColorModeValue("gray.300", "gray.800");
+  const navBtnBgHover = useColorModeValue("gray.200", "gray.700");
   const borderColor = useColorModeValue("gray.200", "gray.700");
-  const textColor = useColorModeValue("gray.300", "gray.300");
-  const hoverTextColor = useColorModeValue("gray.600", "gray.600");
-  const childrenBg = "blackAlpha.400";
+  const textColor = useColorModeValue("gray.600", "gray.300");
+  const hoverTextColor = useColorModeValue("gray.800", "gray.100");
   const siteConfig = useSiteConfig();
-
-  useEffect(() => {
-    const activeParent = navItems.find(
-      (item) =>
-        item.children &&
-        item.children.some((child) => pathname.startsWith(child.href))
-    );
-    if (activeParent) {
-      setOpenItems((prev) =>
-        prev.includes(activeParent.href) ? prev : [...prev, activeParent.href]
-      );
-    }
-  }, [pathname]);
-
-  const toggleOpen = (href: string) => {
-    setOpenItems((prev) =>
-      prev.includes(href)
-        ? prev.filter((item) => item !== href)
-        : [...prev, href]
-    );
-  };
-
-  const NavItem = ({
-    icon,
-    children,
-    href,
-    nested = false,
-    permission,
-    label,
-  }: {
-    icon?: ElementType;
-    children: ReactNode;
-    href: string;
-    nested?: boolean;
-    label?: string;
-    permission?: TPermissions;
-  }) => {
-    // const isActive =
-    //   pathname === href ||
-    //   (pathname.startsWith(href) &&
-    //     (href !== "/dashboard" || item.href !== "/dashboard/posts"));
-    const isActive =
-      pathname === href ||
-      (href.includes("/dashboard/posts/new") && pathname.match(href + "/*"));
-
-    const content = (
-      <Link
-        display={"flex"}
-        variant="unstyled"
-        fontWeight={"500"}
-        size={nested ? "sm" : "md"}
-        pos={"relative"}
-        gap={4}
-        pl={isMinimized ? 3 : 5}
-        href={href}
-        style={{ textDecoration: "none" }}
-        onClick={onClose}
-        _hover={{
-          _before: {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "4px",
-            shadow: "md",
-            height: "100%",
-            backgroundColor: navBtnBgHover,
-            borderRadius: "1px",
-            transition: "background-color 0.2s ease-in-out",
-          },
-        }}
-        _after={{
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "4px",
-          shadow: "md",
-          height: "100%",
-          backgroundColor: navBtnBg,
-          borderRadius: "1px",
-          transition: "background-color 0.2s ease-in-out",
-          visibility: isActive ? "visible" : "hidden",
-        }}
-      >
-        <Flex
-          rounded={{ base: "sm", md: "md" }}
-          align={"center"}
-          justify={isMinimized ? "center" : "flex-start"}
-          gap={4}
-          shadow={isActive ? "md" : "none"}
-          color={isActive ? "black" : textColor}
-          py={nested ? "6px" : "8px"}
-          px={isMinimized ? 2 : nested ? 3 : 4}
-          fontSize={nested ? "small" : "medium"}
-          flex={1}
-          bg={isActive ? navBtnBg : "transparent"}
-          _hover={{
-            bg: navBtnBgHover,
-            color: isActive ? "black" : hoverTextColor,
-          }}
-        >
-          {icon && (
-            <Icon fontSize="16" as={icon} color={isActive ? bg : "inherit"} />
-          )}
-          {label && label}
-          {!isMinimized && children}
-        </Flex>
-      </Link>
-    );
-
-    if (permission) {
-      return (
-        <PermissionGuard requiredPermission={permission} showLoader={false}>
-          {content}
-        </PermissionGuard>
-      );
-    }
-    return content;
-  };
-
-  const NavItemWithChildren = ({ item }: { item: NavItem }) => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    if (isMinimized) {
-      return (
-        <PermissionGuard requiredPermission={item.permission!}>
-          <Popover
-            placement="right"
-            isOpen={isOpen}
-            onOpen={onOpen}
-            onClose={onClose}
-            trigger="hover"
-          >
-            <PopoverTrigger>
-              <Box>
-                <NavItem icon={item.icon} href={item.href}>
-                  {item.label}
-                </NavItem>
-              </Box>
-            </PopoverTrigger>
-            <PopoverContent ml={2} w="200px" rounded={"md"} bg={bg}>
-              <PopoverArrow bg={bg} />
-              <PopoverBody p={2} bg={childrenBg}>
-                <VStack
-                  align="stretch"
-                  spacing={2}
-                  divider={<Divider />}
-                  role="group"
-                >
-                  {item.children?.map((child, idx) => (
-                    <NavItem
-                      key={idx}
-                      href={child.href}
-                      nested
-                      label={child?.label}
-                      permission={child.permission}
-                    >
-                      {child.label}
-                    </NavItem>
-                  ))}
-                </VStack>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-        </PermissionGuard>
-      );
-    }
-    const isActive =
-      pathname === item.href ||
-      (item.href.includes("/dashboard/posts/new") &&
-        pathname.match(item.href + "/*"));
-
-    return (
-      <PermissionGuard requiredPermission={item.permission!}>
-        <Box>
-          <Button
-            fontWeight={"500"}
-            variant={"unstyled"}
-            w="full"
-            p={0}
-            pl={isMinimized ? 3 : 5}
-            _hover={{
-              _before: {
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "4px",
-                shadow: "md",
-                height: "100%",
-                backgroundColor: navBtnBgHover,
-                borderRadius: "1px",
-                transition: "background-color 0.2s ease-in-out",
-              },
-            }}
-            _after={{
-              content: '""',
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "4px",
-              shadow: "md",
-              height: "100%",
-              backgroundColor: navBtnBg,
-              borderRadius: "1px",
-              transition: "background-color 0.2s ease-in-out",
-              visibility: isActive ? "visible" : "hidden",
-            }}
-            roundedBottom={openItems.includes(item.href) ? "0" : "md"}
-            size={"md"}
-            cursor="pointer"
-            onClick={() => toggleOpen(item.href)}
-            justifyContent={isMinimized ? "center" : "space-between"}
-          >
-            <Flex
-              rounded={{ base: "sm", md: "md" }}
-              align={"center"}
-              justify={isMinimized ? "center" : "space-between"}
-              gap={4}
-              shadow={isActive ? "md" : "none"}
-              py={"8px"}
-              px={isMinimized ? 2 : 4}
-              fontSize={"medium"}
-              w="full"
-              bg={
-                item.children?.some((child) =>
-                  pathname.startsWith(child.href)
-                ) || openItems.includes(item.href)
-                  ? navBtnBg
-                  : "transparent"
-              }
-              color={
-                item.children?.some((child) =>
-                  pathname.startsWith(child.href)
-                ) || openItems.includes(item.href)
-                  ? "black"
-                  : textColor
-              }
-              _hover={{
-                bg: openItems.includes(item.href) ? navBtnBg : navBtnBgHover,
-                color: openItems.includes(item.href) ? "black" : hoverTextColor,
-              }}
-            >
-              <HStack gap={0}>
-                <Icon mr="4" fontSize="16" as={item.icon} />
-                <Text flex="1">{item.label}</Text>
-              </HStack>
-              <Icon
-                as={LuChevronDown}
-                transition="all .25s ease-in-out"
-                transform={
-                  openItems.includes(item.href) ? "rotate(180deg)" : ""
-                }
-              />
-            </Flex>
-          </Button>
-          {openItems.includes(item.href) && (
-            <VStack
-              spacing={3}
-              align="stretch"
-              px={3}
-              py={4}
-              mt={-1}
-              ml={5}
-              bg={childrenBg}
-              roundedBottom="md"
-            >
-              {item.children?.map((child, childIndex) => (
-                <NavItem
-                  key={childIndex}
-                  href={child.href}
-                  nested
-                  permission={child.permission}
-                >
-                  {child.label}
-                </NavItem>
-              ))}
-            </VStack>
-          )}
-        </Box>
-      </PermissionGuard>
-    );
-  };
-
+  const navBtnActiveColor = useColorModeValue("#121212", "#fff");
+  const siteNameColor = useColorModeValue("gray.800", "gray.100");
   return (
     <Stack
       bg={bg}
@@ -432,8 +148,8 @@ export const SidebarContentNav = ({
               <Text
                 fontSize={"medium"}
                 fontWeight="bold"
-                letterSpacing={"2"}
-                color={"white"}
+                letterSpacing={0.5}
+                color={siteNameColor}
               >
                 {siteConfig?.siteName?.value}
               </Text>
@@ -448,7 +164,7 @@ export const SidebarContentNav = ({
               onClick={toggleMinimized}
               fontSize="20"
               cursor="pointer"
-              color={navBtnBg}
+              color={siteNameColor}
               display={{ base: "none", md: "block" }}
             />
           </VStack>
@@ -456,25 +172,42 @@ export const SidebarContentNav = ({
       </Box>
 
       <VStack
-        spacing={4}
+        spacing={3}
         h={"calc(100% - var(--dash-header-h))"}
         align="stretch"
         flex={1}
-        pr={isMinimized ? 3 : 6}
+        pr={isMinimized ? 3 : 5}
         justifyContent={"space-between"}
       >
         {navItems.map((item, index) => (
           <Box key={index}>
             {item.children ? (
-              <NavItemWithChildren item={item} />
+              <NavItemWithChildren
+                item={item}
+                isMinimized={isMinimized}
+                navBtnBg={navBtnBg}
+                navBtnBgHover={navBtnBgHover}
+                textColor={textColor}
+                hoverTextColor={hoverTextColor}
+                navBtnActiveColor={navBtnActiveColor}
+                bg={bg}
+              />
             ) : (
-              <NavItem
+              <SidebarNavItem
                 icon={item.icon}
                 href={item.href}
                 permission={item.permission}
+                isMinimized={isMinimized}
+                onClose={onClose}
+                navBtnBg={navBtnBg}
+                navBtnActiveColor={navBtnActiveColor}
+                navBtnBgHover={navBtnBgHover}
+                textColor={textColor}
+                hoverTextColor={hoverTextColor}
+                bg={bg}
               >
                 {item.label}
-              </NavItem>
+              </SidebarNavItem>
             )}
           </Box>
         ))}

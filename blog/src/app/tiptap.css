@@ -169,7 +169,7 @@
 }
 
 .tiptap a {
-  color: var(--chakra-colors-blue-500);
+  color: var(--link-color);
   /* text-decoration: underline; */
 }
 

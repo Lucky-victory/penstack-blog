@@ -8,7 +8,6 @@ import {
 } from "@/src/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
-  Spinner,
   Box,
   useColorModeValue,
   VStack,
@@ -18,6 +17,7 @@ import {
   HStack,
   Stack,
   Button,
+  Skeleton,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { NodeViewProps } from "@tiptap/react";
@@ -47,8 +47,6 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
   const postIds = (node?.attrs?.postIds as string)
     ?.split(",")
     .map((id) => id.trim());
-  console.log({ postIds, np: node?.attrs?.postIds });
-
   const {
     data: posts,
     isFetching,
@@ -68,7 +66,33 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
     staleTime: Infinity,
   });
 
-  if (isFetching) return <Spinner />;
+  if (!postIds?.length) return null;
+  if (isFetching)
+    return (
+      <Box
+        p={4}
+        rounded="md"
+        bg={bgColor}
+        my={4}
+        maxW={600}
+        border="1px"
+        borderColor={borderColor}
+      >
+        <VStack align="stretch" spacing={3}>
+          <Skeleton height="24px" width="200px" />
+          {[1, 2].map((i) => (
+            <HStack key={i} spacing={4} align="start">
+              <Skeleton boxSize={{ base: "80px", lg: "90px" }} />
+              <Stack align="start" spacing={1} flex={1}>
+                <Skeleton height="24px" width="80%" />
+                <Skeleton height="20px" width="100%" />
+                <Skeleton height="20px" width="90%" />
+              </Stack>
+            </HStack>
+          ))}
+        </VStack>
+      </Box>
+    );
   if (!posts) return null;
 
   return (
@@ -83,7 +107,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
     >
       <VStack align="stretch" spacing={3}>
         {!isEditing && node?.attrs?.customTitle && (
-          <Text fontSize="lg" fontWeight="bold">
+          <Text fontSize="large" fontWeight="bold">
             {node.attrs.customTitle}
           </Text>
         )}
@@ -92,9 +116,13 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
             border={"none"}
             borderBottom={"1px solid"}
             borderColor={"gray.300"}
+            rounded={"none"}
             placeholder="Add custom title (optional)"
             value={inputValue}
             variant={""}
+            size={"lg"}
+            fontSize={'large'}
+            fontWeight="bold"
             onChange={(e) => {
               onInputChange?.(e);
             }}
@@ -103,7 +131,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = ({
         {posts?.length > 0 &&
           posts.map((post) => (
             <Link
-              key={post.id}
+              key={post.id} color={'var(--link-color)'}
               href={formatPostPermalink(post)}
               _hover={{ textDecoration: "none" }}
               onClick={(e) => {

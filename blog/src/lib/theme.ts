@@ -14,9 +14,10 @@ export const theme = extendTheme(
       global: {
         ":root": {
           "--dash-sidebar-mini-w": "60px",
-          "--dash-sidebar-w": "240px",
+          "--dash-sidebar-w": "230px",
           "--dash-header-h": "65px",
           "--custom-accent-color": "#0070f3",
+          "--link-color": "var(--chakra-colors-blue-500)",
           "--card-raised-soft":
             "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
           "--card-raised": "var(--card-raised-soft)",
