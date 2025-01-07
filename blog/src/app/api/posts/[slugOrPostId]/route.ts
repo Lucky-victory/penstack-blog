@@ -6,7 +6,6 @@ import { getPlainPost, getPost } from "@/src/lib/queries/post";
 import { or, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
 export async function GET(
   req: NextRequest,
   { params }: { params: { slugOrPostId: string } }

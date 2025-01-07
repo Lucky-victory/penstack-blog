@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
-  BarChart,
-  Bar,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
@@ -60,6 +60,9 @@ const PostViewsChart = () => {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
   const tooltipContentBg = useColorModeValue("white", "black");
+  const tooltipTextColor = useColorModeValue("black", "white");
+  const gridColor = useColorModeValue("#e0e0e0", "#444444");
+
   return (
     <Card rounded={"lg"}>
       <CardHeader>
@@ -69,7 +72,7 @@ const PostViewsChart = () => {
             {timeRanges.map((range) => (
               <Button
                 size={"sm"}
-                rounded={"full"}
+                rounded={"lg"}
                 key={range.value}
                 colorScheme={timeRange === range.value ? "blue" : "gray"}
                 variant={timeRange === range.value ? "solid" : "ghost"}
@@ -83,17 +86,16 @@ const PostViewsChart = () => {
       </CardHeader>
       <CardBody>
         <ResponsiveContainer width="100%" height={400}>
-          <BarChart
+          <AreaChart
             width={undefined}
             height={400}
             data={getFilteredData()}
             margin={{ top: 20, right: 0, left: 0, bottom: 5 }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
             <XAxis
               dataKey="date"
               tickFormatter={formatDate}
-              // angle={-40}
               textAnchor="end"
               height={70}
             />
@@ -102,18 +104,22 @@ const PostViewsChart = () => {
               contentStyle={{
                 backgroundColor: tooltipContentBg,
                 borderRadius: "12px",
+                border: "none",
+                color: tooltipTextColor,
               }}
               labelFormatter={formatDate}
               formatter={(value) => [`${value} views`, "Views"]}
             />
-            <Bar
+            <Area
+              type="monotone"
               dataKey="views"
+              stroke="#3b82f6"
               fill="#3b82f6"
-              barSize={32}
-              radius={[8, 8, 0, 0]}
-              markerHeight={30}
+              strokeWidth={2}
+              dot={{ r: 5 }}
+              activeDot={{ r: 8 }}
             />
-          </BarChart>
+          </AreaChart>
         </ResponsiveContainer>
       </CardBody>
     </Card>

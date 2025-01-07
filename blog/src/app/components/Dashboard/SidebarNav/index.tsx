@@ -115,7 +115,7 @@ export const SidebarContentNav = ({
   const textColor = useColorModeValue("gray.600", "gray.300");
   const hoverTextColor = useColorModeValue("gray.800", "gray.100");
   const siteConfig = useSiteConfig();
-  const navBtnActiveColor = useColorModeValue("#121212", "#fff");
+  const navBtnActiveColor = useColorModeValue("gray.800", "#fff");
   const siteNameColor = useColorModeValue("gray.800", "gray.100");
   return (
     <Stack
@@ -172,7 +172,7 @@ export const SidebarContentNav = ({
       </Box>
 
       <VStack
-        spacing={3}
+        spacing={4}
         h={"calc(100% - var(--dash-header-h))"}
         align="stretch"
         flex={1}

@@ -46,7 +46,7 @@ export const NavItemWithChildren = ({
   const pathname = usePathname();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [openItems, setOpenItems] = useState<string[]>([]);
-  const childrenBg = useColorModeValue("gray.100", "#1A202C");
+  const childrenBg = useColorModeValue("gray.100", "gray.900");
 
   const toggleOpen = (href: string) => {
     setOpenItems((prev) =>
@@ -96,9 +96,9 @@ export const NavItemWithChildren = ({
               </SidebarNavItem>
             </Box>
           </PopoverTrigger>
-          <PopoverContent ml={2} w="200px" rounded={"md"} bg={bg}>
+          <PopoverContent ml={2} w="200px" rounded={"md"}>
             <PopoverArrow bg={bg} />
-            <PopoverBody p={2} bg={childrenBg}>
+            <PopoverBody p={2} bg={bg} rounded={"md"}>
               <VStack
                 align="stretch"
                 spacing={2}
@@ -145,33 +145,6 @@ export const NavItemWithChildren = ({
           w="full"
           p={0}
           pl={isMinimized ? 3 : 5}
-          _hover={{
-            _before: {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "4px",
-              shadow: "md",
-              height: "100%",
-              backgroundColor: navBtnBgHover,
-              borderRadius: "1px",
-              transition: "background-color 0.2s ease-in-out",
-            },
-          }}
-          _after={{
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "4px",
-            shadow: "md",
-            height: "100%",
-            backgroundColor: navBtnBg,
-            borderRadius: "1px",
-            transition: "background-color 0.2s ease-in-out",
-            visibility: isActive ? "visible" : "hidden",
-          }}
           roundedBottom={openItems.includes(item.href) ? "0" : "md"}
           size={"md"}
           cursor="pointer"

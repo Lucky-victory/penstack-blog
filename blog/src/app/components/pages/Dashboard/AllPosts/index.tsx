@@ -2,11 +2,9 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  Grid,
   Heading,
   Card,
   CardBody,
-  Image,
   Stack,
   Text,
   Button,
@@ -16,12 +14,6 @@ import {
   InputLeftAddon,
   Input,
   Select,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  VStack,
   useToast,
   Modal,
   ModalOverlay,
@@ -30,18 +22,21 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-  Spinner,
-  Tooltip,
-  useColorMode,
   useColorModeValue,
-  Flex,
-  CardFooter,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  IconButton,
+  Tooltip,
+  VStack,
 } from "@chakra-ui/react";
 import {
   EditIcon,
   DeleteIcon,
   ViewIcon,
-  ChevronDownIcon,
   AddIcon,
   SearchIcon,
 } from "@chakra-ui/icons";
@@ -52,7 +47,7 @@ import { PermissionGuard } from "../../../PermissionGuard";
 import { usePosts } from "@/src/hooks";
 import { useAuth } from "@/src/hooks/useAuth";
 import { PostSelect } from "@/src/types";
-import { formatPostPermalink, objectToQueryParams } from "@/src/utils";
+import { formatPostPermalink } from "@/src/utils";
 import DashHeader from "../../../Dashboard/Header";
 import Loader from "../../../Loader";
 
@@ -63,7 +58,6 @@ const PostsDashboard = () => {
   const [filteredPosts, setFilteredPosts] = useState<PostSelect[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const postCardBg = useColorModeValue("gray.200", "gray.600");
   const { posts, loading, refetchPosts } = usePosts({
     status: "all",
     limit: 20,
@@ -180,147 +174,84 @@ const PostsDashboard = () => {
             {loading && <Loader loadingText={"Loading posts"} />}
 
             {filteredPosts && filteredPosts.length > 0 && (
-              <Grid
-                templateColumns={{
-                  md: "repeat(auto-fit, minmax(400px,1fr))",
-                  base: "repeat(auto-fit, minmax(300px,1fr))",
-                }}
-                gap={6}
-              >
-                {filteredPosts.map((post) => (
-                  <Card
-                    key={post.id}
-                    rounded="xl"
-                    overflow="hidden"
-                    transition="all 0.2s"
-                    border={"1px solid"}
-                    borderColor={postCardBg}
-                    // bg={postCardBg}
-                    _hover={{ transform: "translateY(-2px)", shadow: "lg" }}
-                  >
-                    <CardBody h={200}>
-                      <Flex gap={4} flexDir={{ base: "column", md: "row" }}>
-                        <Image
-                          src={
-                            post.featured_image?.url ||
-                            `/api/og?${objectToQueryParams({
-                              title: post.title,
-                              date: post?.published_at
-                                ? post?.published_at
-                                : post?.created_at,
-                              username: post?.author?.username,
-                              avatar: post?.author?.avatar,
-                              name: post?.author?.name,
-                              category: post?.category?.name,
-                            })}`
-                          }
-                          alt={post.title || ""}
-                          h={{ base: "180px", md: "130px" }}
-                          rounded={"lg"}
-                          w={{ base: "full", md: "130px" }}
-                          objectFit="cover"
-                        />
-                        <Box>
-                          <VStack align="stretch" spacing={3}>
-                            <HStack justify="space-between">
-                              <Badge
-                                colorScheme={getStatusColor(post.status)}
-                                rounded="md"
-                                px={2}
-                                textTransform="capitalize"
-                              >
-                                {post.status}
-                              </Badge>
-                              {getVisibilityIcon(post.visibility)}
-                            </HStack>
-
-                            <Heading size="md" noOfLines={2}>
-                              {post.title}
-                            </Heading>
-
-                            <HStack
-                              fontSize="sm"
-                              color="gray.500"
-                              spacing={2}
-                              wrap={"wrap"}
-                            >
-                              <Text>{post.author?.name}</Text>
-                              <Text>•</Text>
-                              <Text>
-                                {post.published_at
-                                  ? format(
-                                      new Date(post.published_at),
-                                      "dd/MM/yyyy hh:mm a"
-                                    )
-                                  : "Not published"}
-                              </Text>
-                            </HStack>
-
-                            {post.category?.name && (
-                              <Text fontSize="sm" color="gray.600">
-                                {post.category.name}
-                              </Text>
-                            )}
-
-                            <Text fontSize="sm" color="gray.500">
-                              Created:{" "}
-                              {format(
-                                new Date(post.created_at as Date),
-                                "dd/MM/yyyy hh:mm a"
-                              )}
-                            </Text>
-                          </VStack>
-                          <HStack justify="space-between" pt={2} wrap={"wrap"}>
-                            <Text fontSize="sm" color="gray.500">
-                              {post.views?.count || 0} views
-                            </Text>
-                            <HStack>
-                              <Button
-                                rounded="md"
-                                variant={"ghost"}
-                                size={"xs"}
-                                leftIcon={<ViewIcon />}
+              <Table variant="simple">
+                <Thead>
+                  <Tr>
+                    <Th>Title</Th>
+                    <Th>Status</Th>
+                    <Th>Author</Th>
+                    <Th>Published At</Th>
+                    <Th>Actions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {filteredPosts.map((post) => (
+                    <Tr key={post.id}>
+                      <Td>
+                        <Text noOfLines={2}>{post.title}</Text>
+                      </Td>
+                      <Td>
+                        <Badge
+                          colorScheme={getStatusColor(post.status)}
+                          rounded="md"
+                          px={2}
+                          textTransform="capitalize"
+                        >
+                          {post.status}
+                        </Badge>
+                      </Td>
+                      <Td>{post.author?.name}</Td>
+                      <Td>
+                        {post.published_at
+                          ? format(
+                              new Date(post.published_at),
+                              "dd/MM/yyyy hh:mm a"
+                            )
+                          : "Not published"}
+                      </Td>
+                      <Td>
+                        <HStack spacing={2}>
+                          <Tooltip label="Preview">
+                            <IconButton
+                              icon={<ViewIcon />}
+                              as={Link}
+                              isExternal
+                              href={formatPostPermalink(post)}
+                              aria-label="Preview"
+                              size="sm"
+                            />
+                          </Tooltip>
+                          <PermissionGuard
+                            requiredPermission="posts:edit"
+                            isOwner={post.author?.auth_id === user?.id}
+                          >
+                            <Tooltip label="Edit">
+                              <IconButton
+                                icon={<EditIcon />}
                                 as={Link}
-                                isExternal
-                                href={formatPostPermalink(post)}
-                              >
-                                Preview
-                              </Button>
-                              <PermissionGuard
-                                requiredPermission="posts:edit"
-                                isOwner={post.author?.auth_id === user?.id}
-                              >
-                                <Button
-                                  leftIcon={<EditIcon />}
-                                  as={Link}
-                                  rounded="md"
-                                  variant={"ghost"}
-                                  size={"xs"}
-                                  href={`/dashboard/posts/edit/${post.post_id}`}
-                                >
-                                  Edit
-                                </Button>
-                              </PermissionGuard>
-                              <PermissionGuard requiredPermission="posts:delete">
-                                <Button
-                                  rounded="md"
-                                  leftIcon={<DeleteIcon />}
-                                  variant={"ghost"}
-                                  size={"xs"}
-                                  onClick={() => handleDelete(post)}
-                                  color="red.500"
-                                >
-                                  Delete
-                                </Button>
-                              </PermissionGuard>
-                            </HStack>
-                          </HStack>
-                        </Box>
-                      </Flex>
-                    </CardBody>
-                  </Card>
-                ))}
-              </Grid>
+                                href={`/dashboard/posts/edit/${post.post_id}`}
+                                aria-label="Edit"
+                                size="sm"
+                              />
+                            </Tooltip>
+                          </PermissionGuard>
+                          <PermissionGuard requiredPermission="posts:delete">
+                            <Tooltip label="Delete">
+                              <IconButton
+                                icon={<DeleteIcon />}
+                                aria-label="Delete"
+                                size="sm"
+                                onClick={() => handleDelete(post)}
+                                colorScheme="red"
+                              />
+                            </Tooltip>
+                          </PermissionGuard>
+                        </HStack>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
             )}
 
             {!loading && !filteredPosts.length && (

@@ -47,37 +47,10 @@ export const SidebarNavItem = ({
       fontWeight={"500"}
       pos={"relative"}
       gap={4}
-      pl={isMinimized ? 3 : 5}
+      pl={isMinimized ? 2 : 5}
       href={href}
       style={{ textDecoration: "none" }}
       onClick={onClose}
-      _hover={{
-        _before: {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "4px",
-          shadow: "md",
-          height: "100%",
-          backgroundColor: navBtnBgHover,
-          borderRadius: "1px",
-          transition: "background-color 0.2s ease-in-out",
-        },
-      }}
-      _after={{
-        content: '""',
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "4px",
-        shadow: "md",
-        height: "100%",
-        backgroundColor: navBtnBg,
-        borderRadius: "1px",
-        transition: "background-color 0.2s ease-in-out",
-        visibility: isActive ? "visible" : "hidden",
-      }}
     >
       <Flex
         rounded={"md"}
