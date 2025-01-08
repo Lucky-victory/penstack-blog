@@ -42,12 +42,13 @@ export default function PostCard({
       bg={bgColor}
       borderWidth="1px"
       borderColor={borderColor}
+      shadow={"none"}
       borderRadius="xl"
       overflow="hidden"
       transition="all 0.2s"
-      _hover={{ boxShadow: "0 0 0 3px var(--chakra-colors-blue-500)" }}
+      _hover={{ boxShadow: "0 0 0 2px var(--chakra-colors-blue-500)" }}
     >
-      <Box position="relative">
+      <Box position="relative" p={3} pb={0}>
         <Image
           src={
             (post.featured_image?.url as string) ||
@@ -64,9 +65,10 @@ export default function PostCard({
           objectFit="cover"
           height="220"
           width="full"
+          rounded={"xl"}
         />
         {post?.category && post?.category?.name && (
-          <Box position="absolute" top={3} right={3}>
+          <Box position="absolute" top={5} right={5}>
             <Tag
               size="md"
               top={3}
@@ -74,7 +76,7 @@ export default function PostCard({
               colorScheme="blue"
               bg={tagBgColor}
               color={tagColor}
-              borderRadius="full"
+              borderRadius="lg"
               px={3}
               py={1}
             >
@@ -87,9 +89,9 @@ export default function PostCard({
         <VStack align={"start"} spacing={2}>
           <LinkOverlay
             href={formatPostPermalink(post)}
-            _hover={{ textDecoration: "none" }}
+            _hover={{ textDecoration: "underline" }}
           >
-            <Heading size={"md"} my={2} letterSpacing={0.7}>
+            <Heading size={"md"} my={2} letterSpacing={0.5}>
               {post.title}
             </Heading>
           </LinkOverlay>
@@ -101,7 +103,11 @@ export default function PostCard({
                   name={post?.author?.name}
                   size="sm"
                 />
-                <Text fontWeight="bold" as={"span"}>
+                <Text
+                  fontWeight="bold"
+                  as={"span"}
+                  _hover={{ textDecoration: "underline" }}
+                >
                   {post?.author?.name}
                 </Text>
               </HStack>

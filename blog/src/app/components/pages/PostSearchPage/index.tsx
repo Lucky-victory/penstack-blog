@@ -39,7 +39,7 @@ const SearchResults = () => {
   const { queryParams, setQueryParam } = useQueryParams<{
     q: string;
     category?: string;
-    sort?: "relevant" | "recent" | "popular";
+    sortBy?: "relevant" | "recent" | "popular";
     page?: number;
   }>();
 
@@ -52,7 +52,7 @@ const SearchResults = () => {
   const debouncedQueryParams = filtersDebounce(queryParams) as {
     q: string;
     category?: string;
-    sort?: "relevant" | "recent" | "popular";
+    sortBy?: "relevant" | "recent" | "popular";
     page?: number;
   };
   const { data, isLoading } = useSearchResults({
@@ -69,7 +69,7 @@ const SearchResults = () => {
     setQueryParam("category", e.target.value);
   };
   const handleSortSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setQueryParam("sort", e.target.value);
+    setQueryParam("sortBy", e.target.value);
   };
   return (
     <Box

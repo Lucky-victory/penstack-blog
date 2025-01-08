@@ -22,7 +22,6 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-  useColorModeValue,
   Table,
   Thead,
   Tbody,
@@ -32,6 +31,7 @@ import {
   IconButton,
   Tooltip,
   VStack,
+  ButtonGroup,
 } from "@chakra-ui/react";
 import {
   EditIcon,
@@ -39,31 +39,94 @@ import {
   ViewIcon,
   AddIcon,
   SearchIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "@chakra-ui/icons";
 import { LuGlobe2, LuLock } from "react-icons/lu";
 import { format } from "date-fns";
 import { Link } from "@chakra-ui/next-js";
 import { PermissionGuard } from "../../../PermissionGuard";
-import { usePosts } from "@/src/hooks";
 import { useAuth } from "@/src/hooks/useAuth";
 import { PostSelect } from "@/src/types";
-import { formatPostPermalink } from "@/src/utils";
+import { formatPostPermalink, objectToQueryParams } from "@/src/utils";
 import DashHeader from "../../../Dashboard/Header";
 import Loader from "../../../Loader";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("created_at");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(20);
+  const [posts, setPosts] = useState<PostSelect[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
   const [selectedPost, setSelectedPost] = useState<PostSelect | null>(null);
-  const [filteredPosts, setFilteredPosts] = useState<PostSelect[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const { posts, loading, refetchPosts } = usePosts({
-    status: "all",
-    limit: 20,
-    access: "dashboard",
-  });
   const { user } = useAuth();
+
+  const fetchPosts = async () => {
+    setLoading(true);
+    try {
+      let url;
+      if (searchTerm) {
+        url = `/api/posts/search?
+        ${objectToQueryParams({
+          q: searchTerm,
+          page,
+          limit,
+          status: statusFilter,
+          access: "dashboard",
+          sortBy,
+          sortOrder,
+        })}`;
+      } else {
+        url = `/api/posts?
+        ${objectToQueryParams({
+          page,
+          limit,
+          status: statusFilter,
+          sortBy,
+          sortOrder,
+          access: "dashboard",
+        })}`;
+      }
+
+      const { data } = await axios(url);
+      setPosts(data.data);
+      setTotalPages(data.meta.totalPages);
+    } catch (error) {
+      toast({
+        title: "Error fetching posts",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  const { refetch } = useQuery({
+    queryKey: ["posts", page, statusFilter, sortBy, sortOrder],
+    queryFn: fetchPosts,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      if (searchTerm) {
+        setPage(1);
+        refetch();
+      }
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
 
   const handleDelete = (post: PostSelect) => {
     setSelectedPost(post);
@@ -72,9 +135,7 @@ const PostsDashboard = () => {
 
   const confirmDelete = async () => {
     try {
-      await fetch(`/api/posts/${selectedPost?.id}`, {
-        method: "DELETE",
-      });
+      await axios.delete(`/api/posts/${selectedPost?.id}`);
 
       toast({
         title: "Post deleted",
@@ -83,7 +144,7 @@ const PostsDashboard = () => {
         isClosable: true,
       });
 
-      refetchPosts();
+      refetch();
       onClose();
     } catch (error: any) {
       toast({
@@ -105,20 +166,6 @@ const PostsDashboard = () => {
 
   const getVisibilityIcon = (visibility: PostSelect["visibility"]) =>
     visibility === "private" ? <LuLock /> : <LuGlobe2 />;
-
-  useEffect(() => {
-    const filtered = posts?.filter((post) => {
-      const matchesSearch = (post?.title as string)
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesStatus =
-        statusFilter === "all" || post.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-    if (filtered && filtered.length > 0) {
-      setFilteredPosts([...filtered]);
-    }
-  }, [posts, searchTerm, statusFilter]);
 
   return (
     <Box>
@@ -154,110 +201,163 @@ const PostsDashboard = () => {
                   placeholder="Search posts..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  disabled={!posts?.length}
                 />
               </InputGroup>
               <Select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value);
+                  setPage(1);
+                }}
                 maxW={{ md: "200px" }}
                 rounded="md"
-                disabled={!posts?.length}
               >
                 <option value="all">All Status</option>
                 <option value="published">Published</option>
                 <option value="draft">Draft</option>
                 <option value="deleted">Deleted</option>
               </Select>
+              <Select
+                value={sortBy}
+                onChange={(e) => {
+                  setSortBy(e.target.value);
+                  setPage(1);
+                }}
+                maxW={{ md: "200px" }}
+                rounded="md"
+              >
+                <option value="recent">Recent</option>
+                <option value="published_at">Published Date</option>
+                <option value="popular">Popular</option>
+              </Select>
+              <Select
+                value={sortOrder}
+                onChange={(e) => {
+                  setSortOrder(e.target.value);
+                  setPage(1);
+                }}
+                maxW={{ md: "150px" }}
+                rounded="md"
+              >
+                <option value="desc">Descending</option>
+                <option value="asc">Ascending</option>
+              </Select>
             </Stack>
 
             {loading && <Loader loadingText={"Loading posts"} />}
 
-            {filteredPosts && filteredPosts.length > 0 && (
-              <Table variant="simple">
-                <Thead>
-                  <Tr>
-                    <Th>Title</Th>
-                    <Th>Status</Th>
-                    <Th>Author</Th>
-                    <Th>Published At</Th>
-                    <Th>Actions</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {filteredPosts.map((post) => (
-                    <Tr key={post.id}>
-                      <Td>
-                        <Text noOfLines={2}>{post.title}</Text>
-                      </Td>
-                      <Td>
-                        <Badge
-                          colorScheme={getStatusColor(post.status)}
-                          rounded="md"
-                          px={2}
-                          textTransform="capitalize"
-                        >
-                          {post.status}
-                        </Badge>
-                      </Td>
-                      <Td>{post.author?.name}</Td>
-                      <Td>
-                        {post.published_at
-                          ? format(
-                              new Date(post.published_at),
-                              "dd/MM/yyyy hh:mm a"
-                            )
-                          : "Not published"}
-                      </Td>
-                      <Td>
-                        <HStack spacing={2}>
-                          <Tooltip label="Preview">
-                            <IconButton
-                              icon={<ViewIcon />}
-                              as={Link}
-                              isExternal
-                              href={formatPostPermalink(post)}
-                              aria-label="Preview"
-                              size="sm"
-                            />
-                          </Tooltip>
-                          <PermissionGuard
-                            requiredPermission="posts:edit"
-                            isOwner={post.author?.auth_id === user?.id}
-                          >
-                            <Tooltip label="Edit">
-                              <IconButton
-                                icon={<EditIcon />}
-                                as={Link}
-                                href={`/dashboard/posts/edit/${post.post_id}`}
-                                aria-label="Edit"
-                                size="sm"
-                              />
-                            </Tooltip>
-                          </PermissionGuard>
-                          <PermissionGuard requiredPermission="posts:delete">
-                            <Tooltip label="Delete">
-                              <IconButton
-                                icon={<DeleteIcon />}
-                                aria-label="Delete"
-                                size="sm"
-                                onClick={() => handleDelete(post)}
-                                colorScheme="red"
-                              />
-                            </Tooltip>
-                          </PermissionGuard>
-                        </HStack>
-                      </Td>
+            {posts && posts.length > 0 && (
+              <>
+                <Table variant="simple">
+                  <Thead>
+                    <Tr>
+                      <Th>Title</Th>
+                      <Th>Status</Th>
+                      <Th>Author</Th>
+                      <Th>Published At</Th>
+                      <Th>Actions</Th>
                     </Tr>
-                  ))}
-                </Tbody>
-              </Table>
+                  </Thead>
+                  <Tbody>
+                    {posts.map((post) => (
+                      <Tr key={post.id}>
+                        <Td>
+                          <Text noOfLines={2}>{post.title}</Text>
+                        </Td>
+                        <Td>
+                          <Badge
+                            colorScheme={getStatusColor(post.status)}
+                            rounded="md"
+                            px={2}
+                            textTransform="capitalize"
+                          >
+                            {post.status}
+                          </Badge>
+                        </Td>
+                        <Td>{post.author?.name}</Td>
+                        <Td>
+                          {post.published_at
+                            ? format(
+                                new Date(post.published_at),
+                                "dd/MM/yyyy hh:mm a"
+                              )
+                            : "Not published"}
+                        </Td>
+                        <Td>
+                          <HStack spacing={2}>
+                            <Tooltip label="Preview">
+                              <IconButton
+                                icon={<ViewIcon />}
+                                as={Link}
+                                isExternal
+                                href={formatPostPermalink(post)}
+                                aria-label="Preview"
+                                size="sm"
+                                variant="ghost"
+                              />
+                            </Tooltip>
+                            <PermissionGuard
+                              requiredPermission="posts:edit"
+                              isOwner={post.author?.auth_id === user?.id}
+                            >
+                              <Tooltip label="Edit">
+                                <IconButton
+                                  icon={<EditIcon />}
+                                  as={Link}
+                                  href={`/dashboard/posts/edit/${post.post_id}`}
+                                  aria-label="Edit"
+                                  size="sm"
+                                  variant="ghost"
+                                />
+                              </Tooltip>
+                            </PermissionGuard>
+                            <PermissionGuard requiredPermission="posts:delete">
+                              <Tooltip label="Delete">
+                                <IconButton
+                                  icon={<DeleteIcon />}
+                                  aria-label="Delete"
+                                  size="sm"
+                                  onClick={() => handleDelete(post)}
+                                  colorScheme="red"
+                                  variant="ghost"
+                                />
+                              </Tooltip>
+                            </PermissionGuard>
+                          </HStack>
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+                <HStack justify="center" mt={6}>
+                  <ButtonGroup>
+                    <Button
+                      leftIcon={<ChevronLeftIcon />}
+                      onClick={() => setPage(page - 1)}
+                      isDisabled={page === 1}
+                      size={"sm"}
+                      variant="ghost"
+                    >
+                      Previous
+                    </Button>
+                    <Button
+                      rightIcon={<ChevronRightIcon />}
+                      size={"sm"}
+                      onClick={() => setPage(page + 1)}
+                      isDisabled={page === totalPages}
+                      variant="ghost"
+                    >
+                      Next
+                    </Button>
+                  </ButtonGroup>
+                </HStack>
+              </>
             )}
 
-            {!loading && !filteredPosts.length && (
+            {!loading && !posts.length && (
               <VStack justify="center" h="200px">
                 <Text color="gray.400" fontWeight={500}>
-                  No posts yet
+                  No posts found
                 </Text>
               </VStack>
             )}
@@ -270,7 +370,7 @@ const PostsDashboard = () => {
           <ModalContent>
             <ModalHeader>Delete Post</ModalHeader>
             <ModalBody>
-              Are you sure you want to delete &quot;{selectedPost?.title}&quot;?
+              Are you sure you want to delete &apos;{selectedPost?.title}&apos;?
               This action cannot be undone.
             </ModalBody>
             <ModalFooter>

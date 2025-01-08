@@ -1,7 +1,8 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
+import { getSession } from "@/src/lib/auth/next-auth";
 import { PostSelect } from "@/src/types";
-import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -9,10 +10,16 @@ export async function GET(req: NextRequest) {
   const page = Number(searchParams.get("page")) || 1;
   const limit = Number(searchParams.get("limit")) || 20;
 
+  const session = await getSession();
+  const access = searchParams.get("access");
   const query = searchParams.get("q");
   const titleOnly = Boolean(searchParams.get("titleOnly")) || false;
   const category = Number(searchParams.get("category"));
-  const sort = searchParams.get("sort") as "relevant" | "recent" | "popular";
+  const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || "desc";
+  const sortBy = searchParams.get("sortBy") as
+    | "relevant"
+    | "recent"
+    | "popular";
   const status =
     (searchParams.get("status") as NonNullable<PostSelect["status"] | "all">) ||
     "published";
@@ -28,7 +35,9 @@ export async function GET(req: NextRequest) {
   } else if (query && titleOnly) {
     whereConditions.push(ilike(posts.title, `%${query}%`));
   }
-
+  if (access === "dashboard" && session?.user?.role_id !== 1) {
+    whereConditions.push(eq(posts.author_id, session?.user?.id as string));
+  }
   if (status && status !== "all") {
     whereConditions.push(eq(posts.status, status));
   }
@@ -51,21 +60,28 @@ export async function GET(req: NextRequest) {
     const total = Number(totalResult[0].count);
 
     let orderBy;
-    switch (sort) {
+    switch (sortBy) {
       case "recent":
         orderBy = [desc(posts.created_at), desc(posts.is_sticky)];
         break;
       case "popular":
         orderBy = [
-          desc(
-            sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`
-          ),
+          sortOrder === "desc"
+            ? desc(
+                sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`
+              )
+            : asc(
+                sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`
+              ),
           desc(posts.is_sticky),
         ];
         break;
       case "relevant":
       default:
-        orderBy = [desc(posts.created_at), desc(posts.is_sticky)];
+        orderBy = [
+          sortOrder === "desc" ? desc(posts.created_at) : asc(posts.created_at),
+          desc(posts.is_sticky),
+        ];
         break;
     }
 

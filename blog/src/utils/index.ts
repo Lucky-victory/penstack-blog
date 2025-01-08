@@ -11,7 +11,7 @@ export function calculateReadingTime(content: string) {
   return `${minutes} min read`;
 }
 export function stripHtml(html: string) {
-  return html.replace(/<[^>]*>/g, "");
+  return html.replace(/<[^>]*>/g, "\n").replaceAll("\n", " ");
 }
 
 type DatePart = "year" | "month" | "day" | "hour" | "minute" | "second";

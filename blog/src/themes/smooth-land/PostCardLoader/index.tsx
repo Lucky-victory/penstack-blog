@@ -9,7 +9,7 @@ import {
 export function PostCardLoader() {
   return (
     <GridItem
-      rounded={"24"}
+      rounded={"lg"}
       overflow={"hidden"}
       borderWidth={1}
       borderColor={"gray.300"}

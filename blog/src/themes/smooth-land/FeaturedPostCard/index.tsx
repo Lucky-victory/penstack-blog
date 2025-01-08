@@ -33,19 +33,19 @@ export default function FeaturedPostCard() {
     <Box
       mt={2}
       bg={cardBgColor}
-      rounded="3xl"
+      rounded="xl"
       overflow={"hidden"}
       borderWidth={2}
       borderColor={borderColor}
       transition="all 0.2s"
       pos={"relative"}
-      h={{ base: "auto", md: 500, lg: 630 }}
-      minH={450}
+      h={{ base: 350, md: 500, lg: 630 }}
+      // minH={450}
     >
       {loading ? (
         <Stack
           h={"full"}
-          minH={450}
+          minH={350}
           spacing={4}
           px={{ base: 3, sm: 6, lg: 8 }}
           py={{ base: 3, sm: 6 }}
@@ -53,7 +53,7 @@ export default function FeaturedPostCard() {
           <Skeleton height="350px" rounded={"xl"} />
           <Skeleton height="20px" width="100px" rounded={"xl"} />
           <Skeleton height="35px" rounded={"xl"} />
-          <Skeleton height="80px" rounded={"xl"} />
+          <Skeleton height="50px" rounded={"xl"} />
         </Stack>
       ) : (
         featuredPost && (
@@ -81,7 +81,7 @@ export default function FeaturedPostCard() {
               justify={"flex-end"}
               pos={"relative"}
               h={"full"}
-              minH={450}
+              minH={350}
               backgroundImage={
                 featuredPost?.featured_image?.url
                   ? "linear-gradient(130deg, transparent, rgba(0, 0, 0, 1))"

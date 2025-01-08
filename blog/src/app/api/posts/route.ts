@@ -20,11 +20,8 @@ export async function GET(req: NextRequest) {
     (searchParams.get("status") as NonNullable<PostSelect["status"] | "all">) ||
     "published";
   const sortBy =
-    (searchParams.get("sortBy") as
-      | "created_at"
-      | "published_at"
-      | "updated_at"
-      | "popular") || "created_at";
+    (searchParams.get("sortBy") as "recent" | "published_at" | "popular") ||
+    "recent";
   const sortOrder = searchParams.get("sortOrder") || "desc";
 
   const offset = (page - 1) * limit;
@@ -54,9 +51,13 @@ export async function GET(req: NextRequest) {
     let orderBy;
     const popularOrderSql = sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`;
     switch (sortBy) {
+      case "recent":
+        orderBy = [desc(posts.created_at), desc(posts.is_sticky)];
+        break;
       case "popular":
         orderBy = [
           sortOrder === "desc" ? desc(popularOrderSql) : asc(popularOrderSql),
+          desc(posts.is_sticky),
         ];
         break;
       default:
