@@ -51,6 +51,7 @@ export default function SettingsPage() {
     queryKey: ["settings"],
     queryFn: fetchSettings,
     staleTime: 1000 * 60 * 60 * 24,
+    refetchOnWindowFocus: false,
   });
 
   async function fetchSettings() {

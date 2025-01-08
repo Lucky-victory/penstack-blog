@@ -49,7 +49,36 @@ export const GeneralPanel = ({
           placeholder="A brief description of your site"
         />
       </FormControl>
-      <HStack gap={4} flexWrap="wrap">
+      <HStack gap={4} flexWrap="wrap" align={"stretch"}>
+        <Box>
+          <FormControl>
+            <FormLabel>Site Favicon</FormLabel>
+            {settings.siteFavicon?.value && (
+              <Box mb={2}>
+                <Image
+                  src={settings.siteFavicon.value}
+                  alt="Favicon"
+                  maxH="48px"
+                />
+              </Box>
+            )}
+            <HStack>
+              <Button size="sm" onClick={() => openMediaModal("siteFavicon")}>
+                {settings.siteFavicon?.value ? "Change Favicon" : "Add Favicon"}
+              </Button>
+              {settings.siteFavicon?.value && (
+                <Button
+                  size="sm"
+                  colorScheme="red"
+                  variant={"ghost"}
+                  onClick={() => handleInputChange("siteFavicon", "")}
+                >
+                  Remove
+                </Button>
+              )}
+            </HStack>
+          </FormControl>
+        </Box>
         <Box>
           <FormControl>
             <FormLabel>Site Logo</FormLabel>
@@ -71,35 +100,8 @@ export const GeneralPanel = ({
                 <Button
                   size="sm"
                   colorScheme="red"
+                  variant={"ghost"}
                   onClick={() => handleInputChange("siteLogo", "")}
-                >
-                  Remove
-                </Button>
-              )}
-            </HStack>
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>Site Favicon</FormLabel>
-            {settings.siteFavicon?.value && (
-              <Box mb={2}>
-                <Image
-                  src={settings.siteFavicon.value}
-                  alt="Favicon"
-                  maxH="32px"
-                />
-              </Box>
-            )}
-            <HStack>
-              <Button size="sm" onClick={() => openMediaModal("siteFavicon")}>
-                {settings.siteFavicon?.value ? "Change Favicon" : "Add Favicon"}
-              </Button>
-              {settings.siteFavicon?.value && (
-                <Button
-                  size="sm"
-                  colorScheme="red"
-                  onClick={() => handleInputChange("siteFavicon", "")}
                 >
                   Remove
                 </Button>
@@ -130,6 +132,7 @@ export const GeneralPanel = ({
               <Button
                 size="sm"
                 colorScheme="red"
+                variant={"ghost"}
                 onClick={() => handleInputChange("siteOpengraph", "")}
               >
                 Remove

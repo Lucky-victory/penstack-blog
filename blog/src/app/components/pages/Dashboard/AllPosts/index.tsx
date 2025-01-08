@@ -126,7 +126,7 @@ const PostsDashboard = () => {
     }, 500);
 
     return () => clearTimeout(debounceTimer);
-  }, [searchTerm]);
+  }, [searchTerm, refetch]);
 
   const handleDelete = (post: PostSelect) => {
     setSelectedPost(post);
@@ -387,5 +387,4 @@ const PostsDashboard = () => {
     </Box>
   );
 };
-
 export default PostsDashboard;
