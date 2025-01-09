@@ -15,6 +15,9 @@ import {
   Textarea,
   Card,
   CardBody,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
 } from "@chakra-ui/react";
 import { LuMessageCircle } from "react-icons/lu";
 import { PostSelect } from "@/src/types";
@@ -31,6 +34,7 @@ import { CommentCard } from "./CommentCard";
 import axios from "axios";
 import { encode } from "html-entities";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
 const MotionBox = motion(Box);
 
@@ -103,6 +107,23 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
       >
         {/* Post Content Section */}
         <Container maxW="container.xl" py={8}>
+          {/* Breadcrumb */}
+          <Breadcrumb mb={4}>
+            <BreadcrumbItem>
+              <BreadcrumbLink as={Link} href="/">
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink as={Link} href="/blog">
+                Blog
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem isCurrentPage>
+              <BreadcrumbLink>{post.title}</BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+
           {/* Hero Image */}
           <Box borderRadius="xl" overflow="hidden" mb={8}>
             <Image

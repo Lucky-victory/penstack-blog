@@ -5,7 +5,7 @@ import { PostsCards } from "../../../themes/smooth-land/PostsCards";
 export default function Posts() {
   return (
     <PageWrapper>
-      <Box py={8} px={{ base: 4, lg: 0 }} maxW={"container.xl"} mx="auto">
+      <Box py={8} px={{ base: 4, lg: 4 }} maxW={"container.xl"} mx="auto">
         <PostsCards />
       </Box>
     </PageWrapper>

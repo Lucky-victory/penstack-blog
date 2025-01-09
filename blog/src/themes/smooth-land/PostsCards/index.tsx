@@ -13,11 +13,11 @@ export function PostsCards({
   return (
     <Grid
       templateColumns="repeat(auto-fill, minmax(300px, 1fr))"
-      gap={{ base: 5, md: 6, lg: 8 }}
+      gap={{ base: 4, md: 5, lg: 6 }}
       maxW={{ base: "100%", lg: (maxW as string | number) || "auto" }}
     >
       {loading
-        ? Array.from({ length: 4 }).map((_, index) => (
+        ? Array.from({ length: 6 }).map((_, index) => (
             <PostCardLoader key={index} />
           ))
         : posts?.map((post) => <PostCard key={post.id} post={post} />)}

@@ -24,7 +24,7 @@ const FrontPage = () => {
           <PostsCards />
           <HStack justify={"center"} my={8}>
             <Button as={Link} size={"lg"} href={"/articles"} rounded={"lg"}>
-              See all posts
+              View all posts
             </Button>
           </HStack>
         </Box>

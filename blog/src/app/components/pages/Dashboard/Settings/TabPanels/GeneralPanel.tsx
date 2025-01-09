@@ -10,6 +10,7 @@ import {
   FormHelperText,
   Image,
   Switch,
+  Stack,
 } from "@chakra-ui/react";
 import { SiteSettings } from "@/src/types";
 
@@ -49,36 +50,41 @@ export const GeneralPanel = ({
           placeholder="A brief description of your site"
         />
       </FormControl>
-      <HStack gap={4} flexWrap="wrap" align={"stretch"}>
-        <Box>
-          <FormControl>
+      <HStack gap={8} flexWrap="wrap">
+        <Stack alignSelf={"stretch"}>
+          <FormControl flex={1} display={"flex"} flexDirection={"column"}>
             <FormLabel>Site Favicon</FormLabel>
-            {settings.siteFavicon?.value && (
-              <Box mb={2}>
-                <Image
-                  src={settings.siteFavicon.value}
-                  alt="Favicon"
-                  maxH="48px"
-                />
-              </Box>
-            )}
-            <HStack>
-              <Button size="sm" onClick={() => openMediaModal("siteFavicon")}>
-                {settings.siteFavicon?.value ? "Change Favicon" : "Add Favicon"}
-              </Button>
+            <FormHelperText mt={0}>Recommended size 32x32</FormHelperText>
+            <Stack flex={1} justify={"flex-end"}>
               {settings.siteFavicon?.value && (
-                <Button
-                  size="sm"
-                  colorScheme="red"
-                  variant={"ghost"}
-                  onClick={() => handleInputChange("siteFavicon", "")}
-                >
-                  Remove
-                </Button>
+                <Box mb={2}>
+                  <Image
+                    src={settings.siteFavicon.value}
+                    alt="Favicon"
+                    maxH="60px"
+                  />
+                </Box>
               )}
-            </HStack>
+              <HStack>
+                <Button size="sm" onClick={() => openMediaModal("siteFavicon")}>
+                  {settings.siteFavicon?.value
+                    ? "Change Favicon"
+                    : "Add Favicon"}
+                </Button>
+                {settings.siteFavicon?.value && (
+                  <Button
+                    size="sm"
+                    colorScheme="red"
+                    variant={"ghost"}
+                    onClick={() => handleInputChange("siteFavicon", "")}
+                  >
+                    Remove
+                  </Button>
+                )}
+              </HStack>
+            </Stack>
           </FormControl>
-        </Box>
+        </Stack>
         <Box>
           <FormControl>
             <FormLabel>Site Logo</FormLabel>

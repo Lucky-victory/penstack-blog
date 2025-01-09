@@ -46,9 +46,9 @@ export default function PostCard({
       borderRadius="xl"
       overflow="hidden"
       transition="all 0.2s"
-      _hover={{ boxShadow: "0 0 0 2px var(--chakra-colors-blue-500)" }}
+      _hover={{ shadow: "lg" }}
     >
-      <Box position="relative" p={3} pb={0}>
+      <Box position="relative" pb={0}>
         <Image
           src={
             (post.featured_image?.url as string) ||
@@ -65,10 +65,10 @@ export default function PostCard({
           objectFit="cover"
           height="220"
           width="full"
-          rounded={"xl"}
+          // rounded={"xl"}
         />
         {post?.category && post?.category?.name && (
-          <Box position="absolute" top={5} right={5}>
+          <Box position="absolute" top={3} right={3}>
             <Tag
               size="md"
               top={3}
@@ -113,9 +113,9 @@ export default function PostCard({
               </HStack>
             </Link>
           )}
-          <Text fontSize="sm" as={"span"} color="gray.500">
+          <Text fontSize="small" as={"span"} color="gray.500">
             {post?.published_at
-              ? formatDate(new Date(post?.published_at))
+              ? `Published ${formatDate(new Date(post?.published_at))}`
               : formatDate(new Date(post?.updated_at as Date))}
           </Text>
           <Text noOfLines={3} color={textColor}>
@@ -126,4 +126,3 @@ export default function PostCard({
     </Card>
   );
 }
-// TODO: fix the card being longer than the other

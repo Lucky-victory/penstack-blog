@@ -16,6 +16,7 @@ import {
   Alert,
   AlertIcon,
   useDisclosure,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { SiteSettings } from "@/src/types";
@@ -40,6 +41,10 @@ export default function SettingsPage() {
   const queryClient = useQueryClient();
   const [hasChanges, setHasChanges] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const tabHoverBg = useColorModeValue("gray.100", "gray.800");
+  const tabActiveBg = useColorModeValue("blue.100", "blue.800");
+  const tabActiveColor = useColorModeValue("blue.500", "blue.300");
+  const tabActiveHoverBg = useColorModeValue("blue.200", "blue.700");
 
   const [originalSettings, setOriginalSettings] =
     useState<SiteSettings>(settingsContext);
@@ -52,6 +57,7 @@ export default function SettingsPage() {
     queryFn: fetchSettings,
     staleTime: 1000 * 60 * 60 * 24,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   async function fetchSettings() {
@@ -137,6 +143,27 @@ export default function SettingsPage() {
     return <Loader loadingText="Loading settings" />;
   }
 
+  const tabStyles = {
+    _hover: {
+      bg: tabHoverBg,
+    },
+    transition: "all 0.2s ease-in-out",
+    rounded: "md",
+    py: 2,
+    _focus: {
+      boxShadow: "none",
+    },
+    _selected: {
+      color: tabActiveColor,
+
+      bg: tabActiveBg,
+      fontWeight: "medium",
+      _hover: {
+        bg: tabActiveHoverBg,
+      },
+    },
+  };
+
   return (
     <Box>
       <DashHeader />
@@ -171,18 +198,18 @@ export default function SettingsPage() {
 
         <Card rounded="lg">
           <CardBody>
-            <Tabs variant="enclosed">
-              <TabList overflowX="auto" className="no-scrollbar" pb={1}>
-                <Tab>General</Tab>
-                <Tab>Analytics</Tab>
-                <Tab>Monitoring</Tab>
-                <Tab>Media</Tab>
-                <Tab>Email</Tab>
-                <Tab>Advanced</Tab>
+            <Tabs variant="unstyled">
+              <TabList overflowX="auto" className="no-scrollbar" pb={1} gap={3}>
+                <Tab {...tabStyles}>General</Tab>
+                <Tab {...tabStyles}>Analytics</Tab>
+                <Tab {...tabStyles}>Monitoring</Tab>
+                <Tab {...tabStyles}>Media</Tab>
+                <Tab {...tabStyles}>Email</Tab>
+                <Tab {...tabStyles}>Advanced</Tab>
               </TabList>
 
               <TabPanels>
-                <TabPanel>
+                <TabPanel px={2}>
                   <GeneralPanel
                     settings={settings}
                     handleInputChange={handleInputChange}
