@@ -12,7 +12,7 @@ interface ArticleContentProps {
 }
 
 export const ArticleContent: React.FC<ArticleContentProps> = ({ post }) => {
-  const summaryColor = useColorModeValue("gray.600", "gray.300");
+  const summaryColor = useColorModeValue("gray.700", "gray.300");
 
   return (
     <MotionBox
@@ -33,7 +33,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ post }) => {
           {post.summary}
         </Text>
       )}
-      <Box className="prose prose-lg dark:prose-invert max-w-none">
+      <Box maxW="container.lg" mx="auto">
         <ContentRenderer content={decode(post.content)} />
       </Box>
     </MotionBox>

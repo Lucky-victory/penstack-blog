@@ -20,6 +20,7 @@ import {
   useColorModeValue,
   VStack,
   Avatar,
+  Stack,
 } from "@chakra-ui/react";
 import { decode } from "html-entities";
 
@@ -30,25 +31,22 @@ export default function PostCard({
   showAuthor?: boolean;
   post: PostSelect;
 }) {
-  const borderColor = useColorModeValue("gray.200", "gray.700");
-  const textColor = useColorModeValue("gray.600", "gray.300");
-  const tagBgColor = useColorModeValue("blue.50", "black");
-  const tagColor = useColorModeValue("blue.600", "blue.300");
-  const bgColor = useColorModeValue("white", "gray.900");
+  const textColor = useColorModeValue("gray.500", "gray.400");
+  const tagBgColor = useColorModeValue("blackAlpha.700", "black");
+  const tagColor = useColorModeValue("gray.50", "gray.300");
+  const bgColor = useColorModeValue("transparent", "gray.900");
   return (
     <Card
       as={LinkBox}
       key={post.id}
       bg={bgColor}
-      borderWidth="1px"
-      borderColor={borderColor}
       shadow={"none"}
       borderRadius="xl"
       overflow="hidden"
       transition="all 0.2s"
       _hover={{ shadow: "lg" }}
     >
-      <Box position="relative" pb={0}>
+      <Box position="relative" pb={0} rounded={"xl"} overflow={"hidden"}>
         <Image
           src={
             (post.featured_image?.url as string) ||
@@ -63,49 +61,72 @@ export default function PostCard({
           }
           alt={post.featured_image?.alt_text}
           objectFit="cover"
-          height="220"
+          height="190"
           width="full"
-          // rounded={"xl"}
         />
         {post?.category && post?.category?.name && (
-          <Box position="absolute" top={3} right={3}>
+          <Box position="absolute" top={3} left={3}>
             <Tag
-              size="md"
-              top={3}
-              right={3}
-              colorScheme="blue"
+              size="sm"
+              // top={3}
+              // right={3}
+              variant={"unstyled"}
               bg={tagBgColor}
               color={tagColor}
-              borderRadius="lg"
+              borderRadius="full"
+              fontWeight={"normal"}
               px={3}
-              py={1}
+              py={2}
             >
               {post?.category?.name}
             </Tag>
           </Box>
         )}
       </Box>
-      <CardBody>
-        <VStack align={"start"} spacing={2}>
-          <LinkOverlay
-            href={formatPostPermalink(post)}
-            _hover={{ textDecoration: "underline" }}
-          >
-            <Heading size={"md"} my={2} letterSpacing={0.5}>
-              {post.title}
-            </Heading>
-          </LinkOverlay>
+      <CardBody px={2} py={3} display={"flex"} flexDir={"column"}>
+        <Stack flex={1}>
+          <VStack align={"start"} spacing={1} flex={1}>
+            <HStack mb={2}>
+              <Text fontSize="small" as={"span"} color={textColor}>
+                {post?.published_at
+                  ? `${formatDate(new Date(post?.published_at))}`
+                  : formatDate(new Date(post?.updated_at as Date))}
+              </Text>
+              <Box w={"1"} h={1} bg={textColor} rounded="full"></Box>
+              <Text fontSize="small" as={"span"} color={textColor}>
+                {post.reading_time || 1} mins read
+              </Text>
+            </HStack>
+            <LinkOverlay
+              href={formatPostPermalink(post)}
+              _hover={{ textDecoration: "underline" }}
+            >
+              <Heading
+                size={"md"}
+                fontWeight={500}
+                noOfLines={2}
+                lineHeight={1}
+              >
+                {post.title}
+              </Heading>
+            </LinkOverlay>
+
+            <Text noOfLines={2} color={textColor} fontSize={"small"}>
+              {post.summary || stripHtml(decode(post.content))}
+            </Text>
+          </VStack>
           {showAuthor && (
             <Link href={`/author/${post.author?.username}`}>
               <HStack gap={3} display={"inline-flex"}>
                 <Avatar
                   src={post?.author?.avatar}
                   name={post?.author?.name}
-                  size="sm"
+                  size="xs"
                 />
                 <Text
-                  fontWeight="bold"
+                  fontWeight="500"
                   as={"span"}
+                  fontSize={"small"}
                   _hover={{ textDecoration: "underline" }}
                 >
                   {post?.author?.name}
@@ -113,15 +134,7 @@ export default function PostCard({
               </HStack>
             </Link>
           )}
-          <Text fontSize="small" as={"span"} color="gray.500">
-            {post?.published_at
-              ? `Published ${formatDate(new Date(post?.published_at))}`
-              : formatDate(new Date(post?.updated_at as Date))}
-          </Text>
-          <Text noOfLines={3} color={textColor}>
-            {post.summary || stripHtml(decode(post.content))}
-          </Text>
-        </VStack>
+        </Stack>
       </CardBody>
     </Card>
   );

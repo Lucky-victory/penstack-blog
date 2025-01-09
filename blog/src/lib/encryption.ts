@@ -42,5 +42,7 @@ export function decryptKey(encryptedString: string): string {
   return decipher.update(encryptedData, "hex", "utf8") + decipher.final("utf8");
 }
 function generateEncryptionKey(): string {
+  if (process.env.NODE_ENV === "production")
+    throw new Error("ENCRYPTION_KEY is required in production");
   return crypto.randomBytes(32).toString("hex");
 }
