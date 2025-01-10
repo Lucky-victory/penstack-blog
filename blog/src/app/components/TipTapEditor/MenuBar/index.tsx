@@ -18,7 +18,7 @@ import React, { FormEvent, memo, useRef, useState } from "react";
 
 import { LuLink, LuRedo2, LuUndo2 } from "react-icons/lu";
 import EditorActionsDropdown from "./EditorActionsDropdown";
-import { filterEditorActions } from "@/src/lib/editor-actions";
+import { filterEditorActions } from "@/src/lib/editor/actions";
 import { MediaInsert } from "./MediaInsert";
 import { extractContentAndLinkMark } from "@/src/utils";
 import { MiniPostCardButton } from "@/src/lib/editor/nodes/MiniPostCard/MiniPostCardButton";

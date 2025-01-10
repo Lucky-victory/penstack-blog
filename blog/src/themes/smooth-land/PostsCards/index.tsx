@@ -1,15 +1,21 @@
 "use client";
-import { usePosts } from "@/src/hooks";
 import { Grid, useColorModeValue } from "@chakra-ui/react";
 import PostCard from "../PostCard";
 import { PostCardLoader } from "../PostCardLoader";
+import { PostSelect } from "@/src/types";
 export function PostsCards({
   maxW,
+  posts,
+  loading,
+  showAuthor,
+  showBookmark,
 }: {
+  posts: PostSelect[] | undefined;
+  loading?: boolean;
+  showAuthor?: boolean;
+  showBookmark?: boolean;
   maxW?: string | number | Record<any, any>;
 }) {
-  const bgColor = useColorModeValue("white", "gray.900");
-  const { loading, posts } = usePosts();
   return (
     <Grid
       templateColumns="repeat(auto-fill, minmax(280px, 1fr))"
@@ -20,7 +26,9 @@ export function PostsCards({
         ? Array.from({ length: 6 }).map((_, index) => (
             <PostCardLoader key={index} />
           ))
-        : posts?.map((post) => <PostCard key={post.id} post={post} />)}
+        : posts?.map((post) => (
+            <PostCard showAuthor={showAuthor} key={post.id} post={post} />
+          ))}
     </Grid>
   );
 }

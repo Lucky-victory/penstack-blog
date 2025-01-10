@@ -19,7 +19,7 @@ import {
   LuQuote,
   LuStrikethrough,
 } from "react-icons/lu";
-import { EditorActionItem } from "../types";
+import { EditorActionItem } from "../../types";
 
 export const editorButtonActions: EditorActionItem[] = [
   {

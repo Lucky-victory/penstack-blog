@@ -5,8 +5,10 @@ import FeaturedPostCard from "../../../../themes/smooth-land/FeaturedPostCard";
 import PageWrapper from "../../PageWrapper";
 import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
 import { Link } from "@chakra-ui/next-js";
+import { usePosts } from "@/src/hooks";
 
 const FrontPage = () => {
+  const { posts, loading } = usePosts();
   return (
     <PageWrapper>
       <Box mb={12}>
@@ -21,7 +23,7 @@ const FrontPage = () => {
             Recent Posts
           </Heading>
 
-          <PostsCards />
+          <PostsCards posts={posts} loading={loading}/>
           <HStack justify={"center"} my={8}>
             <Button as={Link} size={"lg"} href={"/articles"} rounded={"lg"}>
               View all posts

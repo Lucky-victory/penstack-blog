@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
 import { useQueryParams } from "@/src/hooks";
-import { useSearchResults } from "@/src/hooks/useSearchResults";
+import { useSearchResults } from "@/src/hooks/usePostsSearch";
 import PostCard from "../../../../themes/smooth-land/PostCard";
 import { useCallback } from "react";
 import debounce from "lodash/debounce";

@@ -113,12 +113,14 @@ export function usePosts({
   page = 1,
   sortBy,
   access,
+  sortOrder,
 }: {
   status?: PostInsert["status"] | "all";
   limit?: number;
   page?: number;
   access?: "dashboard";
-  sortBy?: "created_at" | "published_at" | "updated_at" | "popular";
+  sortBy?: "created_at" | "published_at" | "recent" | "popular";
+  sortOrder?: "desc" | "asc";
 } = {}) {
   const {
     data: posts,
@@ -127,10 +129,10 @@ export function usePosts({
     error,
     refetch,
   } = useQuery({
-    queryKey: ["posts", status, limit, page, sortBy, access],
+    queryKey: ["posts", status, limit, page, sortBy, access, sortOrder],
     queryFn: async () => {
       const { data } = await axios.get<{ data: PostSelect[] }>(
-        `/api/posts?${objectToQueryParams({ status, limit, page, sortBy, access })}`
+        `/api/posts?${objectToQueryParams({ status, limit, page, sortBy, access, sortOrder })}`
       );
       return data.data;
     },

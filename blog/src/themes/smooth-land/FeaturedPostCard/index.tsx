@@ -35,7 +35,7 @@ export default function FeaturedPostCard() {
       bg={cardBgColor}
       rounded="xl"
       overflow={"hidden"}
-      borderWidth={2}
+      borderWidth={1}
       borderColor={borderColor}
       transition="all 0.2s"
       pos={"relative"}
@@ -84,7 +84,7 @@ export default function FeaturedPostCard() {
               minH={350}
               backgroundImage={
                 featuredPost?.featured_image?.url
-                  ? "linear-gradient(130deg, transparent, rgba(0, 0, 0, 1))"
+                  ? "linear-gradient(180deg, transparent, rgba(0, 0, 0, 1))"
                   : ""
               }
             >
