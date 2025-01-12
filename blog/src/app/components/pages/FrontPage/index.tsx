@@ -13,22 +13,24 @@ const FrontPage = () => {
     <PageWrapper>
       <Box mb={12}>
         <Box
-          maxW="container.xl"
+          maxW="container.2xl"
           mx="auto"
           px={{ base: 2, md: 4, lg: 2 }}
-          pt={2}
+          // pt={2}
         >
           <FeaturedPostCard />
-          <Heading mt={8} mb={6} size="lg">
-            Recent Posts
-          </Heading>
+          <Box px={{ base: 3, lg: 4 }} py={5}>
+            <Heading mt={8} mb={6} size="lg">
+              Recent Posts
+            </Heading>
 
-          <PostsCards posts={posts} loading={loading}/>
-          <HStack justify={"center"} my={8}>
-            <Button as={Link} size={"lg"} href={"/articles"} rounded={"lg"}>
-              View all posts
-            </Button>
-          </HStack>
+            <PostsCards posts={posts} loading={loading} />
+            <HStack justify={"center"} my={8}>
+              <Button as={Link} size={"xl"} href={"/articles"} rounded={"lg"}>
+                View all posts
+              </Button>
+            </HStack>
+          </Box>
         </Box>
       </Box>
     </PageWrapper>

@@ -43,8 +43,9 @@ export default function PostCard({
       shadow={"none"}
       borderRadius="xl"
       overflow="hidden"
-      transition="all 0.2s"
-      _hover={{ transform: "scale(1.03)" }}
+      transition="all 0.3s"
+      px={3}
+      _hover={{ transform: "translateY(-4px)", shadow: "lg" }}
     >
       <Box position="relative" pb={0} rounded={"xl"} overflow={"hidden"}>
         <Image

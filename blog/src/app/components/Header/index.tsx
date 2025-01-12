@@ -42,6 +42,7 @@ import { AuthButtons } from "./AuthButtons";
 import { useCategories } from "@/src/hooks/useCategories";
 import { AppLogo } from "../AppLogo";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -52,11 +53,31 @@ const Header = () => {
   const borderColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("gray.700", "gray.200");
   const hoverBgColor = useColorModeValue("gray.100", "gray.700");
-  const navLinkHoverBgColor = useColorModeValue("blue.500", "blue.300");
+  const navLinkHoverColor = useColorModeValue("blue.500", "blue.300");
   const siteConfig = useSiteConfig();
   const pathname = usePathname();
+  const { scrollY } = useScroll();
+  const backgroundColor = useTransform(
+    scrollY,
+    [0, 60],
+    [
+      useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(26, 32, 44, 0.3)"),
+      useColorModeValue("rgba(255, 255, 255, 0.9)", "rgba(26, 32, 44, 0.9)"),
+    ]
+  );
+  const navLinkColorBeforeScroll = useTransform(
+    scrollY,
+    [0, 60],
+    [
+      useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(26, 32, 44, 0.3)"),
+      useColorModeValue("rgba(255, 255, 255, 0.9)", "rgba(26, 32, 44, 0.9)"),
+    ]
+  );
+  const borderOpacity = useTransform(scrollY, [0, 60], [0, 1]);
+  const backdrop = useTransform(scrollY, [0, 60], ["none", "blur(10px"]) as any;
+
   const { data } = useCategories({ limit: 5 });
-  const topics = data?.results;
+  const categories = data?.results;
 
   const resources = [
     { name: "Articles", href: "/articles" },
@@ -81,263 +102,270 @@ const Header = () => {
     return pathname === url;
   }
   return (
-    <Box
-      as="header"
-      position="sticky"
-      top={0}
-      zIndex={100}
-      bg={bgColor}
-      borderBottom="1px"
-      borderColor={borderColor}
-      backdropFilter="blur(10px)"
-      backgroundColor={useColorModeValue(
-        "rgba(255, 255, 255, 1)",
-        "rgba(26, 32, 44, 1)"
-      )}
+    <motion.div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
+        backgroundColor,
+      }}
     >
-      <Container maxW="container.xl" py={2}>
-        <HStack justify="space-between" align="center">
-          <HStack as={Link} href="/">
-            <AppLogo src={siteConfig?.siteLogo?.value} size={"40px"} />
-            <Text
-              hideBelow={"md"}
-              as={"span"}
-              fontSize="xl"
-              fontWeight="bold"
-              // color={useColorModeValue("black", "white")}
-            >
-              {siteConfig?.siteName?.value}
-            </Text>
-          </HStack>
-          {/* Desktop Navigation */}
-          {/* <HStack spacing={8} display={{ base: "none", lg: "flex" }}></HStack> */}
-
-          <HStack
-            align="center"
-            spacing={4}
-            display={{ base: "none", lg: "flex" }}
-            py={2}
-          >
-            <Link
-              textTransform="capitalize"
-              fontWeight={500}
-              href={"/"}
-              color={isActiveUrl("/") ? navLinkHoverBgColor : ""}
-              borderBottom={"2px solid"}
-              borderBottomColor={
-                isActiveUrl("/") ? navLinkHoverBgColor : "transparent"
-              }
-              px={2}
-              py={1}
-              _hover={{
-                borderColor: navLinkHoverBgColor,
-                color: navLinkHoverBgColor,
-              }}
-            >
-              Home
-            </Link>
-
-            {resources.map((resource) => (
-              <Link
-                key={resource.name}
-                fontFamily={"var(--font-karla)"}
-                textTransform="capitalize"
-                fontWeight={500}
-                href={resource.href}
-                px={2}
-                py={1}
-                color={isActiveUrl(resource.href) ? navLinkHoverBgColor : ""}
-                borderBottom={"2px solid"}
-                borderBottomColor={
-                  isActiveUrl(resource.href)
-                    ? navLinkHoverBgColor
-                    : "transparent"
-                }
-                _hover={{
-                  borderColor: navLinkHoverBgColor,
-                  color: navLinkHoverBgColor,
-                }}
+      <Box
+        as={motion.header}
+        style={{
+          borderBottom: useTransform(borderOpacity, (opacity) =>
+            opacity === 0 ? "none" : `1px solid ${borderColor}`
+          ),
+          backdropFilter: backdrop,
+        }}
+        transition="all 0.3s ease-in-out"
+      >
+        <Container maxW="container.2xl" py={2}>
+          <HStack justify="space-between" align="center">
+            <HStack as={Link} href="/">
+              <AppLogo src={siteConfig?.siteLogo?.value} size={"40px"} />
+              <Text
+                hideBelow={"md"}
+                as={"span"}
+                fontSize="xl"
+                fontWeight="bold"
+                // color={useColorModeValue("black", "white")}
               >
-                {resource.name}
-              </Link>
-            ))}
-            <Menu>
-              {({ isOpen }) => (
-                <>
-                  <MenuButton
-                    as={Button}
-                    rounded={"none"}
-                    textTransform="capitalize"
-                    fontWeight={500}
-                    size="sm"
-                    colorScheme="black"
-                    variant="ghost"
-                    _hover={{
-                      borderColor: navLinkHoverBgColor,
-                      color: navLinkHoverBgColor,
-                    }}
-                    borderBottom={"2px solid"}
-                    borderBottomColor={"transparent"}
-                  >
-                    <HStack>
-                      <Text>Categories</Text>
-                      <Icon
-                        as={LuChevronDown}
-                        transition={"0.2s ease-out"}
-                        transform={isOpen ? "rotate(-180deg)" : "rotate(0deg)"}
-                      ></Icon>
-                    </HStack>
-                  </MenuButton>
-                  <MenuList rounded="xl" px={2}>
-                    {topics &&
-                      topics?.length > 0 &&
-                      topics.map((topic) => (
-                        <MenuItem
-                          rounded={"full"}
-                          key={topic.name}
-                          as={Link}
-                          href={`/category/${topic.slug}`}
-                        >
-                          {topic.name}
-                        </MenuItem>
-                      ))}
-                  </MenuList>
-                </>
-              )}
-            </Menu>
-            {/* Search Area */}
-          </HStack>
-          {/* Right Side Actions */}
-          <HStack spacing={4}>
+                {siteConfig?.siteName?.value}
+              </Text>
+            </HStack>
+
             <HStack
-              ml="auto"
+              align="center"
               spacing={4}
               display={{ base: "none", lg: "flex" }}
+              py={2}
             >
-              {/* Topics Dropdown */}
+              <Link
+                textTransform="capitalize"
+                fontWeight={500}
+                href={"/"}
+                color={isActiveUrl("/") ? navLinkHoverColor : ""}
+                borderBottom={"2px solid"}
+                borderBottomColor={
+                  isActiveUrl("/") ? navLinkHoverColor : "transparent"
+                }
+                px={2}
+                py={1}
+                _hover={{
+                  borderColor: navLinkHoverColor,
+                  color: navLinkHoverColor,
+                }}
+              >
+                Home
+              </Link>
+
+              {resources.map((resource) => (
+                <Link
+                  key={resource.name}
+                  fontFamily={"var(--font-karla)"}
+                  textTransform="capitalize"
+                  fontWeight={500}
+                  href={resource.href}
+                  px={2}
+                  py={1}
+                  color={isActiveUrl(resource.href) ? navLinkHoverColor : ""}
+                  borderBottom={"2px solid"}
+                  borderBottomColor={
+                    isActiveUrl(resource.href)
+                      ? navLinkHoverColor
+                      : "transparent"
+                  }
+                  _hover={{
+                    borderColor: navLinkHoverColor,
+                    color: navLinkHoverColor,
+                  }}
+                >
+                  {resource.name}
+                </Link>
+              ))}
+              <Menu>
+                {({ isOpen }) => (
+                  <>
+                    <MenuButton
+                      as={Button}
+                      rounded={"none"}
+                      textTransform="capitalize"
+                      fontWeight={500}
+                      size="sm"
+                      colorScheme="black"
+                      variant="ghost"
+                      _hover={{
+                        borderColor: navLinkHoverColor,
+                        color: navLinkHoverColor,
+                      }}
+                      borderBottom={"2px solid"}
+                      borderBottomColor={"transparent"}
+                    >
+                      <HStack>
+                        <Text>Categories</Text>
+                        <Icon
+                          as={LuChevronDown}
+                          transition={"0.2s ease-out"}
+                          transform={
+                            isOpen ? "rotate(-180deg)" : "rotate(0deg)"
+                          }
+                        ></Icon>
+                      </HStack>
+                    </MenuButton>
+                    <MenuList rounded="xl" px={2}>
+                      {categories &&
+                        categories?.length > 0 &&
+                        categories.map((topic) => (
+                          <MenuItem
+                            rounded={"full"}
+                            key={topic.name}
+                            as={Link}
+                            href={`/category/${topic.slug}`}
+                          >
+                            {topic.name}
+                          </MenuItem>
+                        ))}
+                    </MenuList>
+                  </>
+                )}
+              </Menu>
+              {/* Search Area */}
+            </HStack>
+            {/* Right Side Actions */}
+            <HStack spacing={4}>
+              <HStack
+                ml="auto"
+                spacing={4}
+                display={{ base: "none", lg: "flex" }}
+              >
+                {/* Topics Dropdown */}
+
+                <IconButton
+                  as={Link}
+                  href="/search"
+                  aria-label="Search"
+                  // colorScheme="black"
+                  rounded={"full"}
+                  icon={<LuSearch size={16} />}
+                  variant="ghost"
+                />
+              </HStack>
+              {/* Social Icons */}
+              <HStack spacing={2} display={{ base: "none", lg: "flex" }}>
+                <LightDarkModeSwitch />
+                <AuthButtons />
+              </HStack>
+              <Hide above="lg">
+                <LightDarkModeSwitch />
+              </Hide>
 
               <IconButton
-                as={Link}
-                href="/search"
-                aria-label="Search"
-                // colorScheme="black"
-                rounded={"full"}
-                icon={<LuSearch size={16} />}
+                colorScheme="black"
+                display={{ base: "flex", lg: "none" }}
+                aria-label="Open menu"
+                icon={<LuMenu size={20} />}
+                onClick={onOpen}
                 variant="ghost"
+                _hover={{ bg: hoverBgColor }}
               />
             </HStack>
-            {/* Social Icons */}
-            <HStack spacing={2} display={{ base: "none", lg: "flex" }}>
-              <LightDarkModeSwitch />
-              <AuthButtons />
-            </HStack>
-            <Hide above="lg">
-              <LightDarkModeSwitch />
-            </Hide>
-
-            <IconButton
-              colorScheme="black"
-              display={{ base: "flex", lg: "none" }}
-              aria-label="Open menu"
-              icon={<LuMenu size={20} />}
-              onClick={onOpen}
-              variant="ghost"
-              _hover={{ bg: hoverBgColor }}
-            />
           </HStack>
-        </HStack>
-      </Container>
+        </Container>
 
-      {/* Mobile Menu Drawer */}
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth="1px">Menu</DrawerHeader>
-          <DrawerBody>
-            <VStack align="stretch" spacing={4}>
-              <Text fontWeight="bold" color={textColor}>
-                Categories
-              </Text>
-              {topics &&
-                topics?.length > 0 &&
-                topics.map((topic) => (
+        {/* Mobile Menu Drawer */}
+        <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerHeader borderBottomWidth="1px">Menu</DrawerHeader>
+            <DrawerBody>
+              <VStack align="stretch" spacing={4}>
+                <Text fontWeight="bold" color={textColor}>
+                  Categories
+                </Text>
+                {categories &&
+                  categories?.length > 0 &&
+                  categories.map((topic) => (
+                    <Button
+                      key={topic.name}
+                      rounded={"full"}
+                      as={Link}
+                      href={`/category/${topic.slug}`}
+                      variant="ghost"
+                      justifyContent="flex-start"
+                      w="full"
+                      onClick={onClose}
+                    >
+                      {topic.name}
+                    </Button>
+                  ))}
+
+                <Divider />
+
+                <Text fontWeight="bold" color={textColor}>
+                  Resources
+                </Text>
+                {resources.map((resource) => (
                   <Button
-                    key={topic.name}
+                    key={resource.name}
                     rounded={"full"}
                     as={Link}
-                    href={`/category/${topic.slug}`}
+                    href={resource.href}
                     variant="ghost"
                     justifyContent="flex-start"
                     w="full"
                     onClick={onClose}
                   >
-                    {topic.name}
+                    {resource.name}
                   </Button>
                 ))}
 
-              <Divider />
+                <Divider />
 
-              <Text fontWeight="bold" color={textColor}>
-                Resources
-              </Text>
-              {resources.map((resource) => (
                 <Button
-                  key={resource.name}
                   rounded={"full"}
                   as={Link}
-                  href={resource.href}
+                  href="/search"
                   variant="ghost"
                   justifyContent="flex-start"
                   w="full"
                   onClick={onClose}
                 >
-                  {resource.name}
+                  Search
                 </Button>
-              ))}
 
-              <Divider />
-
-              <Button
-                rounded={"full"}
-                as={Link}
-                href="/search"
-                variant="ghost"
-                justifyContent="flex-start"
-                w="full"
-                onClick={onClose}
-              >
-                Search
-              </Button>
-
-              <HStack spacing={4} pt={4}>
-                <IconButton
-                  rounded={"full"}
-                  as={Link}
-                  isExternal
-                  colorScheme="black"
-                  href="https://github.com/yourusername"
-                  aria-label="GitHub"
-                  icon={<LuGithub size={20} />}
-                  variant="ghost"
-                />
-                <IconButton
-                  rounded={"full"}
-                  as={Link}
-                  isExternal
-                  colorScheme="black"
-                  href="https://twitter.com/yourusername"
-                  aria-label="Twitter"
-                  icon={<LuTwitter size={20} />}
-                  variant="ghost"
-                />
-              </HStack>
-              <AuthButtons />
-            </VStack>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-    </Box>
+                <HStack spacing={4} pt={4}>
+                  <IconButton
+                    rounded={"full"}
+                    as={Link}
+                    isExternal
+                    colorScheme="black"
+                    href="https://github.com/yourusername"
+                    aria-label="GitHub"
+                    icon={<LuGithub size={20} />}
+                    variant="ghost"
+                  />
+                  <IconButton
+                    rounded={"full"}
+                    as={Link}
+                    isExternal
+                    colorScheme="black"
+                    href="https://twitter.com/yourusername"
+                    aria-label="Twitter"
+                    icon={<LuTwitter size={20} />}
+                    variant="ghost"
+                  />
+                </HStack>
+                <AuthButtons />
+              </VStack>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </Box>
+    </motion.div>
   );
 };
 

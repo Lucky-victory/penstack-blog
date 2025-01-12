@@ -84,7 +84,7 @@ export default function FeaturedPostCard() {
               minH={350}
               backgroundImage={
                 featuredPost?.featured_image?.url
-                  ? "linear-gradient(180deg, transparent, rgba(0, 0, 0, 1))"
+                  ? "linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.61))"
                   : ""
               }
             >

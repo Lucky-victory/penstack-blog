@@ -35,7 +35,7 @@ function EditorHeader({ editor }: { editor: Editor | null }) {
     <>
       <DashHeader pos="sticky" top={0} zIndex={10}>
         <Stack gap={0}>
-          <Text fontSize="2xl" fontWeight={600} as="span">
+          <Text fontSize="lg" fontWeight={600} as="span">
             Create Post
           </Text>
           {hasError && (
