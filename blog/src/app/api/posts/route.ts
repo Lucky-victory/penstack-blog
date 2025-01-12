@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     (searchParams.get("sortBy") as "recent" | "published_at" | "popular") ||
     "recent";
   const sortOrder = searchParams.get("sortOrder") || "desc";
-
+  const category = searchParams.get("category");
   const offset = (page - 1) * limit;
 
   // Build where conditions
@@ -38,7 +38,15 @@ export async function GET(req: NextRequest) {
   if (access === "dashboard" && session?.user?.role_id !== 1) {
     whereConditions.push(eq(posts.author_id, session?.user?.id as string));
   }
-
+  if (category) {
+    whereConditions.push(
+      sql`EXISTS (
+          SELECT 1 FROM categories 
+          WHERE categories.id = ${posts.category_id} 
+          AND categories.name ILIKE ${`%${category}%`}
+        )`
+    );
+  }
   try {
     // Get total count
     const totalResult = await db

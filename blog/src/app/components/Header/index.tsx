@@ -122,10 +122,10 @@ const Header = () => {
         }}
         transition="all 0.3s ease-in-out"
       >
-        <Container maxW="container.2xl" py={2}>
+        <Container maxW="container.2xl" py={"6px"}>
           <HStack justify="space-between" align="center">
             <HStack as={Link} href="/">
-              <AppLogo src={siteConfig?.siteLogo?.value} size={"40px"} />
+              <AppLogo src={siteConfig?.siteLogo?.value} size={"30px"} />
               <Text
                 hideBelow={"md"}
                 as={"span"}
@@ -141,7 +141,7 @@ const Header = () => {
               align="center"
               spacing={4}
               display={{ base: "none", lg: "flex" }}
-              py={2}
+              py={"6px"}
             >
               <Link
                 textTransform="capitalize"

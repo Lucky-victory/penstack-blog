@@ -22,7 +22,10 @@ import {
   Avatar,
   Stack,
 } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import { decode } from "html-entities";
+
+const MotionPostCard = motion(Card);
 
 export default function PostCard({
   post,
@@ -36,7 +39,19 @@ export default function PostCard({
   const tagColor = useColorModeValue("gray.50", "gray.300");
   const bgColor = useColorModeValue("transparent", "gray.900");
   return (
-    <Card
+    <MotionPostCard
+      initial={{ opacity: 0, y: 50 }}
+      whileHover={{
+        transform: "translateY(-4px)",
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+        transition: {
+          duration: 0.5,
+        },
+      }}
+      viewport={{ once: true, margin: "-50px" }}
       as={LinkBox}
       key={post.id}
       bg={bgColor}
@@ -45,7 +60,7 @@ export default function PostCard({
       overflow="hidden"
       transition="all 0.3s"
       px={3}
-      _hover={{ transform: "translateY(-4px)", shadow: "lg" }}
+      _hover={{ shadow: "lg" }}
     >
       <Box position="relative" pb={0} rounded={"xl"} overflow={"hidden"}>
         <Image
@@ -137,6 +152,6 @@ export default function PostCard({
           )}
         </Stack>
       </CardBody>
-    </Card>
+    </MotionPostCard>
   );
 }

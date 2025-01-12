@@ -107,6 +107,16 @@ export function useHTMLToMarkdownConverter() {
 
   return { markdown, updateHtml };
 }
+
+interface UsePostsProps {
+  status?: PostInsert["status"] | "all";
+  limit?: number;
+  page?: number;
+  access?: "dashboard";
+  sortBy?: "created_at" | "published_at" | "recent" | "popular";
+  sortOrder?: "desc" | "asc";
+  category?: string;
+}
 export function usePosts({
   status = "published",
   limit = 10,
@@ -114,14 +124,17 @@ export function usePosts({
   sortBy,
   access,
   sortOrder,
-}: {
-  status?: PostInsert["status"] | "all";
-  limit?: number;
-  page?: number;
-  access?: "dashboard";
-  sortBy?: "created_at" | "published_at" | "recent" | "popular";
-  sortOrder?: "desc" | "asc";
-} = {}) {
+  category,
+}: UsePostsProps = {}) {
+  const [params, setParams] = useState({
+    status,
+    limit,
+    page,
+    sortBy,
+    access,
+    sortOrder,
+    category,
+  });
   const {
     data: posts,
     isLoading: loading,
@@ -129,21 +142,22 @@ export function usePosts({
     error,
     refetch,
   } = useQuery({
-    queryKey: ["posts", status, limit, page, sortBy, access, sortOrder],
+    queryKey: ["posts", params],
     queryFn: async () => {
       const { data } = await axios.get<{ data: PostSelect[] }>(
-        `/api/posts?${objectToQueryParams({ status, limit, page, sortBy, access, sortOrder })}`
+        `/api/posts?${objectToQueryParams(params)}`
       );
       return data.data;
     },
-    staleTime: 1000 * 60 * 30,
   });
 
   const refetchPosts = async () => {
     await refetch();
   };
-
-  return { posts, loading, error, refetchPosts };
+  const updateParams = useCallback((prop: UsePostsProps) => {
+    setParams((prev) => ({ ...prev, ...prop }));
+  }, []);
+  return { posts, loading, error, refetchPosts, updateParams };
 }
 export function useAuthor(username: string) {
   const {

@@ -31,7 +31,6 @@ export default function FeaturedPostCard() {
 
   return (
     <Box
-      mt={2}
       bg={cardBgColor}
       rounded="xl"
       overflow={"hidden"}
@@ -39,7 +38,7 @@ export default function FeaturedPostCard() {
       borderColor={borderColor}
       transition="all 0.2s"
       pos={"relative"}
-      h={{ base: 350, md: 500, lg: 630 }}
+      h={{ base: 350, md: 500, lg: 600 }}
       // minH={450}
     >
       {loading ? (
