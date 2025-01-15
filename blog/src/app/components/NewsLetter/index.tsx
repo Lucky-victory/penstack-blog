@@ -10,6 +10,7 @@ import {
   Toast,
   InputGroup,
   InputRightAddon,
+  LightMode,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useColorModeValue } from "@chakra-ui/react";
@@ -92,18 +93,20 @@ export const Newsletter = ({ title }: { title?: string }) => {
                   }}
                 />
               </FormControl>
-              <Button
-                // ml={{ md: -10 }}
-                type="submit"
-                isLoading={isPending}
-                isDisabled={isPending}
-                zIndex={2}
-                colorScheme="blue"
-                rounded={"lg"}
-                fontWeight={500}
-              >
-                Subscribe
-              </Button>
+              <LightMode>
+                <Button
+                  // ml={{ md: -10 }}
+                  type="submit"
+                  isLoading={isPending}
+                  isDisabled={isPending}
+                  zIndex={2}
+                  colorScheme="gray"
+                  rounded={"lg"}
+                  fontWeight={500}
+                >
+                  Subscribe
+                </Button>
+              </LightMode>
             </Flex>
           </form>
         </Box>

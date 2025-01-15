@@ -42,7 +42,7 @@ import { PermissionGuard } from "../../PermissionGuard";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
 import { UserInfoComp } from "../UserInfoComp";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
-import { AppLogo } from "../../AppLogo";
+import { AppLogo } from "../../AppLogoAndName/AppLogo";
 import { SidebarNavItem } from "./NavItem";
 import { NavItemWithChildren } from "./NavItemWithDropdown";
 

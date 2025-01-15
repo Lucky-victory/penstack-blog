@@ -40,7 +40,7 @@ import { Link } from "@chakra-ui/next-js";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
 import { useCategories } from "@/src/hooks/useCategories";
-import { AppLogo } from "../AppLogo";
+import { AppLogo } from "../AppLogoAndName/AppLogo";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 import { motion, useScroll, useTransform } from "framer-motion";
 

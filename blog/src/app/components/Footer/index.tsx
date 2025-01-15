@@ -3,8 +3,11 @@ import {
   Box,
   Container,
   Flex,
+  Grid,
   HStack,
+  IconButton,
   Link,
+  Stack,
   Text,
   VStack,
   useColorModeValue,
@@ -12,12 +15,13 @@ import {
 import { LuGithub, LuTwitter, LuMail } from "react-icons/lu";
 import { Newsletter } from "../NewsLetter";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
-import { AppLogo } from "../AppLogo";
+import { AppLogo } from "../AppLogoAndName/AppLogo";
+import { AppLogoAndName } from "../AppLogoAndName";
 
 const Footer = () => {
   const bgColor = useColorModeValue("black", "gray.900");
-  const textColor = useColorModeValue("white", "gray.400");
-  const hoverColor = useColorModeValue("gray.400", "gray.300");
+  const textColor = "gray.400";
+  const hoverColor = useColorModeValue("gray.500", "gray.300");
   const siteConfig = useSiteConfig();
   const navItems = [
     { label: "Home", href: "/" },
@@ -50,56 +54,63 @@ const Footer = () => {
         px={{ base: 4, md: 8, lg: 10 }}
         alignContent={"center"}
       >
-        <Box mb={10} color={textColor}>
-          <Newsletter />
-        </Box>
-        <Flex
-          direction={{ base: "column", md: "row" }}
-          justify="space-between"
-          align={{ md: "center" }}
-          gap={{ base: 6, md: 0 }}
-        >
-          <VStack align={"start"} spacing={4}>
-            <HStack>
-              <AppLogo size={"25px"} src={siteConfig?.siteLogo?.value} />
-              <Text fontSize="lg" fontWeight="bold" color={textColor}>
-                {siteConfig?.siteName?.value}
-              </Text>
-            </HStack>
-            <Text fontSize="sm" color={textColor}>
-              &copy; {new Date().getFullYear()} {siteConfig?.siteName?.value}.
-              All rights reserved.
+        <Grid gridTemplate={["1fr", "1fr 1fr", "1fr 1fr 1fr 1fr"]} gap={6}>
+          <Stack>
+            <AppLogoAndName logoSize={"25px"} nameSize={"large"} />
+            <Text fontSize="sm" color={textColor} maxW={300}>
+              {siteConfig?.siteDescription?.value}
             </Text>
-          </VStack>
+          </Stack>
+          <Box mb={10} color={textColor}>
+            <Newsletter />
+          </Box>
+          <Flex
+            direction={{ base: "column", md: "row" }}
+            justify="space-between"
+            align={{ md: "center" }}
+            gap={{ base: 6, md: 0 }}
+          >
+            <VStack align={"start"} spacing={4}>
+              <Text fontSize="sm" color={textColor}>
+                &copy; {new Date().getFullYear()} {siteConfig?.siteName?.value}.
+                All rights reserved.
+              </Text>
+            </VStack>
 
-          <Flex gap={6} flexDir={{ base: "column", sm: "row" }}>
-            {navItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                color={textColor}
-                _hover={{ color: hoverColor }}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </Flex>
+            <Flex gap={6} flexDir={{ base: "column", sm: "row" }}>
+              {navItems.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  color={textColor}
+                  _hover={{ color: hoverColor }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </Flex>
 
-          <Flex gap={4}>
-            {socialLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                color={textColor}
-                _hover={{ color: hoverColor }}
-                display="flex"
-                alignItems="center"
-              >
-                <link.icon size={20} />
-              </Link>
-            ))}
+            <Flex gap={4}>
+              {socialLinks.map((link) => (
+                <IconButton
+                  as={Link}
+                  key={link.label}
+                  aria-label={link.label}
+                  href={link.href}
+                  color={textColor}
+                  _hover={{ color: hoverColor }}
+                  display="flex"
+                  alignItems="center"
+                  colorScheme="gray"
+                  rounded={"full"}
+                  // bg={bgColor}
+                >
+                  <link.icon size={20} />
+                </IconButton>
+              ))}
+            </Flex>
           </Flex>
-        </Flex>
+        </Grid>
       </Container>
     </Box>
   );
