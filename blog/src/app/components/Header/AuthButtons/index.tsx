@@ -7,11 +7,11 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { SignUp } from "./SignUp";
 
 export const AuthButtons = () => {
   const { user } = useAuth();
   const hoverBgLogin = useColorModeValue("blue.100", "gray.700");
-  const hoverBgSignup = useColorModeValue("blue.600", "blue.400");
 
   return user ? (
     <></>
@@ -31,19 +31,7 @@ export const AuthButtons = () => {
       >
         Log In
       </Button>
-      <Button
-        rounded="md"
-        as={Link}
-        py={2}
-        h="auto"
-        href={"/auth/sign-up"}
-        _hover={{
-          textDecor: "none",
-          bg: hoverBgSignup,
-        }}
-      >
-        Sign up
-      </Button>
+      <SignUp />
     </HStack>
   );
 };

@@ -59,6 +59,7 @@ export default function PostCard({
       borderRadius="xl"
       overflow="hidden"
       transition="all 0.3s"
+      py={3}
       px={3}
       _hover={{ shadow: "lg" }}
     >
@@ -99,7 +100,7 @@ export default function PostCard({
           </Box>
         )}
       </Box>
-      <CardBody px={0} py={3} display={"flex"} flexDir={"column"}>
+      <CardBody px={0} pt={3} display={"flex"} flexDir={"column"}>
         <Stack flex={1}>
           <VStack align={"start"} spacing={1} flex={1}>
             <HStack mb={2}>

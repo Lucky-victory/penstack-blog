@@ -8,6 +8,8 @@ import {
   Input,
   Button,
   Toast,
+  InputGroup,
+  InputRightAddon,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useColorModeValue } from "@chakra-ui/react";
@@ -19,7 +21,8 @@ import isEmpty from "just-is-empty";
 export const Newsletter = ({ title }: { title?: string }) => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
-  const formWrapBgColor = useColorModeValue("white", "black");
+  const formWrapBgColor = "gray.800";
+  const formWrapBorderColor = "gray.700";
   const textColor = useColorModeValue("gray.400", "gray.300");
   const headingColor = useColorModeValue("inherit", "white");
   const { mutateAsync, isPending } = useMutation({
@@ -62,29 +65,42 @@ export const Newsletter = ({ title }: { title?: string }) => {
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <Flex
               direction={{ base: "column", md: "row" }}
-              gap={{ base: 4, md: 0 }}
+              gap={{ base: 4, md: 1 }}
+              border={"1px"}
+              borderColor={formWrapBorderColor}
               maxW="lg"
               mx="auto"
+              bg={formWrapBgColor}
+              rounded={"lg"}
+              p={2}
             >
               <FormControl flex={1}>
                 <Input
                   type="email"
-                  rounded={"full"}
+                  p={2}
+                  rounded={"none"}
+                  fontWeight={"normal"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   required
+                  border={"none"}
+                  _focus={{
+                    outline: "none",
+                    boxShadow: "none",
+                    borderBottom: "2px solid",
+                  }}
                 />
               </FormControl>
               <Button
-                ml={{ md: -10 }}
+                // ml={{ md: -10 }}
                 type="submit"
                 isLoading={isPending}
                 isDisabled={isPending}
                 zIndex={2}
                 colorScheme="blue"
-                rounded={"full"}
-                rightIcon={<LuSend size={16} />}
+                rounded={"lg"}
+                fontWeight={500}
               >
                 Subscribe
               </Button>

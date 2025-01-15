@@ -129,8 +129,8 @@ const Header = () => {
               <Text
                 hideBelow={"md"}
                 as={"span"}
-                fontSize="xl"
-                fontWeight="bold"
+                fontSize={{ base: "medium", lg: "large" }}
+                fontWeight="medium"
                 // color={useColorModeValue("black", "white")}
               >
                 {siteConfig?.siteName?.value}
