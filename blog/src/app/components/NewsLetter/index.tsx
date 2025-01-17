@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputRightAddon,
   LightMode,
+  Stack,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useColorModeValue } from "@chakra-ui/react";
@@ -19,10 +20,17 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import isEmpty from "just-is-empty";
 
-export const Newsletter = ({ title }: { title?: string }) => {
+export const Newsletter = ({
+  title,
+  description,
+}: {
+  title?: string;
+  description?: string;
+  maxW?: string | number;
+}) => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
-  const formWrapBgColor = "gray.800";
+  const formWrapBgColor = "gray.900";
   const formWrapBorderColor = "gray.700";
   const textColor = useColorModeValue("gray.400", "gray.300");
   const headingColor = useColorModeValue("inherit", "white");
@@ -49,28 +57,27 @@ export const Newsletter = ({ title }: { title?: string }) => {
   };
 
   return (
-    <Box>
-      <VStack maxW="2xl" mx="auto" spacing={4}>
-        <Heading size="lg" color={headingColor}>
-          {title || "Subscribe to Our Newsletter"}
-        </Heading>
-        <Text color={textColor}>
-          Get the latest articles and insights delivered directly to your inbox.
-          No spam, unsubscribe at any time.
-        </Text>
-        <Box
-          w={"full"}
-
-          // mb={8}
-        >
+    <Box maxW={"lg"}>
+      <Stack spacing={4}>
+        {title && (
+          <Heading size="lg" color={headingColor}>
+            {title || "Get Updates"}
+          </Heading>
+        )}
+        {description && (
+          <Text color={textColor} fontSize={"small"}>
+            {description ||
+              "Subscribe to our newsletter to get the latest updates."}
+          </Text>
+        )}
+        <Box w={"full"}>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <Flex
               direction={{ base: "column", md: "row" }}
-              gap={{ base: 4, md: 1 }}
+              gap={{ base: 3, md: 1 }}
               border={"1px"}
               borderColor={formWrapBorderColor}
               maxW="lg"
-              mx="auto"
               bg={formWrapBgColor}
               rounded={"lg"}
               p={2}
@@ -78,7 +85,7 @@ export const Newsletter = ({ title }: { title?: string }) => {
               <FormControl flex={1}>
                 <Input
                   type="email"
-                  p={2}
+                  p={1}
                   rounded={"none"}
                   fontWeight={"normal"}
                   value={email}
@@ -95,7 +102,6 @@ export const Newsletter = ({ title }: { title?: string }) => {
               </FormControl>
               <LightMode>
                 <Button
-                  // ml={{ md: -10 }}
                   type="submit"
                   isLoading={isPending}
                   isDisabled={isPending}
@@ -115,7 +121,7 @@ export const Newsletter = ({ title }: { title?: string }) => {
             🎉 Welcome aboard! Check your inbox to confirm subscription.
           </Text>
         )}
-      </VStack>
+      </Stack>
     </Box>
   );
 };

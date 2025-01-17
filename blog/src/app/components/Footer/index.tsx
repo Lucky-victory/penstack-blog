@@ -6,6 +6,7 @@ import {
   Grid,
   HStack,
   IconButton,
+  DarkMode,
   Link,
   Stack,
   Text,
@@ -61,9 +62,31 @@ const Footer = () => {
               {siteConfig?.siteDescription?.value}
             </Text>
           </Stack>
-          <Box mb={10} color={textColor}>
-            <Newsletter />
-          </Box>
+
+          <Stack>
+            <Box color={textColor}>
+              <Newsletter />
+            </Box>
+            <Flex gap={4}>
+              {socialLinks.map((link) => (
+                <DarkMode key={link.label}>
+                  <IconButton
+                    as={Link}
+                    aria-label={link.label}
+                    href={link.href}
+                    color={textColor}
+                    _hover={{ color: hoverColor }}
+                    display="flex"
+                    alignItems="center"
+                    colorScheme="gray"
+                    rounded={"full"}
+                  >
+                    <link.icon size={20} />
+                  </IconButton>
+                </DarkMode>
+              ))}
+            </Flex>
+          </Stack>
           <Flex
             direction={{ base: "column", md: "row" }}
             justify="space-between"
@@ -76,39 +99,21 @@ const Footer = () => {
                 All rights reserved.
               </Text>
             </VStack>
-
-            <Flex gap={6} flexDir={{ base: "column", sm: "row" }}>
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  color={textColor}
-                  _hover={{ color: hoverColor }}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </Flex>
-
-            <Flex gap={4}>
-              {socialLinks.map((link) => (
-                <IconButton
-                  as={Link}
-                  key={link.label}
-                  aria-label={link.label}
-                  href={link.href}
-                  color={textColor}
-                  _hover={{ color: hoverColor }}
-                  display="flex"
-                  alignItems="center"
-                  colorScheme="gray"
-                  rounded={"full"}
-                  // bg={bgColor}
-                >
-                  <link.icon size={20} />
-                </IconButton>
-              ))}
-            </Flex>
+            <Stack>
+              About
+              <Stack gap={6}>
+                {navItems.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    color={textColor}
+                    _hover={{ color: hoverColor }}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </Stack>
+            </Stack>
           </Flex>
         </Grid>
       </Container>

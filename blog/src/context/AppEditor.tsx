@@ -9,7 +9,7 @@ import {
 import { PostSelect, type EDITOR_CONTEXT_STATE } from "../types";
 import { type Editor } from "@tiptap/react";
 import isEmpty from "just-is-empty";
-import { usePostManager } from "../hooks/usePostManager";
+import { usePostManager } from "../hooks/usePostEditorManager";
 
 const AppEditorContext = createContext<EDITOR_CONTEXT_STATE>({
   hasError: false,
