@@ -109,13 +109,13 @@ export const SidebarContentNav = ({
   [key: string]: any;
 }) => {
   const bg = useColorModeValue("#fbfbfb", "#121212");
-  const navBtnBg = useColorModeValue("gray.300", "gray.800");
+  const navBtnBg = useColorModeValue("customBlue", "gray.800");
   const navBtnBgHover = useColorModeValue("gray.200", "gray.700");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
   const hoverTextColor = useColorModeValue("gray.800", "gray.100");
   const siteConfig = useSiteConfig();
-  const navBtnActiveColor = useColorModeValue("gray.800", "#fff");
+  const navBtnActiveColor = useColorModeValue("#fff", "#fff");
   const siteNameColor = useColorModeValue("gray.800", "gray.100");
   return (
     <Stack
@@ -213,7 +213,6 @@ export const SidebarContentNav = ({
         ))}
         <Stack mt={"auto"} mb={5} pl={isMinimized ? 3 : 6}>
           <LightDarkModeSwitch showLabel={!isMinimized} />
-          <UserInfoComp showLabel={!isMinimized} />
         </Stack>
       </VStack>
     </Stack>

@@ -61,7 +61,7 @@ export interface EditorActionItem {
   active: (editor: Editor) => boolean;
 }
 export interface FilterParams {
-  type?: MediaType[];
+  type?: MediaType;
   folder?: string;
   search?: string;
   page?: number;

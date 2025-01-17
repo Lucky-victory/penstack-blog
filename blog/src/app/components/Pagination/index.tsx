@@ -19,7 +19,7 @@ const Pagination = ({
   isLoading?: boolean;
 }) => {
   const getPageNumbers = useMemo(() => {
-    const delta = 2; // Number of pages to show before and after current page
+    const delta = 1; // Number of pages to show before and after current page
     const pages = [];
 
     // Always show first page

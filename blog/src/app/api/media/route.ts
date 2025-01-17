@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const page = Number(searchParams.get("page")) || 1;
     const limit = Number(searchParams.get("limit")) || 20;
     const search = searchParams.get("search");
-    const type = searchParams.getAll("type");
+    const type = searchParams.get("type");
     const folder = searchParams.get("folder");
     const sortBy =
       (searchParams.get("sortBy") as "created_at" | "name" | "size") ||
@@ -24,8 +24,8 @@ export async function GET(request: Request) {
     if (search) {
       whereConditions.push(ilike(medias.name, `%${search}%`));
     }
-    if (type.length > 0) {
-      whereConditions.push(inArray(medias.type, type as MediaType[]));
+    if (type) {
+      whereConditions.push(eq(medias.type, type as MediaType));
     }
     if (folder) {
       whereConditions.push(eq(medias.folder, folder));

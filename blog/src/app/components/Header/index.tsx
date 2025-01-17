@@ -147,7 +147,7 @@ const Header = () => {
                 textTransform="capitalize"
                 fontWeight={500}
                 href={"/"}
-                color={isActiveUrl("/") ? navLinkHoverColor : ""}
+                color={isActiveUrl("/") ? navLinkHoverColor : "inherit"}
                 borderBottom={"2px solid"}
                 borderBottomColor={
                   isActiveUrl("/") ? navLinkHoverColor : "transparent"
@@ -171,7 +171,9 @@ const Header = () => {
                   href={resource.href}
                   px={2}
                   py={1}
-                  color={isActiveUrl(resource.href) ? navLinkHoverColor : ""}
+                  color={
+                    isActiveUrl(resource.href) ? navLinkHoverColor : "inherit"
+                  }
                   borderBottom={"2px solid"}
                   borderBottomColor={
                     isActiveUrl(resource.href)
@@ -247,13 +249,12 @@ const Header = () => {
                   as={Link}
                   href="/search"
                   aria-label="Search"
-                  // colorScheme="black"
+                  colorScheme="gray"
                   rounded={"full"}
                   icon={<LuSearch size={16} />}
                   variant="ghost"
                 />
               </HStack>
-              {/* Social Icons */}
               <HStack spacing={2} display={{ base: "none", lg: "flex" }}>
                 <LightDarkModeSwitch />
                 <AuthButtons />
@@ -337,28 +338,6 @@ const Header = () => {
                   Search
                 </Button>
 
-                <HStack spacing={4} pt={4}>
-                  <IconButton
-                    rounded={"full"}
-                    as={Link}
-                    isExternal
-                    colorScheme="black"
-                    href="https://github.com/yourusername"
-                    aria-label="GitHub"
-                    icon={<LuGithub size={20} />}
-                    variant="ghost"
-                  />
-                  <IconButton
-                    rounded={"full"}
-                    as={Link}
-                    isExternal
-                    colorScheme="black"
-                    href="https://twitter.com/yourusername"
-                    aria-label="Twitter"
-                    icon={<LuTwitter size={20} />}
-                    variant="ghost"
-                  />
-                </HStack>
                 <AuthButtons />
               </VStack>
             </DrawerBody>

@@ -140,7 +140,7 @@ export const NavItemWithChildren = ({
     <PermissionGuard requiredPermission={item.permission!}>
       <Box>
         <Button
-          fontWeight={"500"}
+          fontWeight={isActive ? "500" : "400"}
           variant={"unstyled"}
           w="full"
           p={0}
@@ -156,7 +156,6 @@ export const NavItemWithChildren = ({
             align={"center"}
             justify={isMinimized ? "center" : "space-between"}
             gap={4}
-            shadow={isActive ? "md" : "none"}
             py={"8px"}
             px={isMinimized ? 2 : 4}
             fontSize={"medium"}
@@ -174,10 +173,8 @@ export const NavItemWithChildren = ({
                 : textColor
             }
             _hover={{
-              bg: openItems.includes(item.href) ? navBtnBg : navBtnBgHover,
-              color: openItems.includes(item.href)
-                ? navBtnActiveColor
-                : hoverTextColor,
+              bg: openItems.includes(item.href) ? navBtnBgHover : "transparent",
+              color: hoverTextColor,
             }}
           >
             <HStack gap={0}>

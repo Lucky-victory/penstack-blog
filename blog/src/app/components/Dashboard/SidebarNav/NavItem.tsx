@@ -44,7 +44,7 @@ export const SidebarNavItem = ({
     <Link
       display={"flex"}
       variant="unstyled"
-      fontWeight={"500"}
+      fontWeight={isActive ? "500" : "400"}
       pos={"relative"}
       gap={4}
       pl={isMinimized ? 2 : 5}
@@ -66,7 +66,7 @@ export const SidebarNavItem = ({
         bg={isActive ? navBtnBg : "transparent"}
         _hover={{
           bg: navBtnBgHover,
-          color: isActive ? navBtnActiveColor : hoverTextColor,
+          color: hoverTextColor,
         }}
       >
         {icon && <Icon fontSize="16" as={icon} color={"inherit"} />}

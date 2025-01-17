@@ -51,12 +51,6 @@ export const chakraTheme = extendTheme(
     sizes,
     styles: {
       global: {
-        a: {
-          color: "blue.500",
-          _hover: {
-            textDecoration: "underline",
-          },
-        },
         ":root": {
           "--dash-sidebar-mini-w": "60px",
           "--dash-sidebar-w": "230px",

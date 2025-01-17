@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MediaCard } from "./MediaCard";
 import { MediaFilter } from "./MediaFilter";
 import {
@@ -6,25 +6,16 @@ import {
   Button,
   Grid,
   HStack,
-  IconButton,
   Text,
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
-import {
-  LuChevronLeft,
-  LuChevronRight,
-  LuChevronsLeft,
-  LuChevronsRight,
-  LuTrash2,
-} from "react-icons/lu";
-import { useQueryParams } from "@/src/hooks";
+import { LuTrash2 } from "react-icons/lu";
 import { FilterParams, MediaResponse, PaginatedResponse } from "@/src/types";
 import axios from "axios";
 import Loader from "../../Loader";
 import { objectToQueryParams } from "@/src/utils";
 import { useQuery } from "@tanstack/react-query";
-import { debounce } from "lodash";
 import Pagination from "../../Pagination";
 
 interface MediaLibraryProps {
@@ -48,22 +39,8 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
   const [loading, setLoading] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<MediaResponse[]>([]);
 
-  const filtersDebounce = useRef(
-    debounce((filters: FilterParams) => {
-      return filters;
-    }, 400)
-  ).current;
-
-  const debouncedFilters = filtersDebounce(filters);
-
-  useEffect(() => {
-    return () => {
-      filtersDebounce.cancel();
-    };
-  }, [filtersDebounce]);
-
   const { data: media, refetch } = useQuery({
-    queryKey: ["media", debouncedFilters],
+    queryKey: ["media", filters],
     queryFn: fetchMedia,
     refetchOnWindowFocus: false,
   });
@@ -90,7 +67,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     setLoading(true);
     try {
       const { data: media } = await axios<PaginatedResponse<MediaResponse>>(
-        `/api/media?${objectToQueryParams(debouncedFilters || {})}`
+        `/api/media?${objectToQueryParams(filters || {})}`
       );
 
       return media;
@@ -134,16 +111,9 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
       onSelect?.(selectedMedia[0]);
     }
   };
-
-  // const handleLoadMore = () => {
-  //   if (media && media.meta.page < media.meta.totalPages) {
-  //     setFilters((prev) => ({
-  //       ...prev,
-  //       page: prev.page ? prev.page + 1 : 2,
-  //     }));
-  //   }
-  // };
-
+  useEffect(() => {
+    setSelectedMedia([]);
+  }, [filters]);
   return (
     <Box className="space-y-6" minH={400}>
       <MediaFilter
@@ -169,7 +139,6 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
         <>
           <Grid
             rounded={"lg"}
-            // bg={bgColor}
             p={{ base: 3, md: 4 }}
             templateColumns={{
               base: "repeat(auto-fill, minmax(250px, 1fr))",

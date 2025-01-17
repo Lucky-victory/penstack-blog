@@ -53,6 +53,7 @@ import DashHeader from "../../../Dashboard/Header";
 import Loader from "../../../Loader";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import Pagination from "../../../Pagination";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -329,28 +330,15 @@ const PostsDashboard = () => {
                     ))}
                   </Tbody>
                 </Table>
-                <HStack justify="center" mt={6}>
-                  <ButtonGroup>
-                    <Button
-                      leftIcon={<ChevronLeftIcon />}
-                      onClick={() => setPage(page - 1)}
-                      isDisabled={page === 1}
-                      size={"sm"}
-                      variant="ghost"
-                    >
-                      Previous
-                    </Button>
-                    <Button
-                      rightIcon={<ChevronRightIcon />}
-                      size={"sm"}
-                      onClick={() => setPage(page + 1)}
-                      isDisabled={page === totalPages}
-                      variant="ghost"
-                    >
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </HStack>
+                <Box mx={"auto"} pt={5}>
+                  <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => {
+                      setPage(newPage);
+                    }}
+                  />
+                </Box>
               </>
             )}
 

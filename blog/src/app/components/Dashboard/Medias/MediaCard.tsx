@@ -79,7 +79,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
         pos={"relative"}
         w={"full"}
         h={250}
-        rounded={"lg"}
+        // rounded={"lg"}
         overflow={"hidden"}
         boxShadow={selected ? "outline" : "none"}
         onClick={() => {
@@ -114,7 +114,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           zIndex={!selected ? -1 : 10}
           transform={!selected ? "translateX(150%)" : "none"}
           className="media-card-select"
-          transition={"transform 0.2s ease-in-out"}
+          transition={"all 0.2s"}
         >
           <IconButton
             size="sm"
@@ -127,7 +127,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           ></IconButton>
         </Box>
         <VStack
-          transition={"transform 0.2s ease-in-out"}
+          transition={"all 0.2s"}
           zIndex={-1}
           bottom={0}
           right={0}
@@ -138,7 +138,6 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           borderTop={"1px solid"}
           borderColor={"gray.600"}
           roundedBottom={"lg"}
-          shadow={"lg"}
           bg={cardBgColor}
           transform={"translateY(100%)"}
         >

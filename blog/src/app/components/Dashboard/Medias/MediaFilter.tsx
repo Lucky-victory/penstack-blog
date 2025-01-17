@@ -44,7 +44,7 @@ export const MediaFilter: React.FC<MediaFilterProps> = ({
           rounded={"md"}
           onChange={(e) =>
             onFilterChange({
-              type: e.target.value ? [e.target.value as MediaType] : undefined,
+              type: e.target.value as MediaType,
             })
           }
         >
