@@ -31,6 +31,11 @@ export const OverviewCard = ({
   growthCount?: number;
   isLoading?: boolean;
 }) => {
+  const bgColor = useColorModeValue("white", "gray.700");
+  const iconColor = useColorModeValue("gray.500", "gray.300");
+  const textColor = useColorModeValue("gray.500", "gray.300");
+  const iconBg = useColorModeValue("gray.100", "gray.600");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
   return (
     <GridItem w={"100%"}>
       <VStack
@@ -43,8 +48,8 @@ export const OverviewCard = ({
         flex={1}
         w={"100%"}
         border={"1px"}
-        borderColor={"strokeColor"}
-        bg={useColorModeValue("white", "gray.700")}
+        borderColor={borderColor}
+        bg={bgColor}
       >
         <HStack justify={"space-between"} w={"full"}>
           <Flex
@@ -54,16 +59,16 @@ export const OverviewCard = ({
             w={10}
             rounded={"full"}
             border={"1px"}
-            borderColor={"appGray.200"}
+            borderColor={borderColor}
           >
             <Icon as={icon} size={20} color={color + ".500"} />
           </Flex>
-          <Image alt="" src={isUp ? "/chart-high.svg" : "/chart-low.svg"} />
+          {/* <Image alt="" src={isUp ? "/chart-high.svg" : "/chart-low.svg"} /> */}
         </HStack>
 
         <VStack align={"start"} gap={"5px"}>
           <Heading
-            color={"textGray"}
+            color={textColor}
             fontSize={"18px"}
             lineHeight={"26px"}
             fontWeight={"medium"}
@@ -83,30 +88,30 @@ export const OverviewCard = ({
 
         <HStack gap={"10px"}>
           <HStack
-            bg={isUp ? "appGreenTrans12" : "appRedTrans12"}
-            px={2}
+            bg={isUp ? "green.100" : "red.100"}
+            px={2.5}
             py={1}
             gap={1}
             rounded={"full"}
-            w={"70px"}
+            display={"inline-flex"}
             h={6}
           >
             {isUp ? (
-              <LuTrendingUp color={isUp ? "appGreen" : "appRed"} />
+              <LuTrendingUp color={isUp ? "green" : "red"} />
             ) : (
-              <LuTrendingDown color={isUp ? "appGreen" : "appRed"} />
+              <LuTrendingDown color={isUp ? "green" : "red"} />
             )}
             <Text
               as={"span"}
               fontWeight={"medium"}
               lineHeight={"16px"}
               fontSize={"12px"}
-              color={isUp ? "appGreen" : "appRed"}
+              color={isUp ? "green" : "red"}
             >
               {growthCount}%
             </Text>
           </HStack>
-          <Text as={"span"} fontSize={"14px"} color={"textGray2"}>
+          <Text as={"span"} fontSize={"14px"} color={textColor}>
             vs. previous month
           </Text>
         </HStack>

@@ -110,25 +110,10 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
       >
         {/* Post Content Section */}
         <Container maxW="container.xl" py={8}>
-          {/* Breadcrumb */}
-          <Breadcrumb mb={4}>
-            <BreadcrumbItem>
-              <BreadcrumbLink as={Link} href="/">
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink as={Link} href="/blog">
-                Blog
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem isCurrentPage>
-              <BreadcrumbLink>{post.title}</BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+          <ArticleHeader post={post} />
 
           {/* Hero Image */}
-          <Box borderRadius="xl" overflow="hidden" mb={8}>
+          <Box mb={8}>
             <Image
               src={
                 post.featured_image?.url ||
@@ -153,7 +138,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
           {/* Main Content Area */}
           <Flex gap={8}>
             {/* Sidebar */}
-            <VStack
+            {/* <VStack
               w={sidebarWidth}
               position="sticky"
               top={8}
@@ -161,11 +146,10 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               display={{ base: "none", md: "flex" }}
             >
               <SocialActions post={post} />
-            </VStack>
+            </VStack> */}
 
             {/* Article Content */}
             <Box flex={1}>
-              <ArticleHeader post={post} />
               <ArticleContent post={post} />
               <AuthorSection post={post} />
 

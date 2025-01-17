@@ -12,8 +12,6 @@ interface ArticleContentProps {
 }
 
 export const ArticleContent: React.FC<ArticleContentProps> = ({ post }) => {
-  const summaryColor = useColorModeValue("gray.700", "gray.300");
-
   return (
     <MotionBox
       initial={{ opacity: 0, y: 20 }}
@@ -22,17 +20,6 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ post }) => {
       maxW="none"
       pb={8}
     >
-      {post.summary && (
-        <Text
-          fontSize="xl"
-          fontWeight="medium"
-          mb={6}
-          color={summaryColor}
-          lineHeight="tall"
-        >
-          {post.summary}
-        </Text>
-      )}
       <Box maxW="container.lg" mx="auto">
         <ContentRenderer content={decode(post.content)} />
       </Box>

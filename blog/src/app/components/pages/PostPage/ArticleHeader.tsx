@@ -1,5 +1,13 @@
 import React from "react";
-import { Box, Flex, Tag, Text, Heading, HStack } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Tag,
+  Text,
+  Heading,
+  HStack,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { format } from "date-fns";
 import { PostSelect } from "@/src/types";
 
@@ -8,14 +16,23 @@ interface ArticleHeaderProps {
 }
 
 export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
+  const summaryColor = useColorModeValue("gray.700", "gray.300");
+
   return (
     <Box as="header" mb={8}>
-      <HStack my={4} gap={{ base: 5, md: 7 }} ml={0}>
+      <HStack
+        // my={4}
+        gap={{ base: 4, md: 5 }}
+        ml={0}
+        align={"center"}
+        justify={{ base: "flex-start", md: "center" }}
+        wrap={"wrap"}
+      >
         {post?.category?.name && (
           <Tag
             size="md"
-            colorScheme="blue"
-            borderRadius="md"
+            colorScheme="yellow"
+            rounded={"full"}
             px={3}
             py={1}
             textTransform="capitalize"
@@ -37,15 +54,21 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
           ))}
         </Flex>
       )}
-
-      <Heading
-        as="h1"
-        size="2xl"
-        // bgGradient="linear(to-r, blue.400, purple.500)"
-        // bgClip="text"
-      >
+      <Heading as="h1" size="2xl" textAlign={{ base: "left", md: "center" }}>
         {post.title}
       </Heading>
+      {post.summary && (
+        <Text
+          fontSize="xl"
+          fontWeight="medium"
+          mb={6}
+          color={summaryColor}
+          lineHeight="tall"
+          textAlign={{ base: "left", md: "center" }}
+        >
+          {post.summary}
+        </Text>
+      )}
     </Box>
   );
 };
