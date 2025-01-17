@@ -18,6 +18,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Divider,
 } from "@chakra-ui/react";
 import { LuMessageCircle } from "react-icons/lu";
 import { PostSelect } from "@/src/types";
@@ -47,7 +48,9 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   const highlightColor = useColorModeValue("blue.50", "blue.900");
 
   const sidebarWidth = useBreakpointValue({ base: "60px", md: "80px" });
-  const bgColor = useColorModeValue("gray.50", "gray.800");
+  // const bgColor = useColorModeValue("gray.50", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const bgColor = useColorModeValue("white", "gray.800");
 
   const {
     data: comments,
@@ -167,14 +170,20 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               <AuthorSection post={post} />
 
               {/* Comments Section */}
-              <Box mt={12}>
-                <Heading size="lg" mb={6}>
+              <Box
+                mt={12}
+                borderRadius="xl"
+                border="1px solid"
+                borderColor={borderColor}
+                bg={bgColor}
+              >
+                <Heading size="lg" mb={5} pt={4} pl={4}>
                   Comments
                 </Heading>
 
                 {/* New Comment Form */}
                 <Card mb={8} rounded="xl">
-                  <CardBody bg={bgColor} borderRadius="xl">
+                  <CardBody bg={bgColor}>
                     <Textarea
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
@@ -184,7 +193,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                       maxH={200}
                     />
                     <Button
-                      colorScheme="blue"
+                      size={"sm"}
                       isLoading={isSubmitting}
                       onClick={handleCommentSubmit}
                     >
@@ -195,7 +204,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
 
                 {/* Comments List */}
                 {!isFetching && comments.length > 0 ? (
-                  <VStack spacing={6} align="stretch" bg={bgColor}>
+                  <VStack align="stretch" divider={<Divider />}>
                     {comments.map((comment: any) => (
                       <CommentCard key={comment.id} comment={comment} />
                     ))}
@@ -203,7 +212,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                 ) : (
                   !isFetching && (
                     <Box
-                      p={8}
+                      p={5}
                       textAlign="center"
                       bg={highlightColor}
                       borderRadius="xl"

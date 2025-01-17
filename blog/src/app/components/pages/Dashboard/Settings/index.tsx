@@ -32,6 +32,7 @@ import { MonitoringPanel } from "./TabPanels/MonitoringPanel";
 import { MediaPanel } from "./TabPanels/MediaPanel";
 import { EmailPanel } from "./TabPanels/EmailPanel";
 import { AdvancedPanel } from "./TabPanels/AdvancedPanel";
+import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
 
 export default function SettingsPage() {
   const toast = useToast({ position: "top" });
@@ -168,26 +169,17 @@ export default function SettingsPage() {
     <Box>
       <DashHeader />
       <Container maxW="container.2xl" py={6}>
-        <Card mb={6}>
-          <CardBody>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Heading>Settings</Heading>
-              <Button
-                colorScheme="blue"
-                isLoading={isLoading}
-                onClick={handleSave}
-                rounded="md"
-                isDisabled={!hasChanges}
-              >
-                Save Changes
-              </Button>
-            </Box>
-          </CardBody>
-        </Card>
+        <PageTitleCard title={"Settings"}>
+          <Button
+            colorScheme="blue"
+            isLoading={isLoading}
+            onClick={handleSave}
+            rounded="md"
+            isDisabled={!hasChanges}
+          >
+            Save Changes
+          </Button>
+        </PageTitleCard>
 
         {hasChanges && (
           <Alert status="info" mb={4} rounded="md">

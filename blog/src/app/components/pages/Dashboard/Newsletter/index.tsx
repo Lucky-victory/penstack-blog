@@ -26,7 +26,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { PermissionGuard } from "../../../PermissionGuard";
-import { SearchIcon } from "@chakra-ui/icons";
+import { LuSearch } from "react-icons/lu";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -35,6 +35,7 @@ import { NewsletterSelect, PaginatedResponse } from "@/src/types";
 import { format } from "date-fns";
 import { shortenText } from "@/src/utils";
 import DashHeader from "../../../Dashboard/Header";
+import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
 
 export const DashboardNewsletterPage = () => {
   const [newsletters, setNewsletters] = useState<NewsletterSelect[]>([]);
@@ -76,13 +77,7 @@ export const DashboardNewsletterPage = () => {
       <Box>
         <DashHeader></DashHeader>
         <Box p={{ base: 4, md: 5 }}>
-          <Card rounded={"lg"} mb={8}>
-            <CardBody>
-              <HStack justify="space-between" align="center">
-                <Heading size="lg">Newsletter Subscribers</Heading>
-              </HStack>
-            </CardBody>
-          </Card>
+          <PageTitleCard title="Newsletter" />
 
           <Card rounded={"lg"}>
             <CardBody>
@@ -92,15 +87,14 @@ export const DashboardNewsletterPage = () => {
                 mb={6}
               >
                 <InputGroup>
-                  <InputLeftAddon roundedLeft={"full"}>
-                    <SearchIcon />
+                  <InputLeftAddon>
+                    <LuSearch />
                   </InputLeftAddon>
                   <Input
                     maxW={{ md: "320px" }}
                     autoComplete="off"
                     placeholder="Search subscribers..."
                     value={searchTerm}
-                    roundedRight={"full"}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </InputGroup>

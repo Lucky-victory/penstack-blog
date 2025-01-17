@@ -23,10 +23,10 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
   return (
     <Box
       p={2}
-      borderRadius="xl"
-      border="1px solid"
-      borderColor={borderColor}
-      bg={bgColor}
+      // borderRadius="xl"
+      // border="1px solid"
+      // borderColor={borderColor}
+      // bg={bgColor}
     >
       <HStack spacing={3} align="start">
         <Avatar
@@ -45,6 +45,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
               </Text>
             </VStack>
             <IconButton
+              colorScheme="gray"
               icon={<LuFlag />}
               aria-label="Report comment"
               variant="ghost"
@@ -55,10 +56,12 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
           <Text fontSize={"14px"}>{comment.content}</Text>
 
           <HStack spacing={4}>
-            <Button leftIcon={<LuHeart />} size="xs" variant="ghost">
-              Like
-            </Button>
-            <Button leftIcon={<LuMessageCircle />} size="xs" variant="ghost">
+            <Button
+              leftIcon={<LuMessageCircle />}
+              size="xs"
+              variant="ghost"
+              colorScheme="gray"
+            >
               Reply
             </Button>
           </HStack>

@@ -45,6 +45,7 @@ import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 import { AppLogo } from "../../AppLogoAndName/AppLogo";
 import { SidebarNavItem } from "./NavItem";
 import { NavItemWithChildren } from "./NavItemWithDropdown";
+import { AppLogoAndName } from "../../AppLogoAndName";
 
 export const navItems: NavItem[] = [
   {
@@ -143,16 +144,7 @@ export const SidebarContentNav = ({
         >
           {!isMinimized && (
             <>
-              <AppLogo src={siteConfig?.siteLogo?.value} size={"40px"} />
-
-              <Text
-                fontSize={"medium"}
-                fontWeight="bold"
-                letterSpacing={0.5}
-                color={siteNameColor}
-              >
-                {siteConfig?.siteName?.value}
-              </Text>
+              <AppLogoAndName logoSize={"35px"} />
             </>
           )}
           <VStack>

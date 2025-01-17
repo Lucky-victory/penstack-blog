@@ -10,7 +10,7 @@ export const AppLogoAndName = ({
   logoSize = "25px",
   nameSize = "lg",
 }: Props) => {
-  const textColor = useColorModeValue("white", "gray.400");
+  const textColor = useColorModeValue("inherit", "inherit");
   const siteConfig = useSiteConfig();
   return (
     <HStack>

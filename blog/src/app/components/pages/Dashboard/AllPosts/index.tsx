@@ -54,6 +54,7 @@ import Loader from "../../../Loader";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "../../../Pagination";
+import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -172,23 +173,18 @@ const PostsDashboard = () => {
     <Box>
       <DashHeader></DashHeader>
       <Box p={{ base: 4, md: 5 }}>
-        <Card rounded={"lg"} mb={6}>
-          <CardBody px={{ base: 3, lg: 4 }}>
-            <HStack justify="space-between" align="center">
-              <Heading size="lg">Posts</Heading>
-              <Button
-                leftIcon={<AddIcon />}
-                colorScheme="blue"
-                rounded="md"
-                as={Link}
-                href="/dashboard/posts/new"
-                _hover={{ textDecoration: "none" }}
-              >
-                New Post
-              </Button>
-            </HStack>
-          </CardBody>
-        </Card>
+        <PageTitleCard title={"Posts"}>
+          <Button
+            leftIcon={<AddIcon />}
+            colorScheme="blue"
+            rounded="md"
+            as={Link}
+            href="/dashboard/posts/new"
+            _hover={{ textDecoration: "none" }}
+          >
+            New Post
+          </Button>
+        </PageTitleCard>
 
         <Card rounded={"lg"} mb={6}>
           <CardBody px={{ base: 3, lg: 4 }}>

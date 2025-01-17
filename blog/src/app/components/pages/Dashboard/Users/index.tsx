@@ -57,18 +57,7 @@ import { PaginatedResponse, RolesSelect, UserSelect } from "@/src/types";
 import axios from "axios";
 import Loader from "../../../Loader";
 import DashHeader from "../../../Dashboard/Header";
-
-// Mock data and types (replace with actual types from your schema)
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  username?: string;
-  role_id: number;
-  auth_type: "local" | "google" | "github" | "facebook";
-  avatar?: string;
-  created_at: Date;
-}
+import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
 
 const UsersDashboard = () => {
   const [users, setUsers] = useState<UserSelect[]>([]);
@@ -89,6 +78,9 @@ const UsersDashboard = () => {
       const { data } = await axios.get<{ data: RolesSelect[] }>("/api/roles");
       return data.data;
     },
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
   const { isFetching, data, refetch } = useQuery({
     queryKey: ["users"],
@@ -212,34 +204,28 @@ const UsersDashboard = () => {
       case 4:
         return "teal";
       default:
-        return "green";
+        return "gray";
     }
   }
   return (
     <Box>
       <DashHeader></DashHeader>
       <Box p={{ base: 4, md: 5 }}>
-        <Card rounded={"lg"} mb={8}>
-          <CardBody>
-            <HStack justify="space-between" align="center">
-              <Heading size="lg">Users Management</Heading>
-              <Button
-                leftIcon={<AddIcon />}
-                colorScheme="blue"
-                rounded="md"
-                onClick={() => openUserModal()}
-              >
-                Add User
-              </Button>
-            </HStack>
-          </CardBody>
-        </Card>
+        <PageTitleCard title={"Users Management"}>
+          <Button
+            leftIcon={<AddIcon />}
+            colorScheme="blue"
+            onClick={() => openUserModal()}
+          >
+            Add User
+          </Button>
+        </PageTitleCard>
 
-        <Card rounded={"lg"} mb={8}>
+        <Card mb={8}>
           <CardBody>
             <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
               <InputGroup>
-                <InputLeftAddon roundedLeft={"full"}>
+                <InputLeftAddon>
                   <SearchIcon />
                 </InputLeftAddon>
                 <Input
@@ -247,12 +233,10 @@ const UsersDashboard = () => {
                   autoComplete="off"
                   placeholder="Search users..."
                   value={searchTerm}
-                  roundedRight={"full"}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </InputGroup>
               <Select
-                rounded={"full"}
                 maxW={{ md: "300px" }}
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
@@ -369,7 +353,6 @@ const UsersDashboard = () => {
                             <Td>
                               <HStack>
                                 <IconButton
-                                  rounded={"full"}
                                   icon={<EditIcon />}
                                   size="sm"
                                   variant="ghost"
@@ -378,7 +361,6 @@ const UsersDashboard = () => {
                                 ></IconButton>
                                 <IconButton
                                   aria-label="Delete"
-                                  rounded={"full"}
                                   icon={<DeleteIcon />}
                                   color="red.500"
                                   size="sm"
@@ -399,19 +381,18 @@ const UsersDashboard = () => {
         </Card>
 
         {/* User Create/Edit Modal */}
-        <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+        <Modal isOpen={isOpen} onClose={onClose} size="xl">
           <ModalOverlay />
-          <ModalContent rounded={"3xl"}>
+          <ModalContent rounded={"xl"}>
             <ModalHeader>
               {currentUser?.id ? "Edit User" : "Add New User"}
             </ModalHeader>
             <ModalBody>
-              <VStack spacing={4} align={"start"}>
-                <FormControl>
+              <VStack spacing={4} align={"start"} as={"form"} id="user-form">
+                <FormControl isRequired>
                   <FormLabel>Name</FormLabel>
                   <Input
                     autoComplete="off"
-                    rounded={"full"}
                     placeholder="Enter full name"
                     type="text"
                     name="name"
@@ -424,12 +405,11 @@ const UsersDashboard = () => {
                     }
                   />
                 </FormControl>
-                <FormControl>
+                <FormControl isRequired>
                   <FormLabel>Email</FormLabel>
                   <Input
                     placeholder="Enter email"
                     type="email"
-                    rounded={"full"}
                     name="email"
                     autoComplete="off"
                     value={currentUser?.email || ""}
@@ -441,14 +421,13 @@ const UsersDashboard = () => {
                     }
                   />
                 </FormControl>
-                <FormControl>
+                <FormControl isRequired>
                   <FormLabel>Password</FormLabel>
                   <Input
                     placeholder="Enter password"
                     type="password"
                     name="password"
                     autoComplete="off"
-                    rounded={"full"}
                     value={currentUser?.password || ""}
                     onChange={(e) =>
                       setCurrentUser((prev) => ({
@@ -458,11 +437,10 @@ const UsersDashboard = () => {
                     }
                   />
                 </FormControl>
-                <FormControl>
+                <FormControl isRequired>
                   <FormLabel>Username</FormLabel>
                   <Input
                     autoComplete="off"
-                    rounded={"full"}
                     placeholder="Username"
                     type="text"
                     name="username"
@@ -475,16 +453,15 @@ const UsersDashboard = () => {
                     }
                   />
                 </FormControl>
-                <FormControl>
+                <FormControl isRequired>
                   <FormLabel>Role</FormLabel>
 
                   <Menu>
                     <MenuButton
-                      rounded={"full"}
                       as={Button}
                       variant={"ghost"}
                       w="full"
-                      colorScheme="black"
+                      colorScheme="gray"
                       textTransform={"capitalize"}
                       rightIcon={<ChevronDownIcon />}
                       justifyContent={"start"}
@@ -495,12 +472,11 @@ const UsersDashboard = () => {
                     >
                       {getActiveRole()?.name || "Choose role"}
                     </MenuButton>
-                    <MenuList rounded={"2xl"} px={2} py={2}>
+                    <MenuList rounded={"xl"} px={2} py={2}>
                       {roles &&
                         roles?.length > 0 &&
                         roles?.map((role) => (
                           <MenuItem
-                            rounded={"full"}
                             key={role.id}
                             textTransform={"capitalize"}
                             onClick={() => {
@@ -535,7 +511,11 @@ const UsersDashboard = () => {
                     >
                       <Stack gap={0}>
                         <Text>Notify User</Text>
-                        <Text fontSize={"small"} color={"gray.500"}>
+                        <Text
+                          fontSize={"small"}
+                          color={"gray.500"}
+                          fontWeight={400}
+                        >
                           Sends an email with the account details to user.
                         </Text>
                       </Stack>
@@ -546,12 +526,11 @@ const UsersDashboard = () => {
               </VStack>
             </ModalBody>
             <ModalFooter>
-              <Button rounded={"full"} variant="ghost" mr={3} onClick={onClose}>
+              <Button variant="ghost" mr={3} onClick={onClose}>
                 Cancel
               </Button>
               <Button
-                rounded={"full"}
-                colorScheme="blue"
+                form="user-form"
                 onClick={saveUser}
                 isLoading={isUpdating}
                 loadingText={currentUser?.id ? "Updating..." : "Creating..."}

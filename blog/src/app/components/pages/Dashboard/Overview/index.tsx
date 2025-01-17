@@ -26,74 +26,8 @@ import { IconType } from "react-icons";
 import DashHeader from "../../../Dashboard/Header";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { OverviewCard } from "./OverviewCard";
 
-export const OverviewCard = ({
-  color,
-  label,
-  icon,
-  value,
-  isUp,
-  growthCount,
-  isLoading,
-}: {
-  label: string;
-  value: string | number;
-  color?: string;
-  icon: IconType;
-  isUp?: boolean;
-  growthCount?: number;
-  isLoading?: boolean;
-}) => {
-  return (
-    <Card>
-      <HStack
-        rounded={"md"}
-        bg={useColorModeValue("white", "gray.700")}
-        borderTop={"4px solid var(--chakra-colors-" + color + "-500)"}
-        p={6}
-        minH={"60px"}
-      >
-        <VStack bg={color + ".100"} p={2} rounded={"full"}>
-          <Icon as={icon} size={20} color={color + ".500"} />
-        </VStack>
-        <Skeleton isLoaded={!isLoading}>
-          <Stack gap={1}>
-            <HStack gap={2}>
-              <Text
-                fontWeight={600}
-                fontSize={{ base: "lg", md: "x-large", lg: "xx-large" }}
-                color={color + ".500"}
-                as={"span"}
-              >
-                {value}
-              </Text>
-              <Text as={"span"} fontSize={"small"} fontWeight={500}>
-                {label}
-              </Text>
-            </HStack>
-            <HStack>
-              {isUp ? (
-                <HStack color={"green.500"} fontSize={"small"}>
-                  <LuTrendingUp />{" "}
-                  <Text as={"span"} fontWeight={500}>
-                    +{growthCount} this week
-                  </Text>
-                </HStack>
-              ) : (
-                <HStack color={"red.500"} fontSize={"small"}>
-                  <LuTrendingDown />{" "}
-                  <Text as={"span"} fontWeight={500}>
-                    -{growthCount} this week
-                  </Text>
-                </HStack>
-              )}
-            </HStack>
-          </Stack>
-        </Skeleton>
-      </HStack>
-    </Card>
-  );
-};
 export default function Overview() {
   const bgColor = useColorModeValue("white", "gray.700");
 
@@ -150,7 +84,13 @@ export default function Overview() {
     <Box>
       <DashHeader></DashHeader>
       <Stack gap={{ base: 5, md: 6 }} py={5} px={4}>
-        <Grid gap={6} templateColumns={"repeat(auto-fit, minmax(230px,1fr))"}>
+        <Grid
+          gap={4}
+          templateColumns={{
+            md: "repeat(2,1fr)",
+            base: "1fr",
+          }}
+        >
           <OverviewCard
             isLoading={isUsersLoading}
             color="purple"
