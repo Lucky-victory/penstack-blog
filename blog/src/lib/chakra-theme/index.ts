@@ -44,9 +44,19 @@ const sizes = {
 export const chakraTheme = extendTheme(
   config,
   {
+    colors: {
+      charcoalBlack: "#121212",
+      customBlue: "#0070f3",
+    },
     sizes,
     styles: {
       global: {
+        a: {
+          color: "blue.500",
+          _hover: {
+            textDecoration: "underline",
+          },
+        },
         ":root": {
           "--dash-sidebar-mini-w": "60px",
           "--dash-sidebar-w": "230px",
@@ -66,7 +76,7 @@ export const chakraTheme = extendTheme(
   },
   withDefaultProps({
     defaultProps: {
-      rounded: "lg",
+      rounded: "xl",
     },
     components: ["Input", "NumberInput", "PinInput", "Button"],
   }),
@@ -75,6 +85,12 @@ export const chakraTheme = extendTheme(
       rounded: "xl",
     },
     components: ["Card"],
+  }),
+  withDefaultProps({
+    defaultProps: {
+      rounded: "full",
+    },
+    components: ["IconButton"],
   }),
   withDefaultColorScheme({ colorScheme: "blue" })
 );

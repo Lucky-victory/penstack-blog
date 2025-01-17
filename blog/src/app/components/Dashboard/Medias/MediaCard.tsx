@@ -23,6 +23,8 @@ import {
   VStack,
   Center,
   DarkMode,
+  Flex,
+  Text,
 } from "@chakra-ui/react";
 import { formatBytes } from "@/src/utils";
 import { Image } from "@chakra-ui/react";
@@ -44,7 +46,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   const [mediaToPreview, setMediaToPreview] = useState<MediaResponse | null>(
     null
   );
-  const cardBgColor = useColorModeValue("gray.50", "black");
+  const cardBgColor = useColorModeValue("gray.100", "gray.800");
   const getIcon = () => {
     switch (media.type) {
       case "image":
@@ -60,6 +62,8 @@ export const MediaCard: React.FC<MediaCardProps> = ({
     }
   };
 
+  const flexBgColor = useColorModeValue("gray.100", "gray.800");
+
   const handleSelectClick = () => {
     onSelect?.(media);
   };
@@ -73,6 +77,8 @@ export const MediaCard: React.FC<MediaCardProps> = ({
 
       <Card
         pos={"relative"}
+        w={"full"}
+        h={250}
         rounded={"lg"}
         overflow={"hidden"}
         boxShadow={selected ? "outline" : "none"}
@@ -113,9 +119,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           <IconButton
             size="sm"
             aria-label="Select"
-            // colorScheme={selected ? "blue" : "gray"}
             icon={selected ? <LuCheckSquare /> : <LuSquare fontWeight={500} />}
-            rounded={"full"}
             onClick={(e) => {
               e.stopPropagation();
               onSelect?.(media);
@@ -132,7 +136,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           p={3}
           className="media-card-overlay"
           borderTop={"1px solid"}
-          borderColor={"gray.400"}
+          borderColor={"gray.600"}
           roundedBottom={"lg"}
           shadow={"lg"}
           bg={cardBgColor}
@@ -141,7 +145,6 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           <Button
             size="sm"
             variant="outline"
-            rounded={"lg"}
             leftIcon={<LuEye />}
             onClick={(e) => {
               e.stopPropagation();
@@ -151,9 +154,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             Preview
           </Button>
         </VStack>
-        <CardBody pos={"relative"}>
+        <CardBody pos={"relative"} p={2}>
           {media.type === "image" && (
-            <Box rounded={"md"} h={200}>
+            <Box rounded={"md"} aspectRatio={16 / 9}>
               <Image
                 src={media.url}
                 alt={media.alt_text || media.name}
@@ -164,7 +167,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             </Box>
           )}
           {media.type === "video" && (
-            <Box rounded={"md"} position="relative" h={200}>
+            <Box rounded={"md"} position="relative" aspectRatio={16 / 9}>
               <Box
                 as="video"
                 controls
@@ -176,19 +179,29 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             </Box>
           )}
           {media.type !== "video" && media.type !== "image" && (
-            <Box
+            <Flex
+              rounded={"md"}
+              bg={flexBgColor}
+              align={"center"}
+              justify={"center"}
               h={200}
-              className=" rounded-md bg-gray-100 flex items-center justify-center"
             >
               {getIcon()}
-            </Box>
+            </Flex>
           )}
         </CardBody>
-        <CardFooter className="p-2 text-sm">
-          <div className="w-full truncate">
-            <p className="font-medium truncate">{media.name}</p>
-            <p className="text-gray-500 text-xs">{formatBytes(media.size)}</p>
-          </div>
+        <CardFooter p={2} fontSize={"small"}>
+          <Box isTruncated w={"full"}>
+            <Text isTruncated fontWeight={"medium"}>
+              {media.name}
+            </Text>
+            <Text
+              fontSize={"x-small"}
+              color={useColorModeValue("gray.500", "gray.400")}
+            >
+              {formatBytes(media.size)}
+            </Text>
+          </Box>
         </CardFooter>
       </Card>
     </>

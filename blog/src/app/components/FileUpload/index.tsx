@@ -20,6 +20,7 @@ import {
   IconButton,
   CircularProgress,
   CircularProgressLabel,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -57,6 +58,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     duration: 3000,
     isClosable: true,
   });
+
+  const borderColor = useColorModeValue("gray.300", "gray.600");
+  const activeBorderColor = useColorModeValue("blue.500", "blue.300");
+  const activeBgColor = useColorModeValue("blue.50", "blue.900");
+  const iconColor = useColorModeValue("gray.400", "gray.500");
+  const bgColor = useColorModeValue("white", "gray.800");
+  const itemBgColor = useColorModeValue("gray.100", "gray.700");
 
   const getSignature = async () => {
     const response = await fetch(`/api/upload/signature?folder=${folder}`);
@@ -149,47 +157,57 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   });
 
   return (
-    <Box mx={"auto"} h={"full"} w={"full"}>
+    <Box mx="auto" h="full" w="full">
       <VStack spacing={4} w="full">
         <VStack
-          minH={"400"}
-          justify={"center"}
+          minH="400"
+          justify="center"
           w="full"
           {...getRootProps()}
-          className={`
-            border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
-            transition-colors duration-200
-            ${isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}
-            ${uploading ? "pointer-events-none opacity-60" : ""}
-          `}
+          borderWidth="2px"
+          borderStyle="dashed"
+          borderColor={isDragActive ? activeBorderColor : borderColor}
+          borderRadius="lg"
+          p={8}
+          cursor="pointer"
+          transition="all 0.2s"
+          bg={isDragActive ? activeBgColor : "transparent"}
+          opacity={uploading ? 0.6 : 1}
+          pointerEvents={uploading ? "none" : "auto"}
         >
           <input {...getInputProps()} />
-          <div className="flex flex-col items-center gap-2">
+          <VStack spacing={2}>
             {uploading ? (
               <VStack>
-                <LuLoader2 className="h-8 w-8 animate-spin text-blue-500" />
-                <p>Uploading...</p>
+                <Box
+                  as={LuLoader2}
+                  h={8}
+                  w={8}
+                  color="blue.500"
+                  animation="spin 1s linear infinite"
+                />
+                <Text>Uploading...</Text>
               </VStack>
             ) : (
               <>
-                <LuUpload className="h-8 w-8 text-gray-400" />
-                <p>Drag & drop files here, or click to select files</p>
-                <p className="text-sm text-gray-500">
+                <Box as={LuUpload} h={8} w={8} color={iconColor} />
+                <Text>Drag & drop files here, or click to select files</Text>
+                <Text fontSize="sm" color="gray.500">
                   Maximum file size: {(maxSize / 1024 / 1024).toFixed(0)}MB
-                </p>
+                </Text>
               </>
             )}
-          </div>
+          </VStack>
         </VStack>
 
         {images.length > 0 && (
           <VStack
             spacing={4}
             w="full"
-            bg={"white"}
+            bg={bgColor}
             px={3}
             py={4}
-            rounded={"xl"}
+            borderRadius="xl"
             maxW={900}
           >
             {images.map((image, index) => (
@@ -198,7 +216,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 w="full"
                 spacing={4}
                 p={2}
-                bg="gray.100"
+                bg={itemBgColor}
                 borderRadius="lg"
               >
                 <Image
@@ -224,19 +242,15 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 <IconButton
                   aria-label="remove image"
                   colorScheme="red"
-                  size={"xs"}
-                  rounded={"full"}
+                  size="xs"
                   isDisabled={uploading}
                   onClick={() => handleRemoveImage(index)}
-                >
-                  <LuX />
-                </IconButton>
+                  icon={<LuX />}
+                />
               </HStack>
             ))}
             <Button
-              colorScheme="blue"
               onClick={handleUpload}
-              rounded={"full"}
               isLoading={uploading}
               loadingText="Uploading..."
             >
@@ -303,58 +317,48 @@ export const FileUrlUpload: React.FC<UrlUploadProps> = ({
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <FormControl isRequired>
-          <FormLabel htmlFor="url" fontSize={"small"} color="'gray.700">
-            Image URL
-          </FormLabel>
-          <Input
-            id="url"
-            rounded={"full"}
-            type="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://example.com/image.jpg"
-            isDisabled={uploading}
-            required
-          />
-        </FormControl>
+    <Box w="full" maxW="xl" mx="auto">
+      <form onSubmit={handleSubmit}>
+        <VStack spacing={4}>
+          <FormControl isRequired>
+            <FormLabel htmlFor="url" fontSize="small" color="gray.700">
+              Image URL
+            </FormLabel>
+            <Input
+              id="url"
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="https://example.com/image.jpg"
+              isDisabled={uploading}
+              required
+            />
+          </FormControl>
 
-        <FormControl>
-          <FormLabel fontSize={"small"} htmlFor="filename" color="'gray.700">
-            Custom Filename (optional)
-          </FormLabel>
-          <Input
-            rounded={"full"}
-            id="filename"
-            type="text"
-            value={filename}
-            onChange={(e) => setFilename(e.target.value)}
-            placeholder="custom-filename"
-            isDisabled={uploading}
-          />
-        </FormControl>
+          <FormControl>
+            <FormLabel fontSize="small" htmlFor="filename" color="gray.700">
+              Custom Filename (optional)
+            </FormLabel>
+            <Input
+              id="filename"
+              type="text"
+              value={filename}
+              onChange={(e) => setFilename(e.target.value)}
+              placeholder="custom-filename"
+              isDisabled={uploading}
+            />
+          </FormControl>
 
-        <Button
-          rounded={"full"}
-          type="submit"
-          isDisabled={uploading || !url}
-          className="w-full"
-        >
-          {uploading ? (
-            <>
-              <LuLoader2 className="mr-2 h-4 w-4 animate-spin" />
-              Uploading...
-            </>
-          ) : (
-            <>
-              <LuLink className="mr-2 h-4 w-4" />
-              Upload from URL
-            </>
-          )}
-        </Button>
+          <Button
+            type="submit"
+            isDisabled={uploading || !url}
+            w="full"
+            leftIcon={uploading ? <LuLoader2 /> : <LuLink />}
+          >
+            {uploading ? "Uploading..." : "Upload from URL"}
+          </Button>
+        </VStack>
       </form>
-    </div>
+    </Box>
   );
 };

@@ -25,6 +25,7 @@ import Loader from "../../Loader";
 import { objectToQueryParams } from "@/src/utils";
 import { useQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
+import Pagination from "../../Pagination";
 
 interface MediaLibraryProps {
   onSelect?: (media: MediaResponse | MediaResponse[]) => void;
@@ -41,7 +42,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
 }) => {
   const [filters, setFilters] = useState<FilterParams>({
     page: 1,
-    limit: 20,
+    limit: 4,
     ...defaultFilters,
   });
   const [loading, setLoading] = useState(false);
@@ -64,11 +65,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
   const { data: media, refetch } = useQuery({
     queryKey: ["media", debouncedFilters],
     queryFn: fetchMedia,
-    staleTime: 1000 * 60 * 60 * 24,
+    refetchOnWindowFocus: false,
   });
   const { data: folders } = useQuery({
     queryKey: ["folders"],
     queryFn: fetchFolders,
+    refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 60 * 24,
   });
 
@@ -133,14 +135,14 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     }
   };
 
-  const handleLoadMore = () => {
-    if (media && media.meta.page < media.meta.totalPages) {
-      setFilters((prev) => ({
-        ...prev,
-        page: prev.page ? prev.page + 1 : 2,
-      }));
-    }
-  };
+  // const handleLoadMore = () => {
+  //   if (media && media.meta.page < media.meta.totalPages) {
+  //     setFilters((prev) => ({
+  //       ...prev,
+  //       page: prev.page ? prev.page + 1 : 2,
+  //     }));
+  //   }
+  // };
 
   return (
     <Box className="space-y-6" minH={400}>
@@ -167,13 +169,13 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
         <>
           <Grid
             rounded={"lg"}
-            bg={bgColor}
+            // bg={bgColor}
             p={{ base: 3, md: 4 }}
             templateColumns={{
-              base: "repeat(auto-fill, minmax(200px, 1fr))",
-              md: "repeat(auto-fill, minmax(200px, 300px))",
+              base: "repeat(auto-fill, minmax(250px, 1fr))",
+              md: "repeat(auto-fill, minmax(250px, 250px))",
             }}
-            gap={{ base: 3, md: 4 }}
+            gap={4}
           >
             {media?.data.length > 0 &&
               media?.data.map((item) => (
@@ -185,66 +187,17 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                 />
               ))}
           </Grid>
-          <HStack spacing={2} justify={"center"}>
-            <IconButton
-              aria-label="First page"
-              rounded={"md"}
-              variant="outline"
-              onClick={() => setFilters((prev) => ({ ...prev, page: 1 }))}
-              isDisabled={loading || media?.meta.page === 1}
-            >
-              <LuChevronsLeft className="h-4 w-4" />
-            </IconButton>
-            <IconButton
-              aria-label="previous page"
-              rounded={"md"}
-              variant="outline"
-              onClick={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  page: prev.page ? prev.page - 1 : 1,
-                }))
-              }
-              isDisabled={loading || media?.meta.page === 1}
-            >
-              <LuChevronLeft className="h-4 w-4" />
-            </IconButton>
-            <Text>
-              Page {media?.meta.page} of {media?.meta.totalPages}
-            </Text>
-            <IconButton
-              rounded={"md"}
-              aria-label="next page"
-              variant="outline"
-              onClick={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  page: prev.page ? prev.page + 1 : 2,
-                }))
-              }
-              isDisabled={
-                loading || media?.meta.page === media?.meta.totalPages
-              }
-            >
-              <LuChevronRight className="h-4 w-4" />
-            </IconButton>
-            <IconButton
-              rounded={"md"}
-              variant="outline"
-              aria-label="last page"
-              onClick={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  page: media?.meta.totalPages,
-                }))
-              }
-              isDisabled={
-                loading || media?.meta.page === media?.meta.totalPages
-              }
-            >
-              <LuChevronsRight className="h-4 w-4" />
-            </IconButton>
-          </HStack>
+          <Pagination
+            currentPage={media.meta.page}
+            totalPages={media.meta.totalPages}
+            onPageChange={(page) => {
+              setFilters((prev) => ({
+                ...prev,
+                page,
+              }));
+            }}
+            isLoading={loading}
+          />
         </>
       )}
       {selectedMedia.length > 0 && (

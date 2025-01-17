@@ -9,34 +9,29 @@ import {
   Text,
   Button,
   Input,
-  Alert,
-  AlertIcon,
   useToast,
 } from "@chakra-ui/react";
+import axios from "axios";
 
 export default function VerifyEmail() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
-  const toast = useToast({ position: "top" });
+  const toast = useToast({ position: "top", duration: 10000 });
 
   const initialEmail = searchParams.get("email");
 
   const handleResend = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/auth/send-verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email || initialEmail }),
+      const res = await axios.post("/api/auth/send-verification", {
+        email: email || initialEmail,
       });
-
-      if (res.ok) {
+      if (res.status >= 200 && res.status < 400) {
         toast({
           title: "Verification email sent",
           description: "Please check your inbox",
           status: "success",
-          duration: 5000,
         });
       } else {
         throw new Error("Failed to send verification email");
@@ -46,7 +41,6 @@ export default function VerifyEmail() {
         title: "Error",
         description: "Failed to send verification email",
         status: "error",
-        duration: 5000,
       });
     } finally {
       setIsLoading(false);
@@ -59,8 +53,8 @@ export default function VerifyEmail() {
         <VStack spacing={3} textAlign="center">
           <Heading size="xl">Verify Your Email</Heading>
           <Text color="gray.500">
-            Please verify your email address to continue. Haven&apos;t received the
-            email?
+            Please verify your email address to continue. Haven&apos;t received
+            the email?
           </Text>
         </VStack>
 
@@ -70,15 +64,12 @@ export default function VerifyEmail() {
             value={email || initialEmail || ""}
             onChange={(e) => setEmail(e.target.value)}
             size="lg"
-            borderRadius="xl"
           />
           <Button
             onClick={handleResend}
             isLoading={isLoading}
-            colorScheme="blue"
             size="lg"
             width="full"
-            borderRadius="xl"
           >
             Resend Verification Email
           </Button>

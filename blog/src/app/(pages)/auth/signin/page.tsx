@@ -69,24 +69,12 @@ export default function SignIn() {
           <VStack spacing={4}>
             <FormControl>
               <FormLabel>Email or Username</FormLabel>
-              <Input
-                name="emailOrUsername"
-                type="text"
-                required
-                size="lg"
-                borderRadius="xl"
-              />
+              <Input name="emailOrUsername" type="text" required size="lg" />
             </FormControl>
 
             <FormControl>
               <FormLabel>Password</FormLabel>
-              <Input
-                name="password"
-                type="password"
-                required
-                size="lg"
-                borderRadius="xl"
-              />
+              <Input name="password" type="password" required size="lg" />
             </FormControl>
 
             {error && (
@@ -96,14 +84,7 @@ export default function SignIn() {
               </Alert>
             )}
 
-            <Button
-              type="submit"
-              colorScheme="blue"
-              size="lg"
-              width="full"
-              borderRadius="xl"
-              isLoading={isLoading}
-            >
+            <Button type="submit" size="lg" width="full" isLoading={isLoading}>
               Sign in
             </Button>
           </VStack>
@@ -122,7 +103,6 @@ export default function SignIn() {
             leftIcon={<FaGithub />}
             width="full"
             size="lg"
-            borderRadius="xl"
             colorScheme="blackAlpha"
           >
             GitHub
