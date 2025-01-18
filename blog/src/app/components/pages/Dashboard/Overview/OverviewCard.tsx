@@ -7,7 +7,8 @@ import {
   Image,
   Text,
   VStack,
-  Grid,CardBody,
+  Grid,
+  CardBody,
   useColorModeValue,
   Icon,
   Card,
@@ -31,17 +32,15 @@ export const OverviewCard = ({
   growthCount?: number;
   isLoading?: boolean;
 }) => {
-  const bgColor = useColorModeValue("white", "gray.800");
   const textColor = useColorModeValue("gray.500", "gray.400");
   const borderColor = useColorModeValue("gray.300", "gray.700");
   return (
     <GridItem w={"100%"}>
-      <Card variant={"outline"}>
+      <Card variant={"outline"} h={"179px"}>
         <CardBody>
           <VStack
             m={0}
             align={"start"}
-            h={"179px"}
             gap={"10px"}
             rounded={"14px"}
             flex={1}
