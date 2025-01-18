@@ -152,9 +152,9 @@ export const NewsletterPage = ({ title }: { title?: string }) => {
             ))}
           </SimpleGrid>
 
-          <Box w="full" maxW="md" pt={4}>
-            <Newsletter />
-          </Box>
+          <HStack w={"full"} mx={"auto"} justify={"center"} pt={4}>
+            <Newsletter isDark={false} />
+          </HStack>
 
           {status === "success" && (
             <Text color="green.500" fontWeight="medium">

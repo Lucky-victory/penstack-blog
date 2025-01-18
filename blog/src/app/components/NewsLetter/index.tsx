@@ -12,6 +12,7 @@ import {
   InputRightAddon,
   LightMode,
   Stack,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useColorModeValue } from "@chakra-ui/react";
@@ -23,17 +24,22 @@ import isEmpty from "just-is-empty";
 export const Newsletter = ({
   title,
   description,
+  isDark = true,
+  maxW = "lg",
 }: {
   title?: string;
   description?: string;
   maxW?: string | number;
+  isDark?: boolean;
 }) => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
-  const formWrapBgColor = "gray.900";
-  const formWrapBorderColor = "gray.700";
+  const { colorMode } = useColorMode();
+  const formWrapBgColor = isDark || colorMode === "dark" ? "gray.800" : "white";
+  const formWrapBorderColor =
+    isDark || colorMode === "dark" ? "gray.700" : "gray.300";
   const textColor = useColorModeValue("gray.400", "gray.300");
-  const headingColor = useColorModeValue("inherit", "white");
+  const headingColor = "white";
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async (values: { email: string }) => {
       const { data } = await axios.post("/api/newsletters", values);
@@ -68,10 +74,10 @@ export const Newsletter = ({
   };
 
   return (
-    <Box maxW={"lg"}>
+    <Box maxW={maxW} w={"full"}>
       <Stack spacing={4}>
         {title && (
-          <Heading size="lg" color={headingColor}>
+          <Heading size="md" color={headingColor} fontWeight={500}>
             {title || "Get Updates"}
           </Heading>
         )}
@@ -111,19 +117,31 @@ export const Newsletter = ({
                   }}
                 />
               </FormControl>
-              <LightMode>
+              {isDark ? (
+                <LightMode>
+                  <Button
+                    type="submit"
+                    isLoading={isPending}
+                    isDisabled={isPending}
+                    zIndex={2}
+                    colorScheme="gray"
+                    fontWeight={500}
+                  >
+                    Subscribe
+                  </Button>
+                </LightMode>
+              ) : (
                 <Button
                   type="submit"
                   isLoading={isPending}
                   isDisabled={isPending}
                   zIndex={2}
-                  colorScheme="gray"
-                  rounded={"lg"}
+                  colorScheme="blue"
                   fontWeight={500}
                 >
                   Subscribe
                 </Button>
-              </LightMode>
+              )}
             </Flex>
           </form>
         </Box>

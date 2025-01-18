@@ -1,8 +1,18 @@
+"use client";
 import { Metadata } from "next";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Box, Container, Heading, Text, VStack, useToast, Spinner } from "@chakra-ui/react";
-import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  VStack,
+  useToast,
+  Spinner,
+  Icon,
+} from "@chakra-ui/react";
+import { LuCheckCircle, LuMailWarning } from "react-icons/lu";
 
 export const metadata: Metadata = {
   title: "Newsletter Confirmation",
@@ -12,7 +22,9 @@ export const metadata: Metadata = {
 export default function NewsletterConfirm() {
   const searchParams = useSearchParams();
   const toast = useToast();
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "success" | "error">(
+    "loading"
+  );
   const token = searchParams.get("token");
 
   useEffect(() => {
@@ -23,7 +35,9 @@ export default function NewsletterConfirm() {
       }
 
       try {
-        const response = await fetch(`/api/newsletters/confirmation?token=${token}`);
+        const response = await fetch(
+          `/api/newsletters/confirmation?token=${token}`
+        );
         const data = await response.json();
 
         if (response.ok) {
@@ -77,7 +91,7 @@ export default function NewsletterConfirm() {
 
         {status === "success" && (
           <Box textAlign="center">
-            <CheckCircleIcon w={16} h={16} color="green.500" mb={4} />
+            <Icon as={LuCheckCircle} w={16} h={16} color="green.500" mb={4} />
             <Heading size="lg" mb={4}>
               Subscription Confirmed!
             </Heading>
@@ -92,15 +106,17 @@ export default function NewsletterConfirm() {
 
         {status === "error" && (
           <Box textAlign="center">
-            <WarningIcon w={16} h={16} color="red.500" mb={4} />
+            <Icon as={LuMailWarning} w={16} h={16} color="red.500" mb={4} />
             <Heading size="lg" mb={4}>
               Confirmation Failed
             </Heading>
             <Text color="gray.500">
-              We couldn't confirm your subscription. The confirmation link might be expired or invalid.
+              We couldn&apos;t confirm your subscription. The confirmation link
+              might be expired or invalid.
             </Text>
             <Text color="gray.500" mt={2}>
-              Please try subscribing again or contact support if the issue persists.
+              Please try subscribing again or contact support if the issue
+              persists.
             </Text>
           </Box>
         )}
@@ -108,4 +124,3 @@ export default function NewsletterConfirm() {
     </Container>
   );
 }
-

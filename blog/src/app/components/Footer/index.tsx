@@ -20,7 +20,7 @@ import { AppLogo } from "../AppLogoAndName/AppLogo";
 import { AppLogoAndName } from "../AppLogoAndName";
 
 const Footer = () => {
-  const bgColor = useColorModeValue("black", "gray.900");
+  const bgColor = useColorModeValue("charcoalBlack", "gray.900");
   const textColor = "gray.400";
   const hoverColor = useColorModeValue("gray.500", "gray.300");
   const siteConfig = useSiteConfig();
@@ -56,7 +56,7 @@ const Footer = () => {
         alignContent={"center"}
       >
         <Grid gridTemplate={["1fr", "1fr 1fr", "1fr 1fr 1fr 1fr"]} gap={6}>
-          <Stack>
+          <Stack color={"white"}>
             <AppLogoAndName logoSize={"25px"} nameSize={"large"} />
             <Text fontSize="sm" color={textColor} maxW={300}>
               {siteConfig?.siteDescription?.value}
@@ -65,9 +65,9 @@ const Footer = () => {
 
           <Stack>
             <Box color={textColor}>
-              <Newsletter />
+              <Newsletter maxW={"md"} title={"Get updates"} />
             </Box>
-            <Flex gap={4}>
+            <Flex gap={4} mt={4}>
               {socialLinks.map((link) => (
                 <DarkMode key={link.label}>
                   <IconButton
@@ -75,7 +75,8 @@ const Footer = () => {
                     aria-label={link.label}
                     href={link.href}
                     color={textColor}
-                    _hover={{ color: hoverColor }}
+                    transition="all 0.2s"
+                    _hover={{ color: hoverColor, transform: "scale(1.1)" }}
                     display="flex"
                     alignItems="center"
                     colorScheme="gray"
