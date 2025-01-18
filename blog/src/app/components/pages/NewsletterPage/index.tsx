@@ -22,6 +22,7 @@ import { LuSend, LuCode, LuZap, LuBookOpen, LuQuote } from "react-icons/lu";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import isEmpty from "just-is-empty";
+import { Newsletter } from "../../NewsLetter";
 
 const testimonials = [
   {
@@ -102,29 +103,10 @@ const Testimonial = ({
 );
 
 export const NewsletterPage = ({ title }: { title?: string }) => {
-  const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
   const bgColor = useColorModeValue("gray.50", "gray.900");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
-
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (values: { email: string }) => {
-      const { data } = await axios.post("/api/newsletters", values);
-      return data;
-    },
-  });
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
-      if (isEmpty(email)) return;
-      await mutateAsync({ email });
-      setStatus("success");
-      setEmail("");
-      setTimeout(() => setStatus(""), 3000);
-    } catch (error) {}
-  };
 
   return (
     <Container maxW="5xl" py={12}>
@@ -171,40 +153,7 @@ export const NewsletterPage = ({ title }: { title?: string }) => {
           </SimpleGrid>
 
           <Box w="full" maxW="md" pt={4}>
-            <form onSubmit={handleSubmit}>
-              <Flex
-                direction={{ base: "column", sm: "row" }}
-                gap={{ base: 4, sm: 0 }}
-              >
-                <FormControl>
-                  <Input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    size="lg"
-                    rounded="full"
-                    borderWidth={2}
-                    _focus={{ borderColor: "blue.500", boxShadow: "outline" }}
-                    required
-                  />
-                </FormControl>
-                <Button
-                  ml={{ sm: -10 }}
-                  size="lg"
-                  type="submit"
-                  isLoading={isPending}
-                  isDisabled={isPending}
-                  colorScheme="blue"
-                  rounded="full"
-                  rightIcon={<LuSend />}
-                  _hover={{ transform: "translateY(-2px)" }}
-                  transition="all 0.2s"
-                >
-                  Subscribe
-                </Button>
-              </Flex>
-            </form>
+            <Newsletter />
           </Box>
 
           {status === "success" && (

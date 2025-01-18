@@ -19,6 +19,7 @@ import {
   HStack,
   Divider,
   Image,
+  IconButton,
 } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { Link } from "@chakra-ui/next-js";
@@ -144,27 +145,32 @@ export const SidebarContentNav = ({
         >
           {!isMinimized && (
             <>
-              <AppLogoAndName logoSize={"35px"} />
+              <AppLogoAndName logoSize={"30px"} />
             </>
           )}
           <VStack>
             {isMinimized && (
               <AppLogo src={siteConfig?.siteLogo?.value} size={"30px"} />
             )}
-            <Icon
-              as={isMinimized ? LuChevronsRight : LuChevronsLeft}
+            <IconButton
+              aria-label="Toggle Sidebar"
               onClick={toggleMinimized}
               fontSize="20"
-              cursor="pointer"
+              size="sm"
+              variant={"ghost"}
+              colorScheme="gray"
               color={siteNameColor}
-              display={{ base: "none", md: "block" }}
-            />
+              display={{ base: "none", md: "flex" }}
+            >
+              {isMinimized ? <LuChevronsRight /> : <LuChevronsLeft />}
+            </IconButton>
           </VStack>
         </Flex>
       </Box>
 
       <VStack
         spacing={4}
+        mt={4}
         h={"calc(100% - var(--dash-header-h))"}
         align="stretch"
         flex={1}

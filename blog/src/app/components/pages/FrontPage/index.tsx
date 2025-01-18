@@ -59,9 +59,16 @@ const FrontPage = () => {
 
             <PostsCards posts={posts} loading={loading} />
             <HStack justify={"center"} my={8}>
-              <Button as={Link} size={"xl"} href={"/articles"} rounded={"lg"}>
-                View all posts
-              </Button>
+              <Link
+                href={"/articles"}
+                px={6}
+                py={2}
+                bg={"blue.500"}
+                color={"white"}
+                rounded={"xl"}
+              >
+                See all posts
+              </Link>
             </HStack>
           </Box>
         </Box>

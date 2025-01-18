@@ -7,16 +7,15 @@ import { addHours } from "date-fns";
 import crypto from "crypto";
 import { sendEmail } from "@/src/lib/send-email";
 import { getSettings } from "@/src/lib/settings";
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   const { email, name } = await req.json();
 
   const verificationToken = crypto.randomBytes(32).toString("hex");
   const tokenExpiry = addHours(new Date(), 24);
-  if (!email || !name) {
+  if (!email) {
     return NextResponse.json({
-      error: "Email and name are required",
+      error: "email is required",
     });
   }
   const { origin } = new URL(req.url);
@@ -32,7 +31,7 @@ export async function POST(req: Request) {
 
   const siteSettings = await getSettings();
   await sendEmail({
-    from: `Newsletter <${siteSettings?.newsletterEmailFrom?.value || siteSettings?.emailFrom?.value}>`,
+    from: `${siteSettings?.siteName?.value} Newsletter <${siteSettings?.newsletterEmailFrom?.value || siteSettings?.emailFrom?.value}>`,
     to: email,
     subject: "Confirm your newsletter subscription",
     react: NewsletterConfirmationTemplate({

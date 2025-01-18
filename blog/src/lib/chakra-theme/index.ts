@@ -5,6 +5,7 @@ import {
   theme as baseTheme,
   withDefaultProps,
 } from "@chakra-ui/react";
+import { CardConfig } from "./card";
 const config: ThemeConfig = {
   useSystemColorMode: true,
   initialColorMode: "system",
@@ -44,6 +45,9 @@ const sizes = {
 export const chakraTheme = extendTheme(
   config,
   {
+    components: {
+      Card: CardConfig,
+    },
     colors: {
       charcoalBlack: "#121212",
       customBlue: "#0070f3",
@@ -74,12 +78,7 @@ export const chakraTheme = extendTheme(
     },
     components: ["Input", "NumberInput", "PinInput", "Button"],
   }),
-  withDefaultProps({
-    defaultProps: {
-      rounded: "xl",
-    },
-    components: ["Card"],
-  }),
+
   withDefaultProps({
     defaultProps: {
       rounded: "full",

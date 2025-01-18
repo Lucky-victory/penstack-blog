@@ -41,6 +41,16 @@ export const Newsletter = ({
       return data;
     },
   });
+  const { mutateAsync: sendVerificationEmail } = useMutation({
+    mutationFn: async (values: { email: string }) => {
+      const { data } = await axios.post(
+        "/api/newsletters/confirmation/send",
+        values
+      );
+
+      return data;
+    },
+  });
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
@@ -48,6 +58,7 @@ export const Newsletter = ({
         return;
       }
       await mutateAsync({ email });
+      await sendVerificationEmail({ email });
       setStatus("success");
       setEmail("");
       setTimeout(() => {

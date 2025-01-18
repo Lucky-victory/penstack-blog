@@ -64,7 +64,7 @@ const PostViewsChart = () => {
   const gridColor = useColorModeValue("#e0e0e0", "#444444");
 
   return (
-    <Card rounded={"lg"}>
+    <Card variant={"outline"}>
       <CardHeader>
         <HStack wrap={"wrap"} justify={"space-between"} gap={4}>
           <Heading size={"md"}>Post Views</Heading>

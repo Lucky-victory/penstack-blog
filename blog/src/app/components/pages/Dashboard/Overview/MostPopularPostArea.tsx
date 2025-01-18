@@ -22,7 +22,7 @@ export default function MostPopularPosts() {
   const { posts = [], loading } = usePosts({ sortBy: "popular", limit: 5 });
 
   return (
-    <Card minH={200} rounded={"lg"}>
+    <Card minH={200} variant={'outline'}>
       <CardHeader>
         <Heading size={"md"}>Most Popular Posts</Heading>
       </CardHeader>

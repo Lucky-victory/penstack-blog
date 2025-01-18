@@ -40,6 +40,7 @@ export default function PostCard({
   const bgColor = useColorModeValue("transparent", "gray.900");
   return (
     <MotionPostCard
+      rounded={"xl"}
       initial={{ opacity: 0, y: 50 }}
       whileHover={{
         transform: "translateY(-4px)",
@@ -84,8 +85,6 @@ export default function PostCard({
           <Box position="absolute" top={3} left={3}>
             <Tag
               size="sm"
-              // top={3}
-              // right={3}
               variant={"unstyled"}
               bg={tagBgColor}
               color={tagColor}
