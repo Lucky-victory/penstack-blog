@@ -16,11 +16,11 @@ export const AuthButtons = () => {
   return user ? (
     <></>
   ) : (
-    <HStack spacing={4}>
+    <HStack spacing={{ base: 3, md: 4 }}>
       <Button
-        rounded="md"
         variant="ghost"
         as={Link}
+        size="sm"
         href={"/auth/signin"}
         _hover={{
           textDecor: "none",

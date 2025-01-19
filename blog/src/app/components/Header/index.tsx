@@ -260,7 +260,7 @@ const Header = () => {
                 <AuthButtons />
               </HStack>
               <Hide above="lg">
-                <LightDarkModeSwitch />
+                <AuthButtons />
               </Hide>
 
               <IconButton

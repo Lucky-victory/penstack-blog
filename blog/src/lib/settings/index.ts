@@ -1,3 +1,4 @@
+"server only";
 import { cache } from "react";
 import { db } from "@/src/db";
 import { siteSettings } from "@/src/db/schemas";

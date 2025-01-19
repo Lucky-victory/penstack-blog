@@ -3,7 +3,8 @@ import { SiteSettings } from "@/src/types";
 export const DEFAULT_SETTINGS: SiteSettings = {
   siteName: { value: "Vida Blog Starter", enabled: true },
   siteDescription: { value: "", enabled: true },
-  siteOgImage: { value: "", enabled: true },
+  siteOpengraph: { value: "", enabled: true },
+  siteLogo: { value: "", enabled: true },
   siteFavicon: { value: "", enabled: true },
   maintenanceMode: { value: "false", enabled: false },
   gaId: { value: "", enabled: false },

@@ -6,10 +6,9 @@ export const SignUp = () => {
 
   return (
     <Button
-      rounded="md"
       as={Link}
       py={2}
-      size={{ base: "xs", lg: "sm" }}
+      size={"sm"}
       h="auto"
       href={"/auth/sign-up"}
       _hover={{

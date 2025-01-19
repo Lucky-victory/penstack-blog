@@ -350,3 +350,10 @@ export const nativeFormatDate = (date: string | Date) => {
     day: "numeric",
   });
 };
+
+export const isSecretKey = (key: string) => {
+  const _key = key.toLowerCase();
+  return (
+    _key.includes("key") || _key.includes("secret") || _key.includes("token")
+  );
+};
