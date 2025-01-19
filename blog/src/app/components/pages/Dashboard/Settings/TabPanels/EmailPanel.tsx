@@ -9,8 +9,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { SiteSettings } from "@/src/types";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 interface EmailPanelProps {
   settings: SiteSettings;
   handleInputChange: (key: string, value: string) => void;
@@ -21,6 +20,19 @@ export const EmailPanel = ({
   handleInputChange,
 }: EmailPanelProps) => {
   const [showApiKey, setShowApiKey] = useState(false);
+
+  const handleShowApiKey = async () => {
+    setShowApiKey(true);
+  };
+
+  useEffect(() => {
+    if (showApiKey) {
+      const timer = setTimeout(() => {
+        setShowApiKey(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showApiKey]);
 
   return (
     <VStack spacing={4} align="stretch">
@@ -41,7 +53,7 @@ export const EmailPanel = ({
               h="1.75rem"
               size="sm"
               variant={"ghost"}
-              onClick={() => setShowApiKey(!showApiKey)}
+              onClick={async () => await handleShowApiKey()}
             >
               {showApiKey ? "Hide" : "Show"}
             </Button>

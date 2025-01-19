@@ -4,7 +4,7 @@ import { Resend } from "resend";
 import { getSettings } from "../settings";
 import isEmpty from "just-is-empty";
 import { ReactNode } from "react";
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { decryptKey } from "../encryption";
 
 export const sendEmail = async ({
   to,
@@ -19,10 +19,12 @@ export const sendEmail = async ({
   html?: string;
   react: ReactNode;
 }) => {
+  const siteSettings = await getSettings();
+  const resendApiKey = decryptKey(siteSettings?.resendApiKey?.value);
+  const resend = new Resend(resendApiKey);
   let defaultFrom = "";
 
   if (isEmpty(from)) {
-    const siteSettings = await getSettings();
     defaultFrom = `${siteSettings?.emailFromName.value || siteSettings?.siteName?.value} <${siteSettings?.emailFrom.value}>`;
   }
   return await resend.emails.send({

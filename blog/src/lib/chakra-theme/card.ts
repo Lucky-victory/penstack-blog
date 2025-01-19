@@ -15,14 +15,15 @@ export const CardConfig = helpers.defineMultiStyleConfig({
         bg: "gray.800",
       },
     },
-   
   },
 
   variants: {
     outline: {
       container: {
         border: "1px solid",
-        borderColor: "gray.300",
+        _light: {
+          borderColor: "gray.300",
+        },
         _dark: {
           borderColor: "gray.700",
         },

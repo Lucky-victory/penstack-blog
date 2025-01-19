@@ -4,13 +4,20 @@ import { db } from "@/src/db";
 import { siteSettings } from "@/src/db/schemas";
 import { SiteSettings } from "@/src/types";
 import { DEFAULT_SETTINGS } from "./config";
+import { isSecretKey } from "@/src/utils";
+import { decryptKey, encryptKey } from "../encryption";
 
 export const getSettings = cache(async () => {
   const settings = await db.select().from(siteSettings);
 
   const settingsObj = settings.reduce((acc, setting) => {
+    const value =
+      isSecretKey(setting.key) && setting.value
+        ? decryptKey(setting.value)
+        : setting.value;
+
     acc[setting.key] = {
-      value: setting.value || "",
+      value: value || "",
       enabled: setting.enabled as boolean,
     };
     return acc;
@@ -21,19 +28,20 @@ export const getSettings = cache(async () => {
 
 export async function updateSettings(newSettings: SiteSettings) {
   const operations = Object.entries(newSettings).map(([key, setting]) => {
+    const value =
+      isSecretKey(key) && setting.value
+        ? encryptKey(setting.value)
+        : setting.value;
+
     return db
       .insert(siteSettings)
       .values({
         key,
-        value: setting.value,
+        value,
         enabled: setting.enabled,
       })
       .onDuplicateKeyUpdate({
-        set: {
-          value: setting.value,
-          enabled: setting.enabled,
-          updated_at: new Date(),
-        },
+        set: { key, updated_at: new Date() },
       });
   });
 
