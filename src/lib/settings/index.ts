@@ -41,7 +41,7 @@ export async function updateSettings(newSettings: SiteSettings) {
         enabled: setting.enabled,
       })
       .onDuplicateKeyUpdate({
-        set: { key, updated_at: new Date() },
+        set: { key, value, updated_at: new Date() },
       });
   });
 
