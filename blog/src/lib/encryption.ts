@@ -3,6 +3,7 @@ import crypto from "crypto";
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || generateEncryptionKey();
 const ALGORITHM = "aes-256-gcm";
+console.log("ENCRYPTION_KEY", ENCRYPTION_KEY);
 
 export function encryptKey(key: string): string {
   const iv = crypto.randomBytes(16);

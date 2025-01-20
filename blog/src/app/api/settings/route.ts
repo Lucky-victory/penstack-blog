@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const settings = await getSettings();
     return NextResponse.json({
-      data: settings,
+      data: settings || {},
       message: "Settings fetched successfully",
     });
   } catch (error) {
@@ -24,6 +24,8 @@ export async function POST(request: Request) {
     revalidatePath("/");
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.log(error);
+
     return NextResponse.json(
       { error: "Failed to save settings" },
       { status: 500 }

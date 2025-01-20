@@ -102,7 +102,7 @@ export const Newsletter = ({
               <FormControl flex={1}>
                 <Input
                   type="email"
-                  p={1}
+                  p={0}
                   rounded={"none"}
                   fontWeight={"normal"}
                   value={email}

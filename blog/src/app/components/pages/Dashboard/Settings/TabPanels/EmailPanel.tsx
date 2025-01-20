@@ -22,7 +22,7 @@ export const EmailPanel = ({
   const [showApiKey, setShowApiKey] = useState(false);
 
   const handleShowApiKey = async () => {
-    setShowApiKey(true);
+    setShowApiKey(!showApiKey);
   };
 
   useEffect(() => {

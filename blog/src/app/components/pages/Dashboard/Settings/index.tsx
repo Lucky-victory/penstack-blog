@@ -42,7 +42,7 @@ export default function SettingsPage() {
   const queryClient = useQueryClient();
   const [hasChanges, setHasChanges] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const tabHoverBg = useColorModeValue("gray.100", "gray.800");
+  const tabHoverBg = useColorModeValue("gray.100", "gray.900");
   const tabActiveBg = useColorModeValue("blue.100", "blue.800");
   const tabActiveColor = useColorModeValue("blue.500", "blue.300");
   const tabActiveHoverBg = useColorModeValue("blue.200", "blue.700");
@@ -69,6 +69,7 @@ export default function SettingsPage() {
       const fetchedData = data.data;
       setSettings({ ...fetchedData });
       setOriginalSettings({ ...fetchedData });
+      return data?.data;
     } catch (error) {
       toast({
         title: "Failed to load settings",
@@ -150,7 +151,7 @@ export default function SettingsPage() {
     },
     transition: "all 0.2s ease-in-out",
     rounded: "md",
-    py: 2,
+    py: 1.5,
     _focus: {
       boxShadow: "none",
     },

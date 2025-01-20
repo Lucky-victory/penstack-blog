@@ -40,7 +40,7 @@ export const posts = mysqlTable(
     category_id: int("category_id"),
     is_sticky: boolean("is_sticky").default(false), // For pinned posts
     reading_time: int("reading_time"),
-    allow_comments: boolean("allow_comments").default(true),
+    allow_comments: boolean("allow_comments").default(false),
     featured_image_id: int("featured_image_id"),
     created_at: timestamp("created_at").defaultNow(),
     published_at: timestamp("published_at").generatedAlwaysAs(

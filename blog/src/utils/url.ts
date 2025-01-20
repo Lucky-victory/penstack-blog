@@ -82,3 +82,19 @@ export function getBaseUrl(url: string): string {
     throw new Error("Invalid URL provided");
   }
 }
+export function getSiteUrl() {
+  if (typeof window !== "undefined") {
+    return ""; // Return empty string on client-side
+  }
+
+  // On server side
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  return "http://localhost:3000";
+}

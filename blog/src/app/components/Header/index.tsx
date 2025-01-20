@@ -140,7 +140,7 @@ const Header = () => {
             <HStack
               align="center"
               spacing={4}
-              display={{ base: "none", lg: "flex" }}
+              display={{ base: "none", xl: "flex" }}
               py={"6px"}
             >
               <Link
@@ -256,7 +256,9 @@ const Header = () => {
                 />
               </HStack>
               <HStack spacing={2} display={{ base: "none", lg: "flex" }}>
-                <LightDarkModeSwitch />
+                <Hide below="lg">
+                  <LightDarkModeSwitch />
+                </Hide>
                 <AuthButtons />
               </HStack>
               <Hide above="lg">
@@ -265,7 +267,7 @@ const Header = () => {
 
               <IconButton
                 colorScheme="black"
-                display={{ base: "flex", lg: "none" }}
+                display={{ base: "flex", xl: "none" }}
                 aria-label="Open menu"
                 icon={<LuMenu size={20} />}
                 onClick={onOpen}

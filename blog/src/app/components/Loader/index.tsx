@@ -1,4 +1,4 @@
-import { Spinner, Text, VStack } from "@chakra-ui/react";
+import { Spinner, Text, VStack, Center } from "@chakra-ui/react";
 
 export function LoaderSvg() {
   return (
@@ -57,9 +57,11 @@ interface LoaderProps {
 }
 export default function Loader({ loadingText }: LoaderProps) {
   return (
-    <VStack py={8}>
-      <Spinner />
-      {loadingText && <Text>{loadingText}...</Text>}
-    </VStack>
+    <Center>
+      <VStack py={8}>
+        <Spinner />
+        {loadingText && <Text>{loadingText}...</Text>}
+      </VStack>
+    </Center>
   );
 }
