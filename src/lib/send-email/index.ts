@@ -1,4 +1,4 @@
-"use server";
+"server only";
 
 import { Resend } from "resend";
 import { getSettings } from "../settings";

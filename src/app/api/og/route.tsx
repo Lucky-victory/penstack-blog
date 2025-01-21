@@ -11,7 +11,7 @@ function formatDate(dateString: string) {
 }
 
 async function loadGoogleFont(font: string, text: string) {
-  const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(
+  const url = `https://fonts.googleapis.com/css?family=${font}&text=${encodeURIComponent(
     text
   )}`;
   const css = await (await fetch(url)).text();
@@ -246,8 +246,8 @@ export async function GET(request: NextRequest) {
         height: 630,
         fonts: [
           {
-            name: "Jakarta",
-            data: await loadGoogleFont("Jakarta", title),
+            name: "Plus+Jakarta+Sans",
+            data: await loadGoogleFont("Plus+Jakarta+Sans", title),
             weight: 700,
           },
         ],
