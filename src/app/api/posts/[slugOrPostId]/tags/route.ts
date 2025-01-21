@@ -2,10 +2,10 @@ import { db } from "@/src/db";
 import { posts, postTags, tags } from "@/src/db/schemas/posts.sql";
 import { getPlainPost } from "@/src/lib/queries/post";
 import { and, eq, inArray, or } from "drizzle-orm";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { slugOrPostId: string } }
 ) {
   try {
@@ -41,7 +41,7 @@ export async function GET(
 }
 
 export async function POST(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { slugOrPostId: string } }
 ) {
   try {
@@ -84,7 +84,7 @@ export async function POST(
 }
 
 export async function PATCH(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { slugOrPostId: string } }
 ) {
   try {

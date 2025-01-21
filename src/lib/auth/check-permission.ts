@@ -6,6 +6,7 @@ import { TPermissions } from "../../types";
 import { db } from "@/src/db";
 import { roles, rolePermissions, permissions } from "@/src/db/schemas";
 import { eq } from "drizzle-orm";
+import { Session } from "next-auth";
 
 // Get public permissions (cached to avoid repeated DB queries)
 let publicPermissionsCache: string[] | null = null;
@@ -49,7 +50,7 @@ export async function checkPermission<T = NextResponse>(
     isOwner,
     requiredPermission,
   }: { requiredPermission: TPermissions; isOwner?: boolean },
-  handler: () => Promise<T>,
+  handler: (user?: Session["user"]) => Promise<T>,
   isServerComp: boolean = false
 ) {
   // First check if this is a public permission
@@ -73,5 +74,5 @@ export async function checkPermission<T = NextResponse>(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  return handler();
+  return handler(session?.user);
 }

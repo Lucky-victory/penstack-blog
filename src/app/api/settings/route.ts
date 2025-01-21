@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSettings, updateSettings } from "@/src/lib/settings";
 import { revalidatePath } from "next/cache";
 
@@ -17,7 +17,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
     await updateSettings(data);

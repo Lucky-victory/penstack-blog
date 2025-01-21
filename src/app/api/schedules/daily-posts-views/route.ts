@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { aggregatePostViews } from "@/src/lib/queries/aggregated-post-views";
 import { db } from "@/src/db";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     try {
       await aggregatePostViews(db);

@@ -1,7 +1,6 @@
 import { NewPostRedirect } from "@/src/app/components/pages/Dashboard/NewPostPage/NewPostRedirect";
 import { db } from "@/src/db";
-import { posts, users } from "@/src/db/schemas";
-import { getSession } from "@/src/lib/auth/next-auth";
+import { posts } from "@/src/db/schemas";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { PostSelect } from "@/src/types";
 import { IdGenerator } from "@/src/utils";
@@ -12,22 +11,17 @@ export const metadata: Metadata = {
   title: "Dashboard | New Post",
 };
 export default async function Page() {
-  const shortId = IdGenerator.bigIntId().substring(6, 12);
   try {
-    const session = await getSession();
-    if (!session?.user?.email) {
-      throw new Error("No user session found");
-    }
-
-    const newPost = {
-      title: "Untitled post",
-      slug: "untitled-" + shortId,
-      author_id: session?.user?.id as string,
-    };
+    const shortId = IdGenerator.bigIntId().substring(0, 8);
 
     const createdPost = (await checkPermission(
       { requiredPermission: "posts:create" },
-      async () => {
+      async (user) => {
+        const newPost = {
+          title: "Untitled post",
+          slug: "untitled-" + shortId,
+          author_id: user?.id as string,
+        };
         const [insertResponse] = await db
           .insert(posts)
           .values(newPost)

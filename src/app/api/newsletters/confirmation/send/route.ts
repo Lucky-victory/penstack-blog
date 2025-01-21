@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { NewsletterConfirmationTemplate } from "@/src/app/components/Emails/Newsletter/Confirmation";
 import { db } from "@/src/db";
@@ -8,7 +8,7 @@ import crypto from "crypto";
 import { sendEmail } from "@/src/lib/send-email";
 import { getSettings } from "@/src/lib/settings";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const { email, name } = await req.json();
 
   const verificationToken = crypto.randomBytes(32).toString("hex");

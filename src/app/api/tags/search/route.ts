@@ -1,9 +1,9 @@
 import { db } from "@/src/db";
 import { tags } from "@/src/db/schemas/posts.sql";
 import { eq, ilike } from "drizzle-orm";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("q");

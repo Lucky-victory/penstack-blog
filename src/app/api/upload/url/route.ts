@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { uploadFromUrl } from "@/src/lib/cloudinary";
 import { db } from "@/src/db";
 import { medias } from "@/src/db/schemas";
 import { eq } from "drizzle-orm";
 import { determineFileType } from "@/src/utils/upload";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const { url, folder = "uploads", filename } = await request.json();
 

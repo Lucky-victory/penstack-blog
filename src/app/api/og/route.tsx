@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { NextRequest } from "next/server";
 
 // Function to format date
 function formatDate(dateString: string) {
@@ -8,46 +9,6 @@ function formatDate(dateString: string) {
     year: "numeric",
   });
 }
-
-const colorMatrix = [
-  // Cosmic Night (Deep Purple/Blue)
-  [
-    "rgba(123, 44, 191, 0.30)", // Purple
-    "rgba(62, 94, 222, 0.25)", // Indigo
-    "rgba(67, 97, 238, 0.35)", // Electric Blue
-  ],
-
-  // Ocean Depths (Deep Teal/Emerald)
-  [
-    "rgba(6, 95, 70, 0.35)", // Deep Teal
-    "rgba(13, 148, 136, 0.30)", // Teal
-    "rgba(8, 145, 178, 0.25)", // Ocean Blue
-  ],
-
-  // Sunset Glow (Warm Red/Purple)
-  [
-    "rgba(157, 23, 77, 0.25)", // Deep Rose
-    "rgba(190, 24, 93, 0.30)", // Rose
-    "rgba(219, 39, 119, 0.35)", // Pink
-  ],
-
-  // Arctic Aurora (Blue/Indigo)
-  [
-    "rgba(30, 64, 175, 0.30)", // Deep Blue
-    "rgba(29, 78, 216, 0.35)", // Royal Blue
-    "rgba(37, 99, 235, 0.25)", // Bright Blue
-  ],
-
-  // Forest Mist (Deep Green/Blue)
-  [
-    "rgba(6, 95, 70, 0.35)", // Forest Green
-    "rgba(4, 120, 87, 0.25)", // Emerald
-    "rgba(5, 150, 105, 0.30)", // Sea Green
-  ],
-];
-
-const getRandomColorSet = () =>
-  colorMatrix[Math.floor(Math.random() * colorMatrix.length)];
 
 async function loadGoogleFont(font: string, text: string) {
   const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(
@@ -68,7 +29,7 @@ async function loadGoogleFont(font: string, text: string) {
   throw new Error("failed to load font data");
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams, host } = new URL(request.url);
 
@@ -285,8 +246,8 @@ export async function GET(request: Request) {
         height: 630,
         fonts: [
           {
-            name: "Inter",
-            data: await loadGoogleFont("Inter", title),
+            name: "Jakarta",
+            data: await loadGoogleFont("Jakarta", title),
             weight: 700,
           },
         ],

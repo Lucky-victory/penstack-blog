@@ -6,7 +6,7 @@ import { postViews, postViewStats } from "@/src/db/schemas/posts-analytics.sql";
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
+    const { searchParams } = request.nextUrl;
     const timeRange = searchParams.get("timeRange") || "7days";
     const postId = searchParams.get("postId");
 
