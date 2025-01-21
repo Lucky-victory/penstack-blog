@@ -34,7 +34,7 @@ import { EmailPanel } from "./TabPanels/EmailPanel";
 import { AdvancedPanel } from "./TabPanels/AdvancedPanel";
 import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
 
-export default function SettingsPage() {
+export default function DashboardSettingsPage() {
   const toast = useToast({ position: "top" });
   const [isLoading, setIsLoading] = useState(false);
   const settingsContext = useSiteConfig();

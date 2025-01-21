@@ -119,7 +119,7 @@ export const FeaturedImageCard = ({
         onClose={onClose}
         isOpen={isOpen}
         maxSelection={1}
-        defaultFilters={{ type: ["image"] }}
+        defaultFilters={{ type: "image" }}
         onSelect={handleImageSelect}
       />
     </Box>

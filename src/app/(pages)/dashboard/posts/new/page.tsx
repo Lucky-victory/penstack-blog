@@ -11,7 +11,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Dashboard | New Post",
 };
-export default async function DashboardNewPostPage() {
+export default async function Page() {
   const shortId = IdGenerator.bigIntId().substring(6, 12);
   try {
     const session = await getSession();

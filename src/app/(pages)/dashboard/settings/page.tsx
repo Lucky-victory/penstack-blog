@@ -1,5 +1,5 @@
-import SettingsPage from "@/src/app/components/pages/Dashboard/Settings";
+import DashboardSettingsPage from "@/src/app/components/pages/Dashboard/Settings";
 
-export default function DashboardSettingsPage() {
-  return <SettingsPage />;
+export default function Page() {
+  return <DashboardSettingsPage />;
 }

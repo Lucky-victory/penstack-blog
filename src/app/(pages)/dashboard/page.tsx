@@ -43,7 +43,7 @@ const navItems = [
   },
 ];
 
-export default async function DashboardPage() {
+export default async function Page() {
   const session = await getSession();
 
   const permissions = await getUserPermissions(session?.user.email || "");

@@ -5,7 +5,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Dashboard | All Posts",
 };
-export default function DashPostsPage() {
+export default function Page() {
   return (
     <PermissionGuard requiredPermission={"posts:read"}>
       <PostsDashboard />

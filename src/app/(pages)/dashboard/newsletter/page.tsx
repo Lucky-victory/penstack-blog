@@ -4,6 +4,6 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Dashboard | Newsletter",
 };
-export default function DashboardNewsletter() {
+export default function Page() {
   return <DashboardNewsletterPage />;
 }

@@ -5,7 +5,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Dashboard | Overview",
 };
-export default function DashboardOverviewPage() {
+export default function Page() {
   return (
     <PermissionGuard requiredPermission={"dashboard:view"} shouldRedirect>
       <Overview />

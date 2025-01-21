@@ -5,7 +5,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Dashboard | Create Post",
 };
-export default function DashboardNewPostPage() {
+export default function Page() {
   return (
     <PermissionGuard requiredPermission={"posts:create"}>
       <NewPostPage />;

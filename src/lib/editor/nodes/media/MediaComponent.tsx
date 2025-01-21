@@ -30,7 +30,9 @@ export const MediaComponent: React.FC<MediaComponentProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [dimensions, setDimensions] = useState({
-    width: node.attrs.width || sizeToWidth[node.attrs.size],
+    width:
+      node.attrs.width ||
+      sizeToWidth[node.attrs.size as keyof typeof sizeToWidth],
     height: node.attrs.height || "auto",
   });
 

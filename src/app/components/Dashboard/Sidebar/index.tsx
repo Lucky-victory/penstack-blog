@@ -3,32 +3,11 @@ import {
   Box,
   Flex,
   VStack,
-  Text,
-  Icon,
   useColorModeValue,
-  Tooltip,
-  Button,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  useDisclosure,
-  PopoverArrow,
-  Portal,
   Stack,
-  HStack,
-  Divider,
-  Image,
   IconButton,
 } from "@chakra-ui/react";
-import { usePathname } from "next/navigation";
-import { Link } from "@chakra-ui/next-js";
-import { useState, useEffect } from "react";
-import { ReactNode, ElementType } from "react";
 import {
-  LuChevronDown,
-  LuChevronLeft,
-  LuChevronRight,
   LuChevronsLeft,
   LuChevronsRight,
   LuFileImage,
@@ -39,9 +18,7 @@ import {
   LuUsers,
 } from "react-icons/lu";
 import { NavItem, navPermissionMapping, TPermissions } from "@/src/types";
-import { PermissionGuard } from "../../PermissionGuard";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
-import { UserInfoComp } from "../UserInfoComp";
 import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 import { AppLogo } from "../../AppLogoAndName/AppLogo";
 import { SidebarNavItem } from "./NavItem";
@@ -99,7 +76,7 @@ export const navItems: NavItem[] = [
   },
 ];
 
-export const SidebarContentNav = ({
+export const DashboardSidebar = ({
   onClose,
   isMinimized,
   toggleMinimized,
@@ -217,4 +194,4 @@ export const SidebarContentNav = ({
   );
 };
 
-SidebarContentNav.displayName = "SidebarContentNav";
+DashboardSidebar.displayName = "SidebarContentNav";
