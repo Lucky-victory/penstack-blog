@@ -172,7 +172,6 @@ export default function DashboardSettingsPage() {
       <Container maxW="container.2xl" py={6}>
         <PageTitleCard title={"Settings"}>
           <Button
-            colorScheme="blue"
             isLoading={isLoading}
             onClick={handleSave}
             rounded="md"

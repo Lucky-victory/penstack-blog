@@ -176,7 +176,6 @@ const PostsDashboard = () => {
         <PageTitleCard title={"Posts"}>
           <Button
             leftIcon={<AddIcon />}
-            colorScheme="blue"
             rounded="md"
             as={Link}
             href="/dashboard/posts/new"

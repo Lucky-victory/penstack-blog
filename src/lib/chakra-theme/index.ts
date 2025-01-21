@@ -75,6 +75,7 @@ export const chakraTheme = extendTheme(
   withDefaultProps({
     defaultProps: {
       rounded: "xl",
+      fontWeight: 500,
     },
     components: ["Input", "NumberInput", "PinInput", "Button"],
   }),
@@ -85,5 +86,5 @@ export const chakraTheme = extendTheme(
     },
     components: ["IconButton"],
   }),
-  withDefaultColorScheme({ colorScheme: "blue" })
+  withDefaultColorScheme({ colorScheme: "black" })
 );

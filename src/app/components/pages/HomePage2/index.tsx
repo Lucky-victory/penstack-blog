@@ -109,14 +109,7 @@ const FrontPage = () => {
                   alt={featuredPost.featured_image.alt_text}
                   className="w-full h-full object-cover"
                 />
-                <Tag
-                  position="absolute"
-                  top={4}
-                  left={4}
-                  size="lg"
-                  colorScheme="blue"
-                  borderRadius="full"
-                >
+                <Tag position="absolute" top={4} left={4} size="lg">
                   Featured
                 </Tag>
               </Box>

@@ -16,59 +16,32 @@ interface ArticleHeaderProps {
 }
 
 export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
-  const summaryColor = useColorModeValue("gray.700", "gray.300");
+  const summaryColor = useColorModeValue("gray.600", "gray.400");
 
   return (
-    <Box as="header" mb={8}>
-      <HStack
-        // my={4}
-        gap={{ base: 4, md: 5 }}
-        ml={0}
-        align={"center"}
-        justify={{ base: "flex-start", md: "center" }}
-        wrap={"wrap"}
+    <Box as="header" mb={8} maxW={"5xl"} mx={"auto"}>
+      <Heading
+        as="h1"
+        size="xl"
+        fontWeight={600}
+        mb={5}
+        textAlign={{ base: "left", md: "center" }}
       >
-        {post?.category?.name && (
-          <Tag
-            size="md"
-            colorScheme="yellow"
-            rounded={"full"}
-            px={3}
-            py={1}
-            textTransform="capitalize"
-          >
-            {post.category.name}
-          </Tag>
-        )}
-        <Text color="gray.500" as="span">
-          {format(new Date(post.updated_at as Date), "MMMM d, yyyy")}
-        </Text>
-      </HStack>
-
-      {post?.tags && (
-        <Flex flexWrap="wrap" gap={2} my={4}>
-          {post?.tags?.map((tag, index) => (
-            <Tag key={index} colorScheme="gray">
-              #{tag?.name}
-            </Tag>
-          ))}
-        </Flex>
-      )}
-      <Heading as="h1" size="2xl" textAlign={{ base: "left", md: "center" }}>
-        {post.title}
+        {post.title} and some more text to make it longer like
+        hydrosulphatetimunate
       </Heading>
-      {post.summary && (
+      {
         <Text
-          fontSize="xl"
-          fontWeight="medium"
+          fontSize="md"
+          maxW={"4xl"}
           mb={6}
           color={summaryColor}
-          lineHeight="tall"
           textAlign={{ base: "left", md: "center" }}
         >
-          {post.summary}
+          {post.summary ||
+            `Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto atque maiores laudantium perspiciatis nostrum. Quod saepe expedita dolorem quae quis sint quia architecto error, facilis similique eligendi ex vitae nesciunt provident amet deserunt quaerat laboriosam quam corporis numquam debitis id.`}
         </Text>
-      )}
+      }
     </Box>
   );
 };

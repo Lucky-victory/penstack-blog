@@ -212,11 +212,7 @@ const UsersDashboard = () => {
       <DashHeader></DashHeader>
       <Box p={{ base: 4, md: 5 }}>
         <PageTitleCard title={"Users Management"}>
-          <Button
-            leftIcon={<AddIcon />}
-            colorScheme="blue"
-            onClick={() => openUserModal()}
-          >
+          <Button leftIcon={<AddIcon />} onClick={() => openUserModal()}>
             Add User
           </Button>
         </PageTitleCard>

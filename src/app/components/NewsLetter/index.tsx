@@ -26,11 +26,13 @@ export const Newsletter = ({
   description,
   isDark = true,
   maxW = "lg",
+  canWrap,
 }: {
   title?: string;
   description?: string;
   maxW?: string | number;
   isDark?: boolean;
+  canWrap?: boolean;
 }) => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
@@ -90,7 +92,7 @@ export const Newsletter = ({
         <Box w={"full"}>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <Flex
-              direction={{ base: "column", md: "row" }}
+              direction={canWrap ? "column" : { base: "column", md: "row" }}
               gap={{ base: 3, md: 1 }}
               border={"1px"}
               borderColor={formWrapBorderColor}

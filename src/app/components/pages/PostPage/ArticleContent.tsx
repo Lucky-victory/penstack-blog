@@ -20,7 +20,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ post }) => {
       maxW="none"
       pb={8}
     >
-      <Box maxW="container.lg" mx="auto">
+      <Box maxW="container.lg">
         <ContentRenderer content={decode(post.content)} />
       </Box>
     </MotionBox>
