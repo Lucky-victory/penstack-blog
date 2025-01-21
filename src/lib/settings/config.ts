@@ -1,7 +1,7 @@
 import { SiteSettings } from "@/src/types";
 
 export const DEFAULT_SETTINGS: SiteSettings = {
-  siteName: { value: "Vida Blog Starter", enabled: true },
+  siteName: { value: "Penstack", enabled: true },
   siteDescription: { value: "", enabled: true },
   siteOpengraph: { value: "", enabled: true },
   siteLogo: { value: "", enabled: true },
