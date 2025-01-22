@@ -107,53 +107,55 @@ export const MediaCard: React.FC<MediaCardProps> = ({
         }
         bg={cardBgColor}
       >
-        <Box
-          pos="absolute"
-          top={4}
-          right={4}
-          zIndex={!selected ? -1 : 10}
-          transform={!selected ? "translateX(150%)" : "none"}
-          className="media-card-select"
-          transition={"all 0.2s"}
-        >
-          <IconButton
-            size="sm"
-            aria-label="Select"
-            icon={selected ? <LuCheckSquare /> : <LuSquare fontWeight={500} />}
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect?.(media);
-            }}
-          ></IconButton>
-        </Box>
-        <VStack
-          transition={"all 0.2s"}
-          zIndex={-1}
-          bottom={0}
-          right={0}
-          position={"absolute"}
-          left={0}
-          p={3}
-          className="media-card-overlay"
-          borderTop={"1px solid"}
-          borderColor={"gray.600"}
-          roundedBottom={"lg"}
-          bg={cardBgColor}
-          transform={"translateY(100%)"}
-        >
-          <Button
-            size="sm"
-            variant="outline"
-            leftIcon={<LuEye />}
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePreviewClick(media);
-            }}
-          >
-            Preview
-          </Button>
-        </VStack>
         <CardBody pos={"relative"} p={2}>
+          <Box
+            pos="absolute"
+            top={4}
+            right={4}
+            zIndex={!selected ? -1 : 10}
+            transform={!selected ? "translateX(150%)" : "none"}
+            className="media-card-select"
+            transition={"all 0.2s"}
+          >
+            <IconButton
+              size="sm"
+              aria-label="Select"
+              icon={
+                selected ? <LuCheckSquare /> : <LuSquare fontWeight={500} />
+              }
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect?.(media);
+              }}
+            ></IconButton>
+          </Box>
+          <VStack
+            transition={"all 0.2s"}
+            zIndex={-1}
+            bottom={0}
+            right={0}
+            position={"absolute"}
+            left={0}
+            p={3}
+            className="media-card-overlay"
+            borderTop={"1px solid"}
+            borderColor={"gray.600"}
+            roundedBottom={"lg"}
+            bg={cardBgColor}
+            transform={"translateY(100%)"}
+          >
+            <Button
+              size="sm"
+              variant="outline"
+              leftIcon={<LuEye />}
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePreviewClick(media);
+              }}
+            >
+              Preview
+            </Button>
+          </VStack>
           {media.type === "image" && (
             <Box rounded={"md"} aspectRatio={16 / 9}>
               <Image

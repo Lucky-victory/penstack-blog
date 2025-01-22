@@ -33,7 +33,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
 }) => {
   const [filters, setFilters] = useState<FilterParams>({
     page: 1,
-    limit: 4,
+    limit: 12,
     ...defaultFilters,
   });
   const [loading, setLoading] = useState(false);

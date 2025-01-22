@@ -32,7 +32,7 @@ export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {
       {showLabel && (
         <ButtonGroup size={"sm"} rounded={"full"}>
           <Button
-            colorScheme={colorMode === "light" ? "blue" : "gray"}
+            colorScheme={colorMode === "light" ? "brand" : "gray"}
             fontWeight={400}
             leftIcon={<LuSun size={16} />}
             onClick={() => setColorMode("light")}
@@ -44,7 +44,7 @@ export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {
           </Button>
 
           <Button
-            colorScheme={colorMode === "dark" ? "blue" : "gray"}
+            colorScheme={colorMode === "dark" ? "brand" : "gray"}
             fontWeight={400}
             leftIcon={<LuMoon size={16} />}
             onClick={() => setColorMode("dark")}

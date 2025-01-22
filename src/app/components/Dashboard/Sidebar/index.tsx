@@ -118,12 +118,13 @@ export const DashboardSidebar = ({
           mb={2}
           gap={3}
           py={3}
+          pr={isMinimized ? 0 : 5}
           justify={"center"}
         >
           {!isMinimized && (
-            <>
+            <Box pl={5}>
               <AppLogoAndName logoSize={"30px"} />
-            </>
+            </Box>
           )}
           <VStack>
             {isMinimized && (

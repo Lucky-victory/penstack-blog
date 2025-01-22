@@ -8,14 +8,19 @@ interface Props {
 }
 export const AppLogoAndName = ({
   logoSize = "25px",
-  nameSize = "lg",
+  nameSize = "md",
 }: Props) => {
   const textColor = useColorModeValue("inherit", "inherit");
   const siteConfig = useSiteConfig();
   return (
     <HStack>
       <AppLogo size={logoSize} src={siteConfig?.siteLogo?.value} />
-      <Text fontSize={nameSize} fontWeight="medium" color={textColor}>
+      <Text
+        fontSize={nameSize}
+        fontWeight="medium"
+        color={textColor}
+        isTruncated
+      >
         {siteConfig?.siteName?.value}
       </Text>
     </HStack>

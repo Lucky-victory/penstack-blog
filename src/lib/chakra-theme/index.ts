@@ -51,6 +51,7 @@ export const chakraTheme = extendTheme(
     colors: {
       charcoalBlack: "#121212",
       customBlue: "#0070f3",
+      brand: { ...baseTheme.colors.green },
     },
     sizes,
     styles: {
@@ -86,5 +87,5 @@ export const chakraTheme = extendTheme(
     },
     components: ["IconButton"],
   }),
-  withDefaultColorScheme({ colorScheme: "black" })
+  withDefaultColorScheme({ colorScheme: "brand" })
 );

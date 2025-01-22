@@ -1,26 +1,18 @@
 .calendar {
   width: 300px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--chakra-colors-gray-200);
   border-radius: 18px;
   overflow: hidden;
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--chakra-colors-white);
+  box-shadow: var(--card-raised-soft);
   padding: 10px;
   font-size: 14px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .calendar {
-    background-color: #1a202c;
-    border-color: #2d3748;
-    color: #fff;
-  }
-}
-
 .chakra-ui-dark .calendar {
-  background-color: #1a202c;
-  border-color: #2d3748;
-  color: #fff;
+  background-color: var(--chakra-colors-gray-800);
+  border-color: var(--chakra-colors-gray-700);
+  color: var(--chakra-colors-white);
 }
 
 .calendar .next-month,
@@ -35,46 +27,29 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: var(--chakra-colors-white);
   flex-shrink: 0;
-  color: #9e9e9e;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-@media (prefers-color-scheme: dark) {
-  .calendar .next-month,
-  .calendar .prev-month {
-    background-color: #2d3748;
-    color: #a0aec0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-  }
+  color: var(--chakra-colors-gray-500);
+  box-shadow: var(--card-raised-soft);
 }
 
 .chakra-ui-dark .calendar .next-month,
 .chakra-ui-dark .calendar .prev-month {
-  background-color: #2d3748;
-  color: #a0aec0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  background-color: var(--chakra-colors-gray-700);
+  color: var(--chakra-colors-gray-400);
+  box-shadow: var(--card-raised);
 }
 
 .calendar-header .next-month:not(:disabled):hover,
 .calendar-header .prev-month:not(:disabled):hover {
-  background-color: #dcf4ff;
-  color: black;
-}
-
-@media (prefers-color-scheme: dark) {
-  .calendar-header .next-month:not(:disabled):hover,
-  .calendar-header .prev-month:not(:disabled):hover {
-    background-color: #4a5568;
-    color: #fff;
-  }
+  background-color: var(--chakra-colors-brand-50);
+  color: var(--chakra-colors-black);
 }
 
 .chakra-ui-dark .calendar-header .next-month:not(:disabled):hover,
 .chakra-ui-dark .calendar-header .prev-month:not(:disabled):hover {
-  background-color: #4a5568;
-  color: #fff;
+  background-color: var(--chakra-colors-gray-600);
+  color: var(--chakra-colors-white);
 }
 
 .calendar-header button:disabled {
@@ -88,20 +63,14 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid;
-  border-bottom-color: #aaaaaa;
+  border-bottom-color: var(--chakra-colors-gray-300);
   padding-bottom: 10px;
   margin-bottom: 10px;
   font-weight: medium;
 }
 
-@media (prefers-color-scheme: dark) {
-  .calendar-header {
-    border-bottom-color: #4a5568;
-  }
-}
-
 .chakra-ui-dark .calendar-header {
-  border-bottom-color: #4a5568;
+  border-bottom-color: var(--chakra-colors-gray-600);
 }
 
 .week-days {
@@ -113,17 +82,11 @@
 .week-day {
   text-align: center;
   font-weight: normal;
-  color: #9e9e9e;
-}
-
-@media (prefers-color-scheme: dark) {
-  .week-day {
-    color: #a0aec0;
-  }
+  color: var(--chakra-colors-gray-500);
 }
 
 .chakra-ui-dark .week-day {
-  color: #a0aec0;
+  color: var(--chakra-colors-gray-400);
 }
 
 .days {
@@ -148,32 +111,20 @@
 }
 
 .day:hover {
-  background-color: #dcf4ff;
-}
-
-@media (prefers-color-scheme: dark) {
-  .day:hover {
-    background-color: #4a5568;
-  }
+  background-color: var(--chakra-colors-brand-50);
 }
 
 .chakra-ui-dark .day:hover {
-  background-color: #4a5568;
+  background-color: var(--chakra-colors-gray-600);
 }
 
 .day.selected {
-  background-color: #007bff;
-  color: #fff;
-}
-
-@media (prefers-color-scheme: dark) {
-  .day.selected {
-    background-color: #4299e1;
-  }
+  background-color: var(--chakra-colors-brand-500);
+  color: var(--chakra-colors-white);
 }
 
 .chakra-ui-dark .day.selected {
-  background-color: #4299e1;
+  background-color: var(--chakra-colors-brand-500);
 }
 
 .day.empty {
@@ -191,8 +142,8 @@
 
 .done-button {
   display: inline-block;
-  background-color: #007bff;
-  color: #fff;
+  background-color: var(--chakra-colors-brand-500);
+  color: var(--chakra-colors-white);
   border: none;
   padding: 3px 12px;
   cursor: pointer;
@@ -201,35 +152,23 @@
   border-radius: 16px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .done-button {
-    background-color: #4299e1;
-  }
-}
-
 .chakra-ui-dark .done-button {
-  background-color: #4299e1;
+  background-color: var(--chakra-colors-brand-500);
 }
 
 .done-button:hover {
-  background-color: #0056b3;
-}
-
-@media (prefers-color-scheme: dark) {
-  .done-button:hover {
-    background-color: #2b6cb0;
-  }
+  background-color: var(--chakra-colors-brand-600);
 }
 
 .chakra-ui-dark .done-button:hover {
-  background-color: #2b6cb0;
+  background-color: var(--chakra-colors-brand-600);
 }
 
 .cancel-button {
   display: inline-block;
   background-color: transparent;
-  color: #5b5b5d;
-  border: 1px solid #5b5b5d;
+  color: var(--chakra-colors-gray-600);
+  border: 1px solid var(--chakra-colors-gray-600);
   padding: 3px 12px;
   cursor: pointer;
   font-size: 13px;
@@ -237,63 +176,36 @@
   border-radius: 16px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .cancel-button {
-    color: #a0aec0;
-    border-color: #4a5568;
-  }
-}
-
 .chakra-ui-dark .cancel-button {
-  color: #a0aec0;
-  border-color: #4a5568;
+  color: var(--chakra-colors-gray-400);
+  border-color: var(--chakra-colors-gray-600);
 }
 
 .cancel-button:hover {
-  background-color: #ebeff1;
-}
-
-@media (prefers-color-scheme: dark) {
-  .cancel-button:hover {
-    background-color: #2d3748;
-  }
+  background-color: var(--chakra-colors-gray-100);
 }
 
 .chakra-ui-dark .cancel-button:hover {
-  background-color: #2d3748;
+  background-color: var(--chakra-colors-gray-700);
 }
 
 .day.today {
-  background-color: #dcf4ff;
+  background-color: var(--chakra-colors-brand-50);
   font-weight: bold;
-  color: #007bff;
-}
-
-@media (prefers-color-scheme: dark) {
-  .day.today {
-    background-color: #2d3748;
-    color: #4299e1;
-  }
+  color: var(--chakra-colors-brand-500);
 }
 
 .chakra-ui-dark .day.today {
-  background-color: #2d3748;
-  color: #4299e1;
+  background-color: var(--chakra-colors-gray-700);
+  color: var(--chakra-colors-brand-500);
 }
 
 .day.today.selected {
-  background-color: #007bff;
-  color: #fff;
-}
-
-@media (prefers-color-scheme: dark) {
-  .day.today.selected {
-    background-color: #4299e1;
-    color: #fff;
-  }
+  background-color: var(--chakra-colors-brand-500);
+  color: var(--chakra-colors-white);
 }
 
 .chakra-ui-dark .day.today.selected {
-  background-color: #4299e1;
-  color: #fff;
+  background-color: var(--chakra-colors-brand-500);
+  color: var(--chakra-colors-white);
 }

@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    font-family: var(--font-rubik);
+    font-family: var(--font-body);
   }
 }
 
@@ -263,7 +263,7 @@
   position: relative;
 }
 .react-resizable.selected {
-  box-shadow: 0 0 0 2px #2351c4;
+  box-shadow: 0 0 0 2px var(--chakra-colors-brand-500);
   border-radius: 0.5rem;
 }
 .react-resizable-handle {

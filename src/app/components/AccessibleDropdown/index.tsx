@@ -51,7 +51,7 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
   const activeTextColor = useColorModeValue("white", "white");
   const textColor = useColorModeValue("black", "white");
   const bgColor = useColorModeValue("white", "gray.900");
-  const hoverBgColor = useColorModeValue("blue.100", "blue.400");
+  const hoverBgColor = useColorModeValue("brand.100", "brand.600");
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
   useEffect(() => {
@@ -197,10 +197,10 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
                 py={2}
                 px={4}
                 cursor={"pointer"}
-                bg={isActive ? hoverBgColor : isSelected ? "blue.600" : ""}
+                bg={isActive ? hoverBgColor : isSelected ? "brand.600" : ""}
                 color={isSelected ? activeTextColor : textColor}
                 _hover={{
-                  bg: isSelected ? "blue.600" : hoverBgColor,
+                  bg: isSelected ? "brand.600" : hoverBgColor,
                 }}
                 rounded={"xl"}
                 role="option"
