@@ -42,8 +42,8 @@ import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
 import { useCategories } from "@/src/hooks/useCategories";
 import { AppLogo } from "../AppLogoAndName/AppLogo";
-import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useSiteConfig } from "@/src/context/SiteConfig";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -218,12 +218,11 @@ const Header = () => {
                         ></Icon>
                       </HStack>
                     </MenuButton>
-                    <MenuList rounded="xl" px={2}>
+                    <MenuList rounded="lg">
                       {categories &&
                         categories?.length > 0 &&
                         categories.map((topic) => (
                           <MenuItem
-                            rounded={"full"}
                             key={topic.name}
                             as={Link}
                             href={`/category/${topic.slug}`}

@@ -20,7 +20,7 @@ import { DashboardSidebar } from "../../../Dashboard/Sidebar";
 import { LuMenu } from "react-icons/lu";
 import NetworkAvailabiltyCheck from "../../../NetworkAvailabiltyCheck";
 import { PermissionGuard } from "../../../PermissionGuard";
-import { useSiteConfig } from "@/src/hooks/useSiteConfig";
+import { useSiteConfig } from "@/src/context/SiteConfig";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();

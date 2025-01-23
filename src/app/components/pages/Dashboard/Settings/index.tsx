@@ -23,7 +23,6 @@ import { SiteSettings } from "@/src/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import DashHeader from "../../../Dashboard/Header";
-import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 import Loader from "@/src/app/components/Loader";
 import { MediaModal } from "@/src/app/components/Dashboard/Medias/MediaModal";
 import { GeneralPanel } from "./TabPanels/GeneralPanel";
@@ -33,6 +32,7 @@ import { MediaPanel } from "./TabPanels/MediaPanel";
 import { EmailPanel } from "./TabPanels/EmailPanel";
 import { AdvancedPanel } from "./TabPanels/AdvancedPanel";
 import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
+import { useSiteConfig } from "@/src/context/SiteConfig";
 
 export default function DashboardSettingsPage() {
   const toast = useToast({ position: "top" });

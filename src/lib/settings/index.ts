@@ -7,24 +7,30 @@ import { DEFAULT_SETTINGS } from "./config";
 import { isSecretKey } from "@/src/utils";
 import { decryptKey, encryptKey } from "../encryption";
 
-export const getSettings = cache(async () => {
-  const settings = await db.select().from(siteSettings);
+import { unstable_cache } from "next/cache";
 
-  const settingsObj = settings.reduce((acc, setting) => {
-    const value =
-      isSecretKey(setting.key) && setting.value
-        ? decryptKey(setting.value)
-        : setting.value;
+export const getSettings = unstable_cache(
+  async () => {
+    const settings = await db.select().from(siteSettings);
 
-    acc[setting.key] = {
-      value: value || "",
-      enabled: setting.enabled as boolean,
-    };
-    return acc;
-  }, {} as SiteSettings);
+    const settingsObj = settings.reduce((acc, setting) => {
+      const value =
+        isSecretKey(setting.key) && setting.value
+          ? decryptKey(setting.value)
+          : setting.value;
 
-  return { ...DEFAULT_SETTINGS, ...settingsObj };
-});
+      acc[setting.key] = {
+        value: value || "",
+        enabled: setting.enabled as boolean,
+      };
+      return acc;
+    }, {} as SiteSettings);
+
+    return { ...DEFAULT_SETTINGS, ...settingsObj };
+  },
+  ["getSettings"],
+  { tags: ["settings", "getSettings"] }
+);
 
 export async function updateSettings(newSettings: SiteSettings) {
   const operations = Object.entries(newSettings).map(([key, setting]) => {

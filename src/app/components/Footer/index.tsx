@@ -17,9 +17,9 @@ import {
 } from "@chakra-ui/react";
 import { LuGithub, LuTwitter, LuMail } from "react-icons/lu";
 import { Newsletter } from "../NewsLetter";
-import { useSiteConfig } from "@/src/hooks/useSiteConfig";
 import { AppLogo } from "../AppLogoAndName/AppLogo";
 import { AppLogoAndName } from "../AppLogoAndName";
+import { useSiteConfig } from "@/src/context/SiteConfig";
 
 const Footer = () => {
   const bgColor = useColorModeValue("charcoalBlack", "gray.900");

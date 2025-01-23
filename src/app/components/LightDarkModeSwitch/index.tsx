@@ -15,7 +15,7 @@ export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {
 
   const hoverBgColor = useColorModeValue("gray.100", "gray.700");
   return (
-    <HStack ml={"2px"}>
+    <HStack>
       {!showLabel && (
         <IconButton
           aria-label="Toggle color mode"
@@ -27,6 +27,7 @@ export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {
           variant="ghost"
           _hover={{ bg: hoverBgColor }}
           rounded={"full"}
+          mb={8}
         />
       )}
       {showLabel && (

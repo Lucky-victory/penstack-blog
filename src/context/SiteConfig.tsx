@@ -21,3 +21,14 @@ export function SiteConfigProvider({
     </SiteConfigContext.Provider>
   );
 }
+import { useContext } from "react";
+
+export const useSiteConfig = () => {
+  const context = useContext(SiteConfigContext);
+
+  if (!context) {
+    throw new Error("useSiteConfig must be used within a SiteConfigProvider");
+  }
+
+  return context;
+};

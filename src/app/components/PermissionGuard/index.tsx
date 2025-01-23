@@ -28,7 +28,7 @@ export function PermissionGuard({
   }
 
   if (isOwner) {
-    return <>{children}</>;
+    return children;
   }
 
   if (!hasPermission && shouldRedirect) {
@@ -39,5 +39,5 @@ export function PermissionGuard({
     return null;
   }
 
-  return <>{children}</>;
+  return children;
 }

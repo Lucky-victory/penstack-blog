@@ -1,6 +1,7 @@
+"use client";
 import { HStack, Text, useColorModeValue } from "@chakra-ui/react";
 import { AppLogo } from "./AppLogo";
-import { useSiteConfig } from "@/src/hooks/useSiteConfig";
+import { useSiteConfig } from "@/src/context/SiteConfig";
 
 interface Props {
   logoSize?: string;
