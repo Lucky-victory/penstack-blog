@@ -97,7 +97,8 @@ export const DashboardSidebar = ({
   const navBtnActiveColor = useColorModeValue("#fff", "black");
   const siteNameColor = useColorModeValue("gray.800", "gray.100");
   return (
-    <Flex flexDir={'column'}
+    <Flex
+      // flexDir={"column"}
       bg={bg}
       borderRight="1px"
       zIndex={1000}
@@ -154,14 +155,15 @@ export const DashboardSidebar = ({
         alignSelf={"stretch"}
         bg="red"
         // flex={1}
-        pr={isMinimized ? 3 : 4}
+        px={isMinimized ? 3 : 4}
         justifyContent={"space-between"}
       >
         {navItems.map((item, index) => (
-          <Box key={index}>
+          <>
             {item.children ? (
               <NavItemWithChildren
                 item={item}
+                key={index}
                 isMinimized={isMinimized}
                 navBtnBg={navBtnBg}
                 navBtnBgHover={navBtnBgHover}
@@ -172,6 +174,7 @@ export const DashboardSidebar = ({
               />
             ) : (
               <SidebarNavItem
+                key={index}
                 icon={item.icon}
                 href={item.href}
                 permission={item.permission}
@@ -187,13 +190,13 @@ export const DashboardSidebar = ({
                 {item.label}
               </SidebarNavItem>
             )}
-          </Box>
+          </>
         ))}
-        <Stack mt={"auto"} mb={4} pl={isMinimized ? 3 : 4} >
+        <Stack mt={"auto"} mb={4} pl={isMinimized ? 3 : 4}>
           <LightDarkModeSwitch showLabel={!isMinimized} />
         </Stack>
       </VStack>
-    </Stac>
+    </Flex>
   );
 };
 

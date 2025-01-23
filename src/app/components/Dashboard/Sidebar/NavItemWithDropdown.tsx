@@ -144,7 +144,6 @@ export const NavItemWithChildren = ({
           variant={"unstyled"}
           w="full"
           p={0}
-          pl={isMinimized ? 3 : 5}
           roundedBottom={openItems.includes(item.href) ? "0" : "md"}
           size={"md"}
           cursor="pointer"
@@ -195,7 +194,6 @@ export const NavItemWithChildren = ({
             px={3}
             py={4}
             mt={-1}
-            ml={5}
             bg={childrenBg}
             roundedBottom="md"
           >
