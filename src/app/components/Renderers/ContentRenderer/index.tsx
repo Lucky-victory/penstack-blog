@@ -88,14 +88,14 @@ export const ContentRenderer: React.FC<ContentRendererProps> = ({
         }
         if (domNode.name === "h1") {
           return (
-            <Heading as="h1" size="5xl">
+            <Heading as="h1" size="4xl">
               {domToReact(domNode.children as Element[], options)}
             </Heading>
           );
         }
         if (domNode.name === "h2") {
           return (
-            <Heading as="h2" size="xl">
+            <Heading as="h2" size="2xl">
               {domToReact(domNode.children as Element[], options)}
             </Heading>
           );

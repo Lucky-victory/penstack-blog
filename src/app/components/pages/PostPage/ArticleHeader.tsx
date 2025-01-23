@@ -29,8 +29,8 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
     >
       <Heading
         as="h1"
-        size="xl"
-        fontWeight={600}
+        size="2xl"
+        fontWeight={700}
         mb={5}
         textAlign={{ base: "left", md: "center" }}
       >

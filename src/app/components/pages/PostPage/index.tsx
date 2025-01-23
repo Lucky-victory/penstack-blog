@@ -129,7 +129,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                     borderColor={borderColor}
                     // colorScheme="gray"
                     textTransform={"capitalize"}
-                    fontWeight={500}
+                    // fontWeight={500}
                   >
                     #{tag?.name}
                   </Tag>

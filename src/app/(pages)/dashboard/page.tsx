@@ -50,6 +50,5 @@ export default async function Page() {
   const firstAccessiblePage =
     navItems.find((item) => permissions.includes(item.permission))?.href || "/";
 
-  redirect(firstAccessiblePage);
-  return <></>;
+  return redirect(firstAccessiblePage);
 }
