@@ -42,9 +42,6 @@ export default function PostCard({
     <MotionPostCard
       rounded={"xl"}
       initial={{ opacity: 0, y: 50 }}
-      whileHover={{
-        transform: "translateY(-4px)",
-      }}
       whileInView={{
         opacity: 1,
         y: 0,
@@ -61,7 +58,14 @@ export default function PostCard({
       transition="all 0.3s"
       py={3}
       px={3}
-      _hover={{ shadow: "lg" }}
+      // _hover={{ shadow: "lg" }}
+      sx={{
+        "&:hover": {
+          ".post-card-img": {
+            transform: "scale(1.08)",
+          },
+        },
+      }}
     >
       <Box position="relative" pb={0} rounded={"xl"} overflow={"hidden"}>
         <Image
@@ -78,6 +82,8 @@ export default function PostCard({
           }
           alt={post.featured_image?.alt_text}
           objectFit="cover"
+          className="post-card-img"
+          transition={"all 0.3s"}
           height="190"
           width="full"
         />

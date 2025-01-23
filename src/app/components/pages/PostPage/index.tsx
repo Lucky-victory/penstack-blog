@@ -48,7 +48,7 @@ const MotionBox = motion(Box);
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   // useTrackView(post.id);
 
-  const sidebarWidth = useBreakpointValue({ base: "150px", md: "240px" });
+  const sidebarWidth = useBreakpointValue({ base: "full", md: "300px" });
   const metaColor = useColorModeValue("gray.500", "gray.400");
   const borderColor = useColorModeValue("gray.300", "gray.600");
   if (!post) {
@@ -124,10 +124,10 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                     key={index}
                     rounded={"full"}
                     px={3}
-                    bg={"transparent"}
-                    border={"2px solid"}
+                    // bg={"transparent"}
+                    border={"1px solid"}
                     borderColor={borderColor}
-                    colorScheme="gray"
+                    // colorScheme="gray"
                     textTransform={"capitalize"}
                     fontWeight={500}
                   >
@@ -138,7 +138,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                   rounded={"full"}
                   px={3}
                   bg={"transparent"}
-                  border={"2px solid"}
+                  border={"1px solid"}
                   borderColor={borderColor}
                   colorScheme="gray"
                   textTransform={"lowercase"}
@@ -156,12 +156,9 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             {/* Article Content */}
             <Box flex={1}>
               <ArticleContent post={post} />
-              <AuthorSection post={post} />
+              {/* <AuthorSection post={post} /> */}
 
               {/* Comments Section */}
-              <Suspense fallback={<Loader />}>
-                <CommentsSection post={post} />
-              </Suspense>
             </Box>
             <VStack
               w={sidebarWidth}
@@ -174,6 +171,9 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               <Newsletter canWrap isDark={false} />
             </VStack>
           </Flex>
+          <Suspense fallback={<Loader />}>
+            <CommentsSection post={post} />
+          </Suspense>
         </Container>
       </MotionBox>
     </PageWrapper>

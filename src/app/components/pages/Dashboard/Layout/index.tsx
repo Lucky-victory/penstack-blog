@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <NetworkAvailabiltyCheck>
       <PermissionGuard requiredPermission="dashboard:access" shouldRedirect>
         <Box
-          minH="var(--chakra-vh)"
+          h="var(--chakra-vh)"
           bg={useColorModeValue("gray.200", "charcoalBlack")}
         >
           <DashboardSidebar

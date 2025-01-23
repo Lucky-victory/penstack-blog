@@ -98,8 +98,8 @@ export const DashboardSidebar = ({
   const siteNameColor = useColorModeValue("gray.800", "gray.100");
   return (
     <Flex
-      // flexDir={"column"}
-      bg={bg}
+      flexDir={"column"}
+      // bg={bg}
       borderRight="1px"
       zIndex={1000}
       borderRightColor={borderColor}
@@ -109,7 +109,9 @@ export const DashboardSidebar = ({
           : { base: "full", md: "var(--dash-sidebar-w)" }
       }
       pos="fixed"
-      h="full"
+      h="100vh"
+      bg="yellow"
+      mb={15}
       {...rest}
     >
       <Box bg="blue">
@@ -146,56 +148,56 @@ export const DashboardSidebar = ({
           </VStack>
         </Flex>
       </Box>
-
-      <VStack
-        spacing={4}
-        mt={4}
-        // h={"calc(100% - var(--dash-header-h))"}
-        align="stretch"
-        alignSelf={"stretch"}
-        bg="red"
-        // flex={1}
-        px={isMinimized ? 3 : 4}
-        justifyContent={"space-between"}
-      >
-        {navItems.map((item, index) => (
-          <>
-            {item.children ? (
-              <NavItemWithChildren
-                item={item}
-                key={index}
-                isMinimized={isMinimized}
-                navBtnBg={navBtnBg}
-                navBtnBgHover={navBtnBgHover}
-                textColor={textColor}
-                hoverTextColor={hoverTextColor}
-                navBtnActiveColor={navBtnActiveColor}
-                bg={bg}
-              />
-            ) : (
-              <SidebarNavItem
-                key={index}
-                icon={item.icon}
-                href={item.href}
-                permission={item.permission}
-                isMinimized={isMinimized}
-                onClose={onClose}
-                navBtnBg={navBtnBg}
-                navBtnActiveColor={navBtnActiveColor}
-                navBtnBgHover={navBtnBgHover}
-                textColor={textColor}
-                hoverTextColor={hoverTextColor}
-                bg={bg}
-              >
-                {item.label}
-              </SidebarNavItem>
-            )}
-          </>
-        ))}
-        <Stack mt={"auto"} mb={4} pl={isMinimized ? 3 : 4}>
-          <LightDarkModeSwitch showLabel={!isMinimized} />
+      <Stack flex={1}>
+        <Stack
+          spacing={4}
+          mt={4}
+          // h={"calc(100% - var(--dash-header-h))"}
+          align="stretch"
+          bg="red"
+          // flex={1}
+          px={isMinimized ? 3 : 4}
+          justifyContent={"space-between"}
+        >
+          {navItems.map((item, index) => (
+            <>
+              {item.children ? (
+                <NavItemWithChildren
+                  item={item}
+                  key={index}
+                  isMinimized={isMinimized}
+                  navBtnBg={navBtnBg}
+                  navBtnBgHover={navBtnBgHover}
+                  textColor={textColor}
+                  hoverTextColor={hoverTextColor}
+                  navBtnActiveColor={navBtnActiveColor}
+                  bg={bg}
+                />
+              ) : (
+                <SidebarNavItem
+                  key={index}
+                  icon={item.icon}
+                  href={item.href}
+                  permission={item.permission}
+                  isMinimized={isMinimized}
+                  onClose={onClose}
+                  navBtnBg={navBtnBg}
+                  navBtnActiveColor={navBtnActiveColor}
+                  navBtnBgHover={navBtnBgHover}
+                  textColor={textColor}
+                  hoverTextColor={hoverTextColor}
+                  bg={bg}
+                >
+                  {item.label}
+                </SidebarNavItem>
+              )}
+            </>
+          ))}
+          <Stack mt={"auto"} mb={4} pl={isMinimized ? 3 : 4}>
+            <LightDarkModeSwitch showLabel={!isMinimized} />
+          </Stack>
         </Stack>
-      </VStack>
+      </Stack>
     </Flex>
   );
 };

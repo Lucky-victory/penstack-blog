@@ -7,7 +7,25 @@ import parse, {
 import { MiniPostCardRenderer } from "../MiniPostCardRenderer";
 import { YouTubeEmbed } from "../YoutubeEmbedRenderer";
 import { TwitterEmbed } from "../TwitterEmbedRenderer";
-import { Box } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Heading,
+  UnorderedList,
+  OrderedList,
+  ListItem,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Code,
+  Divider,
+  Link,
+  Image,
+} from "@chakra-ui/react";
 
 interface ContentRendererProps {
   content: string;
@@ -62,16 +80,136 @@ export const ContentRenderer: React.FC<ContentRendererProps> = ({
           );
         }
 
-        // Handle other block elements
+        // Handle block elements with Chakra UI components
         if (domNode.name === "p") {
           return (
-            <p className="mb-4">
-              {domToReact(domNode.children as Element[], options)}
-            </p>
+            <Text>{domToReact(domNode.children as Element[], options)}</Text>
           );
         }
-
-        // Add more custom element handlers here
+        if (domNode.name === "h1") {
+          return (
+            <Heading as="h1" size="5xl">
+              {domToReact(domNode.children as Element[], options)}
+            </Heading>
+          );
+        }
+        if (domNode.name === "h2") {
+          return (
+            <Heading as="h2" size="xl">
+              {domToReact(domNode.children as Element[], options)}
+            </Heading>
+          );
+        }
+        if (domNode.name === "h3") {
+          return (
+            <Heading as="h3" size="lg">
+              {domToReact(domNode.children as Element[], options)}
+            </Heading>
+          );
+        }
+        if (domNode.name === "h4") {
+          return (
+            <Heading as="h4" size="md">
+              {domToReact(domNode.children as Element[], options)}
+            </Heading>
+          );
+        }
+        if (domNode.name === "h5") {
+          return (
+            <Heading as="h5" size="sm">
+              {domToReact(domNode.children as Element[], options)}
+            </Heading>
+          );
+        }
+        if (domNode.name === "h6") {
+          return (
+            <Heading as="h6" size="xs">
+              {domToReact(domNode.children as Element[], options)}
+            </Heading>
+          );
+        }
+        if (domNode.name === "ul") {
+          return (
+            <UnorderedList>
+              {domToReact(domNode.children as Element[], options)}
+            </UnorderedList>
+          );
+        }
+        if (domNode.name === "ol") {
+          return (
+            <OrderedList>
+              {domToReact(domNode.children as Element[], options)}
+            </OrderedList>
+          );
+        }
+        if (domNode.name === "li") {
+          return (
+            <ListItem>
+              {domToReact(domNode.children as Element[], options)}
+            </ListItem>
+          );
+        }
+        if (domNode.name === "table") {
+          return (
+            <TableContainer>
+              <Table>
+                {domToReact(domNode.children as Element[], options)}
+              </Table>
+            </TableContainer>
+          );
+        }
+        if (domNode.name === "thead") {
+          return (
+            <Thead>{domToReact(domNode.children as Element[], options)}</Thead>
+          );
+        }
+        if (domNode.name === "tbody") {
+          return (
+            <Tbody>{domToReact(domNode.children as Element[], options)}</Tbody>
+          );
+        }
+        if (domNode.name === "tr") {
+          return <Tr>{domToReact(domNode.children as Element[], options)}</Tr>;
+        }
+        if (domNode.name === "th") {
+          return <Th>{domToReact(domNode.children as Element[], options)}</Th>;
+        }
+        if (domNode.name === "td") {
+          return <Td>{domToReact(domNode.children as Element[], options)}</Td>;
+        }
+        if (domNode.name === "code") {
+          return (
+            <Code>{domToReact(domNode.children as Element[], options)}</Code>
+          );
+        }
+        if (domNode.name === "hr") {
+          return <Divider />;
+        }
+        if (domNode.name === "a") {
+          return (
+            <Link
+              href={domNode.attribs.href}
+              isExternal={domNode.attribs.target === "_blank"}
+            >
+              {domToReact(domNode.children as Element[], options)}
+            </Link>
+          );
+        }
+        if (domNode.name === "img") {
+          return <Image src={domNode.attribs.src} alt={domNode.attribs.alt} />;
+        }
+        if (domNode.name === "blockquote") {
+          return (
+            <Box
+              as="blockquote"
+              borderLeftWidth="4px"
+              borderLeftColor="gray.200"
+              pl={4}
+            >
+              {domToReact(domNode.children as Element[], options)}
+            </Box>
+          );
+        }
       }
     },
   };

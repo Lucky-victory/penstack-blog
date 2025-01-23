@@ -7,6 +7,7 @@ import {
   Heading,
   HStack,
   useColorModeValue,
+  Stack,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { PostSelect } from "@/src/types";
@@ -19,7 +20,13 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
   const summaryColor = useColorModeValue("gray.600", "gray.400");
 
   return (
-    <Box as="header" mb={8} maxW={"5xl"} mx={"auto"}>
+    <Stack
+      align={{ base: "start", md: "center" }}
+      as="header"
+      mb={8}
+      maxW={"5xl"}
+      mx={"auto"}
+    >
       <Heading
         as="h1"
         size="xl"
@@ -33,7 +40,8 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
       {
         <Text
           fontSize="md"
-          maxW={"4xl"}
+          bg="red"
+          maxW={"3xl"}
           mb={6}
           color={summaryColor}
           textAlign={{ base: "left", md: "center" }}
@@ -42,6 +50,6 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
             `Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto atque maiores laudantium perspiciatis nostrum. Quod saepe expedita dolorem quae quis sint quia architecto error, facilis similique eligendi ex vitae nesciunt provident amet deserunt quaerat laboriosam quam corporis numquam debitis id.`}
         </Text>
       }
-    </Box>
+    </Stack>
   );
 };
