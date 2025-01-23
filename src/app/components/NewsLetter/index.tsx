@@ -49,7 +49,10 @@ export const Newsletter = ({
       return data;
     },
   });
-  const { mutateAsync: sendVerificationEmail } = useMutation({
+  const {
+    mutateAsync: sendVerificationEmail,
+    isPending: isVerificationPending,
+  } = useMutation({
     mutationFn: async (values: { email: string }) => {
       const { data } = await axios.post(
         "/api/newsletters/confirmation/send",
@@ -99,12 +102,13 @@ export const Newsletter = ({
               maxW="lg"
               bg={formWrapBgColor}
               rounded={"lg"}
-              p={2}
+              p={1.5}
             >
               <FormControl flex={1}>
                 <Input
                   type="email"
                   p={0}
+                  pl={1}
                   rounded={"none"}
                   fontWeight={"normal"}
                   value={email}
@@ -123,10 +127,10 @@ export const Newsletter = ({
                 <LightMode>
                   <Button
                     type="submit"
-                    isLoading={isPending}
-                    isDisabled={isPending}
+                    isLoading={isPending || isVerificationPending}
+                    isDisabled={isPending || isVerificationPending}
                     zIndex={2}
-                    colorScheme="gray"
+                    // colorScheme="gray"
                     fontWeight={500}
                   >
                     Subscribe
@@ -135,10 +139,10 @@ export const Newsletter = ({
               ) : (
                 <Button
                   type="submit"
-                  isLoading={isPending}
-                  isDisabled={isPending}
+                  isLoading={isPending || isVerificationPending}
+                  isDisabled={isPending || isVerificationPending}
                   zIndex={2}
-                  colorScheme="blue"
+                  colorScheme="brand"
                   fontWeight={500}
                 >
                   Subscribe

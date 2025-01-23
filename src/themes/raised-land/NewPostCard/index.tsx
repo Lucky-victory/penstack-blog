@@ -1,5 +1,10 @@
 import { PostSelect } from "@/src/types";
-import { formatPostPermalink, nativeFormatDate, objectToQueryParams, stripHtml } from "@/src/utils";
+import {
+  formatPostPermalink,
+  nativeFormatDate,
+  objectToQueryParams,
+  stripHtml,
+} from "@/src/utils";
 import { Link } from "@chakra-ui/next-js";
 import {
   Avatar,
@@ -31,7 +36,7 @@ export default function NewPostCard({
 }) {
   const bgColor = useColorModeValue("white", "gray.800");
   const authorAreaBgColor = useColorModeValue("gray.100", "gray.700");
-  const tagBgColor = useColorModeValue("blue.50", "blue.900");
+  const tagBgColor = useColorModeValue("brand.50", "brand.900");
   const borderColor = useColorModeValue("gray.300", "gray.700");
   return (
     <Stack
@@ -76,12 +81,12 @@ export default function NewPostCard({
         <Box>
           <Tag
             size="md"
-            colorScheme="blue"
+            colorScheme="brand"
             borderRadius="md"
             px={3}
             py={1}
             bg={tagBgColor}
-            color={"blue.500"}
+            color={"brand.500"}
             textTransform={"capitalize"}
           >
             {post.category.name}

@@ -74,7 +74,7 @@ const PostViewsChart = () => {
                 size={"sm"}
                 rounded={"lg"}
                 key={range.value}
-                colorScheme={timeRange === range.value ? "blue" : "gray"}
+                colorScheme={timeRange === range.value ? "brand" : "gray"}
                 variant={timeRange === range.value ? "solid" : "ghost"}
                 onClick={() => setTimeRange(range.value)}
               >

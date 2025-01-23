@@ -110,7 +110,7 @@ export default function Overview() {
             growthCount={subscribersOverview?.weeklyGrowth}
           />
           <OverviewCard
-            color="blue"
+            color="brand"
             isLoading={isPostsLoading}
             label="Posts"
             icon={LuFileStack}

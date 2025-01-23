@@ -2,7 +2,7 @@ import { Link } from "@chakra-ui/next-js";
 import { Button, useColorModeValue } from "@chakra-ui/react";
 
 export const SignUp = () => {
-  const hoverBgSignup = useColorModeValue("blue.600", "blue.400");
+  const hoverBgSignup = useColorModeValue("brand.600", "brand.400");
 
   return (
     <Button

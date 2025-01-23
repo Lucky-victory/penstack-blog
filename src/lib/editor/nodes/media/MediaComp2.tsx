@@ -104,7 +104,7 @@ export const MediaComp2: React.FC<NodeViewProps> = ({
                     aria-label={`Align ${value}`}
                     icon={<Icon />}
                     onClick={() => updateAttributes({ align: value })}
-                    _active={{ bg: "blue.500", color: "white" }}
+                    _active={{ bg: "brand.500", color: "white" }}
                     isActive={node.attrs.align === value}
                   />
                 </Tooltip>

@@ -351,7 +351,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                   pr={1}
                 />
                 {!isSlugEditable && (
-                  <InputRightElement bg={"blue.50"} roundedRight={"full"}>
+                  <InputRightElement bg={"brand.50"} roundedRight={"full"}>
                     <Button
                       size={"sm"}
                       variant={"ghost"}

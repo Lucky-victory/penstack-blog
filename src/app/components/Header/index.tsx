@@ -53,7 +53,7 @@ const Header = () => {
   const borderColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("gray.700", "gray.200");
   const hoverBgColor = useColorModeValue("gray.100", "gray.700");
-  const navLinkHoverColor = useColorModeValue("blue.500", "blue.300");
+  const navLinkHoverColor = useColorModeValue("brand.500", "brand.300");
   const siteConfig = useSiteConfig();
   const pathname = usePathname();
   const { scrollY } = useScroll();

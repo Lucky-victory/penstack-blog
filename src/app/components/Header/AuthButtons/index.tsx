@@ -11,7 +11,7 @@ import { SignUp } from "./SignUp";
 
 export const AuthButtons = () => {
   const { user } = useAuth();
-  const hoverBgLogin = useColorModeValue("blue.100", "gray.700");
+  const hoverBgLogin = useColorModeValue("brand.100", "gray.700");
 
   return user ? (
     <></>

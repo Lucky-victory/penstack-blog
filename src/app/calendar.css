@@ -42,7 +42,7 @@
 
 .calendar-header .next-month:not(:disabled):hover,
 .calendar-header .prev-month:not(:disabled):hover {
-  background-color: var(--chakra-colors-brand-50);
+  background-color: var(--chakra-colors-brand-100);
   color: var(--chakra-colors-black);
 }
 
@@ -111,7 +111,7 @@
 }
 
 .day:hover {
-  background-color: var(--chakra-colors-brand-50);
+  background-color: var(--chakra-colors-brand-100);
 }
 
 .chakra-ui-dark .day:hover {
@@ -190,7 +190,7 @@
 }
 
 .day.today {
-  background-color: var(--chakra-colors-brand-50);
+  background-color: var(--chakra-colors-brand-100);
   font-weight: bold;
   color: var(--chakra-colors-brand-500);
 }

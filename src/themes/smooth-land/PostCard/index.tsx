@@ -114,7 +114,7 @@ export default function PostCard({
             </HStack>
             <LinkOverlay
               href={formatPostPermalink(post)}
-              _hover={{ textDecoration: "underline", color: "blue.500" }}
+              _hover={{ textDecoration: "underline", color: "brand.500" }}
             >
               <Heading
                 size={"md"}

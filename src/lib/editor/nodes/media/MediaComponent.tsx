@@ -87,7 +87,7 @@ export const MediaComponent: React.FC<MediaComponentProps> = ({
             onClick={() => {
               /* Implement media modal open */
             }}
-            className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
+            className="px-4 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-md hover:bg-brand-100"
           >
             <LuImage className="w-4 h-4 mr-2 inline-block" />
             Insert Media

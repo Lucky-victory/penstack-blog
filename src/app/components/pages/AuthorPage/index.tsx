@@ -74,7 +74,7 @@ const AuthorPage = ({ username }: { username: string }) => {
                     </Text>
                   </Stack>
                   {author?.title && (
-                    <Text color="blue.500" fontWeight="medium">
+                    <Text color="brand.500" fontWeight="medium">
                       {author?.title}
                     </Text>
                   )}
@@ -94,7 +94,7 @@ const AuthorPage = ({ username }: { username: string }) => {
                   alignItems="center"
                   gap={2}
                   color={textColor}
-                  _hover={{ color: "blue.500" }}
+                  _hover={{ color: "brand.500" }}
                   >
                   <LuTwitter size={20} />
                   <Text>{author?.socials?.twitter}</Text>
@@ -106,7 +106,7 @@ const AuthorPage = ({ username }: { username: string }) => {
                   alignItems="center"
                   gap={2}
                   color={textColor}
-                  _hover={{ color: "blue.500" }}
+                  _hover={{ color: "brand.500" }}
                 >
                   <LuGithub size={20} />
                   <Text>{author?.socials?.github}</Text>
@@ -118,7 +118,7 @@ const AuthorPage = ({ username }: { username: string }) => {
                   alignItems="center"
                   gap={2}
                   color={textColor}
-                  _hover={{ color: "blue.500" }}
+                  _hover={{ color: "brand.500" }}
                 >
                   <LuMail size={20} />
                   <Text>{author?.socials?.email}</Text>
@@ -130,7 +130,7 @@ const AuthorPage = ({ username }: { username: string }) => {
                   alignItems="center"
                   gap={2}
                   color={textColor}
-                  _hover={{ color: "blue.500" }}
+                  _hover={{ color: "brand.500" }}
                 >
                   <LuLink size={20} />
                   <Text>{author?.socials?.website}</Text>

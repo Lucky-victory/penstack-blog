@@ -43,9 +43,9 @@ export default function DashboardSettingsPage() {
   const [hasChanges, setHasChanges] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const tabHoverBg = useColorModeValue("gray.100", "gray.900");
-  const tabActiveBg = useColorModeValue("blue.100", "blue.800");
-  const tabActiveColor = useColorModeValue("blue.500", "blue.300");
-  const tabActiveHoverBg = useColorModeValue("blue.200", "blue.700");
+  const tabActiveBg = useColorModeValue("brand.100", "brand.800");
+  const tabActiveColor = useColorModeValue("brand.500", "brand.300");
+  const tabActiveHoverBg = useColorModeValue("brand.200", "brand.700");
 
   const [originalSettings, setOriginalSettings] =
     useState<SiteSettings>(settingsContext);

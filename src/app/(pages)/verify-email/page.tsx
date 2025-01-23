@@ -50,7 +50,7 @@ export default function VerifyEmail() {
         <Heading size="lg">Email Verification</Heading>
         {status === "verifying" && (
           <VStack>
-            <Spinner size="xl" color="blue.500" />
+            <Spinner size="xl" color="brand.500" />
             <Text>Verifying your email...</Text>
           </VStack>
         )}

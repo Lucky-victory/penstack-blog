@@ -63,7 +63,7 @@ const FrontPage = () => {
                 href={"/articles"}
                 px={6}
                 py={2}
-                bg={"blue.600"}
+                bg={"brand.600"}
                 color={"white"}
                 rounded={"xl"}
               >

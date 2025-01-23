@@ -73,7 +73,7 @@ const TimezonePicker = ({
     ({ index, style }: { index: number; style: React.CSSProperties }) => {
       const item = flattenedTimezones[index];
       const borderBottomColor = useColorModeValue("gray.200", "gray.500");
-      const hoverBg = useColorModeValue("blue.100", "blue.500");
+      const hoverBg = useColorModeValue("brand.100", "brand.500");
       const hoverColor = useColorModeValue("black", "white");
 
       if (item.type === "group") {
@@ -108,7 +108,7 @@ const TimezonePicker = ({
         <MenuItem
           value={item.name}
           rounded="full"
-          bg={selectedTimezone === item.name ? "blue.500" : ""}
+          bg={selectedTimezone === item.name ? "brand.500" : ""}
           color={selectedTimezone === item.name ? "white" : ""}
           _hover={{
             bg: hoverBg,

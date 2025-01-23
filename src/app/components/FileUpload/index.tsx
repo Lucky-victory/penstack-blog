@@ -60,8 +60,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   });
 
   const borderColor = useColorModeValue("gray.300", "gray.600");
-  const activeBorderColor = useColorModeValue("blue.500", "blue.300");
-  const activeBgColor = useColorModeValue("blue.50", "blue.900");
+  const activeBorderColor = useColorModeValue("brand.500", "brand.300");
+  const activeBgColor = useColorModeValue("brand.50", "brand.900");
   const iconColor = useColorModeValue("gray.400", "gray.500");
   const bgColor = useColorModeValue("white", "gray.800");
   const itemBgColor = useColorModeValue("gray.100", "gray.700");
@@ -183,7 +183,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                   as={LuLoader2}
                   h={8}
                   w={8}
-                  color="blue.500"
+                  color="brand.500"
                   animation="spin 1s linear infinite"
                 />
                 <Text>Uploading...</Text>
@@ -232,7 +232,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 <CircularProgress
                   value={uploadProgress[image.name] || 0}
                   size="40px"
-                  color="blue.500"
+                  color="brand.500"
                 >
                   <CircularProgressLabel>
                     {uploadProgress[image.name] || 0}%

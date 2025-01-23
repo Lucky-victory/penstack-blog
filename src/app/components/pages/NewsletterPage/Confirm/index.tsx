@@ -73,7 +73,7 @@ export default function NewsletterConfirm() {
       <VStack spacing={8} align="center">
         {status === "loading" && (
           <Box textAlign="center">
-            <Spinner size="xl" mb={4} color="blue.500" />
+            <Spinner size="xl" mb={4} color="brand.500" />
             <Heading size="lg" mb={4}>
               Confirming your subscription...
             </Heading>

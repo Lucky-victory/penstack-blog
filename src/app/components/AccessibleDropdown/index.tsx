@@ -209,7 +209,7 @@ function AccessibleDropdown<T extends Option | EditorActionItem>({
                 onMouseEnter={() => setActiveIndex(index)}
               >
                 {/* color={item?.active(editor) ? activeTextColorValue : undefined}
-              bg={item?.active(editor) ? "blue.500" : undefined}
+              bg={item?.active(editor) ? "brand.500" : undefined}
               icon={React.createElement(item.icon, { size: 20 })}
               rounded="xl"
             > */}

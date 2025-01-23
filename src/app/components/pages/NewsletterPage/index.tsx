@@ -56,7 +56,7 @@ const Feature = ({
   title: string;
 }) => (
   <Stack direction="row" align="center" spacing={2}>
-    <Icon as={icon} color="blue.500" boxSize={5} />
+    <Icon as={icon} color="brand.500" boxSize={5} />
     <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.300")}>
       {title}
     </Text>
@@ -84,7 +84,7 @@ const Testimonial = ({
     _hover={{ transform: "translateY(-4px)", shadow: "lg" }}
     transition="all 0.3s"
   >
-    <Icon as={LuQuote} color="blue.500" boxSize={6} />
+    <Icon as={LuQuote} color="brand.500" boxSize={6} />
     <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.300")}>
       &apos;{content}&apos;
     </Text>
@@ -119,7 +119,7 @@ export const NewsletterPage = ({ title }: { title?: string }) => {
         p={8}
       >
         <VStack spacing={8} align="center" textAlign="center">
-          <Badge colorScheme="blue" fontSize="sm" px={3} py={1} rounded="full">
+          <Badge colorScheme="brand" fontSize="sm" px={3} py={1} rounded="full">
             Join 10,000+ Developers
           </Badge>
 

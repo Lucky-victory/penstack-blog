@@ -91,7 +91,7 @@ const SearchResults = () => {
               onChange={handleSearch}
               value={queryParams?.q || ""}
               _hover={{
-                borderColor: useColorModeValue("blue.500", "blue.300"),
+                borderColor: useColorModeValue("brand.500", "brand.300"),
               }}
             />
             <InputRightElement>
