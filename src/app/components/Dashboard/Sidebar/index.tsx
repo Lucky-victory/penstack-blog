@@ -87,17 +87,17 @@ export const DashboardSidebar = ({
   toggleMinimized: () => void;
   [key: string]: any;
 }) => {
-  const bg = useColorModeValue("#fbfbfb", "#121212");
-  const navBtnBg = useColorModeValue("customBlue", "gray.800");
+  const bg = useColorModeValue("white", "charcoalBlack");
+  const navBtnBg = useColorModeValue("brand.600", "brand.300");
   const navBtnBgHover = useColorModeValue("gray.200", "gray.700");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
   const hoverTextColor = useColorModeValue("gray.800", "gray.100");
   const siteConfig = useSiteConfig();
-  const navBtnActiveColor = useColorModeValue("#fff", "#fff");
+  const navBtnActiveColor = useColorModeValue("#fff", "black");
   const siteNameColor = useColorModeValue("gray.800", "gray.100");
   return (
-    <Stack
+    <Flex flexDir={'column'}
       bg={bg}
       borderRight="1px"
       zIndex={1000}
@@ -111,18 +111,18 @@ export const DashboardSidebar = ({
       h="full"
       {...rest}
     >
-      <Box>
+      <Box bg="blue">
         <Flex
           alignItems="center"
           mx={"auto"}
           mb={2}
           gap={3}
           py={3}
-          pr={isMinimized ? 0 : 5}
+          pr={isMinimized ? 0 : 4}
           justify={"center"}
         >
           {!isMinimized && (
-            <Box pl={5}>
+            <Box pl={4}>
               <AppLogoAndName logoSize={"30px"} />
             </Box>
           )}
@@ -149,10 +149,12 @@ export const DashboardSidebar = ({
       <VStack
         spacing={4}
         mt={4}
-        h={"calc(100% - var(--dash-header-h))"}
+        // h={"calc(100% - var(--dash-header-h))"}
         align="stretch"
-        flex={1}
-        pr={isMinimized ? 3 : 5}
+        alignSelf={"stretch"}
+        bg="red"
+        // flex={1}
+        pr={isMinimized ? 3 : 4}
         justifyContent={"space-between"}
       >
         {navItems.map((item, index) => (
@@ -187,11 +189,11 @@ export const DashboardSidebar = ({
             )}
           </Box>
         ))}
-        <Stack mt={"auto"} mb={5} pl={isMinimized ? 3 : 6}>
+        <Stack mt={"auto"} mb={4} pl={isMinimized ? 3 : 4} >
           <LightDarkModeSwitch showLabel={!isMinimized} />
         </Stack>
       </VStack>
-    </Stack>
+    </Stac>
   );
 };
 

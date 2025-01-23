@@ -60,7 +60,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fonts.rubik.variable} ${fonts.karla.variable}`}
+      className={`${fonts.body.variable} ${fonts.heading.variable}`}
     >
       <body>
         <SiteConfigProvider initialConfig={initialConfig}>

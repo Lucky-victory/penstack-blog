@@ -16,11 +16,12 @@ export default function Posts() {
     return selectedCategory.toLowerCase() === val?.toLowerCase();
   }
 
-  useEffect(() => {
-    selectedCategory.toLowerCase() === "all"
+  function handleSelectedCategory(val: string | "all") {
+    val.toLowerCase() === "all"
       ? updateParams({ category: "" })
-      : updateParams({ category: selectedCategory });
-  }, [selectedCategory, updateParams]);
+      : updateParams({ category: val });
+    setSelectedCategory(val);
+  }
   return (
     <PageWrapper>
       <Box py={8} px={{ base: 3, lg: 4 }} maxW={"container.xl"} mx="auto">
@@ -41,7 +42,7 @@ export default function Posts() {
                     return (
                       <Button
                         onClick={() => {
-                          setSelectedCategory(val);
+                          handleSelectedCategory(val);
                         }}
                         key={val}
                         value={val}

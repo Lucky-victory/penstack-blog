@@ -43,9 +43,9 @@ export default function DashboardSettingsPage() {
   const [hasChanges, setHasChanges] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const tabHoverBg = useColorModeValue("gray.100", "gray.900");
-  const tabActiveBg = useColorModeValue("brand.100", "brand.800");
-  const tabActiveColor = useColorModeValue("brand.500", "brand.300");
-  const tabActiveHoverBg = useColorModeValue("brand.200", "brand.700");
+  const tabActiveBg = useColorModeValue("brand.100", "brand.900");
+  const tabActiveColor = useColorModeValue("brand.600", "brand.300");
+  const tabActiveHoverBg = useColorModeValue("brand.200", "brand.800");
 
   const [originalSettings, setOriginalSettings] =
     useState<SiteSettings>(settingsContext);
@@ -159,7 +159,7 @@ export default function DashboardSettingsPage() {
       color: tabActiveColor,
 
       bg: tabActiveBg,
-      fontWeight: "medium",
+      // fontWeight: "medium",
       _hover: {
         bg: tabActiveHoverBg,
       },
@@ -182,7 +182,7 @@ export default function DashboardSettingsPage() {
         </PageTitleCard>
 
         {hasChanges && (
-          <Alert status="info" mb={4} rounded="md">
+          <Alert status="info" colorScheme="brand" mb={4} rounded="md">
             <AlertIcon />
             You have unsaved changes
           </Alert>
@@ -190,14 +190,14 @@ export default function DashboardSettingsPage() {
 
         <Card rounded="lg">
           <CardBody>
-            <Tabs variant="unstyled">
+            <Tabs>
               <TabList overflowX="auto" className="no-scrollbar" pb={1} gap={3}>
-                <Tab {...tabStyles}>General</Tab>
-                <Tab {...tabStyles}>Analytics</Tab>
-                <Tab {...tabStyles}>Monitoring</Tab>
-                <Tab {...tabStyles}>Media</Tab>
-                <Tab {...tabStyles}>Email</Tab>
-                <Tab {...tabStyles}>Advanced</Tab>
+                <Tab>General</Tab>
+                <Tab>Analytics</Tab>
+                <Tab>Monitoring</Tab>
+                <Tab>Media</Tab>
+                <Tab>Email</Tab>
+                <Tab>Advanced</Tab>
               </TabList>
 
               <TabPanels>

@@ -1,15 +1,15 @@
-import { Rubik, Gabarito } from "next/font/google";
+import { Rubik, Gabarito, Plus_Jakarta_Sans } from "next/font/google";
 
-const rubik = Rubik({
+const body = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-rubik",
+  variable: "--font-body",
 });
-const karla = Gabarito({
+const heading = Gabarito({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-karla",
+  variable: "--font-heading",
 });
 export const fonts = {
-  rubik,
-  karla,
+  body,
+  heading,
 };

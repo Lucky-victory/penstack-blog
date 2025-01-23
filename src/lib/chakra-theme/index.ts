@@ -69,8 +69,8 @@ export const chakraTheme = extendTheme(
       },
     },
     fonts: {
-      heading: "var(--font-karla)",
-      body: "var(--font-rubik)",
+      heading: "var(--font-heading)",
+      body: "var(--font-body)",
     },
   },
   withDefaultProps({

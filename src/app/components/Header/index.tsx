@@ -26,6 +26,7 @@ import {
   InputRightElement,
   Icon,
   Hide,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import {
   LuMenu,
@@ -75,8 +76,8 @@ const Header = () => {
   );
   const borderOpacity = useTransform(scrollY, [0, 60], [0, 1]);
   const backdrop = useTransform(scrollY, [0, 60], ["none", "blur(10px"]) as any;
-
-  const { data } = useCategories({ limit: 5, canFetch: isOpen });
+  const canFetchCategories = useBreakpointValue({ base: isOpen, md: true });
+  const { data } = useCategories({ limit: 5, canFetch: canFetchCategories });
   const categories = data?.results;
 
   const resources = [
@@ -165,7 +166,7 @@ const Header = () => {
               {resources.map((resource) => (
                 <Link
                   key={resource.name}
-                  fontFamily={"var(--font-karla)"}
+                  fontFamily={"var(--font-heading)"}
                   textTransform="capitalize"
                   fontWeight={500}
                   href={resource.href}
