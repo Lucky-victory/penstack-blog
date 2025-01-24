@@ -34,10 +34,9 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
         mb={5}
         textAlign={{ base: "left", md: "center" }}
       >
-        {post.title} and some more text to make it longer like
-        hydrosulphatetimunate
+        {post.title}
       </Heading>
-      {
+      {post.summary && (
         <Text
           fontSize="md"
           bg="red"
@@ -46,10 +45,9 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
           color={summaryColor}
           textAlign={{ base: "left", md: "center" }}
         >
-          {post.summary ||
-            `Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto atque maiores laudantium perspiciatis nostrum. Quod saepe expedita dolorem quae quis sint quia architecto error, facilis similique eligendi ex vitae nesciunt provident amet deserunt quaerat laboriosam quam corporis numquam debitis id.`}
+          {post.summary}
         </Text>
-      }
+      )}
     </Stack>
   );
 };

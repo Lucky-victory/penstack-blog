@@ -141,6 +141,7 @@ export const DashboardSidebar = ({
               fontSize="20"
               size="sm"
               variant={"ghost"}
+              alignSelf={"start"}
               colorScheme="gray"
               color={siteNameColor}
               // display={{ base: "none", md: "flex" }}
