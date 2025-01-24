@@ -12,6 +12,7 @@ import {
   Text,
   InputRightAddon,
   InputGroup,
+  TagRightIcon,
 } from "@chakra-ui/react";
 import { SectionCard } from "../../../Dashboard/SectionCard";
 import { useState } from "react";
@@ -19,12 +20,14 @@ import axios from "axios";
 import slugify from "slugify";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const TagsSection = () => {
   const { activePost } = useCustomEditorContext();
-  const [isCreating, setIsCreating] = useState<boolean>(false);
+  const [tagToRemoveId, setTagToRemoveId] = useState<null | number>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
   const queryClient = useQueryClient();
   const postId = activePost?.post_id || "";
 
@@ -82,9 +85,14 @@ export const TagsSection = () => {
 
   const removeTagFromPostMutation = useMutation({
     mutationFn: async (tagId: number) => {
-      await axios.patch(`/api/posts/${postId}/tags`, {
-        tagIds: [tagId],
-      });
+      try {
+        setIsRemoving(true);
+        await axios.patch(`/api/posts/${postId}/tags`, {
+          tagIds: [tagId],
+        });
+      } finally {
+        setIsRemoving(false);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -93,20 +101,40 @@ export const TagsSection = () => {
       });
     },
   });
-
+  function handleTagRemove(tagId: number) {
+    setTagToRemoveId(tagId);
+    removeTagFromPostMutation.mutate(tagId);
+  }
   return (
     <SectionCard title="Tags">
       <HStack p={4} pb={0} gap={2} wrap={"wrap"}>
-        {postTags &&
-          postTags?.length > 0 &&
-          postTags?.map((tag) => (
-            <Tag rounded={"full"} key={tag.id} variant="solid">
-              <TagLabel>#{tag.name}</TagLabel>
-              <TagCloseButton
-                onClick={() => removeTagFromPostMutation.mutate(tag.id)}
-              />
-            </Tag>
-          ))}
+        <AnimatePresence>
+          {postTags &&
+            postTags?.length > 0 &&
+            postTags?.map((tag) => (
+              <motion.div
+                key={tag.id}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Tag
+                  rounded={"full"}
+                  variant="solid"
+                  opacity={isRemoving && tagToRemoveId === tag.id ? 0.5 : 1}
+                >
+                  <TagLabel>#{tag.name}</TagLabel>
+                  {removeTagFromPostMutation.isPending &&
+                  tagToRemoveId === tag.id ? (
+                    <TagRightIcon as={Spinner} />
+                  ) : (
+                    <TagCloseButton onClick={() => handleTagRemove(tag.id)} />
+                  )}
+                </Tag>
+              </motion.div>
+            ))}
+        </AnimatePresence>
       </HStack>
 
       <Box p={4} position="relative">

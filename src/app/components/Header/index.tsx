@@ -238,23 +238,17 @@ const Header = () => {
             </HStack>
             {/* Right Side Actions */}
             <HStack spacing={4}>
-              <HStack
-                ml="auto"
-                spacing={4}
+              <IconButton
                 display={{ base: "none", lg: "flex" }}
-              >
-                {/* Topics Dropdown */}
+                as={Link}
+                href="/search"
+                aria-label="Search"
+                colorScheme="gray"
+                rounded={"full"}
+                icon={<LuSearch size={16} />}
+                variant="ghost"
+              />
 
-                <IconButton
-                  as={Link}
-                  href="/search"
-                  aria-label="Search"
-                  colorScheme="gray"
-                  rounded={"full"}
-                  icon={<LuSearch size={16} />}
-                  variant="ghost"
-                />
-              </HStack>
               <HStack spacing={2} display={{ base: "none", lg: "flex" }}>
                 <Hide below="lg">
                   <LightDarkModeSwitch />
