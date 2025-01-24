@@ -88,7 +88,12 @@ export type EDITOR_CONTEXT_STATE = {
   updateField: <K extends keyof PostInsert>(
     key: K,
     value: PostInsert[K],
-    shouldAutosave?: boolean
+    shouldAutosave?: boolean,
+    /**
+     * Callback to call after the field is updated.
+     */
+    cb?: () => void,
+    updateSlug?: boolean
   ) => void;
   activePost: PostSelect | null;
   setActivePost: (post: PostSelect | null) => void;

@@ -13,8 +13,6 @@ import {
   FormLabel,
   FormControl,
   Icon,
-  TagCloseButton,
-  TagLabel,
   InputRightElement,
   InputGroup,
   Text,
@@ -45,6 +43,7 @@ import { format } from "date-fns";
 import { CalendarPicker } from "../CalendarPicker";
 import { CategorySection } from "./CategorySection";
 import { TagsSection } from "./TagsSection";
+import { PostInsert } from "@/src/types";
 
 export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
   const { activePost, isSaving, updateField } = useCustomEditorContext();
@@ -60,34 +59,40 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
   });
 
   function onDraft() {
-    updateField("status", "draft");
-    toast({
-      title: "Draft saved successfully",
+    updateField("status", "draft", undefined, () => {
+      toast({
+        title: "Draft saved successfully",
+      });
     });
   }
   function onPublish() {
     setIsPublishing(true);
-    updateField("status", "published");
-    toast({
-      title: "Post published successfully",
+    updateField("status", "published", undefined, () => {
+      toast({
+        title: "Post published successfully",
+      });
+      setTimeout(() => {
+        router.push("/dashboard/posts");
+        setIsPublishing(false);
+      }, 2000);
     });
-    setTimeout(() => {
-      router.push("/dashboard/posts");
-      setIsPublishing(false);
-    }, 2000);
   }
   function onDelete() {
-    updateField("status", "deleted");
-    toast({
-      title: "Post deleted successfully",
+    updateField("status", "deleted", undefined, () => {
+      toast({
+        title: "Post deleted successfully",
+      });
+      setTimeout(() => {
+        router.replace("/dashboard/posts");
+      }, 2000);
     });
-    setTimeout(() => {
-      router.replace("/dashboard/posts");
-    }, 2000);
   }
   function handleChange(
     evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {}
+  ) {
+    const { name, value } = evt.target;
+    updateField(name as keyof PostInsert, value);
+  }
 
   const editorMeta = {
     wordCount: editor?.storage?.characterCount?.words() || 0,
@@ -297,8 +302,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                       onChange={() => {
                         updateField(
                           "allow_comments",
-                          !activePost?.allow_comments,
-                          true
+                          !activePost?.allow_comments
                         );
                       }}
                     />
@@ -315,7 +319,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                     <Switch
                       isChecked={activePost?.is_sticky as boolean}
                       onChange={() => {
-                        updateField("is_sticky", !activePost?.is_sticky, true);
+                        updateField("is_sticky", !activePost?.is_sticky);
                       }}
                     />
                   </HStack>
@@ -347,17 +351,15 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                   onChange={handleChange}
                   isDisabled={!isSlugEditable}
                   onBlur={() => setIsSlugEditable(false)}
-                  rounded={"full"}
+                  rounded={"xl"}
                   pr={1}
                 />
                 {!isSlugEditable && (
-                  <InputRightElement bg={"brand.50"} roundedRight={"full"}>
+                  <InputRightElement roundedRight={"xl"}>
                     <Button
                       size={"sm"}
                       variant={"ghost"}
                       fontWeight={500}
-                      fontSize={"13px"}
-                      roundedRight={"full"}
                       onClick={() => setIsSlugEditable(true)}
                     >
                       Edit

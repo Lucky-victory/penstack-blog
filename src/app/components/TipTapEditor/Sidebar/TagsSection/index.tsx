@@ -7,12 +7,13 @@ import {
   Input,
   Button,
   List,
-  ListItem,
   Spinner,
   Text,
   InputRightAddon,
   InputGroup,
   TagRightIcon,
+  Skeleton,
+  ListItem,
 } from "@chakra-ui/react";
 import { SectionCard } from "../../../Dashboard/SectionCard";
 import { useState } from "react";
@@ -117,7 +118,7 @@ export const TagsSection = () => {
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.3 }}
               >
                 <Tag
                   rounded={"full"}
@@ -185,7 +186,8 @@ export const TagsSection = () => {
           >
             {isSearching ? (
               <ListItem p={2}>
-                <Spinner size="sm" />
+                <Skeleton height="15px" mb={1} width="190px" rounded={"xl"} />
+                <Skeleton height="15px" width="140px" rounded={"xl"} />
               </ListItem>
             ) : searchResults?.length ? (
               searchResults.map((tag: { id: number; name: string }) => (

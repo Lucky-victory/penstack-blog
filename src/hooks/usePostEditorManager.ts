@@ -102,7 +102,12 @@ export const usePostManager = (initialPost: PostSelect | null) => {
     <K extends keyof PostInsert>(
       key: K,
       value: PostInsert[K],
-      shouldAutosave = true
+      shouldAutosave = true,
+      /**
+       * Callback to call after the field is updated.
+       */
+      cb?: () => void,
+      updateSlug = true
     ) => {
       if (!post) return;
 
@@ -111,7 +116,7 @@ export const usePostManager = (initialPost: PostSelect | null) => {
         const newPost = { ...prev, [key]: value };
 
         // Handle special cases like title -> slug
-        if (key === "title") {
+        if (key === "title" && updateSlug) {
           newPost.slug = slugify(value as string, {
             lower: true,
             strict: true,
@@ -125,7 +130,7 @@ export const usePostManager = (initialPost: PostSelect | null) => {
 
         return newPost;
       });
-
+      cb?.();
       setIsDirty(true);
     },
     [post, debouncedSave]
