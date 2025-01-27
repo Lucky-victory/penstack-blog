@@ -44,6 +44,8 @@ import { CalendarPicker } from "../CalendarPicker";
 import { CategorySection } from "./CategorySection";
 import { TagsSection } from "./TagsSection";
 import { PostInsert } from "@/src/types";
+import { SEOSection } from "./SEOSection";
+import { ActionButtons } from "./ActionButtons";
 
 export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
   const { activePost, isSaving, updateField } = useCustomEditorContext();
@@ -137,50 +139,12 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
             </>
           }
           footer={
-            <>
-              <PermissionGuard requiredPermission={"posts:delete"}>
-                <Button
-                  size={"xs"}
-                  flex={1}
-                  rounded={"md"}
-                  variant={"ghost"}
-                  colorScheme="red"
-                  color="red.500"
-                  bg="red.100"
-                  onClick={() => {
-                    onDelete?.();
-                  }}
-                >
-                  Delete
-                </Button>
-              </PermissionGuard>
-              <Button
-                size={"xs"}
-                flex={1}
-                variant={"outline"}
-                rounded={"md"}
-                onClick={() => {
-                  onDraft?.();
-                }}
-              >
-                Save draft
-              </Button>
-              <PermissionGuard requiredPermission={"posts:publish"}>
-                <Button
-                  size={"xs"}
-                  isDisabled={isPublishing}
-                  isLoading={isPublishing}
-                  loadingText={"Publishing..."}
-                  flex={1}
-                  rounded={"md"}
-                  onClick={() => {
-                    onPublish?.();
-                  }}
-                >
-                  Publish
-                </Button>
-              </PermissionGuard>
-            </>
+            <ActionButtons
+              onDelete={onDelete}
+              onDraft={onDraft}
+              onPublish={onPublish}
+              isPublishing={isPublishing}
+            />
           }
         >
           <Box p={4} pb={0}>
@@ -329,58 +293,13 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
           </Box>
         </SectionCard>
         <SectionCard title="SEO">
-          <Stack p={4}>
-            <Text as="span" fontWeight={500}>
-              Featured Image:
-            </Text>
-            <FeaturedImageCard
-              onChange={(imageId) => {
-                updateField("featured_image_id", imageId);
-              }}
-              image={activePost?.featured_image || null}
-            />
-
-            <FormControl>
-              <FormLabel>URL friendly title:</FormLabel>
-              <InputGroup>
-                <Input
-                  placeholder="Slug"
-                  name="slug"
-                  value={activePost?.slug}
-                  autoComplete="off"
-                  onChange={handleChange}
-                  isDisabled={!isSlugEditable}
-                  onBlur={() => setIsSlugEditable(false)}
-                  rounded={"xl"}
-                  pr={1}
-                />
-                {!isSlugEditable && (
-                  <InputRightElement roundedRight={"xl"}>
-                    <Button
-                      size={"sm"}
-                      variant={"ghost"}
-                      fontWeight={500}
-                      onClick={() => setIsSlugEditable(true)}
-                    >
-                      Edit
-                    </Button>
-                  </InputRightElement>
-                )}
-              </InputGroup>{" "}
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>Summary:</FormLabel>
-              <Textarea
-                placeholder="summary"
-                name="summary"
-                value={activePost?.summary || ""}
-                onChange={handleChange}
-                maxH={150}
-                rounded={"lg"}
-              />
-            </FormControl>
-          </Stack>
+          <SEOSection
+            activePost={activePost}
+            updateField={updateField}
+            isSlugEditable={isSlugEditable}
+            setIsSlugEditable={setIsSlugEditable}
+            handleChange={handleChange}
+          />
         </SectionCard>
         <CategorySection />
         <TagsSection />

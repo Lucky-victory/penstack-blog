@@ -171,9 +171,11 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               <Newsletter canWrap isDark={false} />
             </VStack>
           </Flex>
-          <Suspense fallback={<Loader />}>
-            <CommentsSection post={post} />
-          </Suspense>
+          {post?.allow_comments && (
+            <Suspense fallback={<Loader />}>
+              <CommentsSection post={post} />
+            </Suspense>
+          )}
         </Container>
       </MotionBox>
     </PageWrapper>

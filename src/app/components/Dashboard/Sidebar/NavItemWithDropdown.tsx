@@ -20,8 +20,8 @@ import { LuChevronDown } from "react-icons/lu";
 import { PermissionGuard } from "../../PermissionGuard";
 import { SidebarNavItem } from "./NavItem";
 import { usePathname } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
-import { navItems } from ".";
+import { ReactNode, useEffect, useMemo, useState } from "react";
+import { dashboardNavLinks } from "@/src/lib/dashboard/nav-links";
 
 export const NavItemWithChildren = ({
   item,
@@ -56,6 +56,7 @@ export const NavItemWithChildren = ({
     );
   };
 
+  const navItems: NavItem[] = useMemo(() => dashboardNavLinks, []);
   useEffect(() => {
     const activeParent = navItems.find(
       (item) =>

@@ -12,6 +12,7 @@ import {
   useColorModeValue,
   Icon,
   Card,
+  Skeleton,
 } from "@chakra-ui/react";
 import { IconType } from "react-icons";
 import { LuTrendingDown, LuTrendingUp } from "react-icons/lu";
@@ -23,6 +24,7 @@ export const OverviewCard = ({
   value,
   isUp,
   growthCount,
+  isLoading,
 }: {
   label: string;
   value: string | number;
@@ -77,35 +79,43 @@ export const OverviewCard = ({
                 fontWeight={"semibold"}
                 color={"secondary"}
               >
-                {value}
+                {isLoading ? (
+                  <Skeleton height={"20px"} width={"100px"} rounded="full" />
+                ) : (
+                  value
+                )}
               </Text>
             </VStack>
 
             <HStack gap={"10px"}>
-              <HStack
-                bg={isUp ? "green.100" : "red.100"}
-                px={2.5}
-                py={1}
-                gap={1}
-                rounded={"full"}
-                display={"inline-flex"}
-                h={6}
-              >
-                {isUp ? (
-                  <LuTrendingUp color={"green"} />
-                ) : (
-                  <LuTrendingDown color={"red"} />
-                )}
-                <Text
-                  as={"span"}
-                  fontWeight={"medium"}
-                  lineHeight={"16px"}
-                  fontSize={"12px"}
-                  color={isUp ? "green" : "red"}
+              {isLoading ? (
+                <Skeleton height={"20px"} width={"60px"} rounded="full" />
+              ) : (
+                <HStack
+                  bg={isUp ? "green.100" : "red.100"}
+                  px={2.5}
+                  py={1}
+                  gap={1}
+                  rounded={"full"}
+                  display={"inline-flex"}
+                  h={6}
                 >
-                  {growthCount}%
-                </Text>
-              </HStack>
+                  {isUp ? (
+                    <LuTrendingUp color={"green"} />
+                  ) : (
+                    <LuTrendingDown color={"red"} />
+                  )}
+                  <Text
+                    as={"span"}
+                    fontWeight={"medium"}
+                    lineHeight={"16px"}
+                    fontSize={"12px"}
+                    color={isUp ? "green" : "red"}
+                  >
+                    {growthCount}%
+                  </Text>
+                </HStack>
+              )}
               <Text as={"span"} fontSize={"14px"} color={textColor}>
                 vs. previous week
               </Text>
@@ -143,9 +153,9 @@ const ChartHighIcon = () => (
         y2="1"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#77B900" stop-opacity="0" />
-        <stop offset="0.525" stop-color="#77B900" stop-opacity="0.648235" />
-        <stop offset="0.809892" stop-color="#77B900" />
+        <stop stopColor="#77B900" stopOpacity="0" />
+        <stop offset="0.525" stopColor="#77B900" stopOpacity="0.648235" />
+        <stop offset="0.809892" stopColor="#77B900" />
       </linearGradient>
     </defs>
   </svg>
@@ -177,8 +187,8 @@ const ChartLowIcon = () => (
         y2="1"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#ED544E" stop-opacity="0" />
-        <stop offset="0.809892" stop-color="#ED544E" />
+        <stop stopColor="#ED544E" stopOpacity="0" />
+        <stop offset="0.809892" stopColor="#ED544E" />
       </linearGradient>
     </defs>
   </svg>

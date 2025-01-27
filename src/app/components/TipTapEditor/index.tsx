@@ -133,6 +133,9 @@ function TipTapEditor({
     enablePasteRules: true,
     extensions: extensions,
     content: initialContent,
+    onCreate: (props) => {
+      console.log("editor created");
+    },
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       const text = editor.getText();

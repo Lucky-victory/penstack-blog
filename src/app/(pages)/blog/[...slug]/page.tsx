@@ -44,6 +44,7 @@ export async function generateMetadata(
     category: post?.category?.name,
     openGraph: {
       images: [
+        ...previousImages,
         post?.featured_image?.url ||
           `/api/og?${objectToQueryParams({
             title: post.title,
@@ -53,7 +54,6 @@ export async function generateMetadata(
             name: post?.author?.name,
             category: post?.category?.name,
           })}`,
-        ...previousImages,
       ],
     },
   };

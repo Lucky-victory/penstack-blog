@@ -25,57 +25,8 @@ import { NavItemWithChildren } from "./NavItemWithDropdown";
 import { AppLogoAndName } from "../../AppLogoAndName";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 import { Link } from "@chakra-ui/next-js";
-
-export const navItems: NavItem[] = [
-  {
-    icon: LuHome,
-    label: "Overview",
-    href: "/dashboard/overview",
-    permission: navPermissionMapping.VIEW_DASHBOARD,
-  },
-  {
-    icon: LuFileStack,
-    label: "Posts",
-    href: "/dashboard/posts",
-    permission: navPermissionMapping.VIEW_POSTS,
-    children: [
-      {
-        label: "All Posts",
-        href: "/dashboard/posts",
-        permission: navPermissionMapping.VIEW_POSTS,
-      },
-      {
-        label: "New Post",
-        href: "/dashboard/posts/new",
-        permission: navPermissionMapping.CREATE_POST,
-      },
-    ],
-  },
-  {
-    icon: LuUsers,
-    label: "Users",
-    href: "/dashboard/users",
-    permission: navPermissionMapping.VIEW_USERS,
-  },
-  {
-    icon: LuFileImage,
-    label: "Media",
-    href: "/dashboard/media",
-    permission: navPermissionMapping.VIEW_MEDIA,
-  },
-  {
-    icon: LuMail,
-    label: "Newsletter",
-    href: "/dashboard/newsletter",
-    permission: navPermissionMapping.VIEW_DASHBOARD,
-  },
-  {
-    icon: LuSettings,
-    label: "Settings",
-    href: "/dashboard/settings",
-    permission: navPermissionMapping.VIEW_SETTINGS,
-  },
-];
+import { useMemo } from "react";
+import { dashboardNavLinks } from "@/src/lib/dashboard/nav-links";
 
 export const DashboardSidebar = ({
   onClose,
@@ -88,6 +39,7 @@ export const DashboardSidebar = ({
   toggleMinimized: () => void;
   [key: string]: any;
 }) => {
+  const navItems: NavItem[] = useMemo(() => dashboardNavLinks, []);
   const bg = useColorModeValue("white", "charcoalBlack");
   const navBtnBg = useColorModeValue("brand.600", "brand.300");
   const navBtnBgHover = useColorModeValue("gray.200", "gray.700");
@@ -203,4 +155,4 @@ export const DashboardSidebar = ({
   );
 };
 
-DashboardSidebar.displayName = "SidebarContentNav";
+DashboardSidebar.displayName = "DashboardSidebar";
