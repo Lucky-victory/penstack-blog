@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   const sort = ["name", "popular"].includes(searchParams.get("sort") || "")
     ? searchParams.get("sort")
     : "name";
-  const hasPostsOnly = searchParams.get("hasPostsOnly") === "true";
+  const hasPostsOnly = searchParams.get("hasPostsOnly") === "true" || true;
   const offset = (page - 1) * limit;
 
   try {
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         .from(categories)
         .leftJoin(posts, eq(posts.category_id, categories.id))
         .groupBy(categories.id)
-        .having(sql`count(posts.id) > 0`);
+        .having(sql`count(${posts.id}) > 0`);
     } else {
       totalQuery = db
         .select({ count: sql<number>`count(distinct ${categories.id})` })
@@ -33,6 +33,8 @@ export async function GET(req: NextRequest) {
     }
 
     const totalResult = await totalQuery;
+    console.log({ totalResult });
+
     const total = Number(totalResult?.[0].count);
 
     let query = db.query.categories.findMany({
@@ -45,9 +47,6 @@ export async function GET(req: NextRequest) {
           },
         },
       },
-      where: hasPostsOnly
-        ? sql`exists (select 1 from ${posts} where ${posts.category_id} = ${categories.id})`
-        : undefined,
     });
 
     let allCategories;
@@ -59,12 +58,12 @@ export async function GET(req: NextRequest) {
             id: categories.id,
             name: categories.name,
             slug: categories.slug,
-            postCount: sql<number>`count(posts.id)`.as("post_count"),
+            postCount: sql<number>`count(${posts.id})`.as("post_count"),
           })
           .from(categories)
           .leftJoin(posts, eq(posts.category_id, categories.id))
           .groupBy(categories.id)
-          .having(hasPostsOnly ? sql`count(posts.id) > 0` : undefined)
+          .having(hasPostsOnly ? sql`count(${posts.id}) > 0` : undefined)
           .orderBy(sql`post_count DESC`)
           .limit(limit)
           .offset(offset)
@@ -92,6 +91,8 @@ export async function GET(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
+
     return NextResponse.json(
       { data: null, error: "Failed to retrieve categories" },
       { status: 500 }

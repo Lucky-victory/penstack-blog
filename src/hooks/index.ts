@@ -10,63 +10,6 @@ import debounce from "lodash/debounce";
 import { objectToQueryParams } from "../utils";
 import axios from "axios";
 
-export type SaveableValue = string | Record<string, any>;
-
-export interface UseAutoSaveOptions<T extends SaveableValue> {
-  initialValue: T;
-  mutationFn: (value: T) => Promise<any>;
-  debounceTime?: number;
-  onSuccess?: (data: any) => void;
-  onError?: (error: any) => void;
-}
-
-export const useAutoSave = <T extends SaveableValue>({
-  initialValue,
-  mutationFn,
-  debounceTime = 1000,
-  onSuccess,
-  onError,
-}: UseAutoSaveOptions<T>) => {
-  const [value, setValue] = useState<T>(initialValue);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  const mutation = useMutation({
-    mutationFn,
-    onSuccess: (data) => {
-      setLastSaved(new Date());
-      setValue((prevValue) => ({ ...(prevValue as object), ...data }));
-      onSuccess?.(data);
-    },
-    onError: (error, variables) => {
-      setValue(variables); // Revert to the last known good state
-      onError?.(error);
-    },
-  });
-
-  const debouncedSave = useCallback(
-    debounce((newValue: T) => {
-      mutation.mutate(newValue);
-    }, debounceTime),
-    [mutation, debounceTime]
-  );
-
-  useEffect(() => {
-    if (isInitialized) {
-      debouncedSave(value);
-    } else {
-      setIsInitialized(true);
-    }
-  }, [value, debouncedSave, isInitialized]);
-
-  return {
-    value,
-    isSaving: mutation.isPending,
-    error: mutation.error,
-    lastSaved,
-  };
-};
-
 export function useHTMLToMarkdownConverter() {
   const [html, setHtml] = useState("");
   const [markdown, setMarkdown] = useState("");

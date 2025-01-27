@@ -3,8 +3,9 @@ import { usePermissions } from "@/src/hooks/usePermissions";
 import { TPermissions } from "@/src/types";
 import { Spinner } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
+import { memo } from "react";
 
-export function PermissionGuard({
+export const PermissionGuard = memo(function ({
   requiredPermission,
   children,
   shouldRedirect,
@@ -40,4 +41,4 @@ export function PermissionGuard({
   }
 
   return children;
-}
+});

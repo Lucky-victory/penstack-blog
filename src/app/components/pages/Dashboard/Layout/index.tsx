@@ -13,7 +13,7 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/react";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { ReactNode } from "react";
 
 import { DashboardSidebar } from "../../../Dashboard/Sidebar";
@@ -21,24 +21,16 @@ import { LuMenu } from "react-icons/lu";
 import NetworkAvailabiltyCheck from "../../../NetworkAvailabiltyCheck";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { useSiteConfig } from "@/src/context/SiteConfig";
+import { useDashboardSidebarState } from "@/src/hooks/useDashboardSidebarState";
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default memo(function DashboardLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(0);
+  const { isMinimized, toggleMinimized } = useDashboardSidebarState();
   const siteConfig = useSiteConfig();
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    setIsMinimized(windowWidth < 1200);
-  }, [windowWidth]);
-
-  const toggleMinimized = () => setIsMinimized(!isMinimized);
 
   return (
     <NetworkAvailabiltyCheck>
@@ -124,4 +116,4 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </PermissionGuard>
     </NetworkAvailabiltyCheck>
   );
-}
+});
