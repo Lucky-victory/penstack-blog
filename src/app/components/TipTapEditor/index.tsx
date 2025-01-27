@@ -149,6 +149,7 @@ function TipTapEditor({
         <EditorWrapper>
           <MenuBar editor={editor} />
           <ContentArea editor={editor} />
+
           <FloatingMenu editor={editor}>
             <MenuBar editor={editor} />
           </FloatingMenu>

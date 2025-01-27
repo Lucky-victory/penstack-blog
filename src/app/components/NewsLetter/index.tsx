@@ -41,7 +41,7 @@ export const Newsletter = ({
   const formWrapBorderColor =
     isDark || colorMode === "dark" ? "gray.700" : "gray.300";
   const textColor = useColorModeValue("gray.400", "gray.300");
-  const headingColor = "white";
+  const headingColor = isDark || colorMode === "dark" ? "white" : "gray.800";
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async (values: { email: string }) => {
       const { data } = await axios.post("/api/newsletters", values);

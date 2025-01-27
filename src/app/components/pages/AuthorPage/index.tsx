@@ -11,6 +11,7 @@ import {
   Card,
   Stack,
   Avatar,
+  CardBody,
 } from "@chakra-ui/react";
 import React from "react";
 import { Newsletter } from "../../NewsLetter";
@@ -21,6 +22,7 @@ import NewPostCard from "../../../../themes/raised-land/NewPostCard";
 import { NewPostCardLoader } from "../../../../themes/raised-land/NewPostCardLoader";
 import { PostCardLoader } from "@/src/themes/smooth-land/PostCardLoader";
 import PostCard from "@/src/themes/smooth-land/PostCard";
+import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
 
 const AuthorPage = ({ username }: { username: string }) => {
   const bgColor = useColorModeValue("gray.100", "inherit");
@@ -42,51 +44,56 @@ const AuthorPage = ({ username }: { username: string }) => {
             </Card>
           ) : (
             <Card
-              bg={cardBgColor}
-              borderRadius="3xl"
-              p={{ base: 4, md: 6, lg: 8 }}
-              mb={12}
+              // bg={cardBgColor}
+              // borderRadius="3xl"
+              // p={{ base: 4, md: 6, lg: 8 }}
+              mb={6}
             >
-              <Flex
-                direction={{ base: "column", md: "row" }}
-                align={{ base: "center", md: "start" }}
-                gap={8}
-              >
-                <Avatar
-                  src={author?.avatar as string}
-                  name={author?.name}
-                  w="128px"
-                  h="128px"
-                  borderRadius="full"
-                  objectFit="cover"
-                  border={"4px solid rgba(255, 255, 255, 0.6)"}
-                />
-
-                <VStack
-                  flex={1}
+              <CardBody>
+                <Flex
+                  direction={{ base: "column", md: "row" }}
                   align={{ base: "center", md: "start" }}
-                  spacing={2}
+                  gap={8}
                 >
-                  <Stack gap={0}>
-                    <Heading size="xl">{author?.name}</Heading>
-                    <Text as={"span"} color={"gray.500"}>
-                      @{author?.username}
-                    </Text>
-                  </Stack>
-                  {author?.title && (
-                    <Text color="brand.500" fontWeight="medium">
-                      {author?.title}
-                    </Text>
-                  )}
-                  <Text color={textColor} maxW="2xl">
-                    {author?.bio}
-                  </Text>
+                  <Avatar
+                    src={author?.avatar as string}
+                    name={author?.name}
+                    w="128px"
+                    h="128px"
+                    borderRadius="full"
+                    objectFit="cover"
+                    border={"4px solid rgba(255, 255, 255, 0.6)"}
+                  />
 
-                  {/* <HStack
+                  <VStack
+                    flex={1}
+                    align={{ base: "center", md: "start" }}
+                    spacing={2}
+                  >
+                    <Stack gap={0} align={"start"}>
+                      <Heading size="xl">{author?.name}</Heading>
+                      <Text
+                        as={"span"}
+                        color={"gray.500"}
+                        textAlign={{ base: "center", md: "left" }}
+                      >
+                        @{author?.username}
+                      </Text>
+                    </Stack>
+                    {author?.title && (
+                      <Text color="brand.500" fontWeight="medium">
+                        {author?.title}
+                      </Text>
+                    )}
+                    <Text color={textColor} maxW="2xl">
+                      {author?.bio}
+                    </Text>
+
+                    {/* <HStack
                 spacing={4}
                 wrap="wrap"
                 justify={{ base: "center", md: "start" }}
-              >
+                >
                 <Link
                   isExternal
                   href={`https://twitter.com/${author?.socials?.twitter}`}
@@ -99,7 +106,7 @@ const AuthorPage = ({ username }: { username: string }) => {
                   <LuTwitter size={20} />
                   <Text>{author?.socials?.twitter}</Text>
                   </Link>
-                <Link
+                  <Link
                   isExternal
                   href={`https://github.com/${author?.socials?.github}`}
                   display="flex"
@@ -107,11 +114,11 @@ const AuthorPage = ({ username }: { username: string }) => {
                   gap={2}
                   color={textColor}
                   _hover={{ color: "brand.500" }}
-                >
+                  >
                   <LuGithub size={20} />
                   <Text>{author?.socials?.github}</Text>
-                </Link>
-                <Link
+                  </Link>
+                  <Link
                   isExternal
                   href={`mailto:${author?.socials?.email}`}
                   display="flex"
@@ -119,56 +126,52 @@ const AuthorPage = ({ username }: { username: string }) => {
                   gap={2}
                   color={textColor}
                   _hover={{ color: "brand.500" }}
-                >
+                  >
                   <LuMail size={20} />
                   <Text>{author?.socials?.email}</Text>
-                </Link>
-                <Link
-                isExternal
+                  </Link>
+                  <Link
+                  isExternal
                   href={`https://${author?.socials?.website}`}
                   display="flex"
                   alignItems="center"
                   gap={2}
                   color={textColor}
                   _hover={{ color: "brand.500" }}
-                >
+                  >
                   <LuLink size={20} />
                   <Text>{author?.socials?.website}</Text>
-                </Link>
-              </HStack> */}
-                </VStack>
-              </Flex>
+                  </Link>
+                  </HStack> */}
+                  </VStack>
+                </Flex>
+              </CardBody>
             </Card>
           )}
-          <Box
-            bg={cardBgColor}
-            borderRadius="3xl"
-            p={{ base: 4, md: 6, lg: 8 }}
-            mb={12}
-          >
-            <Newsletter title="Subscribe to My Newsletter" />
-          </Box>
+          <Card mb={12}>
+            <CardBody>
+              <Box mx={"auto"} maxW={"2xl"}>
+                <Newsletter
+                  isDark={false}
+                  title="Subscribe to My Newsletter"
+                  maxW={"2xl"}
+                />
+              </Box>
+            </CardBody>
+          </Card>
 
           <Box mt={8}>
             <Heading size="lg" mb={8}>
               Articles by {author?.name}
             </Heading>
-            <Grid
-              templateColumns={{
-                base: "1fr",
-                md: "repeat(2, 1fr)",
-                lg: "repeat(3, 1fr)",
-              }}
-              gap={8}
-            >
-              {isAuthorPostsLoading
-                ? Array.from({ length: 4 }).map((_, index) => (
-                    <PostCardLoader key={index} />
-                  ))
-                : posts?.map((post) => (
-                    <PostCard showAuthor={false} key={post.id} post={post} />
-                  ))}
-            </Grid>
+
+            {isAuthorPostsLoading ? (
+              Array.from({ length: 4 }).map((_, index) => (
+                <PostCardLoader key={index} />
+              ))
+            ) : (
+              <PostsCards showAuthor={false} posts={posts} />
+            )}
           </Box>
         </Container>
       </Box>

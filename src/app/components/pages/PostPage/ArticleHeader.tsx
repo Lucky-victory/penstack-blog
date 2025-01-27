@@ -39,7 +39,6 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
       {post.summary && (
         <Text
           fontSize="md"
-          bg="red"
           maxW={"3xl"}
           mb={6}
           color={summaryColor}

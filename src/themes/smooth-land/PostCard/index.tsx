@@ -115,7 +115,7 @@ export default function PostCard({
               </Text>
               <Box w={"1"} h={1} bg={textColor} rounded="full"></Box>
               <Text fontSize="small" as={"span"} color={textColor}>
-                {post.reading_time || 1} mins read
+                {post.reading_time || 1} min read
               </Text>
             </HStack>
             <LinkOverlay
