@@ -47,7 +47,7 @@ import { format } from "date-fns";
 import { Link } from "@chakra-ui/next-js";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { useAuth } from "@/src/hooks/useAuth";
-import { PostSelect } from "@/src/types";
+import { PaginatedResponse, PostSelect } from "@/src/types";
 import { formatPostPermalink, objectToQueryParams } from "@/src/utils";
 import DashHeader from "../../../Dashboard/Header";
 import Loader from "../../../Loader";
@@ -63,16 +63,12 @@ const PostsDashboard = () => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
-  const [posts, setPosts] = useState<PostSelect[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [totalPages, setTotalPages] = useState(0);
   const [selectedPost, setSelectedPost] = useState<PostSelect | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const { user } = useAuth();
 
   const fetchPosts = async () => {
-    setLoading(true);
     try {
       let url;
       if (searchTerm) {
@@ -98,9 +94,9 @@ const PostsDashboard = () => {
         })}`;
       }
 
-      const { data } = await axios(url);
-      setPosts(data.data);
-      setTotalPages(data.meta.totalPages);
+      const { data } = await axios<PaginatedResponse<PostSelect>>(url);
+
+      return data;
     } catch (error) {
       toast({
         title: "Error fetching posts",
@@ -108,17 +104,20 @@ const PostsDashboard = () => {
         duration: 3000,
         isClosable: true,
       });
-    } finally {
-      setLoading(false);
     }
   };
-  const { refetch } = useQuery({
+  const {
+    refetch,
+    data,
+    isPending: loading,
+  } = useQuery({
     queryKey: ["posts", page, statusFilter, sortBy, sortOrder],
     queryFn: fetchPosts,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
-
+  const posts = data?.data;
+  const totalPages = data?.meta?.totalPages;
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       if (searchTerm) {
@@ -328,7 +327,7 @@ const PostsDashboard = () => {
                 <Box mx={"auto"} pt={5}>
                   <Pagination
                     currentPage={page}
-                    totalPages={totalPages}
+                    totalPages={totalPages || 1}
                     onPageChange={(newPage) => {
                       setPage(newPage);
                     }}
@@ -337,9 +336,9 @@ const PostsDashboard = () => {
               </>
             )}
 
-            {!loading && !posts.length && (
+            {!loading && !posts?.length && (
               <VStack justify="center" h="200px">
-                <Text color="gray.400" fontWeight={500}>
+                <Text color="gray.400" fontWeight={500} fontSize={"large"}>
                   No posts found
                 </Text>
               </VStack>

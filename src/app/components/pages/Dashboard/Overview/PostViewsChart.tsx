@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import {
   AreaChart,
   Area,
@@ -126,4 +126,4 @@ const PostViewsChart = () => {
   );
 };
 
-export default PostViewsChart;
+export default memo(PostViewsChart);

@@ -27,7 +27,7 @@ export default async function Page() {
           .values(newPost)
           .onDuplicateKeyUpdate({
             set: {
-              slug: newPost.slug,
+              slug: newPost.slug + "-" + IdGenerator.bigIntId().substring(0, 8),
               updated_at: new Date(),
             },
           })

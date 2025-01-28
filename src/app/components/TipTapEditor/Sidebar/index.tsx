@@ -293,13 +293,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
           </Box>
         </SectionCard>
         <SectionCard title="SEO">
-          <SEOSection
-            activePost={activePost}
-            updateField={updateField}
-            isSlugEditable={isSlugEditable}
-            setIsSlugEditable={setIsSlugEditable}
-            handleChange={handleChange}
-          />
+          <SEOSection activePost={activePost} updateField={updateField} />
         </SectionCard>
         <CategorySection />
         <TagsSection />

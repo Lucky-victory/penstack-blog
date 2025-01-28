@@ -36,7 +36,7 @@ export default memo(function DashboardLayout({
     <NetworkAvailabiltyCheck>
       <PermissionGuard requiredPermission="dashboard:access" shouldRedirect>
         <Box
-          h="var(--chakra-vh)"
+          minH="var(--chakra-vh)"
           bg={useColorModeValue("gray.200", "charcoalBlack")}
         >
           <DashboardSidebar

@@ -17,12 +17,13 @@ import Loader from "../../../Loader";
 import { format } from "date-fns";
 import { Link } from "@chakra-ui/next-js";
 import { formatPostPermalink } from "@/src/utils";
+import { memo } from "react";
 
-export default function MostPopularPosts() {
+export default memo(function MostPopularPosts() {
   const { posts = [], loading } = usePosts({ sortBy: "popular", limit: 5 });
 
   return (
-    <Card minH={200} variant={'outline'}>
+    <Card minH={200} variant={"outline"}>
       <CardHeader>
         <Heading size={"md"}>Most Popular Posts</Heading>
       </CardHeader>
@@ -66,10 +67,10 @@ export default function MostPopularPosts() {
                     name={post?.author?.name}
                   />
                   <Stack gap={1}>
-                    <Text noOfLines={1} fontWeight={500}>
+                    <Text noOfLines={1} fontWeight={500} fontSize={"smaller"}>
                       {post?.author?.name}
                     </Text>
-                    <Text fontSize={"small"} color={"gray.400"}>
+                    <Text fontSize={"smaller"} color={"gray.400"}>
                       {format(post?.published_at as Date, "dd.MM.yyyy")}
                     </Text>
                   </Stack>
@@ -81,4 +82,4 @@ export default function MostPopularPosts() {
       </CardBody>
     </Card>
   );
-}
+});

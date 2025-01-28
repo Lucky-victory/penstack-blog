@@ -83,7 +83,7 @@ export default function Overview() {
   return (
     <Box>
       <DashHeader></DashHeader>
-      <Stack gap={{ base: 5, md: 6 }} py={5} px={4}>
+      <Stack gap={4} p={4}>
         <Grid
           gap={4}
           templateColumns={{

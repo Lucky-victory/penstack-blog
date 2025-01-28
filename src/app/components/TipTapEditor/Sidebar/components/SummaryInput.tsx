@@ -1,21 +1,37 @@
 import { FormControl, FormLabel, Textarea } from "@chakra-ui/react";
-import { SummaryInputProps } from "../types";
-import React, { useState } from "react";
 
-export const SummaryInput = ({ activePost }: SummaryInputProps) => {
-  const [value, setValue] = useState("");
+import React, { ChangeEvent, useCallback, useState } from "react";
 
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const val = e.target.value;
-    setValue(val);
-  }
+export const SummaryInput = ({
+  summary,
+  onChange,
+}: {
+  summary: string;
+  onChange: (val: string) => void;
+}) => {
+  const [field, setField] = useState(summary || "");
+  const onChangeCb = useCallback(
+    (value: string) => {
+      onChange?.(value);
+    },
+    [onChange]
+  );
+  const handleChange = useCallback(
+    (evt: ChangeEvent<HTMLTextAreaElement>) => {
+      const { value } = evt.target;
+
+      setField(value);
+      onChangeCb?.(value);
+    },
+    [onChangeCb]
+  );
   return (
     <FormControl>
       <FormLabel>Summary:</FormLabel>
       <Textarea
         placeholder="summary"
         name="summary"
-        value={value}
+        value={field}
         onChange={handleChange}
         maxH={150}
         rounded="lg"
