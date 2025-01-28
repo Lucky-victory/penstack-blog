@@ -20,7 +20,7 @@ import { LuSettings } from "react-icons/lu";
 import { Editor } from "@tiptap/react";
 import { SidebarContent } from "../Sidebar";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import React from "react";
 import { formatDate } from "@/src/utils";
 import { UserInfoComp } from "../../Dashboard/UserInfoComp";
@@ -91,4 +91,4 @@ function EditorHeader({ editor }: { editor: Editor | null }) {
   );
 }
 
-export default EditorHeader;
+export default memo(EditorHeader);

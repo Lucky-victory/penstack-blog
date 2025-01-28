@@ -8,13 +8,14 @@ import {
   type ReactNode,
 } from "react";
 import slugify from "slugify";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { debounce } from "lodash";
 import { PostInsert, PostSelect } from "../types";
 
 // Hook for managing post updates
 export const usePostManager = (initialPost: PostSelect | null) => {
+  const queryClient = useQueryClient();
   const [post, setPost] = useState<PostInsert | null>(
     initialPost
       ? {
@@ -54,6 +55,7 @@ export const usePostManager = (initialPost: PostSelect | null) => {
   };
 
   const { mutate, isPending: isLoading } = useMutation({
+    mutationKey: ["post_update", post?.post_id],
     mutationFn: async (values: PostInsert) => {
       try {
         const filteredValues = preparePostForUpdate(values);
@@ -78,6 +80,10 @@ export const usePostManager = (initialPost: PostSelect | null) => {
       }));
       setIsDirty(false);
       setHasError(false);
+      queryClient.invalidateQueries({
+        queryKey: ["POST", post?.post_id],
+        exact: true,
+      });
     },
     onError: (error) => {
       setIsDirty(true);
@@ -120,6 +126,11 @@ export const usePostManager = (initialPost: PostSelect | null) => {
           newPost.slug = slugify(value as string, {
             lower: true,
             strict: true,
+            remove: /[*+~.()'"!:@]/g,
+          });
+          console.log({
+            title: value,
+            slug: newPost.slug,
           });
         }
 

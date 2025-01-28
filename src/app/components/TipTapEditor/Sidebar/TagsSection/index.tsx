@@ -16,14 +16,14 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import { SectionCard } from "../../../Dashboard/SectionCard";
-import { useState } from "react";
+import { memo, useState } from "react";
 import axios from "axios";
 import slugify from "slugify";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { motion, AnimatePresence } from "framer-motion";
 
-export const TagsSection = () => {
+export const TagsSection = memo(() => {
   const { activePost } = useCustomEditorContext();
   const [tagToRemoveId, setTagToRemoveId] = useState<null | number>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -211,4 +211,4 @@ export const TagsSection = () => {
       </Box>
     </SectionCard>
   );
-};
+});

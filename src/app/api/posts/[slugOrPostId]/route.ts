@@ -4,8 +4,10 @@ import { checkPermission } from "@/src/lib/auth/check-permission";
 import { getSession } from "@/src/lib/auth/next-auth";
 import { getPlainPost, getPost } from "@/src/lib/queries/post";
 import { or, eq } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
 export async function GET(
   req: NextRequest,
   { params }: { params: { slugOrPostId: string } }
@@ -67,6 +69,7 @@ export async function PUT(
           .where(
             or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId))
           );
+        revalidateTag("getPost");
         const post = await getPost(slugOrPostId);
 
         return NextResponse.json(

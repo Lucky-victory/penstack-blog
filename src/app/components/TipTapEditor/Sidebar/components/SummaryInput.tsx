@@ -25,6 +25,7 @@ export const SummaryInput = ({
     },
     [onChangeCb]
   );
+  console.log("SummaryInput rendered", { summary });
   return (
     <FormControl>
       <FormLabel>Summary:</FormLabel>

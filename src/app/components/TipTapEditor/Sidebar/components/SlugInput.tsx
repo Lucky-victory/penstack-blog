@@ -6,16 +6,16 @@ import {
   InputRightElement,
   Button,
 } from "@chakra-ui/react";
-import { useState, useCallback, ChangeEvent, memo } from "react";
+import { useState, useCallback, ChangeEvent, memo, useEffect } from "react";
 import slugify from "slugify";
 
 export const SlugInput = memo(
   ({ slug, onChange }: { slug: string; onChange: (val: string) => void }) => {
-    const [field, setField] = useState(slug || "");
+    const [field, setField] = useState(slug);
     const [isSlugEditable, setIsSlugEditable] = useState(false);
     const onChangeCb = useCallback(
       (value: string) => {
-        onChange?.(value);
+        onChange(value);
       },
       [onChange]
     );
@@ -25,12 +25,18 @@ export const SlugInput = memo(
         const newSlug = slugify(value, {
           lower: true,
           remove: /[*+~.()'"!:@]/g,
+          trim: false,
         });
         setField(newSlug);
-        onChangeCb?.(newSlug);
+        onChangeCb(newSlug);
       },
       [onChangeCb]
     );
+    console.log("SlugInput rendered", { slug });
+    useEffect(() => {
+      setField(slug);
+    }, [slug]);
+
     return (
       <FormControl>
         <FormLabel>URL friendly title:</FormLabel>
