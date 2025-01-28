@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
+import { Resizable } from "react-resizable";
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import {
   LuAlignLeft,
@@ -7,126 +8,119 @@ import {
   LuAlignJustify,
   LuTrash2,
   LuImage,
-  LuGripVertical,
 } from "react-icons/lu";
-import { MediaResponse } from "@/src/types";
 import { Image } from "@chakra-ui/react";
+// import "react-resizable/css/styles.css";
 
 interface MediaComponentProps extends NodeViewProps {
-  isRendering?: boolean;
+  isEditing?: boolean;
 }
-
 const sizeToWidth = {
-  small: "300px",
-  large: "600px",
+  small: 300,
+  large: 600,
   full: "100%",
+  custom: null,
 };
+
+type MediaSize = keyof typeof sizeToWidth;
 
 export const MediaComponent: React.FC<MediaComponentProps> = ({
   node,
   updateAttributes,
   deleteNode,
+  selected,
+  isEditing = true,
 }) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-  const [dimensions, setDimensions] = useState({
-    width:
-      node.attrs.width ||
-      sizeToWidth[node.attrs.size as keyof typeof sizeToWidth],
-    height: node.attrs.height || "auto",
-  });
+  const [aspectRatio, setAspectRatio] = useState<number>(1);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const handleResizeStart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-    setStartPos({ x: e.clientX, y: e.clientY });
+  const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    if (img.naturalWidth && img.naturalHeight) {
+      setAspectRatio(img.naturalWidth / img.naturalHeight);
+    }
   };
 
   const handleResize = useCallback(
-    (e: MouseEvent) => {
-      if (!isDragging) return;
+    (event: any, { size, handle }: any) => {
+      const isCorner = ["se", "sw", "ne", "nw"].includes(handle);
+      let newWidth = size.width;
+      let newHeight = size.height;
 
-      const deltaX = e.clientX - startPos.x;
-      const currentWidth = parseFloat(dimensions.width);
-      const newWidth = Math.max(200, currentWidth + deltaX);
+      if (isCorner && node.attrs.type === "image") {
+        newHeight = Math.round(newWidth / aspectRatio);
+      }
 
-      setDimensions((prev) => ({
-        ...prev,
-        width: `${newWidth}px`,
-      }));
-
-      updateAttributes({ width: `${newWidth}px` });
+      updateAttributes({
+        width: newWidth,
+        height: newHeight,
+        size: "custom" as MediaSize,
+      });
     },
-    [isDragging, startPos, dimensions, updateAttributes]
+    [aspectRatio, node.attrs.type, updateAttributes]
   );
 
-  const handleResizeEnd = useCallback(() => {
-    setIsDragging(false);
-  }, []);
+  const currentWidth =
+    node.attrs.size === "full"
+      ? "100%"
+      : node.attrs.width || sizeToWidth[node.attrs.size as MediaSize];
 
-  React.useEffect(() => {
-    if (isDragging) {
-      window.addEventListener("mousemove", handleResize);
-      window.addEventListener("mouseup", handleResizeEnd);
-      return () => {
-        window.removeEventListener("mousemove", handleResize);
-        window.removeEventListener("mouseup", handleResizeEnd);
-      };
-    }
-  }, [isDragging, handleResize, handleResizeEnd]);
+  const widthValue =
+    typeof currentWidth === "string" ? currentWidth : `${currentWidth}px`;
 
-  const handleAlign = (position: string) => {
-    updateAttributes({ position });
+  const heightValue = node.attrs.height ? `${node.attrs.height}px` : "auto";
+
+  const alignmentClasses = {
+    left: "ml-0 mr-auto",
+    center: "mx-auto",
+    right: "ml-auto mr-0",
+    inline: "w-full",
   };
 
-  if (!node.attrs.url) {
+  const alignmentClass =
+    alignmentClasses[node.attrs.position as keyof typeof alignmentClasses] ||
+    alignmentClasses.inline;
+  const ResizeHandle = React.forwardRef((props, ref) => {
+    const { handleAxis, ...restProps } = props as any;
     return (
-      <NodeViewWrapper>
-        <div className="flex items-center justify-center w-full p-4 border-2 border-dashed border-gray-300 rounded-lg">
-          <button
-            onClick={() => {
-              /* Implement media modal open */
-            }}
-            className="px-4 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-md hover:bg-brand-100"
-          >
-            <LuImage className="w-4 h-4 mr-2 inline-block" />
-            Insert Media
-          </button>
-        </div>
-      </NodeViewWrapper>
+      <div
+        ref={ref}
+        className={`react-resizable-handle handle-${handleAxis} react-resizable-handle-${handleAxis} bg-blue-500 rounded-full border-2 border-white transition-opacity duration-200 ${
+          isHovered ? "opacity-100" : "opacity-0"
+        }`}
+        style={{ width: 12, height: 12 }}
+        {...restProps}
+      />
     );
-  }
-
+  });
   return (
-    <NodeViewWrapper>
-      <div className="group relative" style={{ width: dimensions.width }}>
-        {/* Floating Toolbar */}
-        <div className="absolute -top-10 left-0 hidden group-hover:flex items-center gap-2 bg-white shadow-lg rounded-lg p-2 z-50">
+    <NodeViewWrapper
+      className={`relative my-4 group ${alignmentClass}`}
+      style={{ width: widthValue }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Floating Toolbar */}
+      {isHovered && (
+        <div className="absolute z-[1000] -top-8 left-0 flex items-center gap-2 bg-white shadow-lg rounded-lg p-2">
           <button
-            onClick={() => handleAlign("left")}
+            onClick={() => updateAttributes({ position: "left" })}
             className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "left" ? "bg-gray-200" : ""}`}
           >
             <LuAlignLeft className="w-4 h-4" />
           </button>
           <button
-            onClick={() => handleAlign("center")}
+            onClick={() => updateAttributes({ position: "center" })}
             className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "center" ? "bg-gray-200" : ""}`}
           >
             <LuAlignCenter className="w-4 h-4" />
           </button>
           <button
-            onClick={() => handleAlign("right")}
+            onClick={() => updateAttributes({ position: "right" })}
             className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "right" ? "bg-gray-200" : ""}`}
           >
             <LuAlignRight className="w-4 h-4" />
           </button>
-          <button
-            onClick={() => handleAlign("inline")}
-            className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "inline" ? "bg-gray-200" : ""}`}
-          >
-            <LuAlignJustify className="w-4 h-4" />
-          </button>
-          <div className="w-px h-4 bg-gray-200" />
           <button
             onClick={() => deleteNode()}
             className="p-1 rounded hover:bg-red-100 text-red-600"
@@ -134,34 +128,50 @@ export const MediaComponent: React.FC<MediaComponentProps> = ({
             <LuTrash2 className="w-4 h-4" />
           </button>
         </div>
+      )}
 
-        {/* Media Content */}
-        <div className="relative">
-          {node.attrs.type === "image" ? (
-            <Image
-              src={node.attrs.url}
-              alt={node.attrs.alt}
-              className="w-full h-auto object-cover"
-              style={{ height: dimensions.height }}
-            />
-          ) : (
-            <div className="aspect-w-16 aspect-h-9">
-              <video controls className="w-full h-full">
+      {/* Resizable Media Content */}
+      {node.attrs.size !== "full" ? (
+        <Resizable
+          width={Number(currentWidth)}
+          height={node.attrs.height || aspectRatio * Number(currentWidth)}
+          onResize={handleResize}
+          lockAspectRatio={node.attrs.type === "image"}
+          handle={<ResizeHandle />}
+          handleSize={[12, 12]}
+          resizeHandles={["se", "sw", "ne", "nw"]}
+        >
+          <div
+            className={`relative w-full h-full ${selected ? "resizer-selected" : ""}`}
+          >
+            {node.attrs.type === "image" ? (
+              <Image
+                src={node.attrs.url}
+                alt={node.attrs.alt}
+                className="w-full h-full object-contain rounded-lg"
+                onLoad={handleLoad}
+                style={{ height: heightValue }}
+              />
+            ) : (
+              <video
+                controls
+                className="w-full h-full rounded-lg"
+                style={{ height: heightValue }}
+              >
                 <source src={node.attrs.url} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-            </div>
-          )}
-
-          {/* Resize Handle */}
-          <div
-            className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize opacity-0 group-hover:opacity-100"
-            onMouseDown={handleResizeStart}
-          >
-            <LuGripVertical className="w-4 h-4 text-gray-500" />
+            )}
           </div>
-        </div>
-      </div>
+        </Resizable>
+      ) : (
+        <Image
+          src={node.attrs.url}
+          alt={node.attrs.alt}
+          className="w-full h-auto object-contain rounded-lg"
+          onLoad={handleLoad}
+        />
+      )}
     </NodeViewWrapper>
   );
 };

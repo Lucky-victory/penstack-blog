@@ -10,6 +10,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import { Link } from "@chakra-ui/next-js";
 
 const NotFound: NextPage = () => {
   const router = useRouter();
@@ -26,12 +27,7 @@ const NotFound: NextPage = () => {
           been removed, renamed, or doesn&apos;t exist.
         </Text>
         <Box>
-          <Button
-            rounded={"full"}
-            size="lg"
-            onClick={() => router.push("/")}
-            mr={4}
-          >
+          <Button as={Link} rounded={"full"} size="lg" href="/" mr={4}>
             Go Home
           </Button>
           <Button
