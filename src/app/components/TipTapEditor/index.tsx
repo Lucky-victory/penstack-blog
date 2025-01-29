@@ -150,15 +150,9 @@ function TipTapEditor({
           <MenuBar editor={editor} />
           <ContentArea editor={editor} />
 
-          {/* <FloatingMenu editor={editor}>
+          <FloatingMenu editor={editor}>
             <MenuBar editor={editor} />
           </FloatingMenu>
-          <BubbleMenu
-            editor={editor}
-            // shouldShow={(props) => props.editor.isActive("media")}
-          >
-            <MenuBar editor={editor} />
-          </BubbleMenu> */}
         </EditorWrapper>
         <Hide below="lg">
           <SidebarContent editor={editor} />

@@ -1,6 +1,11 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { Resizable } from "react-resizable";
-import { NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react";
+import {
+  BubbleMenu,
+  NodeViewContent,
+  NodeViewProps,
+  NodeViewWrapper,
+} from "@tiptap/react";
 import {
   LuAlignLeft,
   LuAlignCenter,
@@ -29,6 +34,7 @@ export const MediaComponent: React.FC<MediaComponentProps> = ({
   updateAttributes,
   deleteNode,
   selected,
+  editor,
   isEditing = true,
 }) => {
   const [aspectRatio, setAspectRatio] = useState<number>(1);
@@ -80,55 +86,61 @@ export const MediaComponent: React.FC<MediaComponentProps> = ({
   const alignmentClass =
     alignmentClasses[node.attrs.position as keyof typeof alignmentClasses] ||
     alignmentClasses.inline;
-  const ResizeHandle = React.forwardRef((props, ref) => {
+  const ResizerHandle = React.forwardRef((props, ref) => {
     const { handleAxis, ...restProps } = props as any;
     return (
       <div
         ref={ref}
-        className={`react-resizable-handle handle-${handleAxis} react-resizable-handle-${handleAxis} bg-blue-500 rounded-full border-2 border-white transition-opacity duration-200 ${
+        className={`react-resizable-handle handle-${handleAxis} react-resizable-handle-${handleAxis} bg-blue-500 transition-opacity duration-200 ${
           isHovered ? "opacity-100" : "opacity-0"
         }`}
-        style={{ width: 12, height: 12 }}
+        // style={{ width: 14, height: 14 }}
         {...restProps}
       />
     );
   });
+  ResizerHandle.displayName = "ResizerHandle";
   return (
     <NodeViewWrapper
-      className={`relative my-4 group ${alignmentClass}`}
+      className={`relative my-4 ${alignmentClass}`}
       style={{ width: widthValue }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Floating Toolbar */}
-      {isHovered && (
-        <div className="absolute z-[1000] -top-8 left-0 flex items-center gap-2 bg-white shadow-lg rounded-lg p-2">
-          <button
-            onClick={() => updateAttributes({ position: "left" })}
-            className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "left" ? "bg-gray-200" : ""}`}
-          >
-            <LuAlignLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => updateAttributes({ position: "center" })}
-            className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "center" ? "bg-gray-200" : ""}`}
-          >
-            <LuAlignCenter className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => updateAttributes({ position: "right" })}
-            className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "right" ? "bg-gray-200" : ""}`}
-          >
-            <LuAlignRight className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => deleteNode()}
-            className="p-1 rounded hover:bg-red-100 text-red-600"
-          >
-            <LuTrash2 className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+      {
+        <BubbleMenu
+          editor={editor}
+          shouldShow={(props) => props.editor.isActive("media")}
+        >
+          <div className="flex items-center gap-2 bg-white shadow-lg rounded-lg p-2">
+            <button
+              onClick={() => updateAttributes({ position: "left" })}
+              className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "left" ? "bg-gray-200" : ""}`}
+            >
+              <LuAlignLeft className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => updateAttributes({ position: "center" })}
+              className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "center" ? "bg-gray-200" : ""}`}
+            >
+              <LuAlignCenter className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => updateAttributes({ position: "right" })}
+              className={`p-1 rounded hover:bg-gray-100 ${node.attrs.position === "right" ? "bg-gray-200" : ""}`}
+            >
+              <LuAlignRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => deleteNode()}
+              className="p-1 rounded hover:bg-red-100 text-red-600"
+            >
+              <LuTrash2 className="w-4 h-4" />
+            </button>
+          </div>
+        </BubbleMenu>
+      }
 
       {/* Resizable Media Content */}
       {node.attrs.size !== "full" ? (
@@ -137,8 +149,8 @@ export const MediaComponent: React.FC<MediaComponentProps> = ({
           height={node.attrs.height || aspectRatio * Number(currentWidth)}
           onResize={handleResize}
           lockAspectRatio={node.attrs.type === "image"}
-          handle={<ResizeHandle />}
-          handleSize={[12, 12]}
+          handle={<ResizerHandle />}
+          // handleSize={[14, 14]}
           resizeHandles={["se", "sw", "ne", "nw"]}
         >
           <div
