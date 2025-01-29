@@ -15,11 +15,12 @@ import { users } from "./users.sql";
 import { medias } from "./media.sql";
 import { postViews } from "./posts-analytics.sql";
 import { postReactions } from "./posts-reactions.sql";
+import { id, created_at, updated_at } from "../schema-helper";
 
 export const posts = mysqlTable(
   "Posts",
   {
-    id: int("id").autoincrement().primaryKey(),
+    id,
     title: varchar("title", { length: 255 }),
     content: longtext("content"),
     summary: varchar("summary", { length: 255 }),
@@ -42,7 +43,7 @@ export const posts = mysqlTable(
     reading_time: int("reading_time"),
     allow_comments: boolean("allow_comments").default(false),
     featured_image_id: int("featured_image_id"),
-    created_at: timestamp("created_at").defaultNow(),
+    created_at,
     published_at: timestamp("published_at").generatedAlwaysAs(
       sql`(
         CASE 
@@ -97,11 +98,11 @@ export const postMetaRelations = relations(postSeoMeta, ({ one }) => ({
   }),
 }));
 export const categories = mysqlTable("Categories", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   name: varchar("name", { length: 100 }).notNull(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
-  created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("updated_at").onUpdateNow(),
+  created_at,
+  updated_at,
 });
 
 export const categoriesRelations = relations(categories, ({ one, many }) => ({
@@ -109,11 +110,11 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
 }));
 
 export const tags = mysqlTable("Tags", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   name: varchar("name", { length: 100 }).notNull(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
-  created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("updated_at").onUpdateNow(),
+  created_at,
+  updated_at,
 });
 
 export const tagsRelations = relations(tags, ({ one, many }) => ({
@@ -137,7 +138,7 @@ export const postTagsRelations = relations(postTags, ({ one }) => ({
 }));
 
 export const comments = mysqlTable("Comments", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   content: text("content"),
   status: mysqlEnum("status", [
     "approved",
@@ -147,8 +148,8 @@ export const comments = mysqlTable("Comments", {
   ]).default("pending"),
   post_id: int("post_id").notNull(),
   author_id: varchar("author_id", { length: 100 }).notNull(),
-  created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("updated_at").onUpdateNow(),
+  created_at,
+  updated_at,
 });
 
 export const commentsRelations = relations(comments, ({ one, many }) => ({
@@ -164,7 +165,7 @@ export const commentsRelations = relations(comments, ({ one, many }) => ({
 }));
 
 export const replies = mysqlTable("Replies", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   content: text("content"),
   status: mysqlEnum("status", [
     "approved",
@@ -175,8 +176,8 @@ export const replies = mysqlTable("Replies", {
 
   comment_id: int("comment_id").notNull(),
   author_id: varchar("author_id", { length: 100 }).notNull(),
-  created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("updated_at").onUpdateNow(),
+  created_at,
+  updated_at,
 });
 
 export const repliesRelations = relations(replies, ({ one }) => ({

@@ -8,20 +8,19 @@ import {
   varchar,
   uniqueIndex,
 } from "drizzle-orm/mysql-core";
+import { created_at, updated_at, id } from "../schema-helper";
 
 export const siteSettings = mysqlTable(
   "SiteSettings",
   {
-    id: int("id").primaryKey().autoincrement(),
+    id,
     key: varchar("key", {
       length: 255,
     }).notNull(),
     value: text("value"),
     enabled: boolean("enabled").default(false),
-    created_at: timestamp("created_at").default(new Date()),
-    updated_at: timestamp("updated_at")
-      .onUpdateNow()
-      .default(sql`CURRENT_TIMESTAMP`),
+    created_at,
+    updated_at,
   },
   (table) => ({
     idxKey: uniqueIndex("idx_key").on(table.key),

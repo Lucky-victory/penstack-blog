@@ -10,9 +10,10 @@ import { relations } from "drizzle-orm";
 
 import { posts } from "./posts.sql";
 import { IdGenerator } from "@/src/utils";
+import { created_at, updated_at, id } from "../schema-helper";
 
 export const users = mysqlTable("Users", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   name: varchar("name", { length: 120 }).notNull(),
   email: varchar("email", { length: 255 }).notNull(),
   password: varchar("password", { length: 255 }),
@@ -36,18 +37,18 @@ export const users = mysqlTable("Users", {
     "facebook",
   ]).default("local"),
   role_id: int("role_id").notNull(),
-  created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("updated_at").onUpdateNow(),
+  created_at,
+  updated_at,
 });
 
 export const roles = mysqlTable("Roles", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   name: varchar("name", { length: 50 }).notNull().unique(),
   description: varchar("description", { length: 255 }),
 });
 
 export const permissions = mysqlTable("Permissions", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   name: varchar("name", {
     length: 50,
     enum: [
@@ -81,7 +82,7 @@ export const permissions = mysqlTable("Permissions", {
 });
 
 export const rolePermissions = mysqlTable("RolePermissions", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   role_id: int("role_id").notNull(),
   permission_id: int("permission_id").notNull(),
 });
@@ -115,6 +116,7 @@ export const userSocials = mysqlTable("UserSocials", {
   facebook: varchar("facebook", { length: 100 }),
   email: varchar("email", { length: 100 }),
   website: varchar("website", { length: 100 }),
+  updated_at
 });
 export const UserRelations = relations(users, ({ many, one }) => ({
   posts: many(posts),

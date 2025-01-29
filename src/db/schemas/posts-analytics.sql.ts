@@ -8,11 +8,12 @@ import {
 import { posts } from "./posts.sql";
 import { users } from "./users.sql";
 import { relations, sql } from "drizzle-orm";
+import { id, created_at } from "../schema-helper";
 
 export const postViews = mysqlTable(
   "PostViews",
   {
-    id: int("id").autoincrement().primaryKey(),
+    id,
     post_id: int("post_id").notNull(),
     user_id: varchar("user_id", { length: 100 }), // Nullable for anonymous views
     ip_address: varchar("ip_address", { length: 45 }), // IPv6 compatible
@@ -31,7 +32,7 @@ export const postViews = mysqlTable(
 
 // Daily aggregated views
 export const postViewStats = mysqlTable("PostViewStats", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   post_id: int("post_id").notNull(),
   view_date: timestamp("view_date").notNull(),
   total_views: int("total_views").notNull().default(0),
@@ -44,7 +45,7 @@ export const postViewStats = mysqlTable("PostViewStats", {
 export const postViewAnalytics = mysqlTable(
   "PostViewAnalytics",
   {
-    id: int("id").autoincrement().primaryKey(),
+    id,
     post_id: int("post_id").notNull(),
     user_id: varchar("user_id", { length: 100 }), // Nullable for anonymous users
     session_id: varchar("session_id", { length: 255 }),
@@ -58,7 +59,7 @@ export const postViewAnalytics = mysqlTable(
     scroll_depth: int("scroll_depth"), // percentage
     entry_point: varchar("entry_point", { length: 255 }), // URL they came from
     exit_point: varchar("exit_point", { length: 255 }), // URL they went to
-    created_at: timestamp("created_at").defaultNow(),
+    created_at,
   },
   (table) => ({
     idx_analytics_session: index("idx_analytics_session").on(
@@ -71,12 +72,12 @@ export const postViewAnalytics = mysqlTable(
 
 // Real-time tracking (for active users/current viewers)
 export const activePostViewers = mysqlTable("ActivePostViewers", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   post_id: int("post_id").notNull(),
   user_id: varchar("user_id", { length: 100 }),
   session_id: varchar("session_id", { length: 255 }).notNull(),
   last_active: timestamp("last_active").onUpdateNow(),
-  created_at: timestamp("created_at").defaultNow(),
+  created_at,
 });
 
 // Relations

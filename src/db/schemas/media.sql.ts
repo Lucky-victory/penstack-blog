@@ -5,9 +5,10 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { created_at, id, updated_at } from "../schema-helper";
 
 export const medias = mysqlTable("Medias", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   name: varchar("name", { length: 255 }).notNull(),
   url: text("url").notNull(),
   type: varchar("type", {
@@ -18,9 +19,9 @@ export const medias = mysqlTable("Medias", {
   mime_type: varchar("mime_type", { length: 100 }),
   caption: varchar("caption", { length: 255 }),
   alt_text: varchar("alt_text", { length: 255 }),
-  width: int("width"), // For images
-  height: int("height"), // For images
+  width: int("width"),
+  height: int("height"),
   folder: varchar("folder", { length: 255 }),
-  created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("updated_at").onUpdateNow(),
+  created_at,
+  updated_at,
 });

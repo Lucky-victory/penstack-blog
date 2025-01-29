@@ -6,27 +6,28 @@ import {
   boolean,
   unique,
 } from "drizzle-orm/mysql-core";
+import { id, created_at, updated_at } from "../schema-helper";
 
 export const reactionTypes = mysqlTable("ReactionTypes", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   name: varchar("name", { length: 50 }).notNull().unique(),
   display_name: varchar("display_name", { length: 50 }).notNull(),
   emoji: varchar("emoji", { length: 10 }),
   order: int("order").default(0),
   is_active: boolean("is_active").default(true),
   allow_multiple: boolean("allow_multiple").default(true),
-  created_at: timestamp("created_at").defaultNow(),
+  created_at,
 });
 
 export const postReactions = mysqlTable(
   "PostReactions",
   {
-    id: int("id").autoincrement().primaryKey(),
+    id,
     post_id: int("post_id").notNull(),
     user_id: varchar("user_id", { length: 100 }).notNull(),
     reaction_type_id: int("reaction_type_id").notNull(),
-    created_at: timestamp("created_at").defaultNow(),
-    updated_at: timestamp("updated_at").onUpdateNow(),
+    created_at,
+    updated_at,
   },
   (table) => ({
     // Unique constraint to prevent duplicate reactions of the same type
@@ -40,7 +41,7 @@ export const postReactions = mysqlTable(
 );
 
 export const postShares = mysqlTable("PostShares", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   post_id: int("post_id").notNull(),
   user_id: varchar("user_id", { length: 100 }).notNull(),
   share_type: varchar("share_type", {
@@ -48,5 +49,5 @@ export const postShares = mysqlTable("PostShares", {
     enum: ["facebook", "email", "whatsapp", "twitter", "link"],
   }).notNull(),
   share_url: varchar("share_url", { length: 255 }),
-  created_at: timestamp("created_at").defaultNow(),
+  created_at,
 });

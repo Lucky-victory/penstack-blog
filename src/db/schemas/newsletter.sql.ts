@@ -1,7 +1,8 @@
 import { int, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { id, created_at, updated_at } from "../schema-helper";
 
 export const newsletters = mysqlTable("NewsLetters", {
-  id: int("id").autoincrement().primaryKey(),
+  id,
   email: varchar("email", { length: 255 }).notNull(),
   name: varchar("name", { length: 255 }),
   status: varchar("status", {
@@ -20,6 +21,6 @@ export const newsletters = mysqlTable("NewsLetters", {
   verification_token_expires: timestamp("verification_token_expires"),
   unsubscribed_at: timestamp("unsubscribed_at"),
   referrer: varchar("referrer", { length: 255 }),
-  created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("updated_at").onUpdateNow(),
+  created_at,
+  updated_at,
 });
