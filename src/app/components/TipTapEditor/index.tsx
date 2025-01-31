@@ -32,7 +32,11 @@ import { TwitterExtension } from "@/src/lib/editor/extensions/tweet-embed";
 import slugify from "slugify";
 import Heading from "@tiptap/extension-heading";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { all, createLowlight } from "lowlight";
 
+const lowlight = createLowlight(all);
+
+import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -48,6 +52,9 @@ function TipTapEditor({
           keepMarks: true,
           keepAttributes: false,
         },
+      }),
+      CodeBlockLowlight.configure({
+        lowlight,
       }),
       Heading.extend({
         priority: 1000,
@@ -144,7 +151,22 @@ function TipTapEditor({
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       const text = editor.getText();
-      debouncedUpdate({ html, text });
+      debouncedUpdate({
+        html:
+          html +
+          ` <pre><code class="language-javascript">for (var i=1; i <= 20; i++)
+{
+  if (i % 15 == 0)
+    console.log("FizzBuzz");
+  else if (i % 3 == 0)
+    console.log("Fizz");
+  else if (i % 5 == 0)
+    console.log("Buzz");
+  else
+    console.log(i);
+}</code></pre>`,
+        text,
+      });
     },
   });
   return (
@@ -155,9 +177,9 @@ function TipTapEditor({
           <MenuBar editor={editor} />
           <ContentArea editor={editor} />
 
-          <FloatingMenu editor={editor}>
+          {/* <FloatingMenu editor={editor}>
             <MenuBar editor={editor} />
-          </FloatingMenu>
+          </FloatingMenu> */}
         </EditorWrapper>
         <Hide below="lg">
           <SidebarContent editor={editor} />

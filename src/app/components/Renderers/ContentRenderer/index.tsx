@@ -88,42 +88,42 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           }
           if (domNode.name === "h1") {
             return (
-              <Heading as="h1" size="4xl" mt={8} mb={4}>
+              <Heading {...domNode.attribs} as="h1" size="4xl" mt={8} mb={4}>
                 {domToReact(domNode.children as Element[], options)}
               </Heading>
             );
           }
           if (domNode.name === "h2") {
             return (
-              <Heading as="h2" size="2xl" mt={6} mb={3}>
+              <Heading {...domNode.attribs} as="h2" size="2xl" mt={6} mb={3}>
                 {domToReact(domNode.children as Element[], options)}
               </Heading>
             );
           }
           if (domNode.name === "h3") {
             return (
-              <Heading as="h3" size="lg" mt={4} mb={2}>
+              <Heading {...domNode.attribs} as="h3" size="lg" mt={4} mb={2}>
                 {domToReact(domNode.children as Element[], options)}
               </Heading>
             );
           }
           if (domNode.name === "h4") {
             return (
-              <Heading as="h4" size="md" mb={2}>
+              <Heading {...domNode.attribs} as="h4" size="md" mb={2}>
                 {domToReact(domNode.children as Element[], options)}
               </Heading>
             );
           }
           if (domNode.name === "h5") {
             return (
-              <Heading as="h5" size="sm" mb={2}>
+              <Heading {...domNode.attribs} as="h5" size="sm" mb={2}>
                 {domToReact(domNode.children as Element[], options)}
               </Heading>
             );
           }
           if (domNode.name === "h6") {
             return (
-              <Heading as="h6" size="xs" mb={2}>
+              <Heading {...domNode.attribs} as="h6" size="xs" mb={2}>
                 {domToReact(domNode.children as Element[], options)}
               </Heading>
             );

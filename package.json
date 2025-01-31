@@ -65,12 +65,14 @@
     "react-window": "^1.8.10",
     "recharts": "^2.13.2",
     "resend": "^4.0.1",
+    "server-only": "^0.0.1",
     "slugify": "^1.6.6",
     "swiper": "^11.1.15",
     "tippy.js": "^6.3.7",
     "turndown": "^7.2.0",
     "ua-parser-js": "2.0.0-rc.1",
-    "uuid": "^11.0.3"
+    "uuid": "^11.0.3",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

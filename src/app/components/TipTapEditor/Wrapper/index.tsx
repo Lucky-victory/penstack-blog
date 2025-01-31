@@ -18,7 +18,7 @@ export const EditorWrapper = ({ children }: { children: ReactNode }) => {
       border="1px"
       borderColor={borderColor}
       overflowY="hidden"
-      rounded="lg"
+      rounded="xl"
       boxShadow="var(--card-raised)"
       gap={0}
     >
@@ -27,7 +27,7 @@ export const EditorWrapper = ({ children }: { children: ReactNode }) => {
         h="full"
         overflowY="auto"
         minH={300}
-        bg={useColorModeValue("#f0f8ff", "gray.700")}
+        bg={useColorModeValue("#f0f8ff", "transparent")}
         maxH="full"
         gap={0}
       >

@@ -1,4 +1,4 @@
-"server only";
+import "server-only";
 import crypto from "crypto";
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || generateEncryptionKey();

@@ -1,4 +1,4 @@
-"server only";
+import "server-only";
 import { db } from "@/src/db";
 import { users } from "@/src/db/schemas";
 import { TPermissions } from "@/src/types";
