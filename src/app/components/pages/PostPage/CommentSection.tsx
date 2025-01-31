@@ -33,14 +33,6 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const bgColor = useColorModeValue("white", "gray.800");
 
-  const {
-    data: comments,
-    isPending: isFetching,
-    refetch,
-  } = useQuery({
-    queryKey: ["comments", post?.post_id || ""],
-    queryFn: fetchComments,
-  });
   async function fetchComments() {
     try {
       const { data } = await axios(`/api/posts/${post.post_id}/comments`);
@@ -49,6 +41,14 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
       console.error("Failed to fetch comments:", error);
     }
   }
+  const {
+    data: comments,
+    isPending: isFetching,
+    refetch,
+  } = useQuery({
+    queryKey: ["comments", post?.post_id || ""],
+    queryFn: fetchComments,
+  });
 
   // Handle new comment submission
   const handleCommentSubmit = async () => {

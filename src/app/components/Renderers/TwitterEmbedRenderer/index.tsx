@@ -119,3 +119,4 @@ declare global {
     twttr: any;
   }
 }
+TwitterEmbed.displayName = "TwitterEmbed";

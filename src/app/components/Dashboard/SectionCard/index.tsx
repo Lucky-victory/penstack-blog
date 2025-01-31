@@ -3,6 +3,7 @@
 import { ReactNode, useState } from "react";
 import {
   Box,
+  Card,
   HStack,
   IconButton,
   Text,
@@ -30,13 +31,7 @@ export function SectionCard({
   const toggleCard = () => setIsCardOpen(!isCardOpen);
 
   return (
-    <Box
-      borderWidth="1px"
-      borderColor={borderColor}
-      bg={bgColor}
-      rounded={"lg"}
-      boxShadow={"var(--card-raised)"}
-    >
+    <Card>
       {(header || title) && (
         <HStack
           justify={"space-between"}
@@ -82,6 +77,6 @@ export function SectionCard({
           {footer}
         </HStack>
       )}
-    </Box>
+    </Card>
   );
 }

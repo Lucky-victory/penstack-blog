@@ -44,6 +44,10 @@ function TipTapEditor({
     () => [
       StarterKit.configure({
         heading: false,
+        bulletList: {
+          keepMarks: true,
+          keepAttributes: false,
+        },
       }),
       Heading.extend({
         priority: 1000,
@@ -94,6 +98,7 @@ function TipTapEditor({
           };
         },
       }),
+
       Placeholder.configure({
         placeholder: "Write something…",
       }),

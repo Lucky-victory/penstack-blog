@@ -85,11 +85,14 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
             <Skeleton height="24px" width="200px" />
             {[1, 2].map((i) => (
               <HStack key={i} spacing={4} align="start">
-                <Skeleton boxSize={{ base: "80px", lg: "90px" }} />
+                <Skeleton
+                  boxSize={{ base: "80px", lg: "80px" }}
+                  rounded={"lg"}
+                />
                 <Stack align="start" spacing={1} flex={1}>
-                  <Skeleton height="24px" width="80%" />
-                  <Skeleton height="20px" width="100%" />
-                  <Skeleton height="20px" width="90%" />
+                  <Skeleton height="24px" width="80%" rounded={"lg"} />
+                  <Skeleton height="20px" width="100%" rounded={"lg"} />
+                  <Skeleton height="16px" width="90%" rounded={"lg"} />
                 </Stack>
               </HStack>
             ))}
@@ -149,7 +152,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
                       boxSize={{ base: "80px", lg: "80px" }}
                       maxH={{ base: "80px", lg: "80px" }}
                       objectFit="cover"
-                      rounded={"xl"}
+                      rounded={"lg"}
                     />
                   )}
                   <Stack align="start" spacing={1}>
@@ -198,3 +201,4 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
     );
   }
 );
+MiniPostCardRenderer.displayName = "MiniPostRenderer";

@@ -73,3 +73,4 @@ export const YouTubeEmbed: React.FC<YouTubeEmbedProps> = memo(
     );
   }
 );
+YouTubeEmbed.displayName = "YouTubeEmbed";

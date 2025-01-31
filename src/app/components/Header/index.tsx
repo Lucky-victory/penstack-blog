@@ -83,7 +83,6 @@ const Header = () => {
   const resources = [
     { name: "Articles", href: "/articles" },
     { name: "Tutorials", href: "/resources/tutorials" },
-
     { name: "Newsletter", href: "/newsletter" },
     { name: "About", href: "/about" },
   ];
@@ -96,7 +95,6 @@ const Header = () => {
   }
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-
     setSearchValue(value);
   }
   function isActiveUrl(url: string) {
@@ -132,7 +130,6 @@ const Header = () => {
                 as={"span"}
                 fontSize={{ base: "medium", lg: "large" }}
                 fontWeight="medium"
-                // color={useColorModeValue("black", "white")}
               >
                 {siteConfig?.siteName?.value}
               </Text>
@@ -215,7 +212,7 @@ const Header = () => {
                           transform={
                             isOpen ? "rotate(-180deg)" : "rotate(0deg)"
                           }
-                        ></Icon>
+                        />
                       </HStack>
                     </MenuButton>
                     <MenuList rounded="lg">
@@ -234,9 +231,8 @@ const Header = () => {
                   </>
                 )}
               </Menu>
-              {/* Search Area */}
             </HStack>
-            {/* Right Side Actions */}
+
             <HStack spacing={4}>
               <IconButton
                 display={{ base: "none", lg: "flex" }}
@@ -272,7 +268,6 @@ const Header = () => {
           </HStack>
         </Container>
 
-        {/* Mobile Menu Drawer */}
         <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
           <DrawerOverlay />
           <DrawerContent>
