@@ -2,6 +2,7 @@ import {
   BubbleMenu,
   FloatingMenu,
   mergeAttributes,
+  ReactNodeViewRenderer,
   useEditor,
 } from "@tiptap/react";
 import { Box, Flex, Hide } from "@chakra-ui/react";
@@ -38,6 +39,7 @@ const lowlight = createLowlight(all);
 
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
+import { CustomCodeBlock } from "@/src/lib/editor/nodes/CustomCodeBlock";
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -55,9 +57,11 @@ function TipTapEditor({
           keepAttributes: false,
         },
       }),
-      CodeBlockLowlight.configure({
-        lowlight,
-      }),
+      CodeBlockLowlight.extend({
+        addNodeView() {
+          return ReactNodeViewRenderer(CustomCodeBlock);
+        },
+      }).configure({ lowlight }),
       Heading.extend({
         priority: 1000,
         addProseMirrorPlugins() {
