@@ -114,11 +114,10 @@ export const DashboardSidebar = ({
         justifyContent={"space-between"}
       >
         {navItems.map((item, index) => (
-          <>
+          <Box key={index}>
             {item.children ? (
               <NavItemWithChildren
                 item={item}
-                key={index}
                 isMinimized={isMinimized}
                 navBtnBg={navBtnBg}
                 navBtnBgHover={navBtnBgHover}
@@ -129,7 +128,6 @@ export const DashboardSidebar = ({
               />
             ) : (
               <SidebarNavItem
-                key={index}
                 icon={item.icon}
                 href={item.href}
                 permission={item.permission}
@@ -145,8 +143,9 @@ export const DashboardSidebar = ({
                 {item.label}
               </SidebarNavItem>
             )}
-          </>
+          </Box>
         ))}
+
         <Stack mt={"auto"} mb={8} pl={isMinimized ? 0 : 3}>
           <LightDarkModeSwitch showLabel={!isMinimized} />
         </Stack>

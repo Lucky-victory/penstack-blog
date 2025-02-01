@@ -139,7 +139,7 @@ export const NavItemWithChildren = ({
 
   return (
     <PermissionGuard requiredPermission={item.permission!}>
-      <Box>
+      <>
         <Button
           fontWeight={isActive ? "500" : "400"}
           variant={"unstyled"}
@@ -217,7 +217,7 @@ export const NavItemWithChildren = ({
             ))}
           </VStack>
         )}
-      </Box>
+      </>
     </PermissionGuard>
   );
 };
