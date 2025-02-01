@@ -37,6 +37,7 @@ import { all, createLowlight } from "lowlight";
 const lowlight = createLowlight(all);
 
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
+import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -48,6 +49,7 @@ function TipTapEditor({
     () => [
       StarterKit.configure({
         heading: false,
+        codeBlock: false,
         bulletList: {
           keepMarks: true,
           keepAttributes: false,
@@ -139,40 +141,28 @@ function TipTapEditor({
       ),
     [onUpdate]
   );
-
+  const setEditor = usePenstackEditorStore((state) => state.setEditor);
   const editor = useEditor({
-    editorProps: { attributes: { class: "tiptap-post-editor" } },
+    editorProps: { attributes: { class: "penstack-post-editor" } },
     enablePasteRules: true,
     extensions: extensions,
     content: initialContent,
-    onCreate: (props) => {
-      console.log("editor created");
+    onCreate: ({ editor }) => {
+      setEditor(editor);
     },
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       const text = editor.getText();
       debouncedUpdate({
-        html:
-          html +
-          ` <pre><code class="language-javascript">for (var i=1; i <= 20; i++)
-{
-  if (i % 15 == 0)
-    console.log("FizzBuzz");
-  else if (i % 3 == 0)
-    console.log("Fizz");
-  else if (i % 5 == 0)
-    console.log("Buzz");
-  else
-    console.log(i);
-}</code></pre>`,
+        html,
         text,
       });
     },
   });
   return (
     <>
-      <EditorHeader editor={editor} />
-      <Flex gap={3} py={4} px={{ base: 2, md: 3 }}>
+      <EditorHeader />
+      <Flex gap={4} py={4} px={{ base: 3, md: 4 }}>
         <EditorWrapper>
           <MenuBar editor={editor} />
           <ContentArea editor={editor} />
@@ -182,7 +172,7 @@ function TipTapEditor({
           </FloatingMenu> */}
         </EditorWrapper>
         <Hide below="lg">
-          <SidebarContent editor={editor} />
+          <SidebarContent />
         </Hide>
         {/* <Box display={{ base: "none", lg: "block" }} maxW={320}></Box> */}
       </Flex>

@@ -10,16 +10,9 @@ import { EDITOR_CONTEXT_STATE } from "@/src/types";
 
 export interface PublishMetadataProps {
   activePost: EDITOR_CONTEXT_STATE["activePost"];
-  editorMeta: {
-    wordCount: number;
-    characterCount: number;
-  };
 }
 
-export const PublishMetadata = ({
-  activePost,
-  editorMeta,
-}: PublishMetadataProps) => {
+export const PublishMetadata = ({ activePost }: PublishMetadataProps) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
   const { updateField } = useCustomEditorContext();
   return (
@@ -33,10 +26,7 @@ export const PublishMetadata = ({
           onClose={onClose}
           onToggle={onToggle}
         />
-        <MetricsItem
-          wordCount={editorMeta.wordCount}
-          characterCount={editorMeta.characterCount}
-        />
+        <MetricsItem />
         <CommentsToggle
           allowComments={activePost?.allow_comments as boolean}
           onChange={() =>

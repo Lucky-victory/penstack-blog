@@ -1,4 +1,4 @@
-import { Editor } from "@tiptap/react";
+import { Editor } from "@tiptap/core";
 import { create } from "zustand";
 
 type PenstackEditorState = {
@@ -12,5 +12,6 @@ type PenstackEditorStore = PenstackEditorState & PenstackEditorActions;
 export const usePenstackEditorStore = create<PenstackEditorStore>((set) => ({
   editor: null,
   isReady: false,
+
   setEditor: (editor) => set({ editor }),
 }));

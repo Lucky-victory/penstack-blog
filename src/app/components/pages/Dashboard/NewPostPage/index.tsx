@@ -11,6 +11,7 @@ import {
 } from "@/src/context/AppEditor";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { useAuth } from "@/src/hooks/useAuth";
+import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
@@ -34,6 +35,9 @@ export default function NewPostPage() {
 export function PostEditor() {
   const { activePost, setEditorContent, updateField } =
     useCustomEditorContext();
+  const editor = usePenstackEditorStore((state) => state.editor);
+  console.log("editor", editor);
+
   const { user } = useAuth();
   function onEditorUpdate(content: { html: string; text?: string }) {
     setEditorContent(content);

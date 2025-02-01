@@ -25,7 +25,7 @@ import React from "react";
 import { formatDate } from "@/src/utils";
 import { UserInfoComp } from "../../Dashboard/UserInfoComp";
 
-function EditorHeader({ editor }: { editor: Editor | null }) {
+function EditorHeader() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { activePost, hasError, isDirty } = useCustomEditorContext();
   const lastUpdate = useMemo(() => {
@@ -82,7 +82,7 @@ function EditorHeader({ editor }: { editor: Editor | null }) {
           <DrawerHeader>Post Settings</DrawerHeader>
           <DrawerBody px={2} bg={useColorModeValue("gray.100", "gray.700")}>
             <Box display={"flex"} justifyContent={"center"} py={3}>
-              <SidebarContent editor={editor} />
+              <SidebarContent />
             </Box>
           </DrawerBody>
         </DrawerContent>

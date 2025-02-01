@@ -46,8 +46,9 @@ import { TagsSection } from "./TagsSection";
 import { PostInsert } from "@/src/types";
 import { SEOSection } from "./SEOSection";
 import { ActionButtons } from "./ActionButtons";
+import { MetricsItem } from "./components/MetricsItem";
 
-export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
+export const SidebarContent = () => {
   const { activePost, isSaving, updateField } = useCustomEditorContext();
   const [isSlugEditable, setIsSlugEditable] = useState<boolean>(false);
   const [isPublishing, setIsPublishing] = useState<boolean>(false);
@@ -95,11 +96,6 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
     const { name, value } = evt.target;
     updateField(name as keyof PostInsert, value);
   }
-
-  const editorMeta = {
-    wordCount: editor?.storage?.characterCount?.words() || 0,
-    characterCount: editor?.storage?.characterCount?.characters() || 0,
-  };
 
   return (
     <>
@@ -232,28 +228,7 @@ export const SidebarContent = ({ editor }: { editor: Editor | null }) => {
                   </HStack>
                 </ListItem>
               </PermissionGuard>
-              <ListItem>
-                <HStack>
-                  <Text as={"span"} color="gray.500">
-                    <Icon as={LuFileText} mr={1} />
-                    Word count:
-                  </Text>
-                  <Text as={"span"} fontWeight="semibold">
-                    {editorMeta.wordCount}
-                  </Text>
-                </HStack>
-              </ListItem>
-              <ListItem>
-                <HStack>
-                  <Text as={"span"} color="gray.500">
-                    <Icon as={LuType} mr={1} />
-                    Character count:
-                  </Text>
-                  <Text as={"span"} fontWeight="semibold">
-                    {editorMeta.characterCount}
-                  </Text>
-                </HStack>
-              </ListItem>
+              <MetricsItem />
               <PermissionGuard requiredPermission="posts:publish">
                 <ListItem>
                   <HStack>
