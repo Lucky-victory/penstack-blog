@@ -89,44 +89,16 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             />
           </Box>
           <HStack mb={{ base: 8, md: 12 }} justify={"space-between"}>
-            <HStack>
-              <Avatar
-                src={post.author.avatar}
-                name={post.author.name}
-                size={"sm"}
-              />
-              <Stack spacing={0}>
-                <Link
-                  href={"/author/" + post.author.username}
-                  fontWeight={500}
-                  lineHeight={"tighter"}
-                  fontSize={"smaller"}
-                >
-                  {post.author.name}
-                </Link>
-                <Text as={"span"} fontSize={"small"} color={metaColor}>
-                  Published{" "}
-                  {formatDate(
-                    new Date(
-                      (post.published_at
-                        ? post?.published_at
-                        : post.created_at) as Date
-                    )
-                  )}
-                </Text>
-              </Stack>
-            </HStack>
-
             {post?.tags && (
               <HStack wrap="wrap" gap={2}>
                 {post?.tags?.map((tag, index) => (
                   <Tag
                     key={index}
-                    rounded={"full"}
+                    rounded={"lg"}
                     px={3}
-                    // bg={"transparent"}
-                    border={"1px solid"}
-                    borderColor={borderColor}
+                    bg={"brand.50"}
+                    // border={"1px solid"}
+                    // borderColor={borderColor}
                     // colorScheme="gray"
                     textTransform={"capitalize"}
                     // fontWeight={500}
@@ -134,18 +106,6 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                     #{tag?.name}
                   </Tag>
                 ))}
-                <Tag
-                  rounded={"full"}
-                  px={3}
-                  bg={"transparent"}
-                  border={"1px solid"}
-                  borderColor={borderColor}
-                  colorScheme="gray"
-                  textTransform={"lowercase"}
-                  fontWeight={500}
-                >
-                  {post?.reading_time || 1} min read
-                </Tag>
               </HStack>
             )}
           </HStack>
