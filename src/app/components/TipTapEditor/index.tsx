@@ -28,8 +28,8 @@ import ContentArea from "./ContentArea";
 import React from "react";
 import { debounce } from "lodash";
 import { PostCardExtension } from "@/src/lib/editor/extensions/mini-post-card";
-import { YouTubeExtension } from "@/src/lib/editor/extensions/youtube-embed";
-import { TwitterExtension } from "@/src/lib/editor/extensions/tweet-embed";
+import { PenstackYouTubeExtension } from "@/src/lib/editor/extensions/youtube-embed";
+import { PenstackTwitterExtension } from "@/src/lib/editor/extensions/tweet-embed";
 import slugify from "slugify";
 import Heading from "@tiptap/extension-heading";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
@@ -40,6 +40,7 @@ const lowlight = createLowlight(all);
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { CustomCodeBlock } from "@/src/lib/editor/nodes/CustomCodeBlock";
+import { PenstackSlashCommandExtension } from "@/src/lib/editor/extensions/slash-command";
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -132,8 +133,9 @@ function TipTapEditor({
       TableOfContents,
       MediaExtension,
       PostCardExtension,
-      YouTubeExtension,
-      // TwitterExtension,
+      PenstackYouTubeExtension,
+      PenstackTwitterExtension,
+      PenstackSlashCommandExtension,
     ],
     []
   );

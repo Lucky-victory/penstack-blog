@@ -1,20 +1,18 @@
 import React from "react";
 import {
   Box,
-  Flex,
-  Tag,
   Text,
   Heading,
   HStack,
   useColorModeValue,
   Stack,
   Avatar,
+  Badge,
 } from "@chakra-ui/react";
-import { format } from "date-fns";
 import { PostSelect } from "@/src/types";
-import { AuthorSection } from "./AuthorSection";
 import { Link } from "@chakra-ui/next-js";
 import { formatDate } from "@/src/utils";
+import { ShareButtons } from "./ShareButtons";
 
 interface ArticleHeaderProps {
   post: PostSelect;
@@ -23,15 +21,37 @@ interface ArticleHeaderProps {
 export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
   const summaryColor = useColorModeValue("gray.600", "gray.400");
   const dividerColor = useColorModeValue("gray.600", "gray.400");
+
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+
   return (
-    <Box mb={5} px={2}>
-      <Stack align={"center"} as="header" mb={0} maxW={"5xl"} mx={"auto"}>
-        <Heading as="h1" size="xl" fontWeight={700} textAlign={"center"}>
+    <Box mb={{ base: 6, md: 10 }} px={2}>
+      <Stack
+        align={"center"}
+        as="header"
+        mb={0}
+        maxW={"5xl"}
+        mx={"auto"}
+        spacing={2}
+      >
+        {post?.category?.name && (
+          <Badge as={"b"} px={3} py={1} mb={0} rounded={"xl"}>
+            {post?.category?.name}
+          </Badge>
+        )}
+        <Heading
+          as="h1"
+          mb={1}
+          size="3xl"
+          lineHeight={"1"}
+          fontWeight={700}
+          textAlign={"center"}
+        >
           {post.title}
         </Heading>
         {post.summary && (
           <Text
-            fontSize="md"
+            fontSize={{ base: "md", md: "lg" }}
             maxW={"3xl"}
             mb={4}
             color={summaryColor}
@@ -44,25 +64,25 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
       <Stack align={"center"}>
         <HStack>
           <Text as="span">By</Text>
-          <Avatar
-            src={post.author.avatar}
-            name={post.author.name}
-            size={"sm"}
-          />
-          <Stack spacing={0}>
-            <Link
-              href={"/author/" + post.author.username}
-              fontWeight={600}
-              textDecor={"underline"}
-              lineHeight={"tighter"}
-              // fontSize={"smaller"}
-            >
-              {post.author.name}
-            </Link>
-          </Stack>
+          {post.author.avatar && (
+            <Avatar
+              src={post.author.avatar}
+              name={post.author.name}
+              size={"sm"}
+            />
+          )}
+
+          <Link
+            href={"/author/" + post.author.username}
+            fontWeight={500}
+            textDecor={"underline"}
+            lineHeight={"tighter"}
+          >
+            {post.author.name}
+          </Link>
         </HStack>
         <HStack>
-          <Text as={"span"} fontSize={"smaller"}>
+          <Text as={"span"} fontSize={"14px"}>
             {formatDate(
               new Date(
                 (post.published_at
@@ -72,10 +92,12 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
             )}
           </Text>
           <Box w={1} h={1} rounded={"full"} bg={dividerColor}></Box>
-          <Text as={"span"} fontSize={"smaller"}>
+          <Text as={"span"} fontSize={"14px"}>
             {post?.reading_time || 1} min read
           </Text>
         </HStack>
+
+        <ShareButtons url={shareUrl} title={post.title || ""} />
       </Stack>
     </Box>
   );

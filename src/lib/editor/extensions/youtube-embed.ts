@@ -1,6 +1,6 @@
 // YouTubeExtension.ts
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
-import { YouTubeEmbed } from "@/src/app/components/Renderers/YoutubeEmbedRenderer";
+import { PenstackYouTubeEmbed } from "@/src/app/components/Renderers/YoutubeEmbedRenderer";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -10,8 +10,8 @@ declare module "@tiptap/core" {
   }
 }
 
-export const YouTubeExtension = Node.create({
-  name: "youtube",
+export const PenstackYouTubeExtension = Node.create({
+  name: "penstack-youtube",
   group: "block",
   atom: true,
 
@@ -25,7 +25,7 @@ export const YouTubeExtension = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'div[data-type="youtube-embed"]',
+        tag: 'div[data-type="penstack-youtube-embed"]',
       },
     ];
   },
@@ -33,12 +33,14 @@ export const YouTubeExtension = Node.create({
   renderHTML({ HTMLAttributes }) {
     return [
       "div",
-      mergeAttributes(HTMLAttributes, { "data-type": "youtube-embed" }),
+      mergeAttributes(HTMLAttributes, {
+        "data-type": "penstack-youtube-embed",
+      }),
     ];
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(YouTubeEmbed);
+    return ReactNodeViewRenderer(PenstackYouTubeEmbed);
   },
 
   addCommands() {
@@ -60,7 +62,6 @@ export const YouTubeExtension = Node.create({
         find: /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/g,
         handler: ({ match, chain, range }) => {
           const videoId = match[1];
-          console.log({ videoId });
 
           if (videoId) {
             chain()

@@ -8,13 +8,13 @@ import {
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import { ChangeEvent, memo } from "react";
 
-interface YouTubeEmbedProps {
+interface PenstackYouTubeEmbedProps {
   isEditing?: boolean;
   node: Partial<NodeViewProps["node"]>;
   updateAttributes?: (attrs: Record<string, any>) => void;
 }
 
-export const YouTubeEmbed: React.FC<YouTubeEmbedProps> = memo(
+export const PenstackYouTubeEmbed: React.FC<PenstackYouTubeEmbedProps> = memo(
   ({ node, isEditing = true, updateAttributes }) => {
     const bgColor = useColorModeValue("gray.50", "gray.800");
     const borderColor = useColorModeValue("gray.200", "gray.700");
@@ -73,4 +73,4 @@ export const YouTubeEmbed: React.FC<YouTubeEmbedProps> = memo(
     );
   }
 );
-YouTubeEmbed.displayName = "YouTubeEmbed";
+PenstackYouTubeEmbed.displayName = "YouTubeEmbed";

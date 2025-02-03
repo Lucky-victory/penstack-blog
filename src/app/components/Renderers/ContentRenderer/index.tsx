@@ -5,8 +5,8 @@ import parse, {
   Element,
 } from "html-react-parser";
 import { MiniPostCardRenderer } from "../MiniPostCardRenderer";
-import { YouTubeEmbed } from "../YoutubeEmbedRenderer";
-import { TwitterEmbed } from "../TwitterEmbedRenderer";
+import { PenstackYouTubeEmbed } from "../YoutubeEmbedRenderer";
+import { PenstackTwitterEmbed } from "../TwitterEmbedRenderer";
 import {
   Box,
   Text,
@@ -51,9 +51,9 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
               />
             );
           }
-          if (domNode.attribs["data-type"] === "youtube-embed") {
+          if (domNode.attribs["data-type"] === "penstack-youtube-embed") {
             return (
-              <YouTubeEmbed
+              <PenstackYouTubeEmbed
                 isEditing={false}
                 node={{
                   attrs: {
@@ -64,9 +64,9 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
               />
             );
           }
-          if (domNode.attribs["data-type"] === "twitter-embed") {
+          if (domNode.attribs["data-type"] === "penstack-twitter-embed") {
             return (
-              <TwitterEmbed
+              <PenstackTwitterEmbed
                 isEditing={false}
                 node={{
                   attrs: {

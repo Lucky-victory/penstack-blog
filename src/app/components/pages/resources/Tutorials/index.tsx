@@ -1,6 +1,6 @@
 "use client";
 import { Box, SimpleGrid, Heading, Container, VStack } from "@chakra-ui/react";
-import { YouTubeEmbed } from "@/src/app/components/Renderers/YoutubeEmbedRenderer";
+import { PenstackYouTubeEmbed } from "@/src/app/components/Renderers/YoutubeEmbedRenderer";
 import PageWrapper from "../../../PageWrapper";
 
 const tutorials = [
@@ -32,7 +32,7 @@ export default function TutorialsPage() {
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
             {tutorials.map((tutorial) => (
               <Box key={tutorial.id}>
-                <YouTubeEmbed
+                <PenstackYouTubeEmbed
                   node={{
                     attrs: {
                       videoId: tutorial.videoId,

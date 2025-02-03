@@ -1,6 +1,6 @@
 // TwitterExtension.ts
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
-import { TwitterEmbed } from "@/src/app/components/Renderers/TwitterEmbedRenderer";
+import { PenstackTwitterEmbed } from "@/src/app/components/Renderers/TwitterEmbedRenderer";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -10,8 +10,8 @@ declare module "@tiptap/core" {
   }
 }
 
-export const TwitterExtension = Node.create({
-  name: "twitter",
+export const PenstackTwitterExtension = Node.create({
+  name: "penstack-twitter",
   group: "block",
   atom: true,
 
@@ -26,7 +26,7 @@ export const TwitterExtension = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'div[data-type="twitter-embed"]',
+        tag: 'div[data-type="penstack-twitter-embed"]',
       },
     ];
   },
@@ -34,12 +34,14 @@ export const TwitterExtension = Node.create({
   renderHTML({ HTMLAttributes }) {
     return [
       "div",
-      mergeAttributes(HTMLAttributes, { "data-type": "twitter-embed" }),
+      mergeAttributes(HTMLAttributes, {
+        "data-type": "penstack-twitter-embed",
+      }),
     ];
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(TwitterEmbed);
+    return ReactNodeViewRenderer(PenstackTwitterEmbed);
   },
 
   addCommands() {
