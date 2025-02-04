@@ -7,6 +7,7 @@ import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
 import { Link } from "@chakra-ui/next-js";
 import { usePosts } from "@/src/hooks";
 import { useCategories } from "@/src/hooks/useCategories";
+import { LuArrowRight } from "react-icons/lu";
 
 const FrontPage = () => {
   const { posts, loading, updateParams } = usePosts();
@@ -58,18 +59,19 @@ const FrontPage = () => {
             </Box>
 
             <PostsCards posts={posts} loading={loading} />
-            <HStack justify={"center"} my={8}>
-              <Link
-                href={"/articles"}
-                px={6}
-                py={2}
-                bg={"brand.600"}
-                color={"white"}
-                rounded={"xl"}
-              >
-                See all posts
-              </Link>
-            </HStack>
+            {!loading && (
+              <HStack justify={"center"} my={8}>
+                <Button
+                  as={Link}
+                  href={"/articles"}
+                  px={6}
+                  py={2}
+                  rightIcon={<LuArrowRight />}
+                >
+                  View all posts
+                </Button>
+              </HStack>
+            )}
           </Box>
         </Box>
       </Box>

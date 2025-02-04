@@ -20,7 +20,6 @@ export async function checkPermission<T = NextResponse>(
     return handler();
   }
 
-  // If not public, check user session
   const session = await getSession();
 
   if (!session?.user?.email) {

@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
     const permission = searchParams.get("permission") as TPermissions;
+    const email = searchParams.get("email") as string;
     if (!permission) {
       return NextResponse.json(
         { error: "Permission not provided" },
@@ -23,14 +24,34 @@ export async function GET(req: NextRequest) {
         },
       });
     }
+    let userPermissions: TPermissions[] = [];
+    console.log({ userPermissions, email });
+    if (email) {
+      userPermissions = await getUserPermissions(email);
+      const hasPermission = userPermissions.includes(permission);
+      console.log({ hasPermission });
+      return NextResponse.json({
+        data: {
+          hasPermission: userPermissions.includes(permission),
+          permissions: userPermissions,
+        },
+      });
+    }
 
     const session = await getSession();
     if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        {
+          data: {
+            hasPermission: false,
+            permissions: [],
+          },
+        },
+        { status: 401 }
+      );
     }
 
-    // Get and cache user permissions
-    const userPermissions = await getUserPermissions(session.user.email);
+    userPermissions = await getUserPermissions(session.user.email);
 
     return NextResponse.json({
       data: {
@@ -48,14 +69,14 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { permission } = await req.json();
+    const { permission, email } = await req.json();
     if (!permission) {
       return NextResponse.json(
         { error: "Permission not provided" },
         { status: 400 }
       );
     }
-    // Check public permissions first (with existing caching logic)
+    // Check public permissions first
     const publicPermissions = await getPublicPermissions();
     if (publicPermissions.includes(permission)) {
       return NextResponse.json({
@@ -66,13 +87,32 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const session = await getSession();
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    let userPermissions: TPermissions[] = [];
+    if (email) {
+      userPermissions = await getUserPermissions(email);
+
+      return NextResponse.json({
+        data: {
+          hasPermission: userPermissions.includes(permission),
+          permissions: userPermissions,
+        },
+      });
     }
 
-    // Get and cache user permissions
-    const userPermissions = await getUserPermissions(session.user.email);
+    const session = await getSession();
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        {
+          data: {
+            hasPermission: false,
+            permissions: [],
+          },
+        },
+        { status: 401 }
+      );
+    }
+
+    userPermissions = await getUserPermissions(session.user.email);
 
     return NextResponse.json({
       data: {

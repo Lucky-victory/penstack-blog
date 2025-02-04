@@ -111,7 +111,7 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
       </Card>
 
       {/* Comments List */}
-      {!isFetching && comments.length > 0 ? (
+      {!isFetching && comments?.length > 0 ? (
         <VStack align="stretch" divider={<Divider />}>
           {comments.map((comment: any) => (
             <CommentCard key={comment.id} comment={comment} />

@@ -20,14 +20,14 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: lightgrey;
+  background-color: var(--chakra-colors-gray-500);
   border-radius: 2px;
 }
 
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: lightgrey transparent;
+  scrollbar-color: var(--chakra-colors-gray-500) transparent;
 }
 
 /* For IE and Edge */
@@ -41,7 +41,7 @@
 }
 
 *::-ms-scrollbar-thumb {
-  background-color: lightgrey;
+  background-color: var(--chakra-colors-gray-500);
   border-radius: 2px;
 }
 .react-resizable {

@@ -44,11 +44,11 @@ const navItems = [
 ];
 
 export default async function Page() {
-  const session = await getSession();
+  // const session = await getSession();
 
-  const permissions = await getUserPermissions(session?.user.email || "");
-  const firstAccessiblePage =
-    navItems.find((item) => permissions.includes(item.permission))?.href || "/";
+  // const permissions = await getUserPermissions(session?.user.email || "");
+  // const firstAccessiblePage =
+  //   navItems.find((item) => permissions.includes(item.permission))?.href || "/";
 
-  return redirect(firstAccessiblePage);
+  return redirect("/dashboard/overview");
 }
