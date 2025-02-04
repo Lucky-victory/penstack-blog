@@ -127,30 +127,35 @@ export const DashboardNewsletterPage = () => {
                             <Td>{subscriber.email}</Td>
                             <Td>{subscriber.name || "-"}</Td>
                             <Td>
-                              <Badge
-                                rounded={"lg"}
-                                textTransform={"capitalize"}
-                                colorScheme={
-                                  subscriber.status === "subscribed"
-                                    ? "green"
-                                    : "red"
-                                }
-                              >
-                                {subscriber.status}
-                              </Badge>
+                              <Box>
+                                <Badge
+                                  rounded={"lg"}
+                                  textTransform={"capitalize"}
+                                  colorScheme={
+                                    subscriber.status === "subscribed"
+                                      ? "green"
+                                      : "red"
+                                  }
+                                >
+                                  {subscriber.status}
+                                </Badge>
+                              </Box>
                             </Td>
                             <Td>
-                              <Badge
-                                rounded={"lg"}
-                                textTransform={"capitalize"}
-                                colorScheme={
-                                  subscriber.verification_status === "verified"
-                                    ? "green"
-                                    : "yellow"
-                                }
-                              >
-                                {subscriber.verification_status}
-                              </Badge>
+                              <Box>
+                                <Badge
+                                  rounded={"lg"}
+                                  textTransform={"capitalize"}
+                                  colorScheme={
+                                    subscriber.verification_status ===
+                                    "verified"
+                                      ? "green"
+                                      : "yellow"
+                                  }
+                                >
+                                  {subscriber.verification_status}
+                                </Badge>
+                              </Box>
                             </Td>
                             <Tooltip
                               hasArrow

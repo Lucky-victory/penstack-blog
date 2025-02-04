@@ -1,7 +1,8 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas/posts.sql";
 import { NextResponse } from "next/server";
-import { and, count, eq, gte } from "drizzle-orm";
+import { and, count, eq, gte, inArray, lt } from "drizzle-orm";
+import { calculatePercentageDifference } from "@/src/utils";
 
 export async function GET() {
   try {
@@ -9,25 +10,53 @@ export async function GET() {
     const totalPosts = await db
       .select({ count: count() })
       .from(posts)
-      .where(eq(posts.status, "published"));
+      .where(inArray(posts.status, ["published", "draft"]));
 
-    // Get posts count for the past week
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    // Calculate date ranges
+    const now = new Date();
+    const oneWeekAgo = new Date(now);
+    oneWeekAgo.setDate(now.getDate() - 7);
+    const twoWeeksAgo = new Date(now);
+    twoWeeksAgo.setDate(now.getDate() - 14);
 
-    const newPostsThisWeek = await db
+    // Get posts count for current week
+    const currentWeekPosts = await db
       .select({ count: count() })
       .from(posts)
       .where(
-        and(eq(posts.status, "published"), gte(posts.created_at, oneWeekAgo))
+        and(
+          inArray(posts.status, ["published", "draft"]),
+          gte(posts.created_at, oneWeekAgo),
+          lt(posts.created_at, now)
+        )
       );
+
+    // Get posts count for previous week
+    const previousWeekPosts = await db
+      .select({ count: count() })
+      .from(posts)
+      .where(
+        and(
+          inArray(posts.status, ["published", "draft"]),
+          gte(posts.created_at, twoWeeksAgo),
+          lt(posts.created_at, oneWeekAgo)
+        )
+      );
+
+    const currentWeekCount = currentWeekPosts[0].count;
+    const previousWeekCount = previousWeekPosts[0].count;
+    const isUp = currentWeekCount > previousWeekCount;
 
     return NextResponse.json({
       total: totalPosts[0].count,
-      weeklyGrowth: newPostsThisWeek[0].count,
-      isUp: newPostsThisWeek[0].count > 0,
+      weeklyGrowth: calculatePercentageDifference(
+        previousWeekCount,
+        currentWeekCount
+      ).raw,
+      isUp,
     });
   } catch (error) {
+    console.error("Error fetching posts analytics:", error);
     return NextResponse.json(
       { error: "Failed to fetch posts analytics" },
       { status: 500 }

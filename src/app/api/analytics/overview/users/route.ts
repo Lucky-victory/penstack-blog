@@ -1,8 +1,8 @@
-
 import { db } from "@/src/db";
 import { users } from "@/src/db/schemas/users.sql";
 import { NextResponse } from "next/server";
-import { and, count, eq, gte } from "drizzle-orm";
+import { and, count, eq, gte, lt } from "drizzle-orm";
+import { calculatePercentageDifference } from "@/src/utils";
 
 export async function GET() {
   try {
@@ -12,26 +12,51 @@ export async function GET() {
       .from(users)
       .where(eq(users.account_status, "active"));
 
-    // Get users count for the past week
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    // Calculate date ranges
+    const now = new Date();
+    const oneWeekAgo = new Date(now);
+    oneWeekAgo.setDate(now.getDate() - 7);
+    const twoWeeksAgo = new Date(now);
+    twoWeeksAgo.setDate(now.getDate() - 14);
 
-    const newUsersThisWeek = await db
+    // Get users count for current week
+    const currentWeekUsers = await db
       .select({ count: count() })
       .from(users)
       .where(
         and(
           eq(users.account_status, "active"),
-          gte(users.created_at, oneWeekAgo)
+          gte(users.created_at, oneWeekAgo),
+          lt(users.created_at, now)
         )
       );
 
+    // Get users count for previous week
+    const previousWeekUsers = await db
+      .select({ count: count() })
+      .from(users)
+      .where(
+        and(
+          eq(users.account_status, "active"),
+          gte(users.created_at, twoWeeksAgo),
+          lt(users.created_at, oneWeekAgo)
+        )
+      );
+
+    const currentWeekCount = currentWeekUsers[0].count;
+    const previousWeekCount = previousWeekUsers[0].count;
+    const isUp = currentWeekCount > previousWeekCount;
+
     return NextResponse.json({
       total: totalUsers[0].count,
-      weeklyGrowth: newUsersThisWeek[0].count,
-      isUp: newUsersThisWeek[0].count > 0,
+      weeklyGrowth: calculatePercentageDifference(
+        previousWeekCount,
+        currentWeekCount
+      ).raw,
+      isUp,
     });
   } catch (error) {
+    console.error("Error fetching users analytics:", error);
     return NextResponse.json(
       { error: "Failed to fetch users analytics" },
       { status: 500 }

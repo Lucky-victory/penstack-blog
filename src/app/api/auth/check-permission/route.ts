@@ -25,11 +25,11 @@ export async function GET(req: NextRequest) {
       });
     }
     let userPermissions: TPermissions[] = [];
-    console.log({ userPermissions, email });
+
     if (email) {
       userPermissions = await getUserPermissions(email);
       const hasPermission = userPermissions.includes(permission);
-      console.log({ hasPermission });
+
       return NextResponse.json({
         data: {
           hasPermission: userPermissions.includes(permission),

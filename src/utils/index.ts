@@ -4,6 +4,73 @@ import { PostSelect } from "../types";
 import { type NextRequest } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
+type PercentageDifferenceResult = {
+  formatted: string;
+  raw: number;
+};
+
+/**
+ * Calculate the percentage difference between two values.
+ *
+ * @param oldValue - The original/reference value
+ * @param newValue - The new value to compare against
+ * @param decimalPlaces - Number of decimal places to round to
+ * @returns Object containing formatted string (with +/- sign and % symbol) and raw percentage
+ * @throws Error if oldValue is 0 (division by zero) or if inputs are not numerical
+ */
+export function calculatePercentageDifference(
+  oldValue: number,
+  newValue: number,
+  decimalPlaces: number = 1
+): PercentageDifferenceResult {
+  // Check for valid numerical inputs
+  if (
+    typeof oldValue !== "number" ||
+    typeof newValue !== "number" ||
+    isNaN(oldValue) ||
+    isNaN(newValue)
+  ) {
+    throw new Error("Inputs must be valid numerical values");
+  }
+
+  // Handle division by zero
+  if (oldValue === 0) {
+    if (newValue === 0) {
+      return {
+        formatted: "0%",
+        raw: 0,
+      };
+    }
+    // For zero to non-zero, return the actual percentage increase
+    // Since anything from zero is technically an infinite increase,
+    // we just return the new value as the percentage
+    return {
+      formatted: `+${newValue}%`,
+      raw: newValue,
+    };
+  }
+
+  // Calculate percentage difference
+  const diff: number = ((newValue - oldValue) / oldValue) * 100;
+
+  // Round to specified decimal places
+  const roundedDiff: number = Number(diff.toFixed(decimalPlaces));
+
+  // Format the string with proper sign
+  let formatted: string;
+  if (diff > 0) {
+    formatted = `+${roundedDiff}%`;
+  } else if (diff < 0) {
+    formatted = `${roundedDiff}%`;
+  } else {
+    formatted = "0%";
+  }
+
+  return {
+    formatted,
+    raw: roundedDiff,
+  };
+}
 export function calculateReadingTime(content: string) {
   const wordsPerMinute = 238;
   const words = content.split(/\s+/).length;

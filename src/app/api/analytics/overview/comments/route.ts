@@ -1,7 +1,8 @@
 import { db } from "@/src/db";
 import { comments } from "@/src/db/schemas/posts.sql";
 import { NextResponse } from "next/server";
-import { and, count, eq, gte, lt } from "drizzle-orm";
+import { and, count, eq, gte, inArray, lt } from "drizzle-orm";
+import { calculatePercentageDifference } from "@/src/utils";
 
 export async function GET() {
   try {
@@ -9,7 +10,7 @@ export async function GET() {
     const totalComments = await db
       .select({ count: count() })
       .from(comments)
-      .where(eq(comments.status, "approved"));
+      .where(inArray(comments.status, ["approved", "pending"]));
 
     // Calculate date ranges
     const now = new Date();
@@ -24,7 +25,7 @@ export async function GET() {
       .from(comments)
       .where(
         and(
-          eq(comments.status, "approved"),
+          inArray(comments.status, ["approved", "pending"]),
           gte(comments.created_at, oneWeekAgo),
           lt(comments.created_at, now)
         )
@@ -36,7 +37,7 @@ export async function GET() {
       .from(comments)
       .where(
         and(
-          eq(comments.status, "approved"),
+          inArray(comments.status, ["approved", "pending"]),
           gte(comments.created_at, twoWeeksAgo),
           lt(comments.created_at, oneWeekAgo)
         )
@@ -48,11 +49,14 @@ export async function GET() {
 
     return NextResponse.json({
       total: totalComments[0].count,
-
-      weeklyGrowth: currentWeekCount,
+      weeklyGrowth: calculatePercentageDifference(
+        previousWeekCount,
+        currentWeekCount
+      ).raw,
       isUp,
     });
   } catch (error) {
+    console.error("Error fetching comments analytics:", error);
     return NextResponse.json(
       { error: "Failed to fetch comments analytics" },
       { status: 500 }
