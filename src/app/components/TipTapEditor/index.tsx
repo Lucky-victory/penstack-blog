@@ -37,10 +37,10 @@ import { all, createLowlight } from "lowlight";
 
 const lowlight = createLowlight(all);
 
-import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
+import { CodeBlock } from "@tiptap/extension-code-block";
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
-import { CustomCodeBlock } from "@/src/lib/editor/nodes/CustomCodeBlock";
 import { PenstackSlashCommandExtension } from "@/src/lib/editor/extensions/slash-command";
+import { PenstackCodeBlockRenderer } from "../Renderers/PenstackCodeBlockRenderer";
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -58,11 +58,11 @@ function TipTapEditor({
           keepAttributes: false,
         },
       }),
-      CodeBlockLowlight.extend({
+      CodeBlock.extend({
         addNodeView() {
-          return ReactNodeViewRenderer(CustomCodeBlock);
+          return ReactNodeViewRenderer(PenstackCodeBlockRenderer);
         },
-      }).configure({ lowlight }),
+      }),
       Heading.extend({
         priority: 1000,
         addProseMirrorPlugins() {

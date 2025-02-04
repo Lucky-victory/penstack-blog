@@ -3,6 +3,7 @@ import parse, {
   domToReact,
   HTMLReactParserOptions,
   Element,
+  DOMNode,
 } from "html-react-parser";
 import { MiniPostCardRenderer } from "../MiniPostCardRenderer";
 import { PenstackYouTubeEmbed } from "../YoutubeEmbedRenderer";
@@ -25,8 +26,12 @@ import {
   Divider,
   Link,
   Image,
+  Button,
+  VStack,
+  useColorModeValue,
 } from "@chakra-ui/react";
-
+import styles from "@/src/lib/editor/nodes/CustomCodeBlock/CodeBlock.module.css";
+import { PenstackCodeBlockRenderer } from "../PenstackCodeBlockRenderer";
 interface ContentRendererProps {
   content: string;
   className?: string;
@@ -37,8 +42,28 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
     const options: HTMLReactParserOptions = {
       replace: (domNode) => {
         if (domNode instanceof Element && domNode.attribs) {
+          // if (domNode.name === "pre") {
+          //   const language = domNode.children[0].attribs.class?.replace(
+          //     "language-",
+          //     ""
+          //   );
+          //   return (
+          //     <PenstackCodeBlockRenderer
+          //       isEditing={false}
+          //       node={{ attrs: { language } }}
+          //     >
+          //       {domToReact(domNode.children as Element[], options)}
+          //     </PenstackCodeBlockRenderer>
+          //   );
+          // } else if (domNode.name === "code") {
+          //   return (
+          //     <Code bg="red" fontFamily="monospace">
+          //       {domToReact(domNode.children as Element[], options)}
+          //     </Code>
+          //   );
+          // }
           // Handle PostCard
-          if (domNode.attribs["data-type"] === "post-card") {
+          if (domNode.attribs?.["data-type"] === "post-card") {
             return (
               <MiniPostCardRenderer
                 isEditing={false}
@@ -51,7 +76,7 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
               />
             );
           }
-          if (domNode.attribs["data-type"] === "penstack-youtube-embed") {
+          if (domNode.attribs?.["data-type"] === "penstack-youtube-embed") {
             return (
               <PenstackYouTubeEmbed
                 isEditing={false}
@@ -64,7 +89,7 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
               />
             );
           }
-          if (domNode.attribs["data-type"] === "penstack-twitter-embed") {
+          if (domNode.attribs?.["data-type"] === "penstack-twitter-embed") {
             return (
               <PenstackTwitterEmbed
                 isEditing={false}

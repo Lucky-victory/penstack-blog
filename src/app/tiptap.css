@@ -128,26 +128,6 @@
   margin-bottom: 1rem;
 }
 
-.tiptap code {
-  background-color: var(--chakra-colors-gray-100);
-  color: var(--chakra-colors-gray-800);
-}
-
-.tiptap pre {
-  background: var(--chakra-colors-gray-800);
-  color: var(--chakra-colors-white);
-  font-family: "JetBrainsMono", monospace;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-}
-
-.tiptap pre code {
-  color: inherit;
-  padding: 0;
-  background: none;
-  font-size: 0.8rem;
-}
-
 .tiptap mark {
   background-color: yellow;
 }
@@ -174,15 +154,6 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .tiptap code {
-    background-color: var(--chakra-colors-gray-700);
-    color: var(--chakra-colors-gray-200);
-  }
-
-  .tiptap pre {
-    background: var(--chakra-colors-gray-900);
-  }
-
   .tiptap mark {
     /* background-color: var(--chakra-colors-yellow-700); */
   }

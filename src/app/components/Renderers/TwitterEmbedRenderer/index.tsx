@@ -1,10 +1,6 @@
 import { Link } from "@chakra-ui/next-js";
 import {
   Box,
-  Input,
-  useColorModeValue,
-  VStack,
-  Spinner,
   useColorMode,
   Card,
   CardBody,
@@ -14,9 +10,10 @@ import {
   SkeletonText,
   HStack,
   SkeletonCircle,
+  Text,
 } from "@chakra-ui/react";
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
-import { ChangeEvent, memo, useEffect } from "react";
+import { ChangeEvent, memo, useEffect, useState } from "react";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 
 interface PenstackTwitterEmbedProps {
@@ -30,10 +27,8 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
   isEditing = true,
   updateAttributes,
 }) => {
-  const bgColor = useColorModeValue("gray.50", "gray.800");
-  const borderColor = useColorModeValue("gray.200", "gray.700");
   const { colorMode } = useColorMode();
-
+  const [hasTweet, setHasTweet] = useState(true);
   const handleCaptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     updateAttributes?.({ caption: e.target.value });
   };
@@ -46,7 +41,9 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
           <Box>
             <TwitterTweetEmbed
               tweetId={node.attrs.tweetId}
-              options={{ theme: colorMode }}
+              onLoad={(e) => {
+                setHasTweet(e);
+              }}
               placeholder={
                 <Stack>
                   <HStack>
@@ -58,20 +55,36 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
                 </Stack>
               }
             />
+            {!hasTweet && (
+              <Box>
+                <Text>
+                  Sorry, we couldn't load the tweet. Please try again later.
+                </Text>
+                <Link
+                  color={"brand.500"}
+                  textDecor={"underline"}
+                  isExternal
+                  href={`https://twitter.com/x/status/${node.attrs.tweetId}`}
+                >
+                  View tweet
+                </Link>
+              </Box>
+            )}
+            {hasTweet && isEditing && (
+              <Textarea
+                rows={2}
+                border="none"
+                borderBottom="1px solid"
+                borderColor="gray.300"
+                placeholder="Add caption (optional)"
+                value={node.attrs.caption || ""}
+                variant=""
+                onChange={handleCaptionChange}
+                resize="none"
+              />
+            )}
           </Box>
-          {isEditing && (
-            <Textarea
-              rows={2}
-              border="none"
-              borderBottom="1px solid"
-              borderColor="gray.300"
-              placeholder="Add caption (optional)"
-              value={node.attrs.caption || ""}
-              variant=""
-              onChange={handleCaptionChange}
-              resize="none"
-            />
-          )}
+
           {!isEditing && node.attrs.caption && (
             <Box fontSize="lg" fontWeight="bold">
               {node.attrs.caption}
@@ -87,3 +100,4 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
 };
 
 PenstackTwitterEmbed.displayName = "TwitterEmbed";
+// <blockquote class="twitter-tweet"><p lang="en" dir="ltr">What&#39;s the best drag-and-drop way to build AI agents right now?<br><br>- Langflow<br>- Flowise<br>- Gumloop<br>- n8n<br><br>or something else? <a href="https://t.co/8WPZWVJcL8">pic.twitter.com/8WPZWVJcL8</a></p>&mdash; Jeremy Nguyen ✍🏼 🚢 (@JeremyNguyenPhD) <a href="https://twitter.com/JeremyNguyenPhD/status/1885998878341877858?ref_src=twsrc%5Etfw">February 2, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
