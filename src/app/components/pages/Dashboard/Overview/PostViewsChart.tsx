@@ -113,8 +113,8 @@ const PostViewsChart = () => {
             <Area
               type="monotone"
               dataKey="views"
-              stroke="#3b82f6"
-              fill="#3b82f6"
+              stroke="var(--chakra-colors-brand-500)"
+              fill="var(--chakra-colors-brand-400)"
               strokeWidth={2}
               dot={{ r: 5 }}
               activeDot={{ r: 8 }}

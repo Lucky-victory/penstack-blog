@@ -1,3 +1,4 @@
+import { Link } from "@chakra-ui/next-js";
 import {
   Card as ChakraCard,
   Flex,
@@ -13,6 +14,7 @@ import {
   Icon,
   Card,
   Skeleton,
+  Button,
 } from "@chakra-ui/react";
 import { IconType } from "react-icons";
 import { LuTrendingDown, LuTrendingUp } from "react-icons/lu";
@@ -25,6 +27,7 @@ export const OverviewCard = ({
   isUp,
   growthCount,
   isLoading,
+  link,
 }: {
   label: string;
   value: string | number;
@@ -33,16 +36,17 @@ export const OverviewCard = ({
   isUp?: boolean;
   growthCount?: number;
   isLoading?: boolean;
+  link?: string;
 }) => {
   const textColor = useColorModeValue("gray.500", "gray.400");
   const borderColor = useColorModeValue("gray.300", "gray.700");
   return (
     <GridItem w={"100%"}>
-      <Card variant={"outline"} h={"179px"}>
+      <Card variant={"outline"}>
         <CardBody>
           <VStack
             m={0}
-            align={"start"}
+            align={"stretch"}
             gap={"10px"}
             rounded={"14px"}
             flex={1}
@@ -60,7 +64,13 @@ export const OverviewCard = ({
               >
                 <Icon as={icon} size={20} color={color + ".500"} />
               </Flex>
-              {isUp ? <ChartHighIcon /> : <ChartLowIcon />}
+              {isLoading ? (
+                <Skeleton height={"30px"} width={"60px"} rounded="full" />
+              ) : isUp ? (
+                <ChartHighIcon />
+              ) : (
+                <ChartLowIcon />
+              )}
             </HStack>
 
             <VStack align={"start"} gap={"5px"}>
@@ -86,39 +96,43 @@ export const OverviewCard = ({
                 )}
               </Text>
             </VStack>
-
-            <HStack gap={"10px"}>
-              {isLoading ? (
-                <Skeleton height={"20px"} width={"60px"} rounded="full" />
-              ) : (
-                <HStack
-                  bg={isUp ? "green.100" : "red.100"}
-                  px={2.5}
-                  py={1}
-                  gap={1}
-                  rounded={"full"}
-                  display={"inline-flex"}
-                  h={6}
-                >
-                  {isUp ? (
-                    <LuTrendingUp color={"green"} />
-                  ) : (
-                    <LuTrendingDown color={"red"} />
-                  )}
-                  <Text
-                    as={"span"}
-                    fontWeight={"medium"}
-                    lineHeight={"16px"}
-                    fontSize={"12px"}
-                    color={isUp ? "green" : "red"}
+            <HStack wrap={"wrap"} justify={"space-between"}>
+              <HStack gap={"10px"}>
+                {isLoading ? (
+                  <Skeleton height={"20px"} width={"60px"} rounded="full" />
+                ) : (
+                  <HStack
+                    bg={isUp ? "green.100" : "red.100"}
+                    px={2.5}
+                    py={1}
+                    gap={1}
+                    rounded={"full"}
+                    display={"inline-flex"}
+                    h={6}
                   >
-                    {growthCount}%
-                  </Text>
-                </HStack>
-              )}
-              <Text as={"span"} fontSize={"14px"} color={textColor}>
-                vs. previous week
-              </Text>
+                    {isUp ? (
+                      <LuTrendingUp color={"green"} />
+                    ) : (
+                      <LuTrendingDown color={"red"} />
+                    )}
+                    <Text
+                      as={"span"}
+                      fontWeight={"medium"}
+                      lineHeight={"16px"}
+                      fontSize={"12px"}
+                      color={isUp ? "green" : "red"}
+                    >
+                      {isUp ? "+" + growthCount : growthCount}%
+                    </Text>
+                  </HStack>
+                )}
+                <Text as={"span"} fontSize={"14px"} color={textColor}>
+                  vs. previous week
+                </Text>
+              </HStack>
+              <Button as={Link} href={link} size={"sm"} variant={"ghost"}>
+                See all
+              </Button>
             </HStack>
           </VStack>
         </CardBody>

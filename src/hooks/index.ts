@@ -92,6 +92,7 @@ export function usePosts({
       );
       return data.data;
     },
+    staleTime: 1000 * 60 * 30,
   });
 
   const refetchPosts = async () => {

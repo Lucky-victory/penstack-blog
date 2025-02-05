@@ -36,7 +36,7 @@ export default memo(function MostPopularPosts() {
         {!loading && !posts.length && (
           <VStack justify={"center"}>
             <Text color={"gray.400"} fontWeight={500}>
-              No posts found
+              No posts yet.
             </Text>
           </VStack>
         )}
@@ -62,15 +62,15 @@ export default memo(function MostPopularPosts() {
                 </Stack>
                 <HStack>
                   <Avatar
-                    size={"sm"}
+                    size={"xs"}
                     src={post?.author?.avatar}
                     name={post?.author?.name}
                   />
-                  <Stack gap={1}>
+                  <Stack spacing={"2px"}>
                     <Text noOfLines={1} fontWeight={500} fontSize={"smaller"}>
                       {post?.author?.name}
                     </Text>
-                    <Text fontSize={"smaller"} color={"gray.400"}>
+                    <Text fontSize={"x-small"} color={"gray.400"}>
                       {format(post?.published_at as Date, "dd.MM.yyyy")}
                     </Text>
                   </Stack>

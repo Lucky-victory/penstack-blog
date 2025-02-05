@@ -15,6 +15,9 @@ export const CardConfig = helpers.defineMultiStyleConfig({
         bg: "gray.800",
       },
     },
+    body: {
+      p: 4,
+    },
   },
 
   variants: {

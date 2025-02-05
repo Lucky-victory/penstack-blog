@@ -1,28 +1,13 @@
 "use client";
-import {
-  Box,
-  Card,
-  CardBody,
-  Grid,
-  HStack,
-  Icon,
-  Skeleton,
-  Stack,
-  Text,
-  useColorModeValue,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Grid, Stack, useColorModeValue } from "@chakra-ui/react";
 import {
   LuFileStack,
+  LuMailPlus,
   LuMessageCircle,
-  LuTrendingDown,
-  LuTrendingUp,
-  LuUserPlus2,
   LuUsers2,
 } from "react-icons/lu";
 import PostViewsChart from "./PostViewsChart";
 import MostPopularPosts from "./MostPopularPostArea";
-import { IconType } from "react-icons";
 import DashHeader from "../../../Dashboard/Header";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -94,6 +79,7 @@ export default function Overview() {
           <OverviewCard
             isLoading={isUsersLoading}
             color="purple"
+            link="/dashboard/users"
             label="Users"
             icon={LuUsers2}
             value={usersOverview?.total || 0}
@@ -103,8 +89,9 @@ export default function Overview() {
           <OverviewCard
             color="orange"
             label="Subscribers"
+            link="/dashboard/newsletter"
             isLoading={isSubscriberLoading}
-            icon={LuUserPlus2}
+            icon={LuMailPlus}
             value={subscribersOverview?.total || 0}
             isUp={subscribersOverview?.isUp}
             growthCount={subscribersOverview?.weeklyGrowth}
@@ -113,6 +100,7 @@ export default function Overview() {
             color="brand"
             isLoading={isPostsLoading}
             label="Posts"
+            link="/dashboard/posts"
             icon={LuFileStack}
             value={postsOverview?.total || 0}
             isUp={postsOverview?.isUp}
@@ -121,6 +109,7 @@ export default function Overview() {
           <OverviewCard
             color="green"
             isLoading={isCommentLoading}
+            link="/dashboard/comments"
             label="Comments"
             icon={LuMessageCircle}
             value={commentsOverview?.total || 0}
