@@ -97,9 +97,10 @@ const PostViewsChart = () => {
               dataKey="date"
               tickFormatter={formatDate}
               textAnchor="end"
-              height={70}
+              height={30}
+              fontSize={14}
             />
-            <YAxis />
+            <YAxis fontSize={14} />
             <Tooltip
               contentStyle={{
                 backgroundColor: tooltipContentBg,

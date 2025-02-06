@@ -9,7 +9,7 @@ export const useSearchResults = ({
   queryParams: {
     q: string;
     category?: string;
-    sort?: "relevant" | "recent" | "popular";
+    sortBy?: "relevant" | "recent" | "popular";
     page?: number;
   };
 }) => {
@@ -18,7 +18,7 @@ export const useSearchResults = ({
       "search",
       queryParams?.q,
       queryParams?.category,
-      queryParams?.sort,
+      queryParams?.sortBy,
       queryParams?.page,
     ],
     queryFn: async () => {

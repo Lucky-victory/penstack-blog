@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   const access = searchParams.get("access");
   const query = searchParams.get("q");
   const titleOnly = Boolean(searchParams.get("titleOnly")) || false;
-  const category = Number(searchParams.get("category"));
+  const category = searchParams.get("category");
   const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || "desc";
   const sortBy = searchParams.get("sortBy") as
     | "relevant"

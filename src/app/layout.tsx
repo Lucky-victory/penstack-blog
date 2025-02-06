@@ -3,12 +3,13 @@ import "./globals.css";
 import "./tiptap.css";
 import "./calendar.css";
 import { fonts } from "../lib/fonts";
-import { Providers } from "../providers/chakra";
+import { ChakraProvider } from "../providers/chakra";
 import ReactQueryClient from "../providers/react-query";
 import AuthProvider from "../providers/auth";
 import { getSession } from "../lib/auth/next-auth";
 import { SiteConfigProvider } from "../context/SiteConfig";
 import { getSettings } from "../lib/settings";
+import { NuqsProvider } from "../providers/nuqs";
 
 type Props = {
   params: { slug?: string } & Record<string, string | string[] | undefined>;
@@ -66,7 +67,9 @@ export default async function RootLayout({
         <SiteConfigProvider initialConfig={initialConfig}>
           <AuthProvider session={session}>
             <ReactQueryClient>
-              <Providers>{children}</Providers>
+              <NuqsProvider>
+                <ChakraProvider>{children}</ChakraProvider>
+              </NuqsProvider>
             </ReactQueryClient>
           </AuthProvider>
         </SiteConfigProvider>

@@ -84,7 +84,7 @@ export default function PostCard({
           objectFit="cover"
           className="post-card-img"
           transition={"all 0.3s"}
-          height="190"
+          height="180"
           width="full"
         />
         {post?.category && post?.category?.name && (
@@ -120,7 +120,7 @@ export default function PostCard({
             </HStack>
             <LinkOverlay
               href={formatPostPermalink(post)}
-              _hover={{ textDecoration: "underline", color: "brand.500" }}
+              _hover={{ textDecoration: "underline" }}
             >
               <Heading
                 size={"md"}

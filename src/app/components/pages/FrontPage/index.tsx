@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Box, Button, Heading, HStack } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, Skeleton } from "@chakra-ui/react";
 import FeaturedPostCard from "../../../../themes/smooth-land/FeaturedPostCard";
 import PageWrapper from "../../PageWrapper";
 import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
@@ -12,18 +12,18 @@ import { LuArrowRight } from "react-icons/lu";
 const FrontPage = () => {
   const { posts, loading, updateParams } = usePosts();
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const { data } = useCategories({ limit: 5 });
+  const { data, isLoading: isCategoryLoading } = useCategories({ limit: 5 });
   const categories = data?.results;
 
   function isSelected(val: string) {
     return selectedCategory.toLowerCase() === val?.toLowerCase();
   }
-
-  useEffect(() => {
-    selectedCategory.toLowerCase() === "all"
+  function handleSelectedCategory(val: string | "all") {
+    val.toLowerCase() === "all"
       ? updateParams({ category: "" })
-      : updateParams({ category: selectedCategory });
-  }, [selectedCategory, updateParams]);
+      : updateParams({ category: val });
+    setSelectedCategory(val);
+  }
   return (
     <PageWrapper>
       <Box mb={12}>
@@ -36,25 +36,35 @@ const FrontPage = () => {
           <FeaturedPostCard />
           <Box px={{ base: 0, lg: 4 }} py={5}>
             <Box mt={0} mb={6}>
-              <HStack>
-                {["All", ...(categories || [])?.map((cat) => cat.name)].map(
-                  (val) => {
-                    return (
-                      <Button
-                        onClick={() => {
-                          setSelectedCategory(val);
-                        }}
-                        key={val}
-                        value={val}
-                        size={"sm"}
+              <HStack overflowX={"auto"}>
+                {isCategoryLoading && !categories?.length
+                  ? Array.from({ length: 6 }).map((_, index) => (
+                      <Skeleton
+                        key={index}
+                        height={30}
+                        width={80}
                         rounded={"lg"}
-                        variant={isSelected(val) ? "solid" : "ghost"}
-                      >
-                        {val}
-                      </Button>
-                    );
-                  }
-                )}
+                        ml={5}
+                      />
+                    ))
+                  : ["All", ...(categories || [])?.map((cat) => cat.name)].map(
+                      (val) => {
+                        return (
+                          <Button
+                            onClick={() => {
+                              handleSelectedCategory(val);
+                            }}
+                            key={val}
+                            value={val}
+                            size={"sm"}
+                            rounded={"lg"}
+                            variant={isSelected(val) ? "solid" : "ghost"}
+                          >
+                            {val}
+                          </Button>
+                        );
+                      }
+                    )}
               </HStack>
             </Box>
 

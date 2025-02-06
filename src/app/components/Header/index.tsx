@@ -36,7 +36,6 @@ import {
   LuSearch,
 } from "react-icons/lu";
 import { usePathname, useRouter } from "next/navigation";
-import { useQueryParams } from "@/src/hooks";
 import { Link } from "@chakra-ui/next-js";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
@@ -44,12 +43,13 @@ import { useCategories } from "@/src/hooks/useCategories";
 import { AppLogo } from "../AppLogoAndName/AppLogo";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useSiteConfig } from "@/src/context/SiteConfig";
+import { useQueryState } from "nuqs";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchValue, setSearchValue] = useState("");
-  const { queryParams, setQueryParam } = useQueryParams();
+  const [query, setQuery] = useQueryState("q", { defaultValue: "" });
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("gray.700", "gray.200");

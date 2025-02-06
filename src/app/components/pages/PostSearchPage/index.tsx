@@ -19,7 +19,6 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
-import { useQueryParams } from "@/src/hooks";
 import { useSearchResults } from "@/src/hooks/usePostsSearch";
 import PostCard from "../../../../themes/smooth-land/PostCard";
 import { useCallback } from "react";
@@ -27,6 +26,13 @@ import debounce from "lodash/debounce";
 import { useCategories } from "@/src/hooks/useCategories";
 import NewPostCard from "../../../../themes/raised-land/NewPostCard";
 import { PostCardLoader } from "@/src/themes/smooth-land/PostCardLoader";
+import {
+  parseAsInteger,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryStates,
+} from "nuqs";
+import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
 
 const SearchResults = () => {
   const bgColor = useColorModeValue("white", "gray.800");
@@ -36,62 +42,55 @@ const SearchResults = () => {
   const { data: categories } = useCategories({});
   const categoriesResults = categories?.results || [];
 
-  const { queryParams, setQueryParam } = useQueryParams<{
-    q: string;
-    category?: string;
-    sortBy?: "relevant" | "recent" | "popular";
-    page?: number;
-  }>();
+  const sortByOptions = ["relevant", "recent", "popular"] as const;
+  const [queryParams, setQueryParam] = useQueryStates(
+    {
+      q: parseAsString.withDefault(""),
+      category: parseAsString.withDefault(""),
+      sortBy: parseAsStringLiteral(sortByOptions).withDefault("recent"),
+      page: parseAsInteger.withDefault(1),
+    },
+    { throttleMs: 200 }
+  );
 
-  const filtersDebounce = useRef(
-    debounce((queryParams: any) => {
-      return queryParams;
-    }, 400)
-  ).current;
-
-  const debouncedQueryParams = filtersDebounce(queryParams) as {
-    q: string;
-    category?: string;
-    sortBy?: "relevant" | "recent" | "popular";
-    page?: number;
-  };
   const { data, isLoading } = useSearchResults({
-    queryParams: debouncedQueryParams,
+    queryParams,
   });
   const searchResults = data?.results || [];
   const totalResult = data?.meta?.total;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQueryParam("q", e.target.value);
+    setQueryParam({ q: e.target.value });
   };
 
   const handleCategorySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setQueryParam("category", e.target.value);
+    setQueryParam({ category: e.target.value });
   };
   const handleSortSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setQueryParam("sortBy", e.target.value);
+    setQueryParam({ sortBy: e.target.value as (typeof sortByOptions)[number] });
   };
   return (
-    <Box
-      // bg={useColorModeValue("gray.50", "gray.900")}
-      minH="calc(100vh - 180px)"
-    >
+    <Box minH="calc(100vh - 180px)">
       <Container maxW="7xl" py={8}>
         {/* Search Header */}
         <VStack spacing={6} mb={8}>
           <Heading size="lg" color={textColor}>
-            Search Results
+            Search Our Blog Collection
           </Heading>
           <InputGroup size="lg" maxW="600px">
             <Input
               placeholder="Search articles..."
-              rounded={"full"}
+              rounded={"xl"}
               bg={bgColor}
               borderColor={borderColor}
               onChange={handleSearch}
               value={queryParams?.q || ""}
               _hover={{
                 borderColor: useColorModeValue("brand.500", "brand.300"),
+              }}
+              _focus={{
+                ring: "none",
+                boxShadow: "0 0 0 2px var(--chakra-colors-brand-500)",
               }}
             />
             <InputRightElement>
@@ -106,37 +105,47 @@ const SearchResults = () => {
 
         {/* Filters */}
         <HStack spacing={4} mb={8} wrap="wrap" justify={"center"} mx="auto">
-          <Select
-            placeholder="Category"
-            rounded={"md"}
-            maxW="200px"
-            bg={bgColor}
-            borderColor={borderColor}
-            onChange={handleCategorySelect}
-          >
-            {categoriesResults?.length > 0 &&
-              categoriesResults?.map((category) => (
-                <option
-                  key={category?.id}
-                  value={category?.id}
-                  data-slug={category?.slug}
-                >
-                  {category?.name}
-                </option>
-              ))}
-          </Select>
-          <Select
-            onChange={handleSortSelect}
-            placeholder="Sort by"
-            rounded={"md"}
-            maxW="200px"
-            bg={bgColor}
-            borderColor={borderColor}
-          >
-            <option value="relevant">Most Relevant</option>
-            <option value="recent">Most Recent</option>
-            <option value="popular">Most Popular</option>
-          </Select>
+          <HStack>
+            <Text as={"span"}>Category:</Text>
+            <Select
+              // placeholder="Category"
+              rounded={"md"}
+              maxW="200px"
+              bg={bgColor}
+              borderColor={borderColor}
+              onChange={handleCategorySelect}
+            >
+              <option value="">-</option>
+              {categoriesResults?.length > 0 &&
+                categoriesResults?.map((category) => (
+                  <option
+                    key={category?.id}
+                    value={category?.name}
+                    data-slug={category?.slug}
+                  >
+                    {category?.name}
+                  </option>
+                ))}
+            </Select>
+          </HStack>
+          <HStack>
+            <Text as={"span"} whiteSpace={"pre"}>
+              Sort by:
+            </Text>
+            <Select
+              onChange={handleSortSelect}
+              // placeholder="Sort by"
+              rounded={"md"}
+              maxW="200px"
+              bg={bgColor}
+              borderColor={borderColor}
+            >
+              <option value="">-</option>
+              <option value="relevant">Most Relevant</option>
+              <option value="recent">Most Recent</option>
+              <option value="popular">Most Popular</option>
+            </Select>
+          </HStack>
         </HStack>
 
         {/* Results Count */}
@@ -152,14 +161,7 @@ const SearchResults = () => {
           )}
         </Box>
 
-        {/* Results Grid */}
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-          {!isLoading &&
-            searchResults?.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          {isLoading && [...Array(5)].map((_, i) => <PostCardLoader key={i} />)}
-        </SimpleGrid>
+        <PostsCards posts={searchResults} loading={isLoading} />
       </Container>
     </Box>
   );
