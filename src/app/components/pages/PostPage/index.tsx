@@ -96,12 +96,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                     key={index}
                     rounded={"lg"}
                     px={3}
-                    // bg={"brand.50"}
-                    // border={"1px solid"}
-                    // borderColor={borderColor}
-                    // colorScheme="gray"
                     textTransform={"capitalize"}
-                    // fontWeight={500}
                   >
                     #{tag?.name}
                   </Tag>

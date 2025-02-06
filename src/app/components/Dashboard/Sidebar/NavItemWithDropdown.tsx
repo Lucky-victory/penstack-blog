@@ -178,7 +178,7 @@ export const NavItemWithChildren = ({
             }}
           >
             <HStack gap={0}>
-              <Icon mr="4" fontSize="16" as={item.icon} />
+              <Icon mr="4" fontSize="17" as={item.icon} />
               <Text flex="1">{item.label}</Text>
             </HStack>
             <Icon

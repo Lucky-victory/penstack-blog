@@ -105,7 +105,7 @@ export const DashboardSidebar = ({
         </Box>
 
         <Stack
-          spacing={2}
+          spacing={3}
           flexGrow={1}
           px={isMinimized ? 3 : 4}
           justifyContent={"space-between"}

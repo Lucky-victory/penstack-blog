@@ -69,7 +69,7 @@ export const SidebarNavItem = ({
           color: hoverTextColor,
         }}
       >
-        {icon && <Icon fontSize="16" as={icon} color={"inherit"} />}
+        {icon && <Icon fontSize="17" as={icon} color={"inherit"} />}
         {label && label}
         {!isMinimized && children}
       </Flex>
