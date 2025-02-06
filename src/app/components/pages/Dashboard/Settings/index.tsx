@@ -31,7 +31,7 @@ import { MonitoringPanel } from "./TabPanels/MonitoringPanel";
 import { MediaPanel } from "./TabPanels/MediaPanel";
 import { EmailPanel } from "./TabPanels/EmailPanel";
 import { AdvancedPanel } from "./TabPanels/AdvancedPanel";
-import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
+import { PageTitleHeader } from "../../../Dashboard/PageTitleCard";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 
 export default function DashboardSettingsPage() {
@@ -145,51 +145,30 @@ export default function DashboardSettingsPage() {
     return <Loader loadingText="Loading settings" />;
   }
 
-  const tabStyles = {
-    _hover: {
-      bg: tabHoverBg,
-    },
-    transition: "all 0.2s ease-in-out",
-    rounded: "md",
-    py: 1.5,
-    _focus: {
-      boxShadow: "none",
-    },
-    _selected: {
-      color: tabActiveColor,
-
-      bg: tabActiveBg,
-      // fontWeight: "medium",
-      _hover: {
-        bg: tabActiveHoverBg,
-      },
-    },
-  };
-
   return (
     <Box>
       <DashHeader />
-      <Container maxW="container.2xl" py={6}>
-        <PageTitleCard title={"Settings"}>
-          <Button
-            isLoading={isLoading}
-            onClick={handleSave}
-            rounded="md"
-            isDisabled={!hasChanges}
-          >
-            Save Changes
-          </Button>
-        </PageTitleCard>
+      <Container maxW="container.2xl" p={{ base: 4, md: 5 }}>
+        <Card>
+          <PageTitleHeader title={"Settings"}>
+            <Button
+              isLoading={isLoading}
+              onClick={handleSave}
+              rounded="md"
+              isDisabled={!hasChanges}
+            >
+              Save Changes
+            </Button>
+          </PageTitleHeader>
 
-        {hasChanges && (
-          <Alert status="info" colorScheme="brand" mb={4} rounded="md">
-            <AlertIcon />
-            You have unsaved changes
-          </Alert>
-        )}
-
-        <Card rounded="lg">
           <CardBody>
+            {hasChanges && (
+              <Alert status="info" colorScheme="brand" mb={4} rounded="md">
+                <AlertIcon />
+                You have unsaved changes
+              </Alert>
+            )}
+
             <Tabs>
               <TabList overflowX="auto" className="no-scrollbar" pb={1} gap={3}>
                 <Tab>General</Tab>

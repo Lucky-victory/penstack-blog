@@ -1,5 +1,5 @@
 "use client";
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import { usePost } from "@/src/hooks";
 import { redirect, useParams } from "next/navigation";
 import Loader from "../../../Loader";
@@ -12,6 +12,7 @@ import {
 import { PermissionGuard } from "../../../PermissionGuard";
 import { useAuth } from "@/src/hooks/useAuth";
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
+import { motion } from "framer-motion";
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
@@ -20,7 +21,26 @@ export default function NewPostPage() {
   if (loading) {
     return (
       <Stack h="full" align="center" justify="center">
-        <Loader />
+        <Stack h={"full"} align={"center"} justify={"center"} spacing={4}>
+          <motion.div
+            initial={{ opacity: 0.2 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+          >
+            <Text
+              as={motion.p}
+              style={{ fontSize: "large", fontWeight: "medium" }}
+            >
+              Loading editor...
+            </Text>
+          </motion.div>
+          <Spinner />
+        </Stack>
       </Stack>
     );
   }

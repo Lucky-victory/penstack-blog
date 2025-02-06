@@ -51,7 +51,7 @@ export const CategoryItemList = ({
               handleSelectedCategory("");
             }}
             value={""}
-            size={"sm"}
+            size={"md"}
             rounded={"lg"}
             variant={isSelected("") ? "solid" : "ghost"}
           >

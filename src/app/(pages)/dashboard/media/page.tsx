@@ -3,7 +3,7 @@ import { PermissionGuard } from "@/src/app/components/PermissionGuard";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard | Media",
+  title: "Dashboard | Medias",
 };
 export default function Page() {
   return (

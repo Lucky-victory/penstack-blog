@@ -33,16 +33,7 @@ import {
   VStack,
   ButtonGroup,
 } from "@chakra-ui/react";
-import {
-  EditIcon,
-  DeleteIcon,
-  ViewIcon,
-  AddIcon,
-  SearchIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "@chakra-ui/icons";
-import { LuGlobe2, LuLock } from "react-icons/lu";
+
 import { format } from "date-fns";
 import { Link } from "@chakra-ui/next-js";
 import { PermissionGuard } from "../../../PermissionGuard";
@@ -54,13 +45,20 @@ import Loader from "../../../Loader";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "../../../Pagination";
-import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
+import { PageTitleHeader } from "../../../Dashboard/PageTitleCard";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import {
+  LuExternalLink,
+  LuFileEdit,
+  LuPlus,
+  LuSearch,
+  LuTrash2,
+} from "react-icons/lu";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -113,7 +111,7 @@ const PostsDashboard = () => {
           <HStack spacing={2}>
             <Tooltip label="Preview">
               <IconButton
-                icon={<ViewIcon />}
+                icon={<LuExternalLink />}
                 as={Link}
                 isExternal
                 href={formatPostPermalink(post)}
@@ -128,7 +126,7 @@ const PostsDashboard = () => {
             >
               <Tooltip label="Edit">
                 <IconButton
-                  icon={<EditIcon />}
+                  icon={<LuFileEdit />}
                   as={Link}
                   href={`/dashboard/posts/edit/${post.post_id}`}
                   aria-label="Edit"
@@ -140,7 +138,7 @@ const PostsDashboard = () => {
             <PermissionGuard requiredPermission="posts:delete">
               <Tooltip label="Delete">
                 <IconButton
-                  icon={<DeleteIcon />}
+                  icon={<LuTrash2 />}
                   aria-label="Delete"
                   size="sm"
                   onClick={() => handleDelete(post)}
@@ -262,9 +260,9 @@ const PostsDashboard = () => {
     <Box>
       <DashHeader />
       <Box p={{ base: 4, md: 5 }}>
-        <PageTitleCard title={"Posts"}>
+        <PageTitleHeader title={"Posts"}>
           <Button
-            leftIcon={<AddIcon />}
+            leftIcon={<LuPlus />}
             rounded="md"
             as={Link}
             href="/dashboard/posts/new"
@@ -272,14 +270,14 @@ const PostsDashboard = () => {
           >
             New Post
           </Button>
-        </PageTitleCard>
+        </PageTitleHeader>
 
         <Card rounded={"lg"} mb={6}>
           <CardBody px={{ base: 3, lg: 4 }}>
             <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
               <InputGroup maxW={{ md: "320px" }}>
                 <InputLeftAddon roundedLeft="md">
-                  <SearchIcon />
+                  <LuSearch />
                 </InputLeftAddon>
                 <Input
                   rounded="md"

@@ -45,19 +45,20 @@ import {
   Center,
   Switch,
 } from "@chakra-ui/react";
-import {
-  EditIcon,
-  DeleteIcon,
-  AddIcon,
-  SearchIcon,
-  ChevronDownIcon,
-} from "@chakra-ui/icons";
+
 import { useQuery } from "@tanstack/react-query";
 import { PaginatedResponse, RolesSelect, UserSelect } from "@/src/types";
 import axios from "axios";
 import Loader from "../../../Loader";
 import DashHeader from "../../../Dashboard/Header";
-import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
+import { PageTitleHeader } from "../../../Dashboard/PageTitleCard";
+import {
+  LuChevronDown,
+  LuFileEdit,
+  LuPlus,
+  LuSearch,
+  LuTrash2,
+} from "react-icons/lu";
 
 const UsersDashboard = () => {
   const [users, setUsers] = useState<UserSelect[]>([]);
@@ -209,20 +210,20 @@ const UsersDashboard = () => {
   }
   return (
     <Box>
-      <DashHeader></DashHeader>
+      <DashHeader />
       <Box p={{ base: 4, md: 5 }}>
-        <PageTitleCard title={"Users Management"}>
-          <Button leftIcon={<AddIcon />} onClick={() => openUserModal()}>
-            Add User
-          </Button>
-        </PageTitleCard>
+        <Card>
+          <PageTitleHeader title={"Users"}>
+            <Button leftIcon={<LuPlus />} onClick={() => openUserModal()}>
+              Add User
+            </Button>
+          </PageTitleHeader>
 
-        <Card mb={8}>
           <CardBody>
             <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
               <InputGroup>
                 <InputLeftAddon>
-                  <SearchIcon />
+                  <LuSearch />
                 </InputLeftAddon>
                 <Input
                   maxW={{ md: "320px" }}
@@ -252,7 +253,7 @@ const UsersDashboard = () => {
                 <Menu>
                   <MenuButton
                     as={Button}
-                    rightIcon={<ChevronDownIcon />}
+                    rightIcon={<LuChevronDown />}
                     size="sm"
                   >
                     Bulk Actions
@@ -349,7 +350,7 @@ const UsersDashboard = () => {
                             <Td>
                               <HStack>
                                 <IconButton
-                                  icon={<EditIcon />}
+                                  icon={<LuFileEdit />}
                                   size="sm"
                                   variant="ghost"
                                   aria-label="Edit"
@@ -357,7 +358,7 @@ const UsersDashboard = () => {
                                 ></IconButton>
                                 <IconButton
                                   aria-label="Delete"
-                                  icon={<DeleteIcon />}
+                                  icon={<LuTrash2 />}
                                   color="red.500"
                                   size="sm"
                                   variant="ghost"
@@ -459,7 +460,7 @@ const UsersDashboard = () => {
                       w="full"
                       colorScheme="gray"
                       textTransform={"capitalize"}
-                      rightIcon={<ChevronDownIcon />}
+                      rightIcon={<LuChevronDown />}
                       justifyContent={"start"}
                       fontWeight={"normal"}
                       textAlign={"left"}

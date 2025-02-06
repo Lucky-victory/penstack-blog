@@ -3,8 +3,6 @@ import {
   Box,
   Card,
   CardBody,
-  Heading,
-  HStack,
   Table,
   Thead,
   Tbody,
@@ -13,15 +11,12 @@ import {
   Td,
   Badge,
   TableContainer,
-  Avatar,
   Text,
-  Flex,
   Input,
   InputGroup,
   InputLeftAddon,
   Stack,
   Center,
-  useColorModeValue,
   Tooltip,
 } from "@chakra-ui/react";
 import { PermissionGuard } from "../../../PermissionGuard";
@@ -34,7 +29,7 @@ import { NewsletterSelect, PaginatedResponse } from "@/src/types";
 import { format } from "date-fns";
 import { shortenText } from "@/src/utils";
 import DashHeader from "../../../Dashboard/Header";
-import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
+import { PageTitleHeader } from "../../../Dashboard/PageTitleCard";
 
 export const DashboardNewsletterPage = () => {
   const [newsletters, setNewsletters] = useState<NewsletterSelect[]>([]);
@@ -76,9 +71,9 @@ export const DashboardNewsletterPage = () => {
       <Box>
         <DashHeader></DashHeader>
         <Box p={{ base: 4, md: 5 }}>
-          <PageTitleCard title="Newsletter" />
+          <Card>
+            <PageTitleHeader title="Newsletter" />
 
-          <Card rounded={"lg"}>
             <CardBody>
               <Stack
                 direction={{ base: "column", md: "row" }}

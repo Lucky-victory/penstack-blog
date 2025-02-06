@@ -52,70 +52,54 @@ const Pagination = ({
   }, [currentPage, totalPages]);
 
   return (
-    <HStack gap={3} justify="center" align="center">
-      {/* <IconButton
-        size={"sm"}
-        variant="outline"
-        onClick={() => onPageChange(1)}
-        isDisabled={isLoading || currentPage === 1}
-        aria-label="First page"
-      >
-        <LuChevronsLeft className="h-4 w-4" />
-      </IconButton> */}
+    <>
+      {!isLoading && totalPages > 1 ? (
+        <HStack gap={3} justify="center" align="center">
+          <IconButton
+            colorScheme="gray"
+            size={"sm"}
+            variant="outline"
+            onClick={() => onPageChange(currentPage - 1)}
+            isDisabled={isLoading || currentPage === 1}
+            aria-label="Previous page"
+          >
+            <LuChevronLeft className="h-4 w-4" />
+          </IconButton>
 
-      <IconButton
-        colorScheme="gray"
-        size={"sm"}
-        variant="outline"
-        onClick={() => onPageChange(currentPage - 1)}
-        isDisabled={isLoading || currentPage === 1}
-        aria-label="Previous page"
-      >
-        <LuChevronLeft className="h-4 w-4" />
-      </IconButton>
+          {getPageNumbers.map((page, index) =>
+            page === "..." ? (
+              <span key={`ellipsis-${index}`} className="px-2">
+                {page}
+              </span>
+            ) : (
+              <Button
+                size={"sm"}
+                colorScheme="gray"
+                aria-label={`Page ${page}`}
+                key={page}
+                variant={currentPage === page ? "solid" : "outline"}
+                className="min-w-[40px]"
+                onClick={() => onPageChange(page as number)}
+                isDisabled={isLoading}
+              >
+                {page}
+              </Button>
+            )
+          )}
 
-      {getPageNumbers.map((page, index) =>
-        page === "..." ? (
-          <span key={`ellipsis-${index}`} className="px-2">
-            {page}
-          </span>
-        ) : (
-          <Button
+          <IconButton
             size={"sm"}
             colorScheme="gray"
-            aria-label={`Page ${page}`}
-            key={page}
-            variant={currentPage === page ? "solid" : "outline"}
-            className="min-w-[40px]"
-            onClick={() => onPageChange(page as number)}
-            isDisabled={isLoading}
+            variant="outline"
+            onClick={() => onPageChange(currentPage + 1)}
+            isDisabled={isLoading || currentPage === totalPages}
+            aria-label="Next page"
           >
-            {page}
-          </Button>
-        )
-      )}
-
-      <IconButton
-        size={"sm"}
-        colorScheme="gray"
-        variant="outline"
-        onClick={() => onPageChange(currentPage + 1)}
-        isDisabled={isLoading || currentPage === totalPages}
-        aria-label="Next page"
-      >
-        <LuChevronRight className="h-4 w-4" />
-      </IconButton>
-
-      {/* <IconButton
-        size={"sm"}
-        variant="outline"
-        onClick={() => onPageChange(totalPages)}
-        isDisabled={isLoading || currentPage === totalPages}
-        aria-label="Last page"
-      >
-        <LuChevronsRight className="h-4 w-4" />
-      </IconButton> */}
-    </HStack>
+            <LuChevronRight className="h-4 w-4" />
+          </IconButton>
+        </HStack>
+      ) : null}
+    </>
   );
 };
 export default Pagination;

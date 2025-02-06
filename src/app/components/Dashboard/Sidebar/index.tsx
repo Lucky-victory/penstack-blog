@@ -105,8 +105,8 @@ export const DashboardSidebar = ({
       </Box>
 
       <Stack
-        spacing={4}
-        mt={4}
+        spacing={3}
+        mt={2}
         h={"calc(100% - var(--dash-header-h))"}
         align="stretch"
         flex={1}
@@ -146,7 +146,7 @@ export const DashboardSidebar = ({
           </Box>
         ))}
 
-        <Stack mt={"auto"} mb={8} pl={isMinimized ? 0 : 3}>
+        <Stack mt={"auto"} mb={9} pl={isMinimized ? 0 : 3}>
           <LightDarkModeSwitch showLabel={!isMinimized} />
         </Stack>
       </Stack>

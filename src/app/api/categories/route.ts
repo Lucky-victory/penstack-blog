@@ -3,6 +3,7 @@ import { db } from "@/src/db";
 import { categories, posts } from "@/src/db/schemas/posts.sql";
 import { and, eq, sql } from "drizzle-orm";
 import { checkPermission } from "@/src/lib/auth/check-permission";
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page = Math.max(Number(searchParams.get("page")) || 1, 1); // Ensure minimum page is 1

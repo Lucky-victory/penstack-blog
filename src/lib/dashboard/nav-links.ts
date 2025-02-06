@@ -1,6 +1,8 @@
 import { navPermissionMapping } from "@/src/types";
 import {
+  LuCombine,
   LuFileImage,
+  LuFileSpreadsheet,
   LuFileStack,
   LuHome,
   LuMail,
@@ -17,7 +19,7 @@ export const dashboardNavLinks = [
     permission: navPermissionMapping.VIEW_DASHBOARD,
   },
   {
-    icon: LuFileStack,
+    icon: LuFileSpreadsheet,
     label: "Posts",
     href: "/dashboard/posts",
     permission: navPermissionMapping.VIEW_POSTS,
@@ -33,6 +35,11 @@ export const dashboardNavLinks = [
         permission: navPermissionMapping.CREATE_POST,
       },
     ],
+  },
+  {
+    label: "Taxonomies",
+    href: "/dashboard/taxonomies",
+    icon: LuCombine,
   },
   {
     icon: LuUsers,
