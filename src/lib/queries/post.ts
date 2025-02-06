@@ -2,7 +2,6 @@ import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
 import { eq, or } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
-import { cache } from "react";
 
 export const getPost = unstable_cache(
   async (slugOrPostId: string) => {

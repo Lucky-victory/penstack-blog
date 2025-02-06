@@ -27,34 +27,24 @@ export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {
           variant="ghost"
           _hover={{ bg: hoverBgColor }}
           rounded={"full"}
-          mb={8}
         />
       )}
       {showLabel && (
         <ButtonGroup size={"sm"} rounded={"full"}>
-          <Button
-            colorScheme={colorMode === "light" ? "brand" : "gray"}
-            fontWeight={400}
-            leftIcon={<LuSun size={16} />}
-            onClick={() => setColorMode("light")}
-            variant={colorMode === "light" ? "solid" : "ghost"}
-            rounded={"full"}
-          >
-            {" "}
-            <Text as="span">Light</Text>{" "}
-          </Button>
-
-          <Button
-            colorScheme={colorMode === "dark" ? "brand" : "gray"}
-            fontWeight={400}
-            leftIcon={<LuMoon size={16} />}
-            onClick={() => setColorMode("dark")}
-            variant={colorMode === "dark" ? "solid" : "ghost"}
-            rounded={"full"}
-          >
-            {" "}
-            <Text as="span">Dark</Text>{" "}
-          </Button>
+          {["Light", "Dark"].map((mode, i) => (
+            <Button
+              key={i}
+              colorScheme={colorMode === mode.toLowerCase() ? "brand" : "gray"}
+              fontWeight={400}
+              leftIcon={<LuSun size={16} />}
+              onClick={() => setColorMode(mode.toLowerCase())}
+              variant={colorMode === mode.toLowerCase() ? "solid" : "ghost"}
+              rounded={"full"}
+            >
+              {" "}
+              <Text as="span">{mode}</Text>{" "}
+            </Button>
+          ))}
         </ButtonGroup>
       )}
     </HStack>

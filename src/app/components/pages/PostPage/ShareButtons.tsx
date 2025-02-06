@@ -8,7 +8,6 @@ import {
   EmailIcon,
   EmailShareButton,
   FacebookIcon,
-  TwitterIcon,
   LinkedinIcon,
   WhatsappIcon,
   FacebookShareCount,

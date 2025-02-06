@@ -233,7 +233,7 @@ const Header = () => {
               </Menu>
             </HStack>
 
-            <HStack spacing={4}>
+            <HStack spacing={4} align={"center"}>
               <IconButton
                 display={{ base: "none", lg: "flex" }}
                 as={Link}
@@ -256,7 +256,7 @@ const Header = () => {
               </Hide>
 
               <IconButton
-                colorScheme="black"
+                // colorScheme="black"
                 display={{ base: "flex", xl: "none" }}
                 aria-label="Open menu"
                 icon={<LuMenu size={20} />}

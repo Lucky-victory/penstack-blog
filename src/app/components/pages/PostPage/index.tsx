@@ -96,7 +96,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                     key={index}
                     rounded={"lg"}
                     px={3}
-                    bg={"brand.50"}
+                    // bg={"brand.50"}
                     // border={"1px solid"}
                     // borderColor={borderColor}
                     // colorScheme="gray"
@@ -123,12 +123,24 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             <VStack
               w={sidebarWidth}
               position="sticky"
-              top={8}
+              top={6}
+              minW={350}
               spacing={4}
+              // justify={"center"}
               display={{ base: "none", md: "flex" }}
             >
-              <SocialActions post={post} />
-              <Newsletter canWrap isDark={false} />
+              <Box
+                rounded={"xl"}
+                p={4}
+                bg={useColorModeValue("white", "gray.800")}
+              >
+                <Newsletter
+                  title="Subscribe to our newsletter"
+                  description=" Get the latest posts delivered right to your inbox!"
+                  canWrap
+                  isDark={false}
+                />
+              </Box>
             </VStack>
           </Flex>
           {post?.allow_comments && (

@@ -32,8 +32,9 @@ export default memo(function DashboardLayout({
   return (
     <NetworkAvailabiltyCheck>
       <Box
-        minH="var(--chakra-vh)"
-        bg={useColorModeValue("gray.200", "charcoalBlack")}
+        className="home-wrap"
+        // minH="var(--chakra-vh)"
+        bg={useColorModeValue("gray.100", "charcoalBlack")}
       >
         <DashboardSidebar
           onClose={() => onClose}
@@ -73,7 +74,6 @@ export default memo(function DashboardLayout({
           px={{ base: 4, md: 16 }}
           h={"var(--dash-header-h)"}
           alignItems="center"
-          // bg={useColorModeValue("white", "gray.900")}
           borderBottomWidth="1px"
           borderBottomColor={useColorModeValue("gray.200", "gray.700")}
           justifyContent="flex-start"
@@ -104,6 +104,7 @@ export default memo(function DashboardLayout({
             maxW="container.2xl"
             margin="0 auto"
             overflowY={"auto"}
+            h={"full"}
           >
             {children}
           </Box>

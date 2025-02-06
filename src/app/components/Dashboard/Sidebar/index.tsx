@@ -50,8 +50,7 @@ export const DashboardSidebar = ({
   const navBtnActiveColor = useColorModeValue("#fff", "black");
   const siteNameColor = useColorModeValue("gray.800", "gray.100");
   return (
-    <Flex
-      flexDir={"column"}
+    <Stack
       bg={bg}
       borderRight="1px"
       zIndex={1000}
@@ -61,96 +60,100 @@ export const DashboardSidebar = ({
           ? "var(--dash-sidebar-mini-w)"
           : { base: "full", md: "var(--dash-sidebar-w)" }
       }
-      h="full"
+      h={"var(--chakra-vh)"}
       pos="fixed"
       {...rest}
     >
-      <Box>
-        <Flex
-          alignItems="center"
-          mx={"auto"}
-          mb={2}
-          gap={3}
-          py={3}
-          px={isMinimized ? 0 : 4}
-          justify={"center"}
-        >
-          {!isMinimized && (
-            <Box flex={1}>
-              <AppLogoAndName logoSize={"30px"} />
-              <Link href={"/"} color={navBtnBg} fontSize={"small"}>
-                visit site
-              </Link>
-            </Box>
-          )}
-          <VStack>
-            {isMinimized && (
-              <AppLogo src={siteConfig?.siteLogo?.value} size={"30px"} />
+      <Flex flexDir={"column"} h={"full"} pb={5}>
+        <Box>
+          <Flex
+            alignItems="center"
+            mx={"auto"}
+            mb={2}
+            gap={3}
+            py={3}
+            px={isMinimized ? 0 : 4}
+            justify={"center"}
+          >
+            {!isMinimized && (
+              <Box flex={1}>
+                <AppLogoAndName logoSize={"30px"} />
+                <Link href={"/"} color={navBtnBg} fontSize={"small"}>
+                  visit site
+                </Link>
+              </Box>
             )}
-            <IconButton
-              aria-label="Toggle Sidebar"
-              onClick={toggleMinimized}
-              fontSize="20"
-              size="sm"
-              variant={"ghost"}
-              alignSelf={"start"}
-              colorScheme="gray"
-              color={siteNameColor}
-              // display={{ base: "none", md: "flex" }}
-            >
-              {isMinimized ? <LuChevronsRight /> : <LuChevronsLeft />}
-            </IconButton>
-          </VStack>
-        </Flex>
-      </Box>
-
-      <Stack
-        spacing={3}
-        mt={2}
-        h={"calc(100% - var(--dash-header-h))"}
-        align="stretch"
-        flex={1}
-        px={isMinimized ? 3 : 4}
-        justifyContent={"space-between"}
-      >
-        {navItems.map((item, index) => (
-          <Box key={index}>
-            {item.children ? (
-              <NavItemWithChildren
-                item={item}
-                isMinimized={isMinimized}
-                navBtnBg={navBtnBg}
-                navBtnBgHover={navBtnBgHover}
-                textColor={textColor}
-                hoverTextColor={hoverTextColor}
-                navBtnActiveColor={navBtnActiveColor}
-                bg={bg}
-              />
-            ) : (
-              <SidebarNavItem
-                icon={item.icon}
-                href={item.href}
-                permission={item.permission}
-                isMinimized={isMinimized}
-                onClose={onClose}
-                navBtnBg={navBtnBg}
-                navBtnActiveColor={navBtnActiveColor}
-                navBtnBgHover={navBtnBgHover}
-                textColor={textColor}
-                hoverTextColor={hoverTextColor}
-                bg={bg}
+            <VStack>
+              {isMinimized && (
+                <AppLogo src={siteConfig?.siteLogo?.value} size={"30px"} />
+              )}
+              <IconButton
+                aria-label="Toggle Sidebar"
+                onClick={toggleMinimized}
+                fontSize="20"
+                size="sm"
+                variant={"ghost"}
+                alignSelf={"start"}
+                colorScheme="gray"
+                color={siteNameColor}
+                // display={{ base: "none", md: "flex" }}
               >
-                {item.label}
-              </SidebarNavItem>
-            )}
-          </Box>
-        ))}
+                {isMinimized ? <LuChevronsRight /> : <LuChevronsLeft />}
+              </IconButton>
+            </VStack>
+          </Flex>
+        </Box>
 
-        <Stack mt={"auto"} mb={9} pl={isMinimized ? 0 : 3}>
-          <LightDarkModeSwitch showLabel={!isMinimized} />
+        <Stack
+          spacing={2}
+          flexGrow={1}
+          px={isMinimized ? 3 : 4}
+          justifyContent={"space-between"}
+        >
+          {navItems.map((item, index) => (
+            <Box key={index}>
+              {item.children ? (
+                <NavItemWithChildren
+                  item={item}
+                  isMinimized={isMinimized}
+                  navBtnBg={navBtnBg}
+                  navBtnBgHover={navBtnBgHover}
+                  textColor={textColor}
+                  hoverTextColor={hoverTextColor}
+                  navBtnActiveColor={navBtnActiveColor}
+                  bg={bg}
+                />
+              ) : (
+                <SidebarNavItem
+                  icon={item.icon}
+                  href={item.href}
+                  permission={item.permission}
+                  isMinimized={isMinimized}
+                  onClose={onClose}
+                  navBtnBg={navBtnBg}
+                  navBtnActiveColor={navBtnActiveColor}
+                  navBtnBgHover={navBtnBgHover}
+                  textColor={textColor}
+                  hoverTextColor={hoverTextColor}
+                  bg={bg}
+                >
+                  {item.label}
+                </SidebarNavItem>
+              )}
+            </Box>
+          ))}
+          <Stack
+            flex={1}
+            justify={"flex-end"}
+            mt={"auto"}
+            pl={isMinimized ? 0 : 3}
+            // pb={5}
+          >
+            <LightDarkModeSwitch showLabel={!isMinimized} />
+          </Stack>
         </Stack>
-      </Stack>
-    </Flex>
+      </Flex>
+    </Stack>
   );
 };
 

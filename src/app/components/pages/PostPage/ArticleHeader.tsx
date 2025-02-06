@@ -29,7 +29,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
       <Stack
         align={"center"}
         as="header"
-        mb={0}
+        mb={4}
         maxW={"5xl"}
         mx={"auto"}
         spacing={2}
@@ -53,7 +53,6 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
           <Text
             fontSize={{ base: "md", md: "lg" }}
             maxW={"3xl"}
-            mb={4}
             color={summaryColor}
             textAlign={"center"}
           >
