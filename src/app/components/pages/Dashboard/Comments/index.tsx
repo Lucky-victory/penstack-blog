@@ -1,35 +1,67 @@
-import { Box, useToast } from "@chakra-ui/react";
-import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
+import { Box, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 
-export const CommentsDashboard = () => {
-  //   const { data: comments, isLoading } = useGetCommentsQuery();
-  //   const [deleteComment] = useDeleteCommentMutation();
-  const toast = useToast();
+import { createColumnHelper } from "@tanstack/react-table";
+import { formatDate } from "@/src/utils";
+import { Avatar, HStack, Link } from "@chakra-ui/react";
+import DashHeader from "../../../Dashboard/Header";
+import { DataTable } from "../../../DataTable";
 
-  const handleDeleteComment = async (commentId: number) => {
-    try {
-      //   await deleteComment(commentId);
-      toast({
-        title: "Comment deleted",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-    } catch (error) {
-      toast({
-        title: "Error deleting comment",
-        description: "An error occurred while deleting the comment.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  };
+const columnHelper = createColumnHelper<any>();
+
+const columns = [
+  columnHelper.accessor("author", {
+    header: "Author",
+    cell: (info) => (
+      <HStack>
+        <Avatar
+          size="sm"
+          name={info.getValue()?.name}
+          src={info.getValue()?.avatar}
+        />
+        <Link href={`/author/${info.getValue()?.username}`}>
+          {info.getValue()?.name}
+        </Link>
+      </HStack>
+    ),
+  }),
+  columnHelper.accessor("content", {
+    header: "Comment",
+    cell: (info) => <Text noOfLines={2}>{info.getValue()}</Text>,
+  }),
+  columnHelper.accessor("post", {
+    header: "Post",
+    cell: (info) => (
+      <Link href={`/post/${info.getValue()?.slug}`} noOfLines={1}>
+        {info.getValue()?.title}
+      </Link>
+    ),
+  }),
+  columnHelper.accessor("created_at", {
+    header: "Date",
+    cell: (info) => formatDate(new Date(info.getValue())),
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: (info) => info.getValue(),
+  }),
+];
+
+export default function Comments() {
+  const bgColor = useColorModeValue("white", "gray.800");
 
   return (
-    <Box p={4}>
-      <PageTitleCard title={"Comments"}></PageTitleCard>
-      {/* <CommentList comments={comments} onDelete={handleDeleteComment} /> */}
+    <Box>
+      <DashHeader />
+      <Stack spacing={4}>
+        <Box bg={bgColor} rounded="lg" p={6} shadow="sm">
+          <DataTable
+            columns={columns}
+            apiUrl="/api/comments"
+            searchPlaceholder="Search comments..."
+            defaultSort={{ id: "created_at", desc: true }}
+          />
+        </Box>
+      </Stack>
     </Box>
   );
-};
+}

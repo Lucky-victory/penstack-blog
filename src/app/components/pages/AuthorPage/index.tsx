@@ -5,7 +5,6 @@ import {
   Text,
   Heading,
   VStack,
-  Grid,
   useColorModeValue,
   Flex,
   Card,
@@ -13,20 +12,15 @@ import {
   Avatar,
   CardBody,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { Suspense } from "react";
 import { Newsletter } from "../../NewsLetter";
 import { useAuthor, useAuthorPosts } from "@/src/hooks";
 import Loader from "../../Loader";
 import PageWrapper from "../../PageWrapper";
-import NewPostCard from "../../../../themes/raised-land/NewPostCard";
-import { NewPostCardLoader } from "../../../../themes/raised-land/NewPostCardLoader";
-import { PostCardLoader } from "@/src/themes/smooth-land/PostCardLoader";
-import PostCard from "@/src/themes/smooth-land/PostCard";
 import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
 
 const AuthorPage = ({ username }: { username: string }) => {
   const bgColor = useColorModeValue("gray.100", "inherit");
-  const cardBgColor = useColorModeValue("white", "gray.800");
   const textColor = useColorModeValue("gray.700", "gray.300");
   const { author, loading: isAuthorLoading } = useAuthor(username);
   const { posts, loading: isAuthorPostsLoading } = useAuthorPosts({ username });
@@ -43,12 +37,7 @@ const AuthorPage = ({ username }: { username: string }) => {
               </Stack>
             </Card>
           ) : (
-            <Card
-              // bg={cardBgColor}
-              // borderRadius="3xl"
-              // p={{ base: 4, md: 6, lg: 8 }}
-              mb={6}
-            >
+            <Card mb={6}>
               <CardBody>
                 <Flex
                   direction={{ base: "column", md: "row" }}
@@ -70,7 +59,7 @@ const AuthorPage = ({ username }: { username: string }) => {
                     align={{ base: "center", md: "start" }}
                     spacing={2}
                   >
-                    <Stack gap={0} align={"start"}>
+                    <Stack gap={0} align={{ base: "center", md: "start" }}>
                       <Heading size="xl">{author?.name}</Heading>
                       <Text
                         as={"span"}
@@ -85,7 +74,11 @@ const AuthorPage = ({ username }: { username: string }) => {
                         {author?.title}
                       </Text>
                     )}
-                    <Text color={textColor} maxW="2xl">
+                    <Text
+                      color={textColor}
+                      maxW="2xl"
+                      textAlign={{ base: "center", md: "left" }}
+                    >
                       {author?.bio}
                     </Text>
 
@@ -161,17 +154,19 @@ const AuthorPage = ({ username }: { username: string }) => {
           </Card>
 
           <Box mt={8}>
-            <Heading size="lg" mb={8}>
-              Articles by {author?.name}
-            </Heading>
-
-            {isAuthorPostsLoading ? (
-              Array.from({ length: 4 }).map((_, index) => (
-                <PostCardLoader key={index} />
-              ))
-            ) : (
-              <PostsCards showAuthor={false} posts={posts} />
+            {" "}
+            {!isAuthorLoading && author && (
+              <Heading size="lg" mb={8}>
+                Articles by {author?.name}
+              </Heading>
             )}
+            <Suspense>
+              <PostsCards
+                showAuthor={false}
+                posts={posts}
+                loading={isAuthorPostsLoading}
+              />
+            </Suspense>
           </Box>
         </Container>
       </Box>
