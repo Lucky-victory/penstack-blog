@@ -55,6 +55,12 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "../../../Pagination";
 import { PageTitleCard } from "../../../Dashboard/PageTitleCard";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,6 +73,87 @@ const PostsDashboard = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const { user } = useAuth();
+
+  const columnHelper = createColumnHelper<PostSelect>();
+
+  const columns = [
+    columnHelper.accessor("title", {
+      header: "Title",
+      cell: (info) => <Text noOfLines={2}>{info.getValue()}</Text>,
+    }),
+    columnHelper.accessor("status", {
+      header: "Status",
+      cell: (info) => (
+        <Badge
+          colorScheme={getStatusColor(info.getValue())}
+          rounded="md"
+          px={2}
+          textTransform="capitalize"
+        >
+          {info.getValue()}
+        </Badge>
+      ),
+    }),
+    columnHelper.accessor("author.name", {
+      header: "Author",
+    }),
+    columnHelper.accessor("published_at", {
+      header: "Published At",
+      cell: (info) =>
+        info.getValue()
+          ? format(new Date(info.getValue() as Date), "dd/MM/yyyy hh:mm a")
+          : "Not published",
+    }),
+    columnHelper.display({
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const post = row.original;
+        return (
+          <HStack spacing={2}>
+            <Tooltip label="Preview">
+              <IconButton
+                icon={<ViewIcon />}
+                as={Link}
+                isExternal
+                href={formatPostPermalink(post)}
+                aria-label="Preview"
+                size="sm"
+                variant="ghost"
+              />
+            </Tooltip>
+            <PermissionGuard
+              requiredPermission="posts:edit"
+              isOwner={post.author?.auth_id === user?.id}
+            >
+              <Tooltip label="Edit">
+                <IconButton
+                  icon={<EditIcon />}
+                  as={Link}
+                  href={`/dashboard/posts/edit/${post.post_id}`}
+                  aria-label="Edit"
+                  size="sm"
+                  variant="ghost"
+                />
+              </Tooltip>
+            </PermissionGuard>
+            <PermissionGuard requiredPermission="posts:delete">
+              <Tooltip label="Delete">
+                <IconButton
+                  icon={<DeleteIcon />}
+                  aria-label="Delete"
+                  size="sm"
+                  onClick={() => handleDelete(post)}
+                  colorScheme="red"
+                  variant="ghost"
+                />
+              </Tooltip>
+            </PermissionGuard>
+          </HStack>
+        );
+      },
+    }),
+  ];
 
   const fetchPosts = async () => {
     try {
@@ -95,7 +182,6 @@ const PostsDashboard = () => {
       }
 
       const { data } = await axios<PaginatedResponse<PostSelect>>(url);
-
       return data;
     } catch (error) {
       toast({
@@ -106,6 +192,7 @@ const PostsDashboard = () => {
       });
     }
   };
+
   const {
     refetch,
     data,
@@ -116,8 +203,16 @@ const PostsDashboard = () => {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
+
   const posts = data?.data;
   const totalPages = data?.meta?.totalPages;
+
+  const table = useReactTable({
+    data: posts || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       if (searchTerm) {
@@ -137,14 +232,12 @@ const PostsDashboard = () => {
   const confirmDelete = async () => {
     try {
       await axios.delete(`/api/posts/${selectedPost?.id}`);
-
       toast({
         title: "Post deleted",
         status: "success",
         duration: 3000,
         isClosable: true,
       });
-
       refetch();
       onClose();
     } catch (error: any) {
@@ -165,12 +258,9 @@ const PostsDashboard = () => {
       deleted: "red",
     })[status!] || "gray";
 
-  const getVisibilityIcon = (visibility: PostSelect["visibility"]) =>
-    visibility === "private" ? <LuLock /> : <LuGlobe2 />;
-
   return (
     <Box>
-      <DashHeader></DashHeader>
+      <DashHeader />
       <Box p={{ base: 4, md: 5 }}>
         <PageTitleCard title={"Posts"}>
           <Button
@@ -245,81 +335,30 @@ const PostsDashboard = () => {
               <>
                 <Table variant="simple">
                   <Thead>
-                    <Tr>
-                      <Th>Title</Th>
-                      <Th>Status</Th>
-                      <Th>Author</Th>
-                      <Th>Published At</Th>
-                      <Th>Actions</Th>
-                    </Tr>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <Tr key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => (
+                          <Th key={header.id}>
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                          </Th>
+                        ))}
+                      </Tr>
+                    ))}
                   </Thead>
                   <Tbody>
-                    {posts.map((post) => (
-                      <Tr key={post.id}>
-                        <Td>
-                          <Text noOfLines={2}>{post.title}</Text>
-                        </Td>
-                        <Td>
-                          <Badge
-                            colorScheme={getStatusColor(post.status)}
-                            rounded="md"
-                            px={2}
-                            textTransform="capitalize"
-                          >
-                            {post.status}
-                          </Badge>
-                        </Td>
-                        <Td>{post.author?.name}</Td>
-                        <Td>
-                          {post.published_at
-                            ? format(
-                                new Date(post.published_at),
-                                "dd/MM/yyyy hh:mm a"
-                              )
-                            : "Not published"}
-                        </Td>
-                        <Td>
-                          <HStack spacing={2}>
-                            <Tooltip label="Preview">
-                              <IconButton
-                                icon={<ViewIcon />}
-                                as={Link}
-                                isExternal
-                                href={formatPostPermalink(post)}
-                                aria-label="Preview"
-                                size="sm"
-                                variant="ghost"
-                              />
-                            </Tooltip>
-                            <PermissionGuard
-                              requiredPermission="posts:edit"
-                              isOwner={post.author?.auth_id === user?.id}
-                            >
-                              <Tooltip label="Edit">
-                                <IconButton
-                                  icon={<EditIcon />}
-                                  as={Link}
-                                  href={`/dashboard/posts/edit/${post.post_id}`}
-                                  aria-label="Edit"
-                                  size="sm"
-                                  variant="ghost"
-                                />
-                              </Tooltip>
-                            </PermissionGuard>
-                            <PermissionGuard requiredPermission="posts:delete">
-                              <Tooltip label="Delete">
-                                <IconButton
-                                  icon={<DeleteIcon />}
-                                  aria-label="Delete"
-                                  size="sm"
-                                  onClick={() => handleDelete(post)}
-                                  colorScheme="red"
-                                  variant="ghost"
-                                />
-                              </Tooltip>
-                            </PermissionGuard>
-                          </HStack>
-                        </Td>
+                    {table.getRowModel().rows.map((row) => (
+                      <Tr key={row.id}>
+                        {row.getVisibleCells().map((cell) => (
+                          <Td key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </Td>
+                        ))}
                       </Tr>
                     ))}
                   </Tbody>
@@ -346,7 +385,6 @@ const PostsDashboard = () => {
           </CardBody>
         </Card>
 
-        {/* Delete Confirmation Modal */}
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
@@ -369,4 +407,5 @@ const PostsDashboard = () => {
     </Box>
   );
 };
+
 export default PostsDashboard;

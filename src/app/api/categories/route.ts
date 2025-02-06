@@ -33,7 +33,6 @@ export async function GET(req: NextRequest) {
     }
 
     const totalResult = await totalQuery;
-    console.log({ totalResult });
 
     const total = Number(totalResult?.[0].count);
 

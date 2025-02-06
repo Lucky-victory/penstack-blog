@@ -7,14 +7,16 @@ export const useCategories = ({
   limit,
   page,
   canFetch,
+  hasPosts,
 }: {
   sort?: "name" | "popular";
   page?: number;
   limit?: number;
   canFetch?: boolean;
+  hasPosts?: boolean;
 } = {}) => {
   return useQuery({
-    queryKey: ["categories", { sort, limit, page, canFetch }],
+    queryKey: ["categories", sort, limit, page, canFetch, hasPosts],
     queryFn: async () => {
       const { data } = await axios.get<{
         data: { id: number; name: string; slug: string }[];
@@ -24,7 +26,9 @@ export const useCategories = ({
           limit: number;
           totalPages: number;
         };
-      }>(`/api/categories?${objectToQueryParams({ sort, limit, page })}`);
+      }>(
+        `/api/categories?${objectToQueryParams({ sort, limit, page, hasPostsOnly: hasPosts })}`
+      );
       return {
         results: data.data,
         meta: data?.meta,

@@ -4,6 +4,7 @@ import {
   LuFileStack,
   LuHome,
   LuMail,
+  LuMessageSquare,
   LuSettings,
   LuUsers,
 } from "react-icons/lu";
@@ -44,6 +45,12 @@ export const dashboardNavLinks = [
     label: "Media",
     href: "/dashboard/media",
     permission: navPermissionMapping.VIEW_MEDIA,
+  },
+  {
+    icon: LuMessageSquare,
+    label: "Comments",
+    href: "/dashboard/comments",
+    permission: navPermissionMapping.VIEW_DASHBOARD,
   },
   {
     icon: LuMail,

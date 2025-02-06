@@ -100,7 +100,7 @@ const PostViewsChart = () => {
               height={30}
               fontSize={14}
             />
-            <YAxis fontSize={14} />
+            <YAxis fontSize={14} width={50} />
             <Tooltip
               contentStyle={{
                 backgroundColor: tooltipContentBg,

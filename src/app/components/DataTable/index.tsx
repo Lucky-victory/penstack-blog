@@ -12,6 +12,8 @@ import {
   Select,
   Text,
   IconButton,
+  Card,
+  CardBody,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
@@ -51,68 +53,72 @@ export function DataTable<T extends Record<string, any>>({
   );
 
   return (
-    <Stack spacing={4}>
-      <HStack justify="space-between">
-        <Input
-          placeholder={searchPlaceholder}
-          value={search}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearch(e.target.value)
-          }
-          maxW="300px"
-        />
-        <Select maxW="100px" value={pageSize}>
-          <option value={10}>10</option>
-          <option value={25}>25</option>
-          <option value={50}>50</option>
-        </Select>
-      </HStack>
+    <Card>
+      <CardBody>
+        <Stack spacing={4}>
+          <HStack justify="space-between">
+            <Input
+              placeholder={searchPlaceholder}
+              value={search}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearch(e.target.value)
+              }
+              maxW="300px"
+            />
+            <Select maxW="100px" value={pageSize}>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </Select>
+          </HStack>
 
-      <TableContainer>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              {columns.map((column, i) => (
-                <Th key={i}>{column.header}</Th>
-              ))}
-            </Tr>
-          </Thead>
-          <Tbody>
-            {paginatedData.map((row, i) => (
-              <Tr key={i}>
-                {columns.map((column, j) => (
-                  <Td key={j}>{column.cell(row[column.accessor])}</Td>
+          <TableContainer>
+            <Table variant="simple">
+              <Thead>
+                <Tr>
+                  {columns.map((column, i) => (
+                    <Th key={i}>{column.header}</Th>
+                  ))}
+                </Tr>
+              </Thead>
+              <Tbody>
+                {paginatedData.map((row, i) => (
+                  <Tr key={i}>
+                    {columns.map((column, j) => (
+                      <Td key={j}>{column.cell(row[column.accessor])}</Td>
+                    ))}
+                  </Tr>
                 ))}
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+              </Tbody>
+            </Table>
+          </TableContainer>
 
-      <HStack justify="space-between" align="center">
-        <Text>
-          Showing {(currentPage - 1) * pageSize + 1} to{" "}
-          {Math.min(currentPage * pageSize, filteredData.length)} of{" "}
-          {filteredData.length}
-        </Text>
-        <HStack>
-          <IconButton
-            aria-label="Previous page"
-            icon={<ChevronLeftIcon />}
-            isDisabled={currentPage === 1}
-            onClick={() => setCurrentPage((p) => p - 1)}
-          />
-          <Text>
-            Page {currentPage} of {pageCount}
-          </Text>
-          <IconButton
-            aria-label="Next page"
-            icon={<ChevronRightIcon />}
-            isDisabled={currentPage === pageCount}
-            onClick={() => setCurrentPage((p) => p + 1)}
-          />
-        </HStack>
-      </HStack>
-    </Stack>
+          <HStack justify="space-between" align="center">
+            <Text>
+              Showing {(currentPage - 1) * pageSize + 1} to{" "}
+              {Math.min(currentPage * pageSize, filteredData.length)} of{" "}
+              {filteredData.length}
+            </Text>
+            <HStack>
+              <IconButton
+                aria-label="Previous page"
+                icon={<ChevronLeftIcon />}
+                isDisabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+              />
+              <Text>
+                Page {currentPage} of {pageCount}
+              </Text>
+              <IconButton
+                aria-label="Next page"
+                icon={<ChevronRightIcon />}
+                isDisabled={currentPage === pageCount}
+                onClick={() => setCurrentPage((p) => p + 1)}
+              />
+            </HStack>
+          </HStack>
+        </Stack>
+      </CardBody>
+    </Card>
   );
 }
