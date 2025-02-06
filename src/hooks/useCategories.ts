@@ -3,23 +3,33 @@ import axios from "axios";
 import { objectToQueryParams } from "../utils";
 
 export const useCategories = ({
-  sort,
+  sortBy,
   limit,
   page,
   canFetch,
   hasPosts,
+  sortOrder,
 }: {
-  sort?: "name" | "popular";
+  sortBy?: "name" | "popular";
   page?: number;
   limit?: number;
   canFetch?: boolean;
   hasPosts?: boolean;
+  sortOrder?: "asc" | "desc";
 } = {}) => {
   return useQuery({
-    queryKey: ["categories", sort, limit, page, canFetch, hasPosts],
+    queryKey: [
+      "categories",
+      sortBy,
+      limit,
+      page,
+      canFetch,
+      hasPosts,
+      sortOrder,
+    ],
     queryFn: async () => {
       const { data } = await axios.get<{
-        data: { id: number; name: string; slug: string }[];
+        data: { id: number; name: string; slug: string; postsCount: number }[];
         meta: {
           total: number;
           page: number;
@@ -27,7 +37,7 @@ export const useCategories = ({
           totalPages: number;
         };
       }>(
-        `/api/categories?${objectToQueryParams({ sort, limit, page, hasPostsOnly: hasPosts })}`
+        `/api/taxonomies/categories?${objectToQueryParams({ sortBy, limit, page, hasPostsOnly: hasPosts })}`
       );
       return {
         results: data.data,

@@ -31,6 +31,7 @@ import {
   InputGroup,
   InputLeftElement,
   HStack,
+  Stack,
 } from "@chakra-ui/react";
 import {
   LuTag,
@@ -156,7 +157,7 @@ const DashboardTaxonomyPage: React.FC = () => {
     const borderColor = useColorModeValue("gray.200", "gray.600");
     return (
       <Flex gap={4} overflowX={"auto"}>
-        <Box flexShrink={0} flexGrow={1} mb={3}>
+        <Box flexShrink={0} flexGrow={1} mb={4}>
           <Grid
             templateColumns="repeat(12, 1fr)"
             alignItems={"center"}
@@ -196,7 +197,7 @@ const DashboardTaxonomyPage: React.FC = () => {
             <GridItem colSpan={2}>Actions</GridItem>
           </Grid>
 
-          <Box>
+          <Stack>
             {paginatedItems.map((item) => (
               <Grid
                 key={item.id}
@@ -247,7 +248,7 @@ const DashboardTaxonomyPage: React.FC = () => {
                 </GridItem>
               </Grid>
             ))}
-          </Box>
+          </Stack>
 
           <HStack py={4} justify={"center"}>
             <Pagination
@@ -286,7 +287,7 @@ const DashboardTaxonomyPage: React.FC = () => {
   return (
     <Box>
       <DashHeader />
-      <Box p={4}>
+      <Box p={{ base: 4, md: 5 }}>
         <Card>
           <PageTitleHeader title="Taxonomies">
             <Button
@@ -299,7 +300,6 @@ const DashboardTaxonomyPage: React.FC = () => {
 
           <CardBody>
             <Tabs
-              //   value={selectedType}
               defaultIndex={activeTab === "categories" ? 0 : 1}
               onChange={(index) =>
                 setActiveTab(index === 0 ? "categories" : "tags")

@@ -10,6 +10,7 @@ import {
   text,
   boolean,
   uniqueIndex,
+  index,
 } from "drizzle-orm/mysql-core";
 import { users } from "./users.sql";
 import { medias } from "./media.sql";
@@ -57,6 +58,7 @@ export const posts = mysqlTable(
   },
   (table) => {
     return {
+      idxTitle: index("idx_title").on(table.title),
       uniqueIndex: uniqueIndex("slug_unique_index").on(table.slug),
     };
   }
@@ -85,7 +87,7 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
   tags: many(postTags),
 }));
 export const postSeoMeta = mysqlTable("PostSeoMeta", {
-  id: int("id").primaryKey().autoincrement(),
+  id,
   post_id: int("post_id").notNull(),
   title: varchar("title", { length: 150 }),
   canonical_url: varchar("canonical_url", { length: 255 }),
@@ -97,25 +99,43 @@ export const postMetaRelations = relations(postSeoMeta, ({ one }) => ({
     references: [posts.id],
   }),
 }));
-export const categories = mysqlTable("Categories", {
-  id,
-  name: varchar("name", { length: 100 }).notNull(),
-  slug: varchar("slug", { length: 255 }).notNull().unique(),
-  created_at,
-  updated_at,
-});
+export const categories = mysqlTable(
+  "Categories",
+  {
+    id,
+    name: varchar("name", { length: 100 }).notNull(),
+    slug: varchar("slug", { length: 255 }).notNull().unique(),
+    created_at,
+    updated_at,
+  },
+  (table) => {
+    return {
+      nameIdx: index("name_index").on(table.name),
+      slugUniqueIndex: uniqueIndex("slug_unique_index").on(table.slug),
+    };
+  }
+);
 
 export const categoriesRelations = relations(categories, ({ one, many }) => ({
   posts: many(posts),
 }));
 
-export const tags = mysqlTable("Tags", {
-  id,
-  name: varchar("name", { length: 100 }).notNull(),
-  slug: varchar("slug", { length: 255 }).notNull().unique(),
-  created_at,
-  updated_at,
-});
+export const tags = mysqlTable(
+  "Tags",
+  {
+    id,
+    name: varchar("name", { length: 100 }).notNull(),
+    slug: varchar("slug", { length: 255 }).notNull().unique(),
+    created_at,
+    updated_at,
+  },
+  (table) => {
+    return {
+      nameIdx: index("name_index").on(table.name),
+      slugUniqueIndex: uniqueIndex("slug_unique_index").on(table.slug),
+    };
+  }
+);
 
 export const tagsRelations = relations(tags, ({ one, many }) => ({
   posts: many(postTags),

@@ -52,7 +52,6 @@ export const CategoryItemList = ({
             }}
             value={""}
             size={"md"}
-            rounded={"lg"}
             variant={isSelected("") ? "solid" : "ghost"}
           >
             All
@@ -65,8 +64,7 @@ export const CategoryItemList = ({
                 }}
                 key={val}
                 value={val}
-                size={"sm"}
-                rounded={"lg"}
+                size={"md"}
                 variant={isSelected(val) ? "solid" : "ghost"}
               >
                 {val}
