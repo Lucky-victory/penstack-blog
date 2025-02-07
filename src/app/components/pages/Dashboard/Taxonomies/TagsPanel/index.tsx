@@ -9,7 +9,6 @@ export const TagsPanel = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { data: taxonomyData, isPending: isLoading } = useTags({
     hasPostsOnly: false,
-    limit: 5,
     page: currentPage,
   });
   if (isLoading) return <FilterListSkeleton />;

@@ -131,8 +131,8 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
               borderRadius="lg"
               border="1px"
               borderColor={borderColor}
-              alignItems="center"
               _hover={{ bg: headerBg }}
+              alignItems="center"
             >
               <GridItem colSpan={1}>
                 {type === "categories" ? <LuFolderTree /> : <LuTag />}

@@ -10,6 +10,7 @@ export const CategoriesPanel = () => {
   const { data: taxonomyData, isPending: isLoading } = useCategories({
     canFetch: true,
     hasPostsOnly: false,
+
     page: currentPage,
   });
   if (isLoading) return <FilterListSkeleton />;

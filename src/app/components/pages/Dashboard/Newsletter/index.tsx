@@ -14,10 +14,13 @@ import {
   Text,
   Input,
   InputGroup,
-  InputLeftAddon,
   Stack,
   Center,
   Tooltip,
+  useColorModeValue,
+  ResponsiveValue,
+  InputLeftElement,
+  HStack,
 } from "@chakra-ui/react";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { LuSearch } from "react-icons/lu";
@@ -30,6 +33,7 @@ import { format } from "date-fns";
 import { shortenText } from "@/src/utils";
 import DashHeader from "../../../Dashboard/Header";
 import { PageTitleHeader } from "../../../Dashboard/PageTitleCard";
+import Pagination from "../../../Pagination";
 
 export const DashboardNewsletterPage = () => {
   const [newsletters, setNewsletters] = useState<NewsletterSelect[]>([]);
@@ -45,7 +49,7 @@ export const DashboardNewsletterPage = () => {
         await axios<PaginatedResponse<NewsletterSelect>>("/api/newsletters");
       return data;
     },
-    staleTime: 1000 * 60 * 60, // 1 hour
+    staleTime: 1000 * 60 * 60 * 24,
   });
 
   useEffect(() => {
@@ -65,7 +69,14 @@ export const DashboardNewsletterPage = () => {
       setFilteredNewsletters(filtered);
     }
   }, [newsletters, searchTerm]);
-
+  const headerBg = useColorModeValue("gray.100", "gray.700");
+  const cellBg = useColorModeValue("white", "gray.800");
+  const cellTextColor = useColorModeValue("gray.800", "gray.200");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+  const thStyles = {
+    textTransform: "capitalize" as ResponsiveValue<"capitalize">,
+    fontSize: "medium",
+  };
   return (
     <PermissionGuard requiredPermission={"dashboard:view"}>
       <Box>
@@ -81,9 +92,9 @@ export const DashboardNewsletterPage = () => {
                 mb={6}
               >
                 <InputGroup>
-                  <InputLeftAddon>
+                  <InputLeftElement>
                     <LuSearch />
-                  </InputLeftAddon>
+                  </InputLeftElement>
                   <Input
                     maxW={{ md: "320px" }}
                     autoComplete="off"
@@ -101,77 +112,111 @@ export const DashboardNewsletterPage = () => {
               )}
 
               {!isFetching && filteredNewsletters?.length > 0 ? (
-                <TableContainer>
-                  <Table variant="simple">
-                    <Thead>
-                      <Tr>
-                        <Th>ID</Th>
-                        <Th>Email</Th>
-                        <Th>Name</Th>
-                        <Th>Status</Th>
-                        <Th>Verification</Th>
-                        <Th>Referrer</Th>
-                        <Th>Created At</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {filteredNewsletters &&
-                        filteredNewsletters.map((subscriber) => (
-                          <Tr key={subscriber.id}>
-                            <Td>{subscriber.id}</Td>
-                            <Td>{subscriber.email}</Td>
-                            <Td>{subscriber.name || "-"}</Td>
-                            <Td>
-                              <Box>
-                                <Badge
-                                  rounded={"lg"}
-                                  textTransform={"capitalize"}
-                                  colorScheme={
-                                    subscriber.status === "subscribed"
-                                      ? "green"
-                                      : "red"
-                                  }
-                                >
-                                  {subscriber.status}
-                                </Badge>
-                              </Box>
-                            </Td>
-                            <Td>
-                              <Box>
-                                <Badge
-                                  rounded={"lg"}
-                                  textTransform={"capitalize"}
-                                  colorScheme={
-                                    subscriber.verification_status ===
-                                    "verified"
-                                      ? "green"
-                                      : "yellow"
-                                  }
-                                >
-                                  {subscriber.verification_status}
-                                </Badge>
-                              </Box>
-                            </Td>
-                            <Tooltip
-                              hasArrow
-                              label={subscriber.referrer}
-                              rounded={"lg"}
+                <>
+                  <TableContainer
+                    border={1}
+                    rounded={"xl"}
+                    borderColor={borderColor}
+                  >
+                    <Table mb={3}>
+                      <Thead
+                        px={4}
+                        py={4}
+                        mb={3}
+                        h={"50px"}
+                        bg={headerBg}
+                        rounded="lg"
+                        fontWeight="medium"
+                        fontSize="medium"
+                        style={{ textTransform: "none" }}
+                      >
+                        <Tr>
+                          <Th {...thStyles}>Id</Th>
+                          <Th {...thStyles}>Email</Th>
+                          <Th {...thStyles}>Name</Th>
+                          <Th {...thStyles}>Status</Th>
+                          <Th {...thStyles}>Verification</Th>
+                          <Th {...thStyles}>Referrer</Th>
+                          <Th {...thStyles}>Created At</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {filteredNewsletters &&
+                          filteredNewsletters.map((subscriber) => (
+                            <Tr
+                              key={subscriber.id}
+                              px={4}
+                              py={3}
+                              bg={cellBg}
+                              _hover={{ bg: headerBg }}
                             >
+                              <Td>{subscriber.id}</Td>
+                              <Td>{subscriber.email}</Td>
+                              <Td>{subscriber.name || "-"}</Td>
                               <Td>
-                                {shortenText(subscriber.referrer || "-", 20)}
+                                <Box>
+                                  <Badge
+                                    rounded={"lg"}
+                                    textTransform={"capitalize"}
+                                    colorScheme={
+                                      subscriber.status === "subscribed"
+                                        ? "green"
+                                        : "red"
+                                    }
+                                  >
+                                    {subscriber.status}
+                                  </Badge>
+                                </Box>
                               </Td>
-                            </Tooltip>
-                            <Td>
-                              {format(
-                                new Date(subscriber.created_at as Date),
-                                "dd/MM/yyyy hh:mm a"
-                              )}
-                            </Td>
-                          </Tr>
-                        ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
+                              <Td>
+                                <Box>
+                                  <Badge
+                                    rounded={"lg"}
+                                    textTransform={"capitalize"}
+                                    colorScheme={
+                                      subscriber.verification_status ===
+                                      "verified"
+                                        ? "green"
+                                        : "yellow"
+                                    }
+                                  >
+                                    {subscriber.verification_status}
+                                  </Badge>
+                                </Box>
+                              </Td>
+                              <Td>
+                                <Tooltip
+                                  hasArrow
+                                  label={subscriber.referrer}
+                                  rounded={"lg"}
+                                >
+                                  <Text as="span">
+                                    {shortenText(
+                                      subscriber.referrer || "-",
+                                      20
+                                    )}
+                                  </Text>
+                                </Tooltip>
+                              </Td>
+                              <Td>
+                                {format(
+                                  new Date(subscriber.created_at as Date),
+                                  "dd/MM/yyyy hh:mm a"
+                                )}
+                              </Td>
+                            </Tr>
+                          ))}
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                  <HStack py={4} justify={"center"}>
+                    <Pagination
+                      totalPages={data?.meta.totalPages || 0}
+                      currentPage={data?.meta?.page || 1}
+                      onPageChange={() => {}}
+                    />
+                  </HStack>
+                </>
               ) : (
                 !isFetching && (
                   <Center py={10}>
