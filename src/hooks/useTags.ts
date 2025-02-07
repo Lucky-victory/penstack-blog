@@ -5,19 +5,20 @@ import { TaxonomyItem } from "../types";
 
 export const useTags = ({
   sortBy,
-  postId,
   page,
   limit,
   hasPostsOnly,
+  sortOrder,
 }: {
-  sortBy?: "name" | "recent" | "popular";
-  postId?: number;
+  sortBy?: "name" | "popular";
+
   page?: number;
   limit?: number;
   hasPostsOnly?: boolean;
+  sortOrder?: "asc" | "desc";
 } = {}) => {
   return useQuery({
-    queryKey: ["tags", sortBy, postId, page, limit, hasPostsOnly],
+    queryKey: ["tags", sortBy, page, limit, hasPostsOnly, sortOrder],
     queryFn: async () => {
       const { data } = await axios.get<{
         data: TaxonomyItem[];
@@ -28,7 +29,7 @@ export const useTags = ({
           totalPages: number;
         };
       }>(
-        `/api/tags?${objectToQueryParams({ sortBy, postId, page, limit, hasPostsOnly })}`
+        `/api/taxonomies/tags?${objectToQueryParams({ sortBy, page, limit, hasPostsOnly })}`
       );
       return {
         results: data.data,

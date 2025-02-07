@@ -101,6 +101,7 @@ const DashboardTaxonomyPage: React.FC = () => {
               onChange={(index) => {
                 setActiveTab(index === 0 ? "categories" : "tags");
                 setType(index === 0 ? "categories" : "tags");
+                setSearchTerm("");
               }}
             >
               <TabList>
@@ -119,7 +120,7 @@ const DashboardTaxonomyPage: React.FC = () => {
                         placeholder="Search..."
                         value={searchTerm}
                         onChange={handleSearch}
-                        pl={8}
+                        // pl={8}
                         maxW={"300px"}
                       />
                     </InputGroup>

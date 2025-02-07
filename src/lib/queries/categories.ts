@@ -8,7 +8,7 @@ export const queryCategoriesWithFilters = unstable_cache(async function ({
   page = 1,
   limit = 20,
   sortBy = "name",
-  hasPostsOnly = true,
+  hasPostsOnly = false,
   sortOrder = "desc",
 }: {
   page?: number;

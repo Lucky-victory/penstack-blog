@@ -42,7 +42,6 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
     direction: "asc",
   });
   const [editItem, setEditItem] = useState<TaxonomyItem | null>(null);
-  const [currentPage, setCurrentPage] = useState<number>(items.meta?.page || 1);
 
   const handleSort = (key: keyof TaxonomyItem): void => {
     setSortConfig({
@@ -172,14 +171,6 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
             </Grid>
           ))}
         </Stack>
-
-        <HStack py={4} justify={"center"}>
-          <Pagination
-            totalPages={items?.meta?.totalPages as number}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
-          />
-        </HStack>
       </Box>
     </Flex>
   );

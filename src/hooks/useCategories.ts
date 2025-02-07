@@ -38,7 +38,7 @@ export const useCategories = ({
           totalPages: number;
         };
       }>(
-        `/api/taxonomies/categories?${objectToQueryParams({ sortBy, limit, page, hasPostsOnly })}`
+        `/api/taxonomies/categories?${objectToQueryParams({ sortBy, limit, page, hasPostsOnly,sortOrder })}`
       );
       return {
         results: data.data,
