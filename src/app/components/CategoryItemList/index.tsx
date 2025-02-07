@@ -15,7 +15,7 @@ export const CategoryItemList = ({
 
   const { data, isLoading: isCategoryLoading } = useCategories({
     limit: 5,
-    hasPosts: true,
+    hasPostsOnly: true,
   });
   const categories = data?.results;
   function isSelected(val: string) {

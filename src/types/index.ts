@@ -5,6 +5,22 @@ import { IconType } from "react-icons";
 import { medias, newsletters, permissions, roles, users } from "../db/schemas";
 import { useFormik } from "formik";
 import { ElementType } from "react";
+
+export type TaxonomyItemsWithMeta = {
+  results: TaxonomyItem[];
+  meta?: {
+    totalPages: number;
+    limit: number;
+    page: number;
+    total: number;
+  };
+};
+export interface TaxonomyItem {
+  id: number;
+  name: string;
+  slug: string;
+  postCount: number;
+}
 export type UserSelect = InferSelectModel<typeof users>;
 export type UserInsert = InferInsertModel<typeof users>;
 export type RolesSelect = InferSelectModel<typeof roles>;

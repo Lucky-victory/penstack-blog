@@ -1,20 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { objectToQueryParams } from "../utils";
+import { TaxonomyItem } from "../types";
 
 export const useCategories = ({
   sortBy,
   limit,
   page,
-  canFetch,
-  hasPosts,
+  canFetch = true,
+  hasPostsOnly,
   sortOrder,
 }: {
   sortBy?: "name" | "popular";
   page?: number;
   limit?: number;
   canFetch?: boolean;
-  hasPosts?: boolean;
+  hasPostsOnly?: boolean;
   sortOrder?: "asc" | "desc";
 } = {}) => {
   return useQuery({
@@ -24,12 +25,12 @@ export const useCategories = ({
       limit,
       page,
       canFetch,
-      hasPosts,
+      hasPostsOnly,
       sortOrder,
     ],
     queryFn: async () => {
       const { data } = await axios.get<{
-        data: { id: number; name: string; slug: string; postsCount: number }[];
+        data: TaxonomyItem[];
         meta: {
           total: number;
           page: number;
@@ -37,7 +38,7 @@ export const useCategories = ({
           totalPages: number;
         };
       }>(
-        `/api/taxonomies/categories?${objectToQueryParams({ sortBy, limit, page, hasPostsOnly: hasPosts })}`
+        `/api/taxonomies/categories?${objectToQueryParams({ sortBy, limit, page, hasPostsOnly })}`
       );
       return {
         results: data.data,
