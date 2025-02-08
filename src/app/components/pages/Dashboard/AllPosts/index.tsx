@@ -32,6 +32,7 @@ import {
   Tooltip,
   VStack,
   ButtonGroup,
+  TableContainer,
 } from "@chakra-ui/react";
 
 import { format } from "date-fns";
@@ -260,19 +261,18 @@ const PostsDashboard = () => {
     <Box>
       <DashHeader />
       <Box p={{ base: 4, md: 5 }}>
-        <PageTitleHeader title={"Posts"}>
-          <Button
-            leftIcon={<LuPlus />}
-            rounded="md"
-            as={Link}
-            href="/dashboard/posts/new"
-            _hover={{ textDecoration: "none" }}
-          >
-            New Post
-          </Button>
-        </PageTitleHeader>
-
         <Card rounded={"lg"} mb={6}>
+          <PageTitleHeader title={"Posts"}>
+            <Button
+              leftIcon={<LuPlus />}
+              rounded="md"
+              as={Link}
+              href="/dashboard/posts/new"
+              _hover={{ textDecoration: "none" }}
+            >
+              New Post
+            </Button>
+          </PageTitleHeader>
           <CardBody px={{ base: 3, lg: 4 }}>
             <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
               <InputGroup maxW={{ md: "320px" }}>
@@ -331,36 +331,38 @@ const PostsDashboard = () => {
 
             {posts && posts.length > 0 && (
               <>
-                <Table variant="simple">
-                  <Thead>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                      <Tr key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
-                          <Th key={header.id}>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                          </Th>
-                        ))}
-                      </Tr>
-                    ))}
-                  </Thead>
-                  <Tbody>
-                    {table.getRowModel().rows.map((row) => (
-                      <Tr key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
-                          <Td key={cell.id}>
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </Td>
-                        ))}
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
+                <TableContainer>
+                  <Table variant="simple">
+                    <Thead>
+                      {table.getHeaderGroups().map((headerGroup) => (
+                        <Tr key={headerGroup.id}>
+                          {headerGroup.headers.map((header) => (
+                            <Th key={header.id}>
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                            </Th>
+                          ))}
+                        </Tr>
+                      ))}
+                    </Thead>
+                    <Tbody>
+                      {table.getRowModel().rows.map((row) => (
+                        <Tr key={row.id}>
+                          {row.getVisibleCells().map((cell) => (
+                            <Td key={cell.id}>
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </Td>
+                          ))}
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
                 <Box mx={"auto"} pt={5}>
                   <Pagination
                     currentPage={page}

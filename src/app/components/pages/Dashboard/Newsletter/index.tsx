@@ -69,18 +69,18 @@ export const DashboardNewsletterPage = () => {
       setFilteredNewsletters(filtered);
     }
   }, [newsletters, searchTerm]);
-  const headerBg = useColorModeValue("gray.100", "gray.700");
-  const cellBg = useColorModeValue("white", "gray.800");
-  const cellTextColor = useColorModeValue("gray.800", "gray.200");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
+  const headerColor = useColorModeValue("gray.500", "gray.500");
+  const cellTextColor = useColorModeValue("gray.500", "gray.400");
   const thStyles = {
     textTransform: "capitalize" as ResponsiveValue<"capitalize">,
     fontSize: "medium",
+    fontWeight: "normal",
+    color: headerColor,
   };
   return (
     <PermissionGuard requiredPermission={"dashboard:view"}>
       <Box>
-        <DashHeader></DashHeader>
+        <DashHeader />
         <Box p={{ base: 4, md: 5 }}>
           <Card>
             <PageTitleHeader title="Newsletter" />
@@ -113,18 +113,13 @@ export const DashboardNewsletterPage = () => {
 
               {!isFetching && filteredNewsletters?.length > 0 ? (
                 <>
-                  <TableContainer
-                    border={1}
-                    rounded={"xl"}
-                    borderColor={borderColor}
-                  >
-                    <Table mb={3}>
+                  <TableContainer>
+                    <Table mb={3} style={{ fontVariantNumeric: "normal" }}>
                       <Thead
                         px={4}
                         py={4}
                         mb={3}
                         h={"50px"}
-                        bg={headerBg}
                         rounded="lg"
                         fontWeight="medium"
                         fontSize="medium"
@@ -140,48 +135,38 @@ export const DashboardNewsletterPage = () => {
                           <Th {...thStyles}>Created At</Th>
                         </Tr>
                       </Thead>
-                      <Tbody>
+                      <Tbody borderColor={headerColor}>
                         {filteredNewsletters &&
                           filteredNewsletters.map((subscriber) => (
-                            <Tr
-                              key={subscriber.id}
-                              px={4}
-                              py={3}
-                              bg={cellBg}
-                              _hover={{ bg: headerBg }}
-                            >
-                              <Td>{subscriber.id}</Td>
+                            <Tr key={subscriber.id}>
+                              <Td color={cellTextColor}>{subscriber.id}</Td>
                               <Td>{subscriber.email}</Td>
                               <Td>{subscriber.name || "-"}</Td>
                               <Td>
-                                <Box>
-                                  <Badge
-                                    rounded={"lg"}
-                                    textTransform={"capitalize"}
-                                    colorScheme={
-                                      subscriber.status === "subscribed"
-                                        ? "green"
-                                        : "red"
-                                    }
-                                  >
-                                    {subscriber.status}
-                                  </Badge>
+                                <Box
+                                  bg={"transparent"}
+                                  textTransform={"capitalize"}
+                                  color={
+                                    subscriber.status === "subscribed"
+                                      ? "green.600"
+                                      : "red.500"
+                                  }
+                                >
+                                  {subscriber.status}
                                 </Box>
                               </Td>
                               <Td>
-                                <Box>
-                                  <Badge
-                                    rounded={"lg"}
-                                    textTransform={"capitalize"}
-                                    colorScheme={
-                                      subscriber.verification_status ===
-                                      "verified"
-                                        ? "green"
-                                        : "yellow"
-                                    }
-                                  >
-                                    {subscriber.verification_status}
-                                  </Badge>
+                                <Box
+                                  textTransform={"capitalize"}
+                                  bg={"transparent"}
+                                  color={
+                                    subscriber.verification_status ===
+                                    "verified"
+                                      ? "green.600"
+                                      : "yellow.600"
+                                  }
+                                >
+                                  {subscriber.verification_status}
                                 </Box>
                               </Td>
                               <Td>
@@ -199,10 +184,15 @@ export const DashboardNewsletterPage = () => {
                                 </Tooltip>
                               </Td>
                               <Td>
-                                {format(
-                                  new Date(subscriber.created_at as Date),
-                                  "dd/MM/yyyy hh:mm a"
-                                )}
+                                <Text
+                                  color={cellTextColor}
+                                  textTransform={"lowercase"}
+                                >
+                                  {format(
+                                    new Date(subscriber.created_at as Date),
+                                    "dd/MM/yyyy hh:mm a"
+                                  )}
+                                </Text>
                               </Td>
                             </Tr>
                           ))}
