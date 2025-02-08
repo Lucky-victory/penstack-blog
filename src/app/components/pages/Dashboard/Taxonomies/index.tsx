@@ -31,10 +31,13 @@ import { TaxonomyItem } from "@/src/types";
 import { useTaxonomiesStore } from "./state";
 import { CategoriesPanel } from "./CategoriesPanel";
 import { TagsPanel } from "./TagsPanel";
+import { AddEditForm } from "./AddEditForm";
 
 const DashboardTaxonomyPage: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const setType = useTaxonomiesStore((state) => state.setType);
+  const setisItemModalOpen = useTaxonomiesStore(
+    (state) => state.setIsItemModalOpen
+  );
   const searchTerm = useTaxonomiesStore((state) => state.searchTerm);
   const setSearchTerm = useTaxonomiesStore((state) => state.setSearchTerm);
 
@@ -43,42 +46,18 @@ const DashboardTaxonomyPage: React.FC = () => {
     "tab",
     parseAsStringLiteral(tabsOptions).withDefault("categories")
   );
-
-  const [newItemDialog, setNewItemDialog] = useState<boolean>(false);
-  const [editItem, setEditItem] = useState<TaxonomyItem | null>(null);
-
+  function handleTabChange(index: number) {
+    setActiveTab(tabsOptions[index]);
+    setType(tabsOptions[index]);
+    setSearchTerm("");
+  }
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(event.target.value);
-    setCurrentPage(1);
   };
 
-  const handleSave = (formData: { name: string }): void => {
-    console.log("Save item:", formData);
-    setNewItemDialog(false);
-    setEditItem(null);
+  const handleModalOpen = (): void => {
+    setisItemModalOpen(true);
   };
-
-  const AddEditForm: React.FC = () => (
-    <Modal isOpen={newItemDialog} onClose={() => setNewItemDialog(false)}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          {editItem ? "Edit" : "Add New"}{" "}
-          {activeTab === "categories" ? "Category" : "Tag"}
-        </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Text mb={4}>
-            Enter the details below. The slug will be auto-generated.
-          </Text>
-          <Input placeholder="Name" defaultValue={editItem?.name || ""} />
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={() => handleSave({ name: "Example" })}>Save</Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
 
   return (
     <Box>
@@ -86,10 +65,7 @@ const DashboardTaxonomyPage: React.FC = () => {
       <Box p={{ base: 4, md: 5 }}>
         <Card>
           <PageTitleHeader title="Taxonomies">
-            <Button
-              onClick={() => setNewItemDialog(true)}
-              leftIcon={<LuPlus />}
-            >
+            <Button onClick={handleModalOpen} leftIcon={<LuPlus />}>
               Add New
             </Button>
           </PageTitleHeader>
@@ -99,9 +75,7 @@ const DashboardTaxonomyPage: React.FC = () => {
               isLazy
               defaultIndex={activeTab === "categories" ? 0 : 1}
               onChange={(index) => {
-                setActiveTab(index === 0 ? "categories" : "tags");
-                setType(index === 0 ? "categories" : "tags");
-                setSearchTerm("");
+                handleTabChange(index);
               }}
             >
               <TabList>
@@ -120,7 +94,6 @@ const DashboardTaxonomyPage: React.FC = () => {
                         placeholder="Search..."
                         value={searchTerm}
                         onChange={handleSearch}
-                        // pl={8}
                         maxW={"300px"}
                       />
                     </InputGroup>

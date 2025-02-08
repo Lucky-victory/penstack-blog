@@ -37,11 +37,16 @@ interface FilteredListProps {
 export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
   const searchTerm = useTaxonomiesStore((state) => state.searchTerm);
   const type = useTaxonomiesStore((state) => state.type);
+  const setEditItem = useTaxonomiesStore((state) => state.setEditItem);
+  const setDeleteItemId = useTaxonomiesStore((state) => state.setDeleteItemId);
+  const setisItemModalOpen = useTaxonomiesStore(
+    (state) => state.setIsItemModalOpen
+  );
+
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: "name",
     direction: "asc",
   });
-  const [editItem, setEditItem] = useState<TaxonomyItem | null>(null);
 
   const handleSort = (key: keyof TaxonomyItem): void => {
     setSortConfig({
@@ -64,12 +69,12 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
     });
 
   const handleDelete = (id: number): void => {
-    console.log("Delete item:", id);
+    setDeleteItemId(id);
   };
 
   const handleEdit = (item: TaxonomyItem): void => {
     setEditItem(item);
-    //  setNewItemDialog(true);
+    setisItemModalOpen(true);
   };
   const headerBg = useColorModeValue("gray.100", "gray.700");
   const cellBg = useColorModeValue("white", "gray.800");

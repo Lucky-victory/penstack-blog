@@ -20,16 +20,20 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--chakra-colors-gray-500);
+  background-color: var(--chakra-colors-gray-300);
   border-radius: 2px;
 }
-
+.chakra-ui-dark ::-webkit-scrollbar-thumb {
+  background-color: var(--chakra-colors-gray-600);
+}
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--chakra-colors-gray-500) transparent;
+  scrollbar-color: var(--chakra-colors-gray-300) transparent;
 }
-
+.chakra-ui-dark * {
+  scrollbar-color: var(--chakra-colors-gray-600) transparent;
+}
 /* For IE and Edge */
 * {
   -ms-overflow-style: none;
@@ -41,8 +45,11 @@
 }
 
 *::-ms-scrollbar-thumb {
-  background-color: var(--chakra-colors-gray-500);
+  background-color: var(--chakra-colors-gray-300);
   border-radius: 2px;
+}
+.chakra-ui-dark *::-ms-scrollbar-thumb {
+  background-color: var(--chakra-colors-gray-600);
 }
 .react-resizable {
   position: relative;
@@ -123,4 +130,18 @@
 
 .penstack-post-editor > :first-child {
   margin-top: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  *::-ms-scrollbar-thumb {
+    background-color: var(--chakra-colors-gray-600);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--chakra-colors-gray-600);
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-color: var(--chakra-colors-gray-600) transparent;
+  }
 }
