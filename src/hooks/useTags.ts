@@ -18,6 +18,7 @@ export const useTags = ({
   sortOrder?: "asc" | "desc";
 } = {}) => {
   return useQuery({
+    queryHash: "",
     queryKey: ["tags", sortBy, page, limit, hasPostsOnly, sortOrder],
     queryFn: async () => {
       const { data } = await axios.get<{
@@ -29,7 +30,7 @@ export const useTags = ({
           totalPages: number;
         };
       }>(
-        `/api/taxonomies/tags?${objectToQueryParams({ sortBy, page, limit, hasPostsOnly })}`
+        `/api/taxonomies/tags?${objectToQueryParams({ sortBy, page, limit, hasPostsOnly, sortOrder })}`
       );
       return {
         results: data.data,

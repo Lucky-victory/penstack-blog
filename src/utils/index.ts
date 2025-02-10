@@ -3,6 +3,8 @@ import { SnowflakeIdGenerator } from "@green-auth/snowflake-unique-id";
 import { PostSelect } from "../types";
 import { type NextRequest } from "next/server";
 import { v4 as uuidv4 } from "uuid";
+import isEmpty from "just-is-empty";
+import slugify from "slugify";
 
 type PercentageDifferenceResult = {
   formatted: string;
@@ -259,71 +261,6 @@ export function objectToQueryParams<T extends object = QueryParamObject>(
     .join("&");
 }
 
-type InputObject = {
-  [key: string]:
-    | null
-    | string
-    | number
-    | boolean
-    | Date
-    | InputObject
-    | Array<any>;
-};
-
-/**
- * Recursively transforms null values to empty strings in an object
- * @param obj - Object to transform
- * @returns New object with null values replaced with empty strings
- *
- * @example
- * const input = {
- *   name: null,
- *   age: 30,
- *   details: {
- *     bio: null,
- *     hobbies: ['reading', null, 'gaming']
- *   }
- * };
- * nullToEmptyString(input);
- * // Returns: {
- * //   name: "",
- * //   age: 30,
- * //   details: {
- * //     bio: "",
- * //     hobbies: ['reading', "", 'gaming']
- * //   }
- * // }
- */
-export function nullToEmptyString<T extends InputObject>(obj: T): T {
-  return Object.entries(obj).reduce((acc, [key, value]) => {
-    let transformedValue: any;
-    if (key === "featured_image_id") {
-      return acc;
-    }
-
-    if (value === null) {
-      transformedValue = "";
-    } else if (Array.isArray(value)) {
-      transformedValue = value.map((item) =>
-        item === null
-          ? ""
-          : typeof item === "object" && item !== null
-            ? nullToEmptyString(item as InputObject)
-            : item
-      );
-    } else if (typeof value === "object" && value !== null) {
-      transformedValue =
-        value instanceof Date ? value : nullToEmptyString(value as InputObject);
-    } else {
-      transformedValue = value;
-    }
-
-    return {
-      ...acc,
-      [key]: transformedValue,
-    };
-  }, {} as NonNullable<T>);
-}
 export function getServerSearchParams<T extends object>(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const params = Object.fromEntries(searchParams);
@@ -423,4 +360,12 @@ export const isSecretKey = (key: string) => {
   return (
     _key.includes("key") || _key.includes("secret") || _key.includes("token")
   );
+};
+export const generateSlug = (text: string) => {
+  if (isEmpty(text)) return "";
+  slugify(text, {
+    lower: true,
+    strict: true,
+    remove: /[*+~.()'"!:@]/g,
+  });
 };

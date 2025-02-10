@@ -45,7 +45,7 @@ import { CategorySection } from "./CategorySection";
 import { TagsSection } from "./TagsSection";
 import { PostInsert } from "@/src/types";
 import { SEOSection } from "./SEOSection";
-import { ActionButtons } from "./ActionButtons";
+import { ActionButtons } from "./components/ActionButtons";
 import { MetricsItem } from "./components/MetricsItem";
 
 export const SidebarContent = () => {

@@ -13,6 +13,8 @@ import {
   MenuItem,
   HStack,
   Button,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import {
@@ -25,6 +27,9 @@ import {
 } from "react-icons/lu";
 import Pagination from "../../../../Pagination";
 import { useTaxonomiesStore } from "../state";
+import { DeleteConfirmDialog } from "../DeleteConfirmDialog";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 interface SortConfig {
   key: keyof TaxonomyItem;
@@ -35,14 +40,51 @@ interface FilteredListProps {
   items: TaxonomyItemsWithMeta;
 }
 export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const queryClient = useQueryClient();
+  const toast = useToast({
+    duration: 5000,
+    status: "success",
+    isClosable: true,
+    position: "top",
+  });
   const searchTerm = useTaxonomiesStore((state) => state.searchTerm);
   const type = useTaxonomiesStore((state) => state.type);
   const setEditItem = useTaxonomiesStore((state) => state.setEditItem);
   const setDeleteItemId = useTaxonomiesStore((state) => state.setDeleteItemId);
+  const deleteItemId = useTaxonomiesStore((state) => state.deleteItemId);
   const setisItemModalOpen = useTaxonomiesStore(
     (state) => state.setIsItemModalOpen
   );
-
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ["taxonomies_delete", type],
+    mutationFn: async () => {
+      try {
+        const response = await axios.delete(
+          `/api/taxonomies/${type}/${deleteItemId}`
+        );
+        if (response.status < 200 || response.status >= 300) {
+          throw new Error("Failed to delete item");
+        }
+      } catch (error) {
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [type] });
+      toast({
+        title: "Item deleted successfully",
+      });
+      onClose();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error deleting item",
+        description: error.message,
+        status: "error",
+      });
+    },
+  });
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: "name",
     direction: "asc",
@@ -57,7 +99,7 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
           : "asc",
     });
   };
-  const filteredItems = items.results
+  const filteredItems = items.data
     .filter(
       (item) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -70,8 +112,17 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
 
   const handleDelete = (id: number): void => {
     setDeleteItemId(id);
+    onOpen();
   };
+  async function handleDeleteConfirm() {
+    try {
+      await mutateAsync();
 
+      onClose();
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
+  }
   const handleEdit = (item: TaxonomyItem): void => {
     setEditItem(item);
     setisItemModalOpen(true);
@@ -152,7 +203,7 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
                 <Badge>{item.postCount}</Badge>
               </GridItem>
               <GridItem colSpan={2}>
-                <Menu>
+                <Menu arrowPadding={10}>
                   <MenuButton as={Button} variant="ghost" size="sm">
                     <LuMoreVertical />
                   </MenuButton>
@@ -177,6 +228,11 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
           ))}
         </Stack>
       </Box>
+      <DeleteConfirmDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={handleDeleteConfirm}
+      />
     </Flex>
   );
 };

@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { PermissionGuard } from "../../PermissionGuard";
+import { PermissionGuard } from "../../../PermissionGuard";
 
 interface ActionButtonsProps {
   onDelete: () => void;

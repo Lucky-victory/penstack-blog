@@ -1,14 +1,14 @@
 import { db } from "@/src/db";
-import { categories } from "@/src/db/schemas";
+import { tags } from "@/src/db/schemas";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-const queryCategory = async function (id: number) {
-  const category = await db.query.categories.findFirst({
-    where: eq(categories.id, id),
+const queryTag = async function (id: number) {
+  const category = await db.query.tags.findFirst({
+    where: eq(tags.id, id),
   });
   return category;
 };
@@ -19,14 +19,15 @@ export async function GET(
 ) {
   const { id } = params;
   try {
-    const category = await queryCategory(id);
-    if (!category) {
+    const tag = await queryTag(id);
+    if (!tag) {
       return NextResponse.json(
-        { data: null, message: "Category not found" },
+        { data: null, message: "Tag not found" },
         { status: 404 }
       );
     }
-    return NextResponse.json({ data: category });
+
+    return NextResponse.json({ data: tag });
   } catch (error: any) {
     return NextResponse.json(
       { data: null, error: error?.message, message: "Something went wrong..." },
@@ -45,25 +46,23 @@ export async function PUT(
     { requiredPermission: "posts:edit" },
     async () => {
       try {
-        const category = await queryCategory(id);
-        if (!category) {
+        const tag = await queryTag(id);
+        if (!tag) {
           return NextResponse.json(
-            { data: null, message: "Category not found" },
+            { data: null, message: "Tag not found" },
             { status: 404 }
           );
         }
-        await db
-          .update(categories)
-          .set({ name: body.name, slug: body.slug })
-          .where(eq(categories.id, id));
-        revalidateTag("queryCategoriesWithFilters");
+        await db.update(tags).set(body).where(eq(tags.id, id));
+        revalidateTag("queryTagsWithFilters");
+
         return NextResponse.json({
           data: {},
-          message: "Category updated successfully",
+          message: "Tag updated successfully",
         });
       } catch (error: any) {
         return NextResponse.json(
-          { error: error?.message, message: "Failed to update category" },
+          { error: error?.message, message: "Failed to update tag" },
           { status: 500 }
         );
       }
@@ -80,21 +79,22 @@ export async function DELETE(
     { requiredPermission: "posts:delete" },
     async () => {
       try {
-        const category = await queryCategory(id);
-        if (!category) {
+        const tag = await queryTag(id);
+        if (!tag) {
           return NextResponse.json(
-            { data: null, message: "Category not found" },
+            { data: null, message: "Tag not found" },
             { status: 404 }
           );
         }
-        await db.delete(categories).where(eq(categories.id, id));
-        revalidateTag("queryCategoriesWithFilters");
+
+        await db.delete(tags).where(eq(tags.id, id));
+        revalidateTag("queryTagsWithFilters");
         return NextResponse.json({
-          message: "Category deleted successfully",
+          message: "Tag deleted successfully",
         });
       } catch (error: any) {
         return NextResponse.json(
-          { error: error?.message, message: "Failed to delete category" },
+          { error: error?.message, message: "Failed to delete tag" },
           { status: 500 }
         );
       }

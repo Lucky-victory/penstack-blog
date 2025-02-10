@@ -7,19 +7,18 @@ import { objectToQueryParams } from "../utils";
 
 export const usePermissions = (requiredPermission: TPermissions) => {
   const { user } = useAuth();
- 
+
   const userEmail = useMemo(() => user?.email || "", [user?.email]);
 
   const { data, isPending } = useQuery({
     queryKey: [userEmail, requiredPermission],
+    refetchOnMount: false,
     queryFn: async () => {
       if (!userEmail) {
-      
         return {
           hasPermission: false,
           permissions: [],
         };
-        
       }
 
       try {
@@ -31,13 +30,14 @@ export const usePermissions = (requiredPermission: TPermissions) => {
         }>(
           `/api/auth/check-permission?${objectToQueryParams({ permission: requiredPermission })}`
         );
-      
 
         return data?.data;
       } catch (error) {
         console.error("Permission check failed", error);
-   
-      } finally {
+        return {
+          hasPermission: false,
+          permissions: [],
+        };
       }
     },
   });

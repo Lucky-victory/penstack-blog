@@ -1,6 +1,5 @@
 import { db } from "@/src/db";
 import { users } from "@/src/db/schemas";
-import { getServerSearchParams } from "@/src/utils";
 import { eq } from "drizzle-orm";
 
 import { NextResponse, type NextRequest } from "next/server";

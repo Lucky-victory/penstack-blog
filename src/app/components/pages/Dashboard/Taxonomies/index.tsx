@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
@@ -48,7 +48,6 @@ const DashboardTaxonomyPage: React.FC = () => {
   );
   function handleTabChange(index: number) {
     setActiveTab(tabsOptions[index]);
-    setType(tabsOptions[index]);
     setSearchTerm("");
   }
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -58,7 +57,9 @@ const DashboardTaxonomyPage: React.FC = () => {
   const handleModalOpen = (): void => {
     setisItemModalOpen(true);
   };
-
+  useEffect(() => {
+    setType(activeTab);
+  }, [activeTab]);
   return (
     <Box>
       <DashHeader />

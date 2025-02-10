@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import { ElementType } from "react";
 
 export type TaxonomyItemsWithMeta = {
-  results: TaxonomyItem[];
+  data: TaxonomyItem[];
   meta?: {
     totalPages: number;
     limit: number;
