@@ -7,11 +7,11 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import slugify from "slugify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { debounce } from "lodash";
 import { PostInsert, PostSelect } from "../types";
+import { generateSlug } from "../utils";
 
 // Hook for managing post updates
 export const usePostManager = (initialPost: PostSelect | null) => {
@@ -123,11 +123,7 @@ export const usePostManager = (initialPost: PostSelect | null) => {
 
         // Handle special cases like title -> slug
         if (key === "title" && updateSlug) {
-          newPost.slug = slugify(value as string, {
-            lower: true,
-            strict: true,
-            remove: /[*+~.()'"!:@]/g,
-          });
+          newPost.slug = generateSlug(value as string);
           console.log({
             title: value,
             slug: newPost.slug,

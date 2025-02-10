@@ -30,7 +30,7 @@ import { debounce } from "lodash";
 import { PostCardExtension } from "@/src/lib/editor/extensions/mini-post-card";
 import { PenstackYouTubeExtension } from "@/src/lib/editor/extensions/youtube-embed";
 import { PenstackTwitterExtension } from "@/src/lib/editor/extensions/tweet-embed";
-import slugify from "slugify";
+
 import Heading from "@tiptap/extension-heading";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { all, createLowlight } from "lowlight";
@@ -41,6 +41,7 @@ import { CodeBlock } from "@tiptap/extension-code-block";
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { PenstackSlashCommandExtension } from "@/src/lib/editor/extensions/slash-command";
 import { PenstackCodeBlockRenderer } from "../Renderers/PenstackCodeBlockRenderer";
+import { generateSlug } from "@/src/utils";
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -78,11 +79,7 @@ function TipTapEditor({
 
                 newState.doc.descendants((node, pos) => {
                   if (node.type.name === "heading") {
-                    const newId = slugify(node.textContent, {
-                      lower: true,
-                      strict: true,
-                      remove: /[*+~.()'"!:@]/g,
-                    });
+                    const newId = generateSlug(node.textContent);
 
                     if (newId && node.attrs.id !== newId) {
                       tr.setNodeMarkup(pos, undefined, {

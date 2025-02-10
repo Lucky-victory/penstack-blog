@@ -18,7 +18,7 @@ import { useCategories } from "@/src/hooks/useCategories";
 import axios from "axios";
 
 import { useState } from "react";
-import slugify from "slugify";
+import { generateSlug } from "@/src/utils";
 
 export const CategorySection = () => {
   const { activePost, content, updateField } = useCustomEditorContext();
@@ -40,7 +40,7 @@ export const CategorySection = () => {
 
       await axios.post("/api/categories", {
         name: newCategory,
-        slug: slugify(newCategory, { lower: true }),
+        slug: generateSlug(newCategory, { lower: true }),
       });
       setNewCategory("");
       await refetch();

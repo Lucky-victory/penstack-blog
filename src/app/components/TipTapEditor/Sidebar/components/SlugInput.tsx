@@ -1,3 +1,4 @@
+import { generateSlug } from "@/src/utils";
 import {
   FormControl,
   FormLabel,
@@ -7,7 +8,6 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useState, useCallback, ChangeEvent, memo, useEffect } from "react";
-import slugify from "slugify";
 
 export const SlugInput = memo(
   ({ slug, onChange }: { slug: string; onChange: (val: string) => void }) => {
@@ -22,9 +22,7 @@ export const SlugInput = memo(
     const handleChange = useCallback(
       (evt: ChangeEvent<HTMLInputElement>) => {
         const { value } = evt.target;
-        const newSlug = slugify(value, {
-          lower: true,
-          remove: /[*+~.()'"!:@]/g,
+        const newSlug = generateSlug(value, {
           trim: false,
         });
         setField(newSlug);

@@ -361,11 +361,22 @@ export const isSecretKey = (key: string) => {
     _key.includes("key") || _key.includes("secret") || _key.includes("token")
   );
 };
-export const generateSlug = (text: string) => {
+export const generateSlug = (
+  text: string,
+  options: {
+    replacement?: string;
+    remove?: RegExp;
+    lower?: boolean;
+    strict?: boolean;
+    locale?: string;
+    trim?: boolean;
+  } = {}
+) => {
   if (isEmpty(text)) return "";
-  slugify(text, {
+  return slugify(text, {
     lower: true,
     strict: true,
     remove: /[*+~.()'"!:@]/g,
+    ...options,
   });
 };

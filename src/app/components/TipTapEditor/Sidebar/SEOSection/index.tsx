@@ -14,7 +14,7 @@ import { FeaturedImageCard } from "@/src/app/components/TipTapEditor/FeaturedIma
 import { EDITOR_CONTEXT_STATE, PostInsert } from "@/src/types";
 import { SlugInput } from "../components/SlugInput";
 import { SummaryInput } from "../components/SummaryInput";
-import slugify from "slugify";
+
 import { encode } from "html-entities";
 
 export const SEOSection = ({

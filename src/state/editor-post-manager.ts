@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { PostInsert, PostSelect } from "../types";
 import { debounce } from "lodash";
-import slugify from "slugify";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { generateSlug } from "../utils";
 
 type EditorPostManagerState = {
   activePost: PostInsert | null;
@@ -96,11 +96,7 @@ export const useEditorPostManagerStore = create<
       const newPost = { ...currentPost, [key]: value };
 
       if (key === "title" && updateSlug) {
-        newPost.slug = slugify(value as string, {
-          lower: true,
-          strict: true,
-          remove: /[*+~.()'"!:@]/g,
-        });
+        newPost.slug = generateSlug(value as string);
       }
 
       set({ activePost: newPost, isDirty: true });

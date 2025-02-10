@@ -16,7 +16,7 @@ import { useTaxonomiesStore } from "../state";
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import slugify from "slugify";
+import { generateSlug } from "@/src/utils";
 
 export const AddEditForm: React.FC = () => {
   const activeTab = useTaxonomiesStore((state) => state.type);
@@ -65,7 +65,7 @@ export const AddEditForm: React.FC = () => {
   const handleSave = async () => {
     if (inputRef?.current?.value.trim() !== "") {
       const inputValue = inputRef?.current?.value as string;
-      const slug = slugify(inputValue, { lower: true });
+      const slug = generateSlug(inputValue);
       const name = inputValue;
       await mutateAsync({ name, slug });
     }

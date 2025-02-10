@@ -18,10 +18,10 @@ import {
 import { SectionCard } from "../../../Dashboard/SectionCard";
 import { memo, useState } from "react";
 import axios from "axios";
-import slugify from "slugify";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { motion, AnimatePresence } from "framer-motion";
+import { generateSlug } from "@/src/utils";
 
 export const TagsSection = memo(() => {
   const { activePost } = useCustomEditorContext();
@@ -53,7 +53,7 @@ export const TagsSection = memo(() => {
     mutationFn: async (tagName: string) => {
       const { data } = await axios.post("/api/tags", {
         name: tagName,
-        slug: slugify(tagName, { lower: true }),
+        slug: generateSlug(tagName),
       });
       await addTagToPostMutation.mutateAsync(data?.data?.id);
       return data?.data;
