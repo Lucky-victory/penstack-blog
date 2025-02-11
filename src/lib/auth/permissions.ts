@@ -5,7 +5,6 @@ import { TPermissions } from "@/src/types";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 
-// Cache the function with a unique key based on the user's email
 const cachedGetUserPermissions = unstable_cache(
   async (email: string): Promise<TPermissions[]> => {
     const user = await db.query.users.findFirst({
@@ -31,7 +30,7 @@ const cachedGetUserPermissions = unstable_cache(
 
     return userPermissions;
   },
-  ["getUserPermissions"], // Cache key prefix
+  ["getUserPermissions"],
   {
     revalidate: false, // Disable time-based revalidation
     tags: ["getUserPermissions"],

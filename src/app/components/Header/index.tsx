@@ -77,7 +77,11 @@ const Header = () => {
   const borderOpacity = useTransform(scrollY, [0, 60], [0, 1]);
   const backdrop = useTransform(scrollY, [0, 60], ["none", "blur(10px"]) as any;
   const canFetchCategories = useBreakpointValue({ base: isOpen, md: true });
-  const { data } = useCategories({ limit: 5, canFetch: canFetchCategories });
+  const { data } = useCategories({
+    limit: 5,
+    canFetch: canFetchCategories,
+    hasPostsOnly: true,
+  });
   const categories = data?.results;
 
   const resources = [

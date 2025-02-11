@@ -58,6 +58,7 @@ export default async function RootLayout({
 }) {
   const session = await getSession();
   const initialConfig = await getSettings();
+
   return (
     <html
       lang="en"
@@ -65,13 +66,13 @@ export default async function RootLayout({
     >
       <body>
         <SiteConfigProvider initialConfig={initialConfig}>
-          <AuthProvider session={session}>
-            <ReactQueryClient>
+          <ReactQueryClient>
+            <AuthProvider session={session}>
               <NuqsProvider>
                 <ChakraProvider>{children}</ChakraProvider>
               </NuqsProvider>
-            </ReactQueryClient>
-          </AuthProvider>
+            </AuthProvider>
+          </ReactQueryClient>
         </SiteConfigProvider>
       </body>
     </html>

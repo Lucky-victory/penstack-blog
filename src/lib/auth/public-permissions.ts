@@ -27,7 +27,7 @@ export const getPublicPermissions = unstable_cache(
   },
   ["publicPermissions"],
   {
-    revalidate: 60 * 60 * 24,
+    revalidate: false,
     tags: ["publicPermissions"],
   }
 );

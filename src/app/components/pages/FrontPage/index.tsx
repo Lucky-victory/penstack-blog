@@ -10,9 +10,12 @@ import { useCategories } from "@/src/hooks/useCategories";
 import { LuArrowRight } from "react-icons/lu";
 import { useQueryState } from "nuqs";
 import { CategoryItemList } from "../../CategoryItemList";
+import { usePermissionsStore } from "@/src/state/permissions";
 
 const FrontPage = () => {
   const { posts, loading, updateParams } = usePosts();
+  const permissions = usePermissionsStore((state) => state.permissions);
+  console.log({ permissions });
 
   return (
     <PageWrapper>

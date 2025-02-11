@@ -70,12 +70,4 @@ export class ClientPermissionHandler {
     });
     return hasPermission;
   }
-  static async checkPermissionAndRedirect(requiredPermission: TPermissions) {
-    const { hasPermission } = await ClientPermissionHandler.checkPermission({
-      requiredPermission,
-    });
-    if (!hasPermission) {
-      window.location.href = "/unauthorized";
-    }
-  }
 }

@@ -33,6 +33,7 @@ import {
   VStack,
   ButtonGroup,
   TableContainer,
+  InputLeftElement,
 } from "@chakra-ui/react";
 
 import { format } from "date-fns";
@@ -70,7 +71,12 @@ const PostsDashboard = () => {
   const [limit] = useState(20);
   const [selectedPost, setSelectedPost] = useState<PostSelect | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const toast = useToast();
+  const toast = useToast({
+    status: "success",
+    duration: 3000,
+    isClosable: true,
+    position: "top",
+  });
   const { user } = useAuth();
 
   const columnHelper = createColumnHelper<PostSelect>();
@@ -158,8 +164,7 @@ const PostsDashboard = () => {
     try {
       let url;
       if (searchTerm) {
-        url = `/api/posts/search?
-        ${objectToQueryParams({
+        url = `/api/posts/search?${objectToQueryParams({
           q: searchTerm,
           page,
           limit,
@@ -169,8 +174,7 @@ const PostsDashboard = () => {
           sortOrder,
         })}`;
       } else {
-        url = `/api/posts?
-        ${objectToQueryParams({
+        url = `/api/posts?${objectToQueryParams({
           page,
           limit,
           status: statusFilter,
@@ -186,8 +190,6 @@ const PostsDashboard = () => {
       toast({
         title: "Error fetching posts",
         status: "error",
-        duration: 3000,
-        isClosable: true,
       });
     }
   };
@@ -230,12 +232,9 @@ const PostsDashboard = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`/api/posts/${selectedPost?.id}`);
+      await axios.delete(`/api/posts/${selectedPost?.post_id}`);
       toast({
-        title: "Post deleted",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
+        title: "Post deleted successfully",
       });
       refetch();
       onClose();
@@ -244,8 +243,6 @@ const PostsDashboard = () => {
         title: "Error deleting post",
         description: error?.message,
         status: "error",
-        duration: 5000,
-        isClosable: true,
       });
     }
   };
@@ -275,10 +272,10 @@ const PostsDashboard = () => {
           </PageTitleHeader>
           <CardBody px={{ base: 3, lg: 4 }}>
             <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
-              <InputGroup maxW={{ md: "320px" }}>
-                <InputLeftAddon roundedLeft="md">
+              <InputGroup maxW={{ md: "320px" }} rounded={"md"}>
+                <InputLeftElement>
                   <LuSearch />
-                </InputLeftAddon>
+                </InputLeftElement>
                 <Input
                   rounded="md"
                   placeholder="Search posts..."
@@ -293,7 +290,6 @@ const PostsDashboard = () => {
                   setPage(1);
                 }}
                 maxW={{ md: "200px" }}
-                rounded="md"
               >
                 <option value="all">All Status</option>
                 <option value="published">Published</option>

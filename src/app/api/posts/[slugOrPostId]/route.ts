@@ -69,8 +69,8 @@ export async function PUT(
           .where(
             or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId))
           );
-        revalidateTag("getPost");
         const post = await getPost(slugOrPostId);
+        revalidateTag("getPost");
 
         return NextResponse.json(
           {
@@ -85,6 +85,49 @@ export async function PUT(
       } catch (error) {
         console.log("Error", error);
 
+        return NextResponse.json(
+          { data: null, error: "Internal Server Error" },
+          { status: 500 }
+        );
+      }
+    }
+  );
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { slugOrPostId: string } }
+) {
+  const { slugOrPostId } = params;
+  const oldPost = await getPlainPost(slugOrPostId);
+  return await checkPermission(
+    {
+      requiredPermission: "posts:delete",
+    },
+    async () => {
+      try {
+        if (!oldPost)
+          return NextResponse.json(
+            {
+              message: "Post not found",
+            },
+            { status: 404 }
+          );
+        await db
+          .update(posts)
+          .set({ status: "deleted" })
+          .where(
+            or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId))
+          );
+        revalidateTag("getPost");
+        return NextResponse.json(
+          {
+            message: "Post deleted successfully",
+          },
+          { status: 200 }
+        );
+      } catch (error) {
+        console.log("Error", error);
         return NextResponse.json(
           { data: null, error: "Internal Server Error" },
           { status: 500 }
