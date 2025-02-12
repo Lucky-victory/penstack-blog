@@ -27,11 +27,7 @@ export const getAggregatedPostViews = async (
     .where(
       and(
         postId ? eq(postViews.post_id, postId) : undefined,
-        between(
-          dateExpr,
-          startDate || new Date("1970-01-01"),
-          endDate || new Date()
-        )
+        between(dateExpr, startDate, endDate || new Date())
       )
     )
     .groupBy(postViews.viewed_at) // Use the same date expression

@@ -21,11 +21,12 @@ import { useQuery } from "@tanstack/react-query";
 import { AggregatedPostViews } from "@/src/types";
 
 const PostViewsChart = () => {
-  const [timeRange, setTimeRange] = useState("7days");
+  const [timeRange, setTimeRange] = useState("7");
   const timeRanges = useMemo(
     () => [
-      { label: "7 days", value: "7days" },
-      { label: "30 days", value: "30days" },
+      { label: "7 days", value: "7" },
+      { label: "30 days", value: "30" },
+      { label: "This year", value: "current_year" },
       { label: "All time", value: "all" },
     ],
     []

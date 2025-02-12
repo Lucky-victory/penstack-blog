@@ -1,41 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/src/db";
-import { posts } from "@/src/db/schemas/posts.sql";
-import { and, eq, gte, sql } from "drizzle-orm";
-import { postViews } from "@/src/db/schemas/posts-analytics.sql";
 import { getAggregatedPostViews } from "@/src/lib/queries/aggregated-post-views";
 import { AggregatedPostViews } from "@/src/types";
+import { addDays, subDays } from "date-fns";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
-    const timeRange = searchParams.get("timeRange") || "all";
-    const postId = searchParams.get("postId");
-
-    // if (!postId) {
-    //   return NextResponse.json(
-    //     { error: "Post ID is required" },
-    //     { status: 400 }
-    //   );
-    // }
+    const timeRange =
+      (searchParams.get("timeRange") as "7" | "30" | "current_year" | "all") ||
+      "all";
 
     // Calculate date range
     const endDate = new Date();
     let startDate = new Date();
 
     switch (timeRange) {
-      case "7days":
-        startDate.setDate(endDate.getDate() - 7);
+      case "7":
+        startDate = subDays(startDate, 7);
         break;
-      case "30days":
-        startDate.setDate(endDate.getDate() - 30);
+      case "30":
+        startDate = subDays(startDate, 30);
         break;
       case "all":
         // For "all time", we'll fetch from the beginning
         startDate = new Date(0);
         break;
       default:
-        startDate.setDate(endDate.getDate() - 7); // Default to 7 days
+        startDate = subDays(startDate, 7); // Default to 7 days
     }
 
     // Query for daily views
@@ -43,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       {
-        data: fillMissingDates(viewsData,startDate,endDate),
+        data: fillMissingDates(viewsData, startDate, endDate),
 
         timeRange,
         message: "Post views fetched successfully",
