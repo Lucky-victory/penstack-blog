@@ -61,25 +61,28 @@ async function main() {
     );
     console.log("✅Tags created");
     const seedRoles = [
+      { name: "admin", description: "Full access to all features" },
+      { name: "editor", description: "Can edit and publish content" },
+      { name: "author", description: "Can create and edit own content" },
       {
-        description: "Full access to all features",
-        name: "admin",
-      },
-      {
-        description: "Can edit and publish content",
-        name: "editor",
-      },
-      {
-        name: "author",
-        description: "Can create and edit own content",
-      },
-      {
-        description: "Can create content but not publish",
         name: "contributor",
+        description: "Can create content but not publish",
+      },
+      {
+        name: "moderator",
+        description: "Can moderate comments and manage user-generated content",
+      },
+      {
+        name: "seo_manager",
+        description: "Focuses on SEO optimization and analytics",
+      },
+      {
+        name: "newsletter_manager",
+        description: "Manages newsletter content and subscriptions",
       },
       {
         name: "subscriber",
-        description: "Can only view content",
+        description: "Can access premium content and comment",
       },
       {
         name: "public",

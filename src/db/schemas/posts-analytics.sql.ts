@@ -30,17 +30,6 @@ export const postViews = mysqlTable(
   })
 );
 
-// Daily aggregated views
-export const postViewStats = mysqlTable("PostViewStats", {
-  id,
-  post_id: int("post_id").notNull(),
-  view_date: timestamp("view_date").notNull(),
-  total_views: int("total_views").notNull().default(0),
-  unique_views: int("unique_views").notNull().default(0),
-  registered_user_views: int("registered_user_views").default(0),
-  anonymous_views: int("anonymous_views").default(0),
-});
-
 // Detailed analytics for user behavior
 export const postViewAnalytics = mysqlTable(
   "PostViewAnalytics",
@@ -80,7 +69,6 @@ export const activePostViewers = mysqlTable("ActivePostViewers", {
   created_at,
 });
 
-// Relations
 export const postViewsRelations = relations(postViews, ({ one }) => ({
   post: one(posts, {
     fields: [postViews.post_id],
@@ -89,12 +77,5 @@ export const postViewsRelations = relations(postViews, ({ one }) => ({
   user: one(users, {
     fields: [postViews.user_id],
     references: [users.auth_id],
-  }),
-}));
-
-export const postViewStatsRelations = relations(postViewStats, ({ one }) => ({
-  post: one(posts, {
-    fields: [postViewStats.post_id],
-    references: [posts.id],
   }),
 }));

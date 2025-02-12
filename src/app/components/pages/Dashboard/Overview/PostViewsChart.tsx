@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import {
   AreaChart,
   Area,
@@ -17,43 +17,31 @@ import {
   Button,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import { AggregatedPostViews } from "@/src/types";
 
 const PostViewsChart = () => {
   const [timeRange, setTimeRange] = useState("7days");
-  const [timeRanges, setTimeRanges] = useState([
-    { label: "7 days", value: "7days" },
-    { label: "30 days", value: "30days" },
-    { label: "All time", value: "all" },
-  ]);
-  // Sample data - in real usage, this would come from props or an API
-  const allData = [
-    { date: "2024-10-21", views: 532 },
-    { date: "2024-10-22", views: 105 },
-    { date: "2024-10-23", views: 145 },
-    { date: "2024-10-24", views: 215 },
-    { date: "2024-10-25", views: 232 },
-    { date: "2024-10-26", views: 343 },
-    { date: "2024-10-27", views: 428 },
-    { date: "2024-10-28", views: 339 },
-    { date: "2024-10-29", views: 289 },
-    { date: "2024-10-30", views: 412 },
-    { date: "2024-10-31", views: 567 },
-    { date: "2024-11-01", views: 267 },
-  ];
+  const timeRanges = useMemo(
+    () => [
+      { label: "7 days", value: "7days" },
+      { label: "30 days", value: "30days" },
+      { label: "All time", value: "all" },
+    ],
+    []
+  );
 
-  const getFilteredData = () => {
-    const today = new Date();
-    const msPerDay = 24 * 60 * 60 * 1000;
-
-    switch (timeRange) {
-      case "7days":
-        return allData.slice(-7);
-      case "30days":
-        return allData.slice(-30);
-      default:
-        return allData;
-    }
-  };
+  const { data: postViews } = useQuery({
+    queryKey: ["analyticsPostViews", timeRange],
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/analytics/posts/views?timeRange=${timeRange}`
+      );
+      const data = await response.json();
+      return data.data as AggregatedPostViews[];
+    },
+    refetchOnMount: false,
+  });
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -89,12 +77,12 @@ const PostViewsChart = () => {
           <AreaChart
             width={undefined}
             height={400}
-            data={getFilteredData()}
+            data={postViews}
             margin={{ top: 20, right: 0, left: 0, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
             <XAxis
-              dataKey="date"
+              dataKey="viewed_date"
               tickFormatter={formatDate}
               textAnchor="end"
               height={30}
@@ -113,7 +101,7 @@ const PostViewsChart = () => {
             />
             <Area
               type="monotone"
-              dataKey="views"
+              dataKey="total_views"
               stroke="var(--chakra-colors-brand-500)"
               fill="var(--chakra-colors-brand-400)"
               strokeWidth={2}

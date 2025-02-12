@@ -26,7 +26,11 @@ import { AppLogoAndName } from "../../AppLogoAndName";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 import { Link } from "@chakra-ui/next-js";
 import { useMemo } from "react";
-import { dashboardNavLinks } from "@/src/lib/dashboard/nav-links";
+import {
+  dashboardNavLinks,
+  useDashboardNavigation,
+} from "@/src/lib/dashboard/nav-links";
+import { usePermissionsStore } from "@/src/state/permissions";
 
 export const DashboardSidebar = ({
   onClose,
@@ -39,7 +43,9 @@ export const DashboardSidebar = ({
   toggleMinimized: () => void;
   [key: string]: any;
 }) => {
-  const navItems: NavItem[] = useMemo(() => dashboardNavLinks, []);
+  const permissions = usePermissionsStore((state) => state.permissions);
+  const filteredNavLinks = useDashboardNavigation(permissions);
+  const navItems = useMemo(() => filteredNavLinks, [permissions]);
   const bg = useColorModeValue("white", "charcoalBlack");
   const navBtnBg = useColorModeValue("brand.600", "brand.300");
   const navBtnBgHover = useColorModeValue("gray.200", "gray.700");
@@ -127,7 +133,6 @@ export const DashboardSidebar = ({
                 <SidebarNavItem
                   icon={item.icon}
                   href={item.href}
-                  permission={item.permission}
                   isMinimized={isMinimized}
                   onClose={onClose}
                   navBtnBg={navBtnBg}

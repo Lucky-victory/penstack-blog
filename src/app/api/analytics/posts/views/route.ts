@@ -2,20 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas/posts.sql";
 import { and, eq, gte, sql } from "drizzle-orm";
-import { postViews, postViewStats } from "@/src/db/schemas/posts-analytics.sql";
+import { postViews } from "@/src/db/schemas/posts-analytics.sql";
+import { getAggregatedPostViews } from "@/src/lib/queries/aggregated-post-views";
+import { AggregatedPostViews } from "@/src/types";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
-    const timeRange = searchParams.get("timeRange") || "7days";
+    const timeRange = searchParams.get("timeRange") || "all";
     const postId = searchParams.get("postId");
 
-    if (!postId) {
-      return NextResponse.json(
-        { error: "Post ID is required" },
-        { status: 400 }
-      );
-    }
+    // if (!postId) {
+    //   return NextResponse.json(
+    //     { error: "Post ID is required" },
+    //     { status: 400 }
+    //   );
+    // }
 
     // Calculate date range
     const endDate = new Date();
@@ -36,59 +38,13 @@ export async function GET(request: NextRequest) {
         startDate.setDate(endDate.getDate() - 7); // Default to 7 days
     }
 
-    // Format dates for MySQL
-    const startDateStr = startDate.toISOString().slice(0, 10);
-    const endDateStr = endDate.toISOString().slice(0, 10);
-
     // Query for daily views
-    const viewsData = await db
-      .select({
-        date: sql<string>`DATE(${postViewStats.view_date})`.as("date"),
-        views: sql<number>`SUM(${postViewStats.total_views})`.as("views"),
-      })
-      .from(postViewStats)
-      .where(
-        and(
-          eq(postViewStats.post_id, parseInt(postId)),
-          gte(postViewStats.view_date, new Date(startDateStr))
-        )
-      )
-      .groupBy(sql`DATE(${postViewStats.view_date})`)
-      .orderBy(sql`DATE(${postViewStats.view_date})`);
-
-    // Get total views for the period
-    const totalViews = await db
-      .select({
-        total:
-          sql<number>`COUNT(${postViews.id}) WHERE ${postViews.post_id} IS NOT NULL`.as(
-            "total"
-          ),
-        uniqueViews: sql<number>`SUM(${postViewStats.unique_views})`.as(
-          "unique_views"
-        ),
-        registeredViews:
-          sql<number>`SUM(${postViewStats.registered_user_views})`.as(
-            "registered_views"
-          ),
-        anonymousViews: sql<number>`SUM(${postViewStats.anonymous_views})`.as(
-          "anonymous_views"
-        ),
-      })
-      .from(postViewStats)
-      .where(
-        and(
-          eq(postViewStats.post_id, parseInt(postId)),
-          gte(postViewStats.view_date, new Date(startDateStr))
-        )
-      );
-
-    // Fill in missing dates with zero views
-    const filledData = fillMissingDates(viewsData, startDate, endDate);
+    const viewsData = await getAggregatedPostViews(startDate, endDate);
 
     return NextResponse.json(
       {
-        data: filledData,
-        summary: totalViews[0],
+        data: fillMissingDates(viewsData,startDate,endDate),
+
         timeRange,
         message: "Post views fetched successfully",
       },
@@ -108,19 +64,33 @@ export async function GET(request: NextRequest) {
 
 // Helper function to fill in missing dates with zero views
 function fillMissingDates(
-  data: { date: string; views: number }[],
+  data: AggregatedPostViews[],
   startDate: Date,
   endDate: Date
 ) {
-  const filledData: { date: string; views: number }[] = [];
+  const filledData: AggregatedPostViews[] = [];
   const currentDate = new Date(startDate);
-  const dateMap = new Map(data.map((item) => [item.date, item.views]));
+  const dateMap = new Map(
+    data.map((item) => [
+      item.viewed_date,
+      {
+        total_views: item.total_views,
+        unique_views: item.unique_views,
+        registered_user_views: item.registered_user_views,
+        anonymous_views: item.anonymous_views,
+      },
+    ])
+  );
 
   while (currentDate <= endDate) {
     const dateStr = currentDate.toISOString().slice(0, 10);
     filledData.push({
-      date: dateStr,
-      views: dateMap.get(dateStr) || 0,
+      viewed_date: dateStr,
+
+      total_views: dateMap.get(dateStr)?.total_views || 0,
+      unique_views: dateMap.get(dateStr)?.unique_views || 0,
+      registered_user_views: dateMap.get(dateStr)?.registered_user_views || 0,
+      anonymous_views: dateMap.get(dateStr)?.anonymous_views || 0,
     });
     currentDate.setDate(currentDate.getDate() + 1);
   }

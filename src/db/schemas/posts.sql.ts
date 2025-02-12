@@ -24,11 +24,11 @@ export const posts = mysqlTable(
     id,
     title: varchar("title", { length: 255 }),
     content: longtext("content"),
-    summary: varchar("summary", { length: 255 }),
+    summary: varchar("summary", { length: 500 }),
     seo_meta_id: int("meta_id"),
-    post_id: varchar("post_id", { length: 255 }).$defaultFn(() =>
-      IdGenerator.urlSafeId()
-    ),
+    post_id: varchar("post_id", { length: 255 })
+      .$defaultFn(() => IdGenerator.uuid())
+      .unique().notNull(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     status: mysqlEnum("status", ["draft", "published", "deleted"]).default(
       "draft"
@@ -43,6 +43,7 @@ export const posts = mysqlTable(
     is_sticky: boolean("is_sticky").default(false), // For pinned posts
     reading_time: int("reading_time"),
     allow_comments: boolean("allow_comments").default(false),
+    send_newsletter: boolean("send_newsletter").default(true),
     featured_image_id: int("featured_image_id"),
     created_at,
     published_at: timestamp("published_at").generatedAlwaysAs(
@@ -58,7 +59,10 @@ export const posts = mysqlTable(
   },
   (table) => {
     return {
-      idxTitle: index("idx_title").on(table.title),
+      idxTitle: index("idx_title_summary").on(table.title, table.summary),
+      idxPostId: uniqueIndex("idx_post_id").on(table.post_id),
+
+      idxStatus: index("idx_status").on(table.status),
       uniqueIndex: uniqueIndex("slug_unique_index").on(table.slug),
     };
   }
@@ -86,13 +90,20 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
   }),
   tags: many(postTags),
 }));
-export const postSeoMeta = mysqlTable("PostSeoMeta", {
-  id,
-  post_id: int("post_id").notNull(),
-  title: varchar("title", { length: 150 }),
-  canonical_url: varchar("canonical_url", { length: 255 }),
-  description: varchar("description", { length: 255 }),
-});
+export const postSeoMeta = mysqlTable(
+  "PostSeoMeta",
+  {
+    id,
+    post_id: int("post_id").notNull(),
+    title: varchar("title", { length: 150 }),
+    canonical_url: varchar("canonical_url", { length: 255 }),
+    description: varchar("description", { length: 255 }),
+  },
+  (table) => ({
+    idxSeoTitle: index("idx_seo_title").on(table.title),
+    idxSeoCanonicalUrl: index("idx_seo_canonical_url").on(table.canonical_url),
+  })
+);
 export const postMetaRelations = relations(postSeoMeta, ({ one }) => ({
   post: one(posts, {
     fields: [postSeoMeta.post_id],
@@ -157,20 +168,26 @@ export const postTagsRelations = relations(postTags, ({ one }) => ({
   }),
 }));
 
-export const comments = mysqlTable("Comments", {
-  id,
-  content: text("content"),
-  status: mysqlEnum("status", [
-    "approved",
-    "pending",
-    "disapproved",
-    "deleted",
-  ]).default("pending"),
-  post_id: int("post_id").notNull(),
-  author_id: varchar("author_id", { length: 100 }).notNull(),
-  created_at,
-  updated_at,
-});
+export const comments = mysqlTable(
+  "Comments",
+  {
+    id,
+    content: text("content"),
+    status: mysqlEnum("status", [
+      "approved",
+      "pending",
+      "disapproved",
+      "deleted",
+    ]).default("pending"),
+    post_id: int("post_id").notNull(),
+    author_id: varchar("author_id", { length: 100 }).notNull(),
+    created_at,
+    updated_at,
+  },
+  (table) => ({
+    idxStatus: index("idx_status").on(table.status),
+  })
+);
 
 export const commentsRelations = relations(comments, ({ one, many }) => ({
   author: one(users, {
@@ -184,21 +201,27 @@ export const commentsRelations = relations(comments, ({ one, many }) => ({
   replies: many(replies),
 }));
 
-export const replies = mysqlTable("Replies", {
-  id,
-  content: text("content"),
-  status: mysqlEnum("status", [
-    "approved",
-    "pending",
-    "disapproved",
-    "deleted",
-  ]).default("pending"),
+export const replies = mysqlTable(
+  "Replies",
+  {
+    id,
+    content: text("content"),
+    status: mysqlEnum("status", [
+      "approved",
+      "pending",
+      "disapproved",
+      "deleted",
+    ]).default("pending"),
 
-  comment_id: int("comment_id").notNull(),
-  author_id: varchar("author_id", { length: 100 }).notNull(),
-  created_at,
-  updated_at,
-});
+    comment_id: int("comment_id").notNull(),
+    author_id: varchar("author_id", { length: 100 }).notNull(),
+    created_at,
+    updated_at,
+  },
+  (table) => ({
+    idxStatus: index("idx_status").on(table.status),
+  })
+);
 
 export const repliesRelations = relations(replies, ({ one }) => ({
   author: one(users, {

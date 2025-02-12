@@ -6,6 +6,13 @@ import { medias, newsletters, permissions, roles, users } from "../db/schemas";
 import { useFormik } from "formik";
 import { ElementType } from "react";
 
+export type AggregatedPostViews = {
+  viewed_date: Date | string;
+  total_views: number;
+  unique_views: number;
+  registered_user_views: number;
+  anonymous_views: number;
+};
 export type TaxonomyItemsWithMeta = {
   data: TaxonomyItem[];
   meta?: {
@@ -143,6 +150,16 @@ export interface NavItem {
     permission?: TPermissions;
   }>;
 }
+export interface NavItemWithoutPermission {
+  icon?: ElementType;
+  label: string;
+  href: string;
+  children?: Array<{
+    label: string;
+    href: string;
+    icon?: ElementType;
+  }>;
+}
 export const navPermissionMapping = {
   VIEW_DASHBOARD: "dashboard:view",
   VIEW_POSTS: "posts:read",
@@ -150,6 +167,18 @@ export const navPermissionMapping = {
   VIEW_USERS: "users:read",
   VIEW_MEDIA: "media:read",
   VIEW_SETTINGS: "settings:read",
+} as const;
+
+export const DASH_NAV_PERMISSIONS = {
+  VIEW_DASHBOARD: "dashboard:view",
+  VIEW_POSTS: "posts:read",
+  CREATE_POST: "posts:create",
+  VIEW_USERS: "users:read",
+  VIEW_MEDIA: "media:read",
+  VIEW_SETTINGS: "settings:read",
+  VIEW_NEWSLETTERS: "dashboard:view",
+  VIEW_ROLES: "roles:read",
+  VIEW_COMMENTS: "comments:moderate",
 } as const;
 
 export type SettingEntry = {

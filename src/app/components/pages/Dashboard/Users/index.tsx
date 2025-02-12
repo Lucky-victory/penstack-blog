@@ -44,6 +44,7 @@ import {
   useColorModeValue,
   Center,
   Switch,
+  InputLeftElement,
 } from "@chakra-ui/react";
 
 import { useQuery } from "@tanstack/react-query";
@@ -222,9 +223,9 @@ const UsersDashboard = () => {
           <CardBody>
             <Stack direction={{ base: "column", md: "row" }} spacing={4} mb={6}>
               <InputGroup>
-                <InputLeftAddon>
+                <InputLeftElement>
                   <LuSearch />
-                </InputLeftAddon>
+                </InputLeftElement>
                 <Input
                   maxW={{ md: "320px" }}
                   autoComplete="off"

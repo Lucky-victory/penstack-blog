@@ -12,13 +12,14 @@ import {
   DrawerBody,
   DrawerCloseButton,
 } from "@chakra-ui/react";
-import { memo } from "react";
+import { memo, Suspense } from "react";
 import { ReactNode } from "react";
 import { DashboardSidebar } from "../../../Dashboard/Sidebar";
 import { LuMenu } from "react-icons/lu";
 import NetworkAvailabiltyCheck from "../../../NetworkAvailabiltyCheck";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 import { useDashboardSidebarState } from "@/src/hooks/useDashboardSidebarState";
+import Loader from "../../../Loader";
 
 export default memo(function DashboardLayout({
   children,
@@ -36,12 +37,14 @@ export default memo(function DashboardLayout({
         // minH="var(--chakra-vh)"
         bg={useColorModeValue("gray.100", "charcoalBlack")}
       >
-        <DashboardSidebar
-          onClose={() => onClose}
-          display={{ base: "none", md: "block" }}
-          isMinimized={isMinimized}
-          toggleMinimized={toggleMinimized}
-        />
+        <Suspense fallback={<Loader />}>
+          <DashboardSidebar
+            onClose={() => onClose}
+            display={{ base: "none", md: "block" }}
+            isMinimized={isMinimized}
+            toggleMinimized={toggleMinimized}
+          />
+        </Suspense>
         <Drawer
           isOpen={isOpen}
           placement="left"
@@ -55,11 +58,13 @@ export default memo(function DashboardLayout({
             <DrawerCloseButton zIndex={2000} />
 
             <DrawerBody px={0} p={0} mr={0}>
-              <DashboardSidebar
-                onClose={onClose}
-                isMinimized={false}
-                toggleMinimized={() => {}}
-              />
+              <Suspense fallback={<Loader />}>
+                <DashboardSidebar
+                  onClose={onClose}
+                  isMinimized={false}
+                  toggleMinimized={() => {}}
+                />
+              </Suspense>
             </DrawerBody>
           </DrawerContent>
         </Drawer>

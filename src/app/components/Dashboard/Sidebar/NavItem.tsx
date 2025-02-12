@@ -9,7 +9,7 @@ export const SidebarNavItem = ({
   children,
   href,
   nested = false,
-  permission,
+
   label,
   isMinimized,
   onClose,
@@ -25,7 +25,6 @@ export const SidebarNavItem = ({
   href: string;
   nested?: boolean;
   label?: string;
-  permission?: TPermissions;
   isMinimized?: boolean;
   onClose?: () => void;
   navBtnBg: string;
@@ -76,12 +75,5 @@ export const SidebarNavItem = ({
     </Link>
   );
 
-  if (permission) {
-    return (
-      <PermissionGuard requiredPermission={permission} showLoader={false}>
-        {content}
-      </PermissionGuard>
-    );
-  }
   return content;
 };

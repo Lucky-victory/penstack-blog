@@ -1,16 +1,23 @@
 import {
   boolean,
+  index,
   int,
   mysqlEnum,
   mysqlTable,
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 import { posts } from "./posts.sql";
 import { IdGenerator } from "@/src/utils";
-import { created_at, updated_at, id } from "../schema-helper";
+import {
+  created_at,
+  updated_at,
+  id,
+  permissionsEnum,
+  rolesEnum,
+} from "../schema-helper";
 
 export const users = mysqlTable("Users", {
   id,
@@ -41,45 +48,39 @@ export const users = mysqlTable("Users", {
   updated_at,
 });
 
-export const roles = mysqlTable("Roles", {
-  id,
-  name: varchar("name", { length: 50 }).notNull().unique(),
-  description: varchar("description", { length: 255 }),
-});
-
-export const permissions = mysqlTable("Permissions", {
-  id,
-  name: varchar("name", {
-    length: 50,
-    enum: [
-      "dashboard:access",
-      "dashboard:view",
-      "posts:create",
-      "posts:edit",
-      "posts:delete",
-      "posts:publish",
-      "posts:read",
-      "users:read",
-      "users:write",
-      "users:delete",
-      "roles:read",
-      "roles:write",
-      "roles:delete",
-      "media:upload",
-      "media:read",
-      "media:delete",
-      "settings:read",
-      "settings:write",
-      "comments:create",
-      "comments:moderate",
-      "auth:register",
-      "auth:login",
-    ],
+export const roles = mysqlTable(
+  "Roles",
+  {
+    id,
+    name: varchar("name", {
+      length: 50,
+      enum: rolesEnum,
+    })
+      .notNull()
+      .unique(),
+    description: varchar("description", { length: 255 }),
+  },
+  (table) => ({
+    idxName: index("idx_name").on(table.name),
   })
-    .notNull()
-    .unique(),
-  description: varchar("description", { length: 255 }),
-});
+);
+
+export const permissions = mysqlTable(
+  "Permissions",
+  {
+    id,
+    name: varchar("name", {
+      length: 50,
+      enum: permissionsEnum,
+    })
+      .notNull()
+      .unique(),
+    description: varchar("description", { length: 255 }),
+  },
+  (table) => ({
+    idxName: index("idx_name").on(table.name),
+  })
+);
 
 export const rolePermissions = mysqlTable("RolePermissions", {
   id,
@@ -116,7 +117,7 @@ export const userSocials = mysqlTable("UserSocials", {
   facebook: varchar("facebook", { length: 100 }),
   email: varchar("email", { length: 100 }),
   website: varchar("website", { length: 100 }),
-  updated_at
+  updated_at,
 });
 export const UserRelations = relations(users, ({ many, one }) => ({
   posts: many(posts),
