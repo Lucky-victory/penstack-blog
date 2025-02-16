@@ -1,49 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAggregatedPostViews } from "@/src/lib/queries/aggregated-post-views";
 import { AggregatedPostViews } from "@/src/types";
-import {
-  addDays,
-  subDays,
-  startOfYear,
-  endOfYear,
-  subYears,
-  startOfMonth,
-  endOfMonth,
-} from "date-fns";
-
-type TimeRange = "7" | "30" | "current_year" | "all";
-type AggregationType = "daily" | "monthly" | "yearly";
-
-interface DateConfig {
-  startDate: Date;
-  endDate: Date;
-  aggregationType: AggregationType;
-}
+import { addDays, subDays, subYears } from "date-fns";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
-    const timeRange = (searchParams.get("timeRange") as TimeRange) || "all";
-    const { startDate, endDate, aggregationType } = getDateConfig(timeRange);
+    const timeRange =
+      (searchParams.get("timeRange") as "7" | "30" | "60" | "90" | "all") ||
+      "all";
 
-    // Query for views with appropriate aggregation
-    const viewsData = await getAggregatedPostViews(
-      startDate,
-      endDate,
-      undefined,
-      aggregationType
-    );
+    // Calculate date range
+    const endDate = new Date();
+    let startDate = new Date();
+
+    switch (timeRange) {
+      case "7":
+        startDate = subDays(startDate, 7);
+        break;
+      case "30":
+        startDate = subDays(startDate, 30);
+        break;
+      case "60":
+        startDate = subDays(startDate, 60);
+        break;
+      case "90":
+        startDate = subDays(startDate, 90);
+        break;
+      case "all":
+        // For "all time", we'll fetch from the beginning
+        startDate = subYears(startDate, 2);
+        break;
+      default:
+        startDate = subDays(startDate, 7); // Default to 7 days
+    }
+
+    // Query for daily views
+    const viewsData = await getAggregatedPostViews(startDate, endDate);
 
     return NextResponse.json(
       {
-        data: fillMissingPeriods(
-          viewsData,
-          startDate,
-          endDate,
-          aggregationType
-        ),
+        data: fillMissingDates(viewsData, startDate, endDate),
+
         timeRange,
-        aggregationType,
         message: "Post views fetched successfully",
       },
       { status: 200 }
@@ -60,51 +59,14 @@ export async function GET(request: NextRequest) {
   }
 }
 
-function getDateConfig(timeRange: TimeRange): DateConfig {
-  const now = new Date();
-
-  switch (timeRange) {
-    case "7":
-      return {
-        startDate: subDays(now, 7),
-        endDate: now,
-        aggregationType: "daily",
-      };
-    case "30":
-      return {
-        startDate: subDays(now, 30),
-        endDate: now,
-        aggregationType: "daily",
-      };
-    case "current_year":
-      return {
-        startDate: startOfYear(now),
-        endDate: endOfYear(now),
-        aggregationType: "monthly",
-      };
-    case "all":
-      return {
-        startDate: startOfYear(subYears(now, 4)), // Last 5 years
-        endDate: now,
-        aggregationType: "yearly",
-      };
-    default:
-      return {
-        startDate: subDays(now, 7),
-        endDate: now,
-        aggregationType: "daily",
-      };
-  }
-}
-
-function fillMissingPeriods(
+// Helper function to fill in missing dates with zero views
+function fillMissingDates(
   data: AggregatedPostViews[],
   startDate: Date,
-  endDate: Date,
-  aggregationType: AggregationType
-): AggregatedPostViews[] {
+  endDate: Date
+) {
   const filledData: AggregatedPostViews[] = [];
-  let currentDate = new Date(startDate);
+  const currentDate = new Date(startDate);
   const dateMap = new Map(
     data.map((item) => [
       item.viewed_date,
@@ -118,39 +80,16 @@ function fillMissingPeriods(
   );
 
   while (currentDate <= endDate) {
-    let dateStr: string;
-    let nextDate: Date;
-
-    switch (aggregationType) {
-      case "daily":
-        dateStr = currentDate.toISOString().slice(0, 10);
-        nextDate = addDays(currentDate, 1);
-        break;
-      case "monthly":
-        dateStr = currentDate.toISOString().slice(0, 7);
-        nextDate = endOfMonth(currentDate);
-        currentDate = startOfMonth(addDays(nextDate, 1));
-        break;
-      case "yearly":
-        dateStr = currentDate.toISOString().slice(0, 4);
-        nextDate = endOfYear(currentDate);
-        currentDate = startOfYear(addDays(nextDate, 1));
-        break;
-      default:
-        throw new Error(`Invalid aggregation type: ${aggregationType}`);
-    }
-
+    const dateStr = currentDate.toISOString().slice(0, 10);
     filledData.push({
       viewed_date: dateStr,
+
       total_views: dateMap.get(dateStr)?.total_views || 0,
       unique_views: dateMap.get(dateStr)?.unique_views || 0,
       registered_user_views: dateMap.get(dateStr)?.registered_user_views || 0,
       anonymous_views: dateMap.get(dateStr)?.anonymous_views || 0,
     });
-
-    if (aggregationType === "daily") {
-      currentDate = nextDate;
-    }
+    currentDate.setDate(currentDate.getDate() + 1);
   }
 
   return filledData;

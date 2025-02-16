@@ -7,6 +7,7 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 import {
   Card,
@@ -16,6 +17,8 @@ import {
   HStack,
   Button,
   useColorModeValue,
+  Box,
+  Text,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { AggregatedPostViews } from "@/src/types";
@@ -26,7 +29,8 @@ const PostViewsChart = () => {
     () => [
       { label: "7 days", value: "7" },
       { label: "30 days", value: "30" },
-      { label: "This year", value: "current_year" },
+      { label: "60 days", value: "60" },
+      { label: "90 days", value: "90" },
       { label: "All time", value: "all" },
     ],
     []
@@ -48,10 +52,34 @@ const PostViewsChart = () => {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
-  const tooltipContentBg = useColorModeValue("white", "black");
+  const tooltipContentBg = useColorModeValue("white", "gray.900");
   const tooltipTextColor = useColorModeValue("black", "white");
   const gridColor = useColorModeValue("#e0e0e0", "#444444");
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <Box
+          px={2}
+          py={2}
+          bg={tooltipContentBg}
+          color={tooltipTextColor}
+          rounded={"lg"}
+        >
+          <Text>{formatDate(label)}</Text>
+          {payload.map((entry: any, index: number) => (
+            <Box key={index}>
+              <HStack>
+                <Box w={2} h={2} bg={entry.color}></Box>
+                <p className="label">{`${entry.value} views`}</p>
+              </HStack>
+            </Box>
+          ))}
+        </Box>
+      );
+    }
 
+    return null;
+  };
   return (
     <Card variant={"outline"}>
       <CardHeader>
@@ -90,24 +118,40 @@ const PostViewsChart = () => {
               fontSize={14}
             />
             <YAxis fontSize={14} width={50} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: tooltipContentBg,
-                borderRadius: "12px",
-                border: "none",
-                color: tooltipTextColor,
-              }}
-              labelFormatter={formatDate}
-              formatter={(value) => [`${value} views`, "Views"]}
+            <Tooltip content={<CustomTooltip />} labelFormatter={formatDate} />
+            <Legend />
+            <Area
+              dot={{ r: 1 }}
+              activeDot={{ r: 6 }}
+              name="Total views"
+              stackId={1}
+              dataKey="total_views"
+              stroke="var(--chakra-colors-green-500)"
+              fill="var(--chakra-colors-green-400)"
+              strokeWidth={2}
+              type="monotone"
             />
             <Area
+              dot={{ r: 1 }}
+              activeDot={{ r: 6 }}
+              name="Unique views"
+              stackId={1}
               type="monotone"
-              dataKey="total_views"
-              stroke="var(--chakra-colors-brand-500)"
-              fill="var(--chakra-colors-brand-400)"
+              dataKey="unique_views"
+              stroke="var(--chakra-colors-blue-500)"
+              fill="var(--chakra-colors-blue-400)"
               strokeWidth={2}
-              dot={{ r: 5 }}
-              activeDot={{ r: 8 }}
+            />
+            <Area
+              stackId={1}
+              dot={{ r: 1 }}
+              activeDot={{ r: 6 }}
+              type="monotone"
+              name="Anonymous views"
+              dataKey="anonymous_views"
+              stroke="var(--chakra-colors-orange-500)"
+              fill="var(--chakra-colors-orange-400)"
+              strokeWidth={2}
             />
           </AreaChart>
         </ResponsiveContainer>
