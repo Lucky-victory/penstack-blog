@@ -36,7 +36,7 @@ const PostViewsChart = () => {
     []
   );
 
-  const { data: postViews } = useQuery({
+  const { data: postViews, isPending } = useQuery({
     queryKey: ["analyticsPostViews", timeRange],
     queryFn: async () => {
       const response = await fetch(
@@ -55,22 +55,31 @@ const PostViewsChart = () => {
   const tooltipContentBg = useColorModeValue("white", "gray.900");
   const tooltipTextColor = useColorModeValue("black", "white");
   const gridColor = useColorModeValue("#e0e0e0", "#444444");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <Box
-          px={2}
+          px={4}
           py={2}
+          shadow={"md"}
+          border={"1px solid"}
+          borderColor={borderColor}
           bg={tooltipContentBg}
           color={tooltipTextColor}
           rounded={"lg"}
         >
-          <Text>{formatDate(label)}</Text>
+          <Text fontWeight={500} mb={1}>
+            {formatDate(label)}
+          </Text>
           {payload.map((entry: any, index: number) => (
             <Box key={index}>
               <HStack>
                 <Box w={2} h={2} bg={entry.color}></Box>
-                <p className="label">{`${entry.value} views`}</p>
+                <Text
+                  fontSize={"15px"}
+                  color={"gray.500"}
+                >{`${entry.value} views`}</Text>
               </HStack>
             </Box>
           ))}
@@ -103,57 +112,71 @@ const PostViewsChart = () => {
       </CardHeader>
       <CardBody>
         <ResponsiveContainer width="100%" height={400}>
-          <AreaChart
-            width={undefined}
-            height={400}
-            data={postViews}
-            margin={{ top: 20, right: 0, left: 0, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-            <XAxis
-              dataKey="viewed_date"
-              tickFormatter={formatDate}
-              textAnchor="end"
-              height={30}
-              fontSize={14}
-            />
-            <YAxis fontSize={14} width={50} />
-            <Tooltip content={<CustomTooltip />} labelFormatter={formatDate} />
-            <Legend />
-            <Area
-              dot={{ r: 1 }}
-              activeDot={{ r: 6 }}
-              name="Total views"
-              stackId={1}
-              dataKey="total_views"
-              stroke="var(--chakra-colors-green-500)"
-              fill="var(--chakra-colors-green-400)"
-              strokeWidth={2}
-              type="monotone"
-            />
-            <Area
-              dot={{ r: 1 }}
-              activeDot={{ r: 6 }}
-              name="Unique views"
-              stackId={1}
-              type="monotone"
-              dataKey="unique_views"
-              stroke="var(--chakra-colors-blue-500)"
-              fill="var(--chakra-colors-blue-400)"
-              strokeWidth={2}
-            />
-            <Area
-              stackId={1}
-              dot={{ r: 1 }}
-              activeDot={{ r: 6 }}
-              type="monotone"
-              name="Anonymous views"
-              dataKey="anonymous_views"
-              stroke="var(--chakra-colors-orange-500)"
-              fill="var(--chakra-colors-orange-400)"
-              strokeWidth={2}
-            />
-          </AreaChart>
+          {isPending ? (
+            <Box
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              height={"100%"}
+            >
+              <Text>Fetching data...</Text>
+            </Box>
+          ) : (
+            <AreaChart
+              width={undefined}
+              height={400}
+              data={postViews}
+              margin={{ top: 20, right: 0, left: 0, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+              <XAxis
+                dataKey="viewed_date"
+                tickFormatter={formatDate}
+                textAnchor="end"
+                height={30}
+                fontSize={14}
+              />
+              <YAxis fontSize={14} width={50} />
+              <Tooltip
+                content={<CustomTooltip />}
+                labelFormatter={formatDate}
+              />
+              <Legend />
+              <Area
+                dot={{ r: 1 }}
+                activeDot={{ r: 6 }}
+                name="Total views"
+                stackId={1}
+                dataKey="total_views"
+                stroke="var(--chakra-colors-green-500)"
+                fill="var(--chakra-colors-green-400)"
+                strokeWidth={2}
+                type="monotone"
+              />
+              <Area
+                dot={{ r: 1 }}
+                activeDot={{ r: 6 }}
+                name="Unique views"
+                stackId={1}
+                type="monotone"
+                dataKey="unique_views"
+                stroke="var(--chakra-colors-blue-500)"
+                fill="var(--chakra-colors-blue-400)"
+                strokeWidth={2}
+              />
+              <Area
+                stackId={1}
+                dot={{ r: 1 }}
+                activeDot={{ r: 6 }}
+                type="monotone"
+                name="Anonymous views"
+                dataKey="anonymous_views"
+                stroke="var(--chakra-colors-orange-500)"
+                fill="var(--chakra-colors-orange-400)"
+                strokeWidth={2}
+              />
+            </AreaChart>
+          )}
         </ResponsiveContainer>
       </CardBody>
     </Card>
