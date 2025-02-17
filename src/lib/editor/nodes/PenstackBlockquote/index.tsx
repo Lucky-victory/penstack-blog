@@ -3,10 +3,7 @@ import { NodeViewProps } from "@tiptap/core";
 import { NodeViewWrapper } from "@tiptap/react";
 import { memo, useState } from "react";
 
-interface PenstackBlockquoteComponentProps extends NodeViewProps {
-  variant: "default" | "warning" | "info" | "success" | "danger";
-  isEditing?: boolean;
-}
+interface PenstackBlockquoteComponentProps extends NodeViewProps {}
 export const PenstackBlockquoteComponent: React.FC<
   PenstackBlockquoteComponentProps
 > = ({ node, updateAttributes }) => {
@@ -16,7 +13,6 @@ export const PenstackBlockquoteComponent: React.FC<
         isEditing
         node={node}
         updateAttributes={updateAttributes}
-        variant={node?.attrs?.variant}
       />
     </NodeViewWrapper>
   );

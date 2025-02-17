@@ -7,12 +7,18 @@ import {
   MenuItem,
   MenuList,
   Stack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { NodeViewProps } from "@tiptap/core";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { memo, useEffect, useMemo, useState } from "react";
-import { LuChevronDown } from "react-icons/lu";
+import {
+  LuCheckCircle2,
+  LuChevronDown,
+  LuQuote,
+  LuTextQuote,
+} from "react-icons/lu";
 import {
   LuInfo,
   LuAlertCircle,
@@ -21,48 +27,46 @@ import {
 } from "react-icons/lu";
 
 interface PenstackBlockquoteRendererProps {
-  variant: "plain" | "warning" | "info" | "success" | "danger";
   isEditing?: boolean;
   node: Partial<NodeViewProps["node"]>;
   updateAttributes?: (attrs: Record<string, any>) => void;
 }
-const PenstackBlockquoteRenderer = ({
-  isEditing = true,
-  variant,
-  node,
-  updateAttributes,
-}: PenstackBlockquoteRendererProps) => {
+const PenstackBlockquoteRenderer: React.FC<
+  PropsWithChildren<PenstackBlockquoteRendererProps>
+> = ({ isEditing = true, node, updateAttributes, children }) => {
   const [selectedVariant, setSelectedVariant] = useState<
-    PenstackBlockquoteRendererProps["variant"]
-  >(variant || "plain");
+    "plain" | "warning" | "info" | "success" | "danger"
+  >(node?.attrs?.variant || "plain");
   const blockquoteVariants = useMemo(
     () => ["plain", "warning", "info", "success", "danger"] as const,
     []
   );
+
   const blockquoteStyles = {
     plain: {
-      bg: "gray.100",
-      icon: null,
+      bg: useColorModeValue("gray.100", "whiteAlpha.200"),
+      icon: LuQuote,
+      iconColor: useColorModeValue("gray.500", "gray.200"),
     },
     warning: {
-      bg: "orange.50",
+      bg: useColorModeValue("orange.100", "orange.900"),
       icon: LuAlertTriangle,
-      iconColor: "orange.500",
+      iconColor: useColorModeValue("orange.500", "orange.200"),
     },
     info: {
-      bg: "blue.50",
+      bg: useColorModeValue("blue.100", "blue.900"),
       icon: LuInfo,
-      iconColor: "blue.500",
+      iconColor: useColorModeValue("blue.500", "blue.200"),
     },
     success: {
-      bg: "green.50",
-      icon: LuCheckCircle,
-      iconColor: "green.500",
+      bg: useColorModeValue("green.50", "green.900"),
+      icon: LuCheckCircle2,
+      iconColor: useColorModeValue("green.500", "green.200"),
     },
     danger: {
-      bg: "red.50",
+      bg: useColorModeValue("red.100", "red.900"),
       icon: LuAlertCircle,
-      iconColor: "red.500",
+      iconColor: useColorModeValue("red.500", "red.200"),
     },
   };
 
@@ -74,17 +78,15 @@ const PenstackBlockquoteRenderer = ({
       rounded={"lg"}
       bg={blockquoteStyles[selectedVariant].bg}
     >
-      <HStack align="flex-start" spacing={3}>
+      <HStack align="flex-start" spacing={3} fontWeight={500}>
         {blockquoteStyles[selectedVariant].icon && (
-          <Box color={blockquoteStyles[selectedVariant].iconColor} mt={1}>
+          <Box color={blockquoteStyles[selectedVariant]?.iconColor} mt={1}>
             {React.createElement(blockquoteStyles[selectedVariant].icon, {
               size: 20,
             })}
           </Box>
         )}
-        <Box flex={1}>
-          {isEditing ? <NodeViewContent /> : node?.textContent}
-        </Box>
+        <Box flex={1}>{isEditing ? <NodeViewContent /> : children}</Box>
       </HStack>
     </Box>
   );

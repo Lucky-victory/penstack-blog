@@ -32,6 +32,7 @@ import {
 } from "@chakra-ui/react";
 import styles from "@/src/lib/editor/nodes/CustomCodeBlock/CodeBlock.module.css";
 import { PenstackCodeBlockRenderer } from "../PenstackCodeBlockRenderer";
+import PenstackBlockquoteRenderer from "../PenstackBlockquoteRenderer";
 interface ContentRendererProps {
   content: string;
   className?: string;
@@ -237,14 +238,16 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           }
           if (domNode.name === "blockquote") {
             return (
-              <Box
-                as="blockquote"
-                borderLeftWidth="4px"
-                borderLeftColor="gray.200"
-                pl={4}
+              <PenstackBlockquoteRenderer
+                isEditing={false}
+                node={{
+                  attrs: {
+                    variant: domNode.attribs.variant,
+                  },
+                }}
               >
                 {domToReact(domNode.children as Element[], options)}
-              </Box>
+              </PenstackBlockquoteRenderer>
             );
           }
         }
