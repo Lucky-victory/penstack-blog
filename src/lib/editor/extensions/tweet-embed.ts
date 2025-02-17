@@ -5,7 +5,7 @@ import { PenstackTwitterEmbed } from "@/src/app/components/Renderers/TwitterEmbe
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     twitter: {
-      insertTweet: (tweetId: string) => ReturnType;
+      insertTweet: (tweetId: string, username?: string) => ReturnType;
     };
   }
 }
@@ -20,6 +20,7 @@ export const PenstackTwitterExtension = Node.create({
       tweetId: { default: null },
       // Optional caption or note about the tweet
       caption: { default: "" },
+      username: { default: "" },
     };
   },
 
@@ -47,11 +48,11 @@ export const PenstackTwitterExtension = Node.create({
   addCommands() {
     return {
       insertTweet:
-        (tweetId: string) =>
+        (tweetId: string, username?: string) =>
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
-            attrs: { tweetId },
+            attrs: { tweetId, username },
           });
         },
     };

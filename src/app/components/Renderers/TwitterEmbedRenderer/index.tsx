@@ -58,7 +58,8 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
             {!hasTweet && (
               <Box>
                 <Text>
-                  Sorry, we couldn't load the tweet. Please try again later.
+                  Sorry, we couldn&apos;t load the tweet. Please try again
+                  later.
                 </Text>
                 <Link
                   color={"brand.500"}

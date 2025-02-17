@@ -75,7 +75,7 @@ const PostViewsChart = () => {
           {payload.map((entry: any, index: number) => (
             <Box key={index}>
               <HStack>
-                <Box w={2} h={2} bg={entry.color}></Box>
+                <Box rounded={"full"} w={2} h={2} bg={entry.color}></Box>
                 <Text
                   fontSize={"15px"}
                   color={"gray.500"}

@@ -42,6 +42,8 @@ import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { PenstackSlashCommandExtension } from "@/src/lib/editor/extensions/slash-command";
 import { PenstackCodeBlockRenderer } from "../Renderers/PenstackCodeBlockRenderer";
 import { generateSlug } from "@/src/utils";
+import { Blockquote } from "@tiptap/extension-blockquote";
+import PenstackBlockquote from "@/src/lib/editor/extensions/blockquote";
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -54,6 +56,7 @@ function TipTapEditor({
       StarterKit.configure({
         heading: false,
         codeBlock: false,
+        blockquote: false,
         bulletList: {
           keepMarks: true,
           keepAttributes: false,
@@ -109,7 +112,7 @@ function TipTapEditor({
           };
         },
       }),
-
+      PenstackBlockquote.configure(),
       Placeholder.configure({
         placeholder: "Write something…",
       }),
