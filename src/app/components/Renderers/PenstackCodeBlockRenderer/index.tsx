@@ -1,6 +1,16 @@
-import { Box, Code, Text, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Code,
+  DarkMode,
+  HStack,
+  Stack,
+  Text,
+  useClipboard,
+} from "@chakra-ui/react";
 import React, { PropsWithChildren } from "react";
 import { all, createLowlight } from "lowlight";
+import { LuCheckCircle, LuClipboard } from "react-icons/lu";
 
 const lowlight = createLowlight(all);
 interface PenstackCodeBlockRendererProps {
@@ -10,9 +20,8 @@ interface PenstackCodeBlockRendererProps {
 export const PenstackCodeBlockRenderer: React.FC<
   PropsWithChildren<PenstackCodeBlockRendererProps>
 > = ({ language, code, children }) => {
-  const bgColor = useColorModeValue("gray.100", "gray.700");
-  const textColor = useColorModeValue("gray.800", "gray.100");
-  const codeBlackMaxHeight = 450;
+  const { onCopy, hasCopied } = useClipboard(code);
+
   const Content = () => {
     try {
       let result;
@@ -26,28 +35,37 @@ export const PenstackCodeBlockRenderer: React.FC<
       const codeElements = convertNodeToReactElements(result.children);
 
       return (
-        <Box
-          className="penstack-code-block"
-          // maxH={codeBlackMaxHeight}
-        >
+        <Stack className="penstack-code-block">
+          <DarkMode>
+            <HStack
+              justify={"space-between"}
+              borderBottom={"1px solid"}
+              borderColor={"gray.600"}
+              pb={2}
+            >
+              <Text fontSize="xs" color="gray.400">
+                {language}
+              </Text>
+              <Button
+                leftIcon={hasCopied ? <LuCheckCircle /> : <LuClipboard />}
+                colorScheme={"gray"}
+                variant={"ghost"}
+                size={"xs"}
+                onClick={onCopy}
+              >
+                {hasCopied ? "Copied" : "Copy"}
+              </Button>
+            </HStack>
+          </DarkMode>
           <Box
             as="pre"
             whiteSpace={"pre-wrap"}
             fontFamily="monospace"
             position="relative"
           >
-            <Text
-              position="absolute"
-              top={1}
-              right={2}
-              fontSize="xs"
-              color="gray.500"
-            >
-              {language}
-            </Text>
             <Box as="code">{codeElements}</Box>
           </Box>
-        </Box>
+        </Stack>
       );
     } catch (e) {
       // Fallback if highlighting fails
@@ -63,7 +81,7 @@ export const PenstackCodeBlockRenderer: React.FC<
       );
     }
   };
-  return <>{<Content />}</>;
+  return <Content />;
 };
 function convertNodeToReactElements(nodes: any[]): React.ReactNode {
   return nodes.map((node, i) => {

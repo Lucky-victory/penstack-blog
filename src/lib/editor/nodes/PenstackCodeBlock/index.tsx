@@ -1,7 +1,9 @@
 import {
   Box,
   Button,
+  DarkMode,
   HStack,
+  Icon,
   Menu,
   MenuButton,
   MenuItem,
@@ -31,7 +33,7 @@ export const PenstackCodeblockComponent: React.FC<
   const languages = extension.options.lowlight.listLanguages();
   const heights = useMemo(
     () => ({
-      itemHeight: 35,
+      itemHeight: 30,
       listHeight: 280,
     }),
     []
@@ -65,28 +67,39 @@ export const PenstackCodeblockComponent: React.FC<
       as={NodeViewWrapper}
       className="penstack-code-block"
       spellCheck="false"
-      maxH={"auto!important"}
     >
       <HStack justify={"flex-end"}>
-        <Menu isLazy>
-          <MenuButton
-            variant={"ghost"}
-            size={"xs"}
-            as={Button}
-            rightIcon={<LuChevronDown />}
-          >
-            {defaultLanguage || "auto"}
-          </MenuButton>
-          <MenuList maxH={heights.listHeight}>
-            <FixedSizeList
-              height={heights.listHeight}
-              itemCount={languages?.length}
-              itemSize={heights.itemHeight}
-              width="100%"
-            >
-              {LanguageRow}
-            </FixedSizeList>
-          </MenuList>
+        <Menu>
+          {({ isOpen }) => (
+            <>
+              <DarkMode>
+                <MenuButton
+                  variant={"ghost"}
+                  colorScheme="gray"
+                  size={"xs"}
+                  as={Button}
+                  rightIcon={
+                    <Icon
+                      as={LuChevronDown}
+                      transform={isOpen ? "rotate(180deg)" : "rotate(0deg)"}
+                    />
+                  }
+                >
+                  {defaultLanguage || "auto"}
+                </MenuButton>
+              </DarkMode>
+              <MenuList maxH={heights.listHeight}>
+                <FixedSizeList
+                  height={heights.listHeight}
+                  itemCount={languages?.length}
+                  itemSize={heights.itemHeight}
+                  width="100%"
+                >
+                  {LanguageRow}
+                </FixedSizeList>
+              </MenuList>
+            </>
+          )}
         </Menu>
       </HStack>
       <Box as="pre">

@@ -41,7 +41,7 @@ const PenstackBlockquoteRenderer: React.FC<
     () => ["plain", "warning", "info", "success", "danger"] as const,
     []
   );
-
+  const borderColor = useColorModeValue("gray.200", "gray.600");
   const blockquoteStyles = {
     plain: {
       bg: useColorModeValue("gray.100", "whiteAlpha.200"),
@@ -76,6 +76,7 @@ const PenstackBlockquoteRenderer: React.FC<
       p={4}
       my={isEditing ? 0 : 4}
       rounded={"lg"}
+      roundedTop={isEditing ? 0 : "lg"}
       bg={blockquoteStyles[selectedVariant].bg}
     >
       <HStack align="flex-start" spacing={3} fontWeight={500}>
@@ -94,14 +95,20 @@ const PenstackBlockquoteRenderer: React.FC<
     <>
       {isEditing ? (
         <>
-          <Stack>
-            <HStack justify={"flex-end"} contentEditable={false}>
+          <Stack spacing={0} my={6}>
+            <HStack
+              justify={"flex-end"}
+              roundedTop={"lg"}
+              contentEditable={false}
+              border={"1px solid"}
+              borderColor={borderColor}
+            >
               <Menu>
                 <MenuButton
                   variant={"ghost"}
                   textTransform={"capitalize"}
                   as={Button}
-                  size={"sm"}
+                  size={"xs"}
                   rightIcon={<LuChevronDown />}
                 >
                   {selectedVariant}
