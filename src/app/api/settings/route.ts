@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSettings, updateSettings } from "@/src/lib/settings";
+import { getSettings, updateSettings } from "@/src/lib/queries/settings";
 import { revalidatePath } from "next/cache";
 
 export async function GET() {

@@ -6,7 +6,7 @@ import ReactQueryClient from "../providers/react-query";
 import AuthProvider from "../providers/auth";
 import { getSession } from "../lib/auth/next-auth";
 import { SiteConfigProvider } from "../context/SiteConfig";
-import { getSettings } from "../lib/settings";
+import { getSettings } from "../lib/queries/settings";
 import { NuqsProvider } from "../providers/nuqs";
 
 type Props = {

@@ -1,7 +1,7 @@
 import "server-only";
 
 import { Resend } from "resend";
-import { getSettings } from "../settings";
+import { getSettings } from "../queries/settings";
 import isEmpty from "just-is-empty";
 import { ReactNode } from "react";
 import { decryptKey } from "../encryption";

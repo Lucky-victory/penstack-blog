@@ -6,7 +6,7 @@ import { newsletters } from "@/src/db/schemas/newsletter.sql";
 import { addHours } from "date-fns";
 import crypto from "crypto";
 import { sendEmail } from "@/src/lib/send-email";
-import { getSettings } from "@/src/lib/settings";
+import { getSettings } from "@/src/lib/queries/settings";
 
 export async function POST(req: NextRequest) {
   const { email, name } = await req.json();

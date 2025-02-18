@@ -2,7 +2,7 @@
 
 import { createContext } from "react";
 import { SiteSettings } from "../types";
-import { DEFAULT_SETTINGS } from "../lib/settings/config";
+import { DEFAULT_SETTINGS } from "../lib/queries/settings/config";
 
 export const SiteConfigContext = createContext<SiteSettings>(DEFAULT_SETTINGS);
 
