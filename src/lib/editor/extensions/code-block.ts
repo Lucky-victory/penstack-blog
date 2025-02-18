@@ -19,7 +19,7 @@ export const PenstackCodeblock = CodeBlockLowlight.extend({
   addKeyboardShortcuts() {
     return {
       ...this.parent?.(),
-      "Mod-Alt-C": () => this.editor.commands.setNode("codeBlock"),
+      "Mod-Alt-C": () => this.editor.commands.toggleCodeBlock(),
     };
   },
 });

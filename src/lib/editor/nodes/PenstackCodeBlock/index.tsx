@@ -88,7 +88,7 @@ export const PenstackCodeblockComponent: React.FC<
                   {defaultLanguage || "auto"}
                 </MenuButton>
               </DarkMode>
-              <MenuList maxH={heights.listHeight}>
+              <MenuList maxH={heights.listHeight} px={2}>
                 <FixedSizeList
                   height={heights.listHeight}
                   itemCount={languages?.length}
