@@ -16,29 +16,37 @@ import { SlugInput } from "../components/SlugInput";
 import { SummaryInput } from "../components/SummaryInput";
 
 import { encode } from "html-entities";
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
 export const SEOSection = ({
-  activePost,
   updateField,
 }: {
-  activePost: EDITOR_CONTEXT_STATE["activePost"];
   updateField: EDITOR_CONTEXT_STATE["updateField"];
-}) => (
-  <Stack p={4}>
-    <Text as="span" fontWeight={500}>
-      Featured Image:
-    </Text>
-    <FeaturedImageCard
-      onChange={(imageId) => updateField("featured_image_id", imageId)}
-      image={activePost?.featured_image || null}
-    />
-    <SlugInput
-      slug={activePost?.slug || ""}
-      onChange={(val) => updateField("slug", val)}
-    />
-    <SummaryInput
-      summary={activePost?.summary || ""}
-      onChange={(val) => updateField("summary", encode(val))}
-    />
-  </Stack>
-);
+}) => {
+  const featuredImage = useEditorPostManagerStore(
+    (state) => state.activePost?.featured_image
+  );
+  const summary = useEditorPostManagerStore(
+    (state) => state.activePost?.summary
+  );
+  const slug = useEditorPostManagerStore((state) => state.activePost?.slug);
+  return (
+    <Stack p={4}>
+      <Text as="span" fontWeight={500}>
+        Featured Image:
+      </Text>
+      <FeaturedImageCard
+        onChange={(imageId) => updateField("featured_image_id", imageId)}
+        image={featuredImage || null}
+      />
+      <SlugInput
+        slug={slug || ""}
+        onChange={(val) => updateField("slug", val)}
+      />
+      <SummaryInput
+        summary={summary || ""}
+        onChange={(val) => updateField("summary", encode(val))}
+      />
+    </Stack>
+  );
+};

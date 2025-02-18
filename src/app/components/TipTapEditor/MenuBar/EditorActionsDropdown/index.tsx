@@ -1,17 +1,11 @@
 import {
   Divider,
-  HStack,
-  Text,
-  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { LuChevronsUpDown } from "react-icons/lu";
 import { filterEditorActions } from "@/src/lib/editor/actions";
-import React, { memo, useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { MediaInsert } from "../MediaInsert";
-import { useCustomEditorContext } from "@/src/context/AppEditor";
 import AccessibleDropdown from "../../../AccessibleDropdown";
-import { EditorActionItem } from "@/src/types";
 import { Editor } from "@tiptap/react";
 
 function EditorActionsDropdown({ editor }: { editor: Editor | null }) {

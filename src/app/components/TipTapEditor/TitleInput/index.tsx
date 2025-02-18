@@ -1,16 +1,21 @@
 import { Box, useColorModeValue, Input } from "@chakra-ui/react";
 
 import { ChangeEvent, useCallback, useState } from "react";
-import { useCustomEditorContext } from "@/src/context/AppEditor";
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
 export const TitleInput = ({
   onChange,
 }: {
   onChange?: (title: string) => void;
 }) => {
-  const { activePost, updateField } = useCustomEditorContext();
+  const postTitle = useEditorPostManagerStore(
+      (state) => state.activePost?.title
+    );
+  const updateField = useEditorPostManagerStore(
+      (state) => state.updateField
+    );
   const borderColor = useColorModeValue("gray.200", "gray.700");
-  const [title, setTitle] = useState(activePost?.title || "");
+  const [title, setTitle] = useState(postTitle || "");
 
   const onChangeCb = useCallback(
     (value: string) => {

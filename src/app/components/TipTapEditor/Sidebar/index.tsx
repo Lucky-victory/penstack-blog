@@ -3,18 +3,11 @@ import { useState } from "react";
 import {
   Box,
   Button,
-  Input,
-  Tag,
-  Textarea,
   Spinner,
   Stack,
   List,
   ListItem,
-  FormLabel,
-  FormControl,
   Icon,
-  InputRightElement,
-  InputGroup,
   Text,
   HStack,
   Switch,
@@ -28,15 +21,10 @@ import {
   LuEye,
   LuPin,
   LuCheck,
-  LuFileText,
-  LuType,
   LuMessageSquare,
   LuRadioReceiver,
   LuClock,
 } from "react-icons/lu";
-import { FeaturedImageCard } from "@/src/app/components/TipTapEditor/FeaturedImageCard";
-import { useCustomEditorContext } from "@/src/context/AppEditor";
-import { Editor } from "@tiptap/react";
 import { useRouter } from "next/navigation";
 import { PermissionGuard } from "../../PermissionGuard";
 import { format } from "date-fns";
@@ -47,10 +35,24 @@ import { PostInsert } from "@/src/types";
 import { SEOSection } from "./SEOSection";
 import { ActionButtons } from "./components/ActionButtons";
 import { MetricsItem } from "./components/MetricsItem";
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
 export const SidebarContent = () => {
-  const { activePost, isSaving, updateField } = useCustomEditorContext();
-  const [isSlugEditable, setIsSlugEditable] = useState<boolean>(false);
+  const isSaving = useEditorPostManagerStore((state) => state.isSaving);
+  const updateField = useEditorPostManagerStore((state) => state.updateField);
+  const status = useEditorPostManagerStore((state) => state.activePost?.status);
+  const scheduledAt = useEditorPostManagerStore(
+    (state) => state.activePost?.scheduled_at
+  );
+  const visibility = useEditorPostManagerStore(
+    (state) => state.activePost?.visibility
+  );
+  const isSticky = useEditorPostManagerStore(
+    (state) => state.activePost?.is_sticky
+  );
+  const allowComments = useEditorPostManagerStore(
+    (state) => state.activePost?.allow_comments
+  );
   const [isPublishing, setIsPublishing] = useState<boolean>(false);
 
   const router = useRouter();
@@ -90,13 +92,6 @@ export const SidebarContent = () => {
       }, 2000);
     });
   }
-  function handleChange(
-    evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    const { name, value } = evt.target;
-    updateField(name as keyof PostInsert, value);
-  }
-
   return (
     <>
       <Stack
@@ -156,7 +151,7 @@ export const SidebarContent = () => {
                     fontWeight="semibold"
                     textTransform={"capitalize"}
                   >
-                    {activePost?.status}
+                    {status}
                   </Text>
                 </HStack>
               </ListItem>
@@ -172,7 +167,7 @@ export const SidebarContent = () => {
                       fontWeight="semibold"
                       textTransform={"capitalize"}
                     >
-                      {activePost?.visibility}
+                      {visibility}
                     </Text>
                   </HStack>
                   <Button variant={"ghost"} size={"xs"}>
@@ -193,11 +188,11 @@ export const SidebarContent = () => {
                         fontWeight="semibold"
                         textTransform={"capitalize"}
                       >
-                        {activePost?.scheduled_at ? (
+                        {scheduledAt ? (
                           <>
                             <Text fontSize={"small"}>
                               {format(
-                                new Date(activePost?.scheduled_at as Date),
+                                new Date(scheduledAt as Date),
                                 "MMM d, yyyy hh:mm a"
                               )}
                             </Text>
@@ -209,9 +204,7 @@ export const SidebarContent = () => {
                     </HStack>
                     <CalendarPicker
                       defaultValue={
-                        activePost?.scheduled_at
-                          ? new Date(activePost.scheduled_at as Date)
-                          : undefined
+                        scheduledAt ? new Date(scheduledAt as Date) : undefined
                       }
                       isOpen={isOpen}
                       onClose={onClose}
@@ -237,12 +230,9 @@ export const SidebarContent = () => {
                       Allow Comments:
                     </Text>
                     <Switch
-                      isChecked={activePost?.allow_comments as boolean}
+                      isChecked={allowComments as boolean}
                       onChange={() => {
-                        updateField(
-                          "allow_comments",
-                          !activePost?.allow_comments
-                        );
+                        updateField("allow_comments", !allowComments);
                       }}
                     />
                   </HStack>
@@ -256,9 +246,9 @@ export const SidebarContent = () => {
                       Pinned:
                     </Text>
                     <Switch
-                      isChecked={activePost?.is_sticky as boolean}
+                      isChecked={isSticky as boolean}
                       onChange={() => {
-                        updateField("is_sticky", !activePost?.is_sticky);
+                        updateField("is_sticky", !isSticky);
                       }}
                     />
                   </HStack>
@@ -268,7 +258,7 @@ export const SidebarContent = () => {
           </Box>
         </SectionCard>
         <SectionCard title="SEO">
-          <SEOSection activePost={activePost} updateField={updateField} />
+          <SEOSection updateField={updateField} />
         </SectionCard>
         <CategorySection />
         <TagsSection />

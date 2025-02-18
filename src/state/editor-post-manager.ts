@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { generateSlug } from "../utils";
 
 type EditorPostManagerState = {
-  activePost: PostInsert | null;
+  activePost: PostSelect | null;
   isDirty: boolean;
   isSaving: boolean;
   hasError: boolean;

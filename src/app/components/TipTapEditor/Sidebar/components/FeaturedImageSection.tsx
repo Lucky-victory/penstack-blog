@@ -1,14 +1,17 @@
-import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { EDITOR_CONTEXT_STATE } from "@/src/types";
 import { Box, Text } from "@chakra-ui/react";
 import { FeaturedImageCard } from "../../FeaturedImageCard";
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
 export const FeaturedImageSection = ({
   activePost,
 }: {
   activePost: EDITOR_CONTEXT_STATE["activePost"];
 }) => {
-  const { updateField } = useCustomEditorContext();
+  const updateField = useEditorPostManagerStore((state) => state.updateField);
+  const featuredImage = useEditorPostManagerStore(
+    (state) => state.activePost?.featured_image
+  );
 
   return (
     <Box>
@@ -19,7 +22,7 @@ export const FeaturedImageSection = ({
         onChange={(imageId) => {
           updateField("featured_image_id", imageId);
         }}
-        image={activePost?.featured_image || null}
+        image={featuredImage || null}
       />
     </Box>
   );

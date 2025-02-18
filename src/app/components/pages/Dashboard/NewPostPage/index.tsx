@@ -13,6 +13,8 @@ import { PermissionGuard } from "../../../PermissionGuard";
 import { useAuth } from "@/src/hooks/useAuth";
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
@@ -45,6 +47,7 @@ export default function NewPostPage() {
     );
   }
   if (!loading && !post) redirect("/not-found");
+  useEditorPostManagerStore.getState().setPost(post!);
   return (
     <AppEditorContextProvider post={post!}>
       <PostEditor />
@@ -55,9 +58,10 @@ export default function NewPostPage() {
 export function PostEditor() {
   const { activePost, setEditorContent, updateField } =
     useCustomEditorContext();
-  const editor = usePenstackEditorStore((state) => state.editor);
-  console.log("editor", editor);
-
+  const activePostZu = useEditorPostManagerStore((state) => state.activePost);
+  console.log({
+    afctivePost: activePostZu,
+  });
   const { user } = useAuth();
   function onEditorUpdate(content: { html: string; text?: string }) {
     setEditorContent(content);

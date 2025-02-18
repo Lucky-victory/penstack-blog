@@ -1,4 +1,3 @@
-import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { EditorActionItem } from "@/src/types";
 import {
   Box,
@@ -12,7 +11,7 @@ import {
 import { Editor } from "@tiptap/react";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { IconType } from "react-icons";
-import { LuChevronsDownUp, LuChevronsUpDown } from "react-icons/lu";
+import {  LuChevronsUpDown } from "react-icons/lu";
 
 interface Option {
   id: number | string;

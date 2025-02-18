@@ -1,11 +1,5 @@
-import {
-  BubbleMenu,
-  FloatingMenu,
-  mergeAttributes,
-  ReactNodeViewRenderer,
-  useEditor,
-} from "@tiptap/react";
-import { Box, Flex, Hide } from "@chakra-ui/react";
+import { useEditor } from "@tiptap/react";
+import { Flex, Hide } from "@chakra-ui/react";
 
 import { useMemo } from "react";
 
@@ -36,15 +30,12 @@ import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { all, createLowlight } from "lowlight";
 
 const lowlight = createLowlight(all);
-
-import { CodeBlock } from "@tiptap/extension-code-block";
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { PenstackSlashCommandExtension } from "@/src/lib/editor/extensions/slash-command";
-import { PenstackCodeBlockRenderer } from "../Renderers/PenstackCodeBlockRenderer";
 import { generateSlug } from "@/src/utils";
-import { Blockquote } from "@tiptap/extension-blockquote";
 import PenstackBlockquote from "@/src/lib/editor/extensions/blockquote";
 import { PenstackCodeblock } from "@/src/lib/editor/extensions/code-block";
+
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -63,11 +54,7 @@ function TipTapEditor({
           keepAttributes: false,
         },
       }),
-      CodeBlock.extend({
-        addNodeView() {
-          return ReactNodeViewRenderer(PenstackCodeBlockRenderer);
-        },
-      }),
+
       Heading.extend({
         priority: 1000,
         addProseMirrorPlugins() {
@@ -143,15 +130,18 @@ function TipTapEditor({
     ],
     []
   );
+  const setEditor = usePenstackEditorStore((state) => state.setEditor);
+  const setEditorContent = usePenstackEditorStore(
+    (state) => state.setEditorContent
+  );
   const debouncedUpdate = useMemo(
     () =>
-      debounce(
-        (content: { html: string; text?: string }) => onUpdate?.(content),
-        750
-      ),
+      debounce((content: { html: string; text?: string }) => {
+        onUpdate?.(content);
+        setEditorContent(content);
+      }, 750),
     [onUpdate]
   );
-  const setEditor = usePenstackEditorStore((state) => state.setEditor);
   const editor = useEditor({
     editorProps: { attributes: { class: "penstack-post-editor" } },
     enablePasteRules: true,

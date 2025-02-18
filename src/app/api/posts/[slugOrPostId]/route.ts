@@ -120,6 +120,7 @@ export async function DELETE(
             or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId))
           );
         revalidateTag("getPost");
+        revalidateTag("getPlainPost");
         return NextResponse.json(
           {
             message: "Post deleted successfully",

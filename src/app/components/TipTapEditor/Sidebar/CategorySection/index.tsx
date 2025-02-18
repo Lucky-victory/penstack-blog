@@ -13,15 +13,18 @@ import {
 import { SectionCard } from "../../../Dashboard/SectionCard";
 import isEmpty from "just-is-empty";
 import { LuPlus } from "react-icons/lu";
-import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { useCategories } from "@/src/hooks/useCategories";
 import axios from "axios";
 
 import { useState } from "react";
 import { generateSlug } from "@/src/utils";
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
 export const CategorySection = () => {
-  const { activePost, content, updateField } = useCustomEditorContext();
+  const categoryId = useEditorPostManagerStore(
+    (state) => state.activePost?.category_id
+  );
+  const updateField = useEditorPostManagerStore((state) => state?.updateField);
 
   const [newCategory, setNewCategory] = useState("");
   const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);
@@ -56,7 +59,7 @@ export const CategorySection = () => {
         <Stack
           as={RadioGroup}
           gap={2}
-          value={activePost?.category_id?.toString() || ""}
+          value={categoryId?.toString() || ""}
           name="category_id"
           onChange={(val) =>
             updateField("category_id", !isEmpty(val) ? Number(val) : null)

@@ -17,20 +17,20 @@ import {
 } from "@chakra-ui/react";
 import DashHeader from "../../Dashboard/Header";
 import { LuSettings } from "react-icons/lu";
-import { Editor } from "@tiptap/react";
 import { SidebarContent } from "../Sidebar";
-import { useCustomEditorContext } from "@/src/context/AppEditor";
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import React from "react";
 import { formatDate } from "@/src/utils";
-import { UserInfoComp } from "../../Dashboard/UserInfoComp";
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
 function EditorHeader() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { activePost, hasError, isDirty } = useCustomEditorContext();
-  const lastUpdate = useMemo(() => {
-    return activePost?.updated_at;
-  }, [activePost?.updated_at]);
+  const isDirty = useEditorPostManagerStore((state) => state.isDirty);
+  const hasError = useEditorPostManagerStore((state) => state.hasError);
+  const lastUpdate = useEditorPostManagerStore(
+    (state) => state.activePost?.updated_at
+  );
+
   return (
     <>
       <DashHeader pos="sticky" top={0} zIndex={10}>

@@ -19,18 +19,19 @@ import { SectionCard } from "../../../Dashboard/SectionCard";
 import { memo, useState } from "react";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { motion, AnimatePresence } from "framer-motion";
 import { generateSlug } from "@/src/utils";
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
 export const TagsSection = memo(() => {
-  const { activePost } = useCustomEditorContext();
   const [tagToRemoveId, setTagToRemoveId] = useState<null | number>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
   const queryClient = useQueryClient();
-  const postId = activePost?.post_id || "";
+  const postId = useEditorPostManagerStore(
+    (state) => state.activePost?.post_id
+  );
 
   const { data: postTags, isLoading } = useQuery({
     queryKey: ["postTags", postId],

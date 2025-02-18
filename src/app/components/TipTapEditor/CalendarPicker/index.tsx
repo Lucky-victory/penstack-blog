@@ -9,12 +9,12 @@ import {
   useOutsideClick,
   useToast,
 } from "@chakra-ui/react";
-import { useCustomEditorContext } from "@/src/context/AppEditor";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { CRON_REQUEST_METHOD, CronJobPayload } from "@/src/lib/cron";
 import { dateTimeToCronJobSchedule } from "@/src/lib/cron/helper";
 import { addMinutes } from "date-fns";
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
 export const CalendarPicker = ({
   defaultValue,
@@ -32,7 +32,13 @@ export const CalendarPicker = ({
     ref: popRef,
     handler: onClose,
   });
-  const { updateField, activePost } = useCustomEditorContext();
+  const activePostTitle = useEditorPostManagerStore(
+    (state) => state.activePost?.title
+  );
+  const activePostId = useEditorPostManagerStore(
+    (state) => state.activePost?.post_id
+  );
+  const updateField = useEditorPostManagerStore((state) => state.updateField);
   const defaultTimezone = useMemo(
     () => Intl.DateTimeFormat().resolvedOptions().timeZone,
     []
@@ -68,7 +74,7 @@ export const CalendarPicker = ({
         },
         url: "/api/schedules/auto-publish",
         enabled: true,
-        title: activePost?.title || "Post schedule",
+        title: activePostTitle || "Post schedule",
         schedule: {
           ...dateTimeToCronJobSchedule(new Date(date)),
           timezone,
@@ -78,7 +84,7 @@ export const CalendarPicker = ({
         requestMethod: CRON_REQUEST_METHOD.PUT,
         extendedData: {
           body: JSON.stringify({
-            post_id: activePost?.post_id,
+            post_id: activePostId,
           }),
         },
       },
