@@ -26,11 +26,8 @@ import {
   Divider,
   Link,
   Image,
-  Button,
-  VStack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import styles from "@/src/lib/editor/nodes/CustomCodeBlock/CodeBlock.module.css";
 import { PenstackCodeBlockRenderer } from "../PenstackCodeBlockRenderer";
 import PenstackBlockquoteRenderer from "../PenstackBlockquoteRenderer";
 interface ContentRendererProps {
@@ -43,26 +40,24 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
     const options: HTMLReactParserOptions = {
       replace: (domNode) => {
         if (domNode instanceof Element && domNode.attribs) {
-          // if (domNode.name === "pre") {
-          //   const language = domNode.children[0].attribs.class?.replace(
-          //     "language-",
-          //     ""
-          //   );
-          //   return (
-          //     <PenstackCodeBlockRenderer
-          //       isEditing={false}
-          //       node={{ attrs: { language } }}
-          //     >
-          //       {domToReact(domNode.children as Element[], options)}
-          //     </PenstackCodeBlockRenderer>
-          //   );
-          // } else if (domNode.name === "code") {
-          //   return (
-          //     <Code bg="red" fontFamily="monospace">
-          //       {domToReact(domNode.children as Element[], options)}
-          //     </Code>
-          //   );
-          // }
+          if (domNode.name === "pre") {
+            const firstChild = domNode.children.find(
+              (child): child is Element =>
+                child instanceof Element && child.name === "code"
+            );
+
+            if (firstChild) {
+              const langClass = firstChild.attribs.class || "";
+              const language = langClass.replace("language-", "") || "";
+              const code =
+                (firstChild.children[0] as DOMNode & { data?: string })?.data ||
+                "";
+              return (
+                <PenstackCodeBlockRenderer language={language} code={code} />
+              );
+            }
+          }
+
           // Handle PostCard
           if (domNode.attribs?.["data-type"] === "post-card") {
             return (
@@ -105,7 +100,7 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           }
 
           // Handle block elements with Chakra UI components
-          if (domNode.name === "p") {
+          if (domNode.name === "p" && !domNode.parent) {
             return (
               <Text mb={4}>
                 {domToReact(domNode.children as Element[], options)}
@@ -215,7 +210,12 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           }
           if (domNode.name === "code") {
             return (
-              <Code>{domToReact(domNode.children as Element[], options)}</Code>
+              <Code
+                color={"red.600"}
+                bg={useColorModeValue("gray.200", "gray.800")}
+              >
+                {domToReact(domNode.children as Element[], options)}
+              </Code>
             );
           }
           if (domNode.name === "hr") {
@@ -258,3 +258,39 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
   }
 );
 ContentRenderer.displayName = "ContentRenderer";
+
+function convertNodeToReactElements(nodes: any[]): React.ReactNode {
+  return nodes.map((node, i) => {
+    if (node.type === "text") {
+      return <React.Fragment key={i}>{node.value}</React.Fragment>;
+    }
+    if (node.type === "element") {
+      const className = node.properties.className || [];
+      return (
+        <Box as="span" key={i} className={className.join(" ")} display="inline">
+          {convertNodeToReactElements(node.children)}
+        </Box>
+      );
+    }
+    return null;
+  });
+}
+
+function getWeightForClassName(className: string): string {
+  const classesToBold = [
+    "hljs-keyword",
+    "hljs-built_in",
+    "hljs-type",
+    "hljs-function",
+    "hljs-class",
+    "hljs-title",
+  ];
+
+  return classesToBold.includes(className) ? "bold" : "normal";
+}
+
+function getStyleForClassName(className: string): string {
+  const classesToItalicize = ["hljs-comment", "hljs-doctag", "hljs-meta"];
+
+  return classesToItalicize.includes(className) ? "italic" : "normal";
+}

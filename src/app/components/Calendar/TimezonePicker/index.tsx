@@ -31,7 +31,7 @@ const TimezonePicker = ({
   const [selectedTimezone, setSelectedTimezone] = useState(defaultValue);
   const [searchQuery, setSearchQuery] = useState("");
   const groupTextColor = useColorModeValue("gray.700", "gray.300");
-  const sbCb = useCallback((query: string) => {
+  const searchCb = useCallback((query: string) => {
     setSearchQuery(query);
   }, []);
   const groupedTimezones = useMemo(() => {
@@ -153,7 +153,10 @@ const TimezonePicker = ({
               {selectedTimezone || "Select timezone"}
             </MenuButton>
             <MenuList rounded="xl" maxH={LIST_HEIGHT} overflowY="auto" px={2}>
-              <SearchInput searchQuery={searchQuery} setSearchQuery={sbCb} />
+              <SearchInput
+                searchQuery={searchQuery}
+                setSearchQuery={searchCb}
+              />
               <FixedSizeList
                 height={LIST_HEIGHT}
                 itemCount={flattenedTimezones.length}

@@ -44,6 +44,7 @@ import { PenstackCodeBlockRenderer } from "../Renderers/PenstackCodeBlockRendere
 import { generateSlug } from "@/src/utils";
 import { Blockquote } from "@tiptap/extension-blockquote";
 import PenstackBlockquote from "@/src/lib/editor/extensions/blockquote";
+import { PenstackCodeblock } from "@/src/lib/editor/extensions/code-block";
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -133,6 +134,9 @@ function TipTapEditor({
       TableOfContents,
       MediaExtension,
       PostCardExtension,
+      PenstackCodeblock.configure({
+        lowlight,
+      }),
       PenstackYouTubeExtension,
       PenstackTwitterExtension,
       PenstackSlashCommandExtension,

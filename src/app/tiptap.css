@@ -1,4 +1,4 @@
-.tiptap {
+.penstack-post-editor {
   padding: 1rem;
   padding-bottom: 3rem;
   min-height: 450px;
@@ -7,22 +7,26 @@
   height: 100%;
   overflow-y: auto;
   background-color: var(--chakra-colors-white);
+  --link-color: var(--chakra-colors-brand-500);
+  --link-hover-color: var(--chakra-colors-blue-600);
+  --white: var(--chakra-colors-white);
+  --black: var(--chakra-colors-black);
 }
-.chakra-ui-dark .tiptap {
+.chakra-ui-dark .penstack-post-editor {
   background-color: var(--chakra-colors-gray-800);
 }
 @media (prefers-color-scheme: dark) {
-  .tiptap {
+  .penstack-post-editor {
     background-color: var(--chakra-colors-gray-800);
   }
 }
-.tiptap:focus {
+.penstack-post-editor:focus {
   outline: none;
 }
-.tiptap > * + * {
+.penstack-post-editor > * + * {
   margin-top: 0.5em;
 }
-.tiptap p.is-editor-empty:first-child::before {
+.penstack-post-editor p.is-editor-empty:first-child::before {
   color: #939aa0;
   content: attr(data-placeholder);
   float: left;
@@ -71,89 +75,159 @@
   margin-bottom: 0.5rem;
 }
 
-.penstack-post-editor ul li::marker,
-.penstack-post-editor ol li::marker {
-  color: var(--chakra-colors-gray-600);
-  font-size: 1em;
-}
-
-.tiptap h1,
-.tiptap h2,
-.tiptap h3,
-.tiptap h4,
-.tiptap h5,
-.tiptap h6 {
+.penstack-post-editor h1,
+.penstack-post-editor h2,
+.penstack-post-editor h3,
+.penstack-post-editor h4,
+.penstack-post-editor h5,
+.penstack-post-editor h6 {
   line-height: 1.1;
 }
 
-.tiptap h1 {
+.penstack-post-editor h1 {
   font-size: 2.5rem;
   font-weight: bold;
   margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
-.tiptap h2 {
+.penstack-post-editor h2 {
   font-size: 2rem;
   font-weight: bold;
   margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
-.tiptap h3 {
+.penstack-post-editor h3 {
   font-size: 1.75rem;
   font-weight: bold;
   margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
-.tiptap h4 {
+.penstack-post-editor h4 {
   font-size: 1.5rem;
   font-weight: bold;
   margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
-.tiptap h5 {
+.penstack-post-editor h5 {
   font-size: 1.25rem;
   font-weight: bold;
   margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
-.tiptap h6 {
+.penstack-post-editor h6 {
   font-size: 1rem;
   font-weight: bold;
   margin-top: 1.2rem;
   margin-bottom: 1rem;
 }
 
-.tiptap mark {
+.penstack-post-editor mark {
   background-color: yellow;
 }
 
-.tiptap img {
+.penstack-post-editor img {
   max-width: 100%;
   height: auto;
 }
 
-.tiptap hr {
+.penstack-post-editor hr {
   border: none;
   border-top: 2px solid var(--chakra-colors-gray-500);
   margin: 2rem 0;
 }
 
-.tiptap a {
+.penstack-post-editor a {
   color: var(--link-color);
   /* text-decoration: underline; */
 }
 
 @media (prefers-color-scheme: dark) {
-  .tiptap mark {
-    /* background-color: var(--chakra-colors-yellow-700); */
+  .penstack-post-editor {
+    --link-color: var(--chakra-colors-brand-300);
   }
+}
+.penstack-post-editor :first-child {
+  margin-top: 0;
+}
+.penstack-code-block {
+  --white: var(--chakra-colors-white);
+  --black: var(--chakra-colors-black);
+  --comment-quote-color: #616161;
+  background: var(--black);
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+  padding: 0.75rem 1rem;
+  position: relative;
+}
+.penstack-code-block pre {
+  max-height: 450px;
+  width: 100%;
+  overflow: auto;
+  color: var(--white);
+  font-family: "JetBrainsMono", monospace;
+}
 
-  .tiptap a {
-    color: var(--chakra-colors-brand-300);
-  }
+.penstack-code-block pre code {
+  background: none;
+  color: inherit;
+  font-size: 0.8rem;
+  padding: 0;
+}
+
+/* Code styling */
+.penstack-code-block pre .hljs-comment,
+.penstack-code-block pre .hljs-quote {
+  color: var(--comment-quote-color);
+}
+
+.penstack-code-block pre .hljs-variable,
+.penstack-code-block pre .hljs-template-variable,
+.penstack-code-block pre .hljs-attribute,
+.penstack-code-block pre .hljs-tag,
+.penstack-code-block pre .hljs-name,
+.penstack-code-block pre .hljs-regexp,
+.penstack-code-block pre .hljs-link,
+.penstack-code-block pre .hljs-name,
+.penstack-code-block pre .hljs-selector-id,
+.penstack-code-block pre .hljs-selector-class {
+  color: #f98181;
+}
+
+.penstack-code-block pre .hljs-number,
+.penstack-code-block pre .hljs-meta,
+.penstack-code-block pre .hljs-built_in,
+.penstack-code-block pre .hljs-builtin-name,
+.penstack-code-block pre .hljs-literal,
+.penstack-code-block pre .hljs-type,
+.penstack-code-block pre .hljs-params {
+  color: #fbbc88;
+}
+
+.penstack-code-block pre .hljs-string,
+.penstack-code-block pre .hljs-symbol,
+.penstack-code-block pre .hljs-bullet {
+  color: #b9f18d;
+}
+
+.penstack-code-block pre .hljs-title,
+.penstack-code-block pre .hljs-section {
+  color: #faf594;
+}
+
+.penstack-code-block pre .hljs-keyword,
+.penstack-code-block pre .hljs-selector-tag {
+  color: #70cff8;
+}
+
+.penstack-code-block pre .hljs-emphasis {
+  font-style: italic;
+}
+
+.penstack-code-block pre .hljs-strong {
+  font-weight: 700;
 }

@@ -82,6 +82,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/hast": "^3.0.4",
     "@types/lodash": "^4.17.7",
     "@types/node": "^20",
     "@types/node-cron": "^3.0.11",

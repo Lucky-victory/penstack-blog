@@ -1,7 +1,5 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import "./globals.css";
-import "./tiptap.css";
-import "./calendar.css";
 import { fonts } from "../lib/fonts";
 import { ChakraProvider } from "../providers/chakra";
 import ReactQueryClient from "../providers/react-query";

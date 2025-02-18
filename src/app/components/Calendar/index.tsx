@@ -13,7 +13,16 @@ import {
   extractFullTimeString,
   mergeTimeStringWithDate,
 } from "@/src/lib/cron/helper";
-import { HStack, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  HStack,
+  Stack,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import TimezonePicker from "./TimezonePicker";
 
 interface CalendarDataItem {
@@ -33,16 +42,11 @@ interface CalendarProps {
   onCancel?: () => void;
   onDateSelect?: (date: Date) => void;
   onTimezoneChange?: (timezone: string) => void;
-  /**
-   * The start date of the calendar. Defaults to the current date.
-   */
   startDate?: Date;
-  /**
-   * The end date of the calendar. Defaults to the 10 years from the current date.
-   */
   endDate?: Date;
   footer?: ReactNode;
 }
+
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = [
   "January",
@@ -65,7 +69,7 @@ function generateCalendarData(date: Date): CalendarData {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayOfMonth = new Date(year, month, 1).getDay();
 
-  const monthData = {
+  return {
     name: MONTHS[month],
     days: Array.from({ length: daysInMonth }, (_, i) => ({
       day: i + 1,
@@ -73,8 +77,6 @@ function generateCalendarData(date: Date): CalendarData {
       isToday: isToday(new Date(year, month, i + 1)),
     })),
   };
-
-  return monthData;
 }
 
 const Calendar: React.FC<CalendarProps> = ({
@@ -93,17 +95,28 @@ const Calendar: React.FC<CalendarProps> = ({
   const [disableNextBtn, setDisableNextBtn] = useState(false);
   const [startDate, setStartDate] = useState(_startDate);
   const [endDate, setEndDate] = useState(_endDate);
+
+  const bg = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const headerBorderColor = useColorModeValue("gray.300", "gray.600");
+  const weekDayColor = useColorModeValue("gray.500", "gray.400");
+  const navBtnBg = useColorModeValue("white", "gray.700");
+  const navBtnColor = useColorModeValue("gray.500", "gray.400");
+  const navBtnHoverBg = useColorModeValue("brand.100", "gray.600");
+  const navBtnHoverColor = useColorModeValue("black", "white");
+  const dayHoverBg = useColorModeValue("brand.100", "gray.600");
+  const todayBg = useColorModeValue("brand.100", "gray.700");
+  const todayColor = "brand.500";
+  const selectedBg = "brand.500";
+  const selectedColor = "white";
+
   const handlePrevMonth = () => {
-    if (currentDate.getTime() <= startDate.getTime()) {
-      return;
-    }
+    if (currentDate.getTime() <= startDate.getTime()) return;
     setCurrentDate(subMonths(currentDate, 1));
   };
 
   const handleNextMonth = () => {
-    if (currentDate.getTime() >= endDate.getTime()) {
-      return;
-    }
+    if (currentDate.getTime() >= endDate.getTime()) return;
     setCurrentDate(addMonths(currentDate, 1));
   };
 
@@ -120,45 +133,96 @@ const Calendar: React.FC<CalendarProps> = ({
   };
 
   const currentMonthData = generateCalendarData(currentDate);
+
   useEffect(() => {
     setDisablePrevBtn(currentDate.getTime() <= startDate.getTime());
   }, [currentDate, startDate]);
+
   useEffect(() => {
     setDisableNextBtn(currentDate.getTime() >= endDate.getTime());
   }, [currentDate, endDate]);
+
   return (
-    <div className="calendar">
-      <div className="calendar-header">
-        <button
+    <Box
+      width="300px"
+      border="1px solid"
+      borderColor={borderColor}
+      borderRadius="18px"
+      overflow="hidden"
+      bg={bg}
+      boxShadow="var(--card-raised-soft)"
+      p="10px"
+      fontSize="14px"
+    >
+      <Flex
+        justify="space-between"
+        align="center"
+        borderBottom="1px solid"
+        borderBottomColor={headerBorderColor}
+        pb="10px"
+        mb="10px"
+        fontWeight="medium"
+      >
+        <Button
           aria-label="Previous Month"
-          disabled={disablePrevBtn}
-          className="prev-month"
+          isDisabled={disablePrevBtn}
           onClick={handlePrevMonth}
+          bg={navBtnBg}
+          color={navBtnColor}
+          size="sm"
+          p="3px"
+          borderRadius="6px"
+          w="24px"
+          h="24px"
+          minW="24px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          _hover={{
+            bg: navBtnHoverBg,
+            color: navBtnHoverColor,
+          }}
         >
           <LuChevronLeft />
-        </button>
-        <div className="current-month">{format(currentDate, "MMMM yyyy")}</div>
-        <button
+        </Button>
+        <Text>{format(currentDate, "MMMM yyyy")}</Text>
+        <Button
           aria-label="Next Month"
-          disabled={disableNextBtn}
-          className="next-month"
+          isDisabled={disableNextBtn}
           onClick={handleNextMonth}
+          bg={navBtnBg}
+          color={navBtnColor}
+          size="sm"
+          p="3px"
+          borderRadius="6px"
+          w="24px"
+          h="24px"
+          minW="24px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          _hover={{
+            bg: navBtnHoverBg,
+            color: navBtnHoverColor,
+          }}
         >
           <LuChevronRight />
-        </button>
-      </div>
-      <div className="week-days">
+        </Button>
+      </Flex>
+
+      <Grid templateColumns="repeat(7, 1fr)" gap="8px">
         {DAYS_OF_WEEK.map((day) => (
-          <div key={day} className="week-day">
+          <Text key={day} textAlign="center" color={weekDayColor}>
             {day}
-          </div>
+          </Text>
         ))}
-      </div>
-      <div className="days">
+      </Grid>
+
+      <Grid templateColumns="repeat(7, 1fr)" gap="8px" py="10px">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
           .slice(0, DAYS_OF_WEEK.indexOf(currentMonthData.days[0].dayOfWeek))
           .map((_, i) => (
-            <div key={`empty-${i}`} className="day empty"></div>
+            <Box key={`empty-${i}`} />
           ))}
         {currentMonthData.days.map(({ day, isToday, dayOfWeek }) => {
           const isSelected =
@@ -166,30 +230,37 @@ const Calendar: React.FC<CalendarProps> = ({
             selectedDate?.getMonth() === currentDate.getMonth() &&
             selectedDate?.getFullYear() === currentDate.getFullYear();
           return (
-            <button
+            <Button
               key={day}
               tabIndex={isSelected ? 0 : -1}
-              className={`day ${isSelected ? "selected" : ""} ${
-                isToday ? "today" : ""
-              }`}
+              bg={isSelected ? selectedBg : isToday ? todayBg : "transparent"}
+              color={
+                isSelected ? selectedColor : isToday ? todayColor : "inherit"
+              }
+              h="30px"
+              w="30px"
+              p="8px"
+              fontSize="13px"
               onClick={() => handleDayClick(day)}
-              type="button"
+              _hover={{ bg: dayHoverBg }}
+              borderRadius="6px"
             >
               {day}
-            </button>
+            </Button>
           );
         })}
-      </div>
+      </Grid>
+
       {footer ? (
         footer
       ) : (
         <Stack justify="space-between" mt={4}>
           <HStack
-            align={"center"}
+            align="center"
             my={4}
-            justify={"space-between"}
+            justify="space-between"
             px={1}
-            wrap={"wrap"}
+            wrap="wrap"
           >
             <TimezonePicker
               onChange={(timezone) => {
@@ -206,31 +277,41 @@ const Calendar: React.FC<CalendarProps> = ({
               }}
             />
           </HStack>
-          <div className="calendar-footer">
-            <button
-              className="cancel-button"
+          <Flex justify="flex-end" align="center" gap="10px" p="8px">
+            <Button
+              variant="outline"
+              size="sm"
+              borderRadius="16px"
               onClick={() => {
                 onCancel?.();
                 setSelectedDate(null);
               }}
+              fontSize="13px"
+              px="12px"
+              py="3px"
+              h="auto"
             >
               Cancel
-            </button>
-            <button
-              className="done-button"
+            </Button>
+            <Button
+              colorScheme="brand"
+              size="sm"
+              borderRadius="16px"
               onClick={() => {
-                console.log({ selectedDate });
-
                 onDone?.(selectedDate as Date);
                 onDateSelect?.(selectedDate as Date);
               }}
+              fontSize="13px"
+              px="12px"
+              py="3px"
+              h="auto"
             >
               Done
-            </button>
-          </div>
+            </Button>
+          </Flex>
         </Stack>
       )}
-    </div>
+    </Box>
   );
 };
 
