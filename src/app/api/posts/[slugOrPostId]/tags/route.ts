@@ -1,7 +1,7 @@
 import { db } from "@/src/db";
 import { posts, postTags, tags } from "@/src/db/schemas/posts.sql";
 import { getPlainPost } from "@/src/lib/queries/post";
-import { and, eq, inArray, or } from "drizzle-orm";
+import { and, eq, inArray, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -64,12 +64,24 @@ export async function POST(
       );
     }
 
-    const newPostTags = tagIds.map((tagId) => ({
+    const existingTags = await db
+      .select({ tag_id: postTags.tag_id })
+      .from(postTags)
+      .where(
+        and(eq(postTags.post_id, post.id), inArray(postTags.tag_id, tagIds))
+      );
+
+    const existingTagIds = new Set(existingTags.map((tag) => tag.tag_id));
+    const newTagIds = tagIds.filter((id) => !existingTagIds.has(id));
+
+    const newPostTags = newTagIds.map((tagId) => ({
       post_id: post.id,
       tag_id: tagId,
     }));
 
-    await db.insert(postTags).values(newPostTags);
+    if (newPostTags.length > 0) {
+      await db.insert(postTags).values(newPostTags);
+    }
 
     return NextResponse.json({
       message: "Tags added to post successfully",

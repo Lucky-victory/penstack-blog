@@ -4,7 +4,6 @@ import {
   postViewAnalytics,
   postViews,
   activePostViewers,
-  postViewStats,
 } from "../../db/schemas";
 
 const DUPLICATE_VIEW_WINDOW = 5 * 60; // 5 minutes in seconds
@@ -138,22 +137,22 @@ const updateDailyStats = async (postId: number) => {
     anonymousViews: number;
   };
 
-  await db
-    .insert(postViewStats)
-    .values({
-      post_id: postId,
-      view_date: new Date(today),
-      total_views: stats.totalViews,
-      unique_views: stats.uniqueViews,
-      registered_user_views: stats.registeredViews,
-      anonymous_views: stats.anonymousViews,
-    })
-    .onDuplicateKeyUpdate({
-      set: {
-        total_views: stats.totalViews,
-        unique_views: stats.uniqueViews,
-        registered_user_views: stats.registeredViews,
-        anonymous_views: stats.anonymousViews,
-      },
-    });
+  // await db
+  //   .insert(postViewStats)
+  //   .values({
+  //     post_id: postId,
+  //     view_date: new Date(today),
+  //     total_views: stats.totalViews,
+  //     unique_views: stats.uniqueViews,
+  //     registered_user_views: stats.registeredViews,
+  //     anonymous_views: stats.anonymousViews,
+  //   })
+  //   .onDuplicateKeyUpdate({
+  //     set: {
+  //       total_views: stats.totalViews,
+  //       unique_views: stats.uniqueViews,
+  //       registered_user_views: stats.registeredViews,
+  //       anonymous_views: stats.anonymousViews,
+  //     },
+  //   });
 };
