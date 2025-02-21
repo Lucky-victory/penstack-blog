@@ -14,23 +14,23 @@
   }
 }
 /* Webkit browsers (Chrome, Safari, newer versions of Opera) */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
-}
+} */
 
-::-webkit-scrollbar-thumb {
+/* ::-webkit-scrollbar-thumb {
   background-color: var(--chakra-colors-gray-300);
   border-radius: 2px;
-}
+} */
 .chakra-ui-dark ::-webkit-scrollbar-thumb {
   background-color: var(--chakra-colors-gray-600);
 }
 /* Firefox */
-* {
+/* * {
   scrollbar-width: thin;
   scrollbar-color: var(--chakra-colors-gray-300) transparent;
-}
+} */
 .chakra-ui-dark * {
   scrollbar-color: var(--chakra-colors-gray-600) transparent;
 }

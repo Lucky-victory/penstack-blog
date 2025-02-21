@@ -46,24 +46,26 @@ import { Newsletter } from "../../NewsLetter";
 const MotionBox = motion(Box);
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
-  // useTrackView(post.id);
+  useTrackView(post.id);
 
   const sidebarWidth = useBreakpointValue({ base: "full", md: "300px" });
   const metaColor = useColorModeValue("gray.500", "gray.400");
-  const borderColor = useColorModeValue("gray.300", "gray.600");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const bgColor = useColorModeValue("white", "#121212");
+
   if (!post) {
     return <Loader />;
   }
 
   return (
-    <PageWrapper styleProps={{ px: 0 }}>
+    <PageWrapper styleProps={{ px: 0, bg: bgColor }}>
       <MotionBox
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         {/* Post Content Section */}
-        <Container maxW="container.xl" py={8}>
+        <Container maxW="container.xl" py={8} whiteSpace={"break-spaces"}>
           <ArticleHeader post={post} />
 
           {/* Hero Image */}
@@ -88,22 +90,29 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               objectFit="cover"
             />
           </Box>
-          <HStack mb={{ base: 8, md: 12 }} justify={"space-between"}>
-            {post?.tags && (
-              <HStack wrap="wrap" gap={2}>
-                {post?.tags?.map((tag, index) => (
-                  <Tag
-                    key={index}
-                    rounded={"lg"}
-                    px={3}
-                    textTransform={"capitalize"}
-                  >
-                    #{tag?.name}
-                  </Tag>
-                ))}
-              </HStack>
-            )}
-          </HStack>
+
+          {post?.tags && (
+            <HStack
+              wrap="wrap"
+              gap={2}
+              mb={{ base: 4, md: 6 }}
+              py={2}
+              borderY={"1px solid"}
+              borderColor={borderColor}
+            >
+              {post?.tags?.map((tag, index) => (
+                <Tag
+                  key={index}
+                  rounded={"lg"}
+                  px={3}
+                  textTransform={"capitalize"}
+                >
+                  #{tag?.name}
+                </Tag>
+              ))}
+            </HStack>
+          )}
+
           {/* Main Content Area */}
           <Flex gap={8}>
             {/* Sidebar */}
@@ -122,7 +131,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               minW={350}
               spacing={4}
               // justify={"center"}
-              display={{ base: "none", md: "flex" }}
+              display={{ base: "none", lg: "flex" }}
             >
               <Box
                 rounded={"xl"}

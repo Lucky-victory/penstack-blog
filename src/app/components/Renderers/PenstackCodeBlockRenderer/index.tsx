@@ -35,7 +35,7 @@ export const PenstackCodeBlockRenderer: React.FC<
       const codeElements = convertNodeToReactElements(result.children);
 
       return (
-        <Stack className="penstack-code-block">
+        <Stack className="penstack-code-block" maxW={"full"}>
           <DarkMode>
             <HStack
               justify={"space-between"}
@@ -72,7 +72,7 @@ export const PenstackCodeBlockRenderer: React.FC<
       console.error("Error highlighting code:", e);
       return (
         <Box className="penstack-code-block">
-          <Box as="pre" fontFamily="monospace">
+          <Box as="pre">
             <Code whiteSpace="pre-wrap" display="block">
               {code}
             </Code>

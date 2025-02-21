@@ -8,6 +8,7 @@ import {
   Stack,
   Avatar,
   Badge,
+  Divider,
 } from "@chakra-ui/react";
 import { PostSelect } from "@/src/types";
 import { Link } from "@chakra-ui/next-js";
@@ -25,42 +26,50 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   return (
-    <Box mb={{ base: 6, md: 10 }} px={2}>
+    <Box mb={{ base: 6, md: 10 }} px={{ base: 0, md: 2 }}>
       <Stack
-        align={"center"}
+        align={{ base: "flex-start", md: "center" }}
         as="header"
-        mb={4}
-        maxW={"5xl"}
+        mb={{ base: 2, md: 3 }}
+        maxW={"950px"}
         mx={"auto"}
         spacing={2}
       >
         {post?.category?.name && (
-          <Badge as={"b"} px={3} py={1} mb={0} rounded={"xl"}>
+          <Badge
+            px={3}
+            fontSize={{ base: "0.7em" }}
+            py={1}
+            mb={1}
+            rounded={"xl"}
+          >
             {post?.category?.name}
           </Badge>
         )}
         <Heading
           as="h1"
           mb={1}
-          size="3xl"
-          lineHeight={"1"}
+          size={{ base: "xl", sm: "2xl", md: "3xl" }}
+          // lineHeight={"1"}
           fontWeight={700}
-          textAlign={"center"}
+          textAlign={{ base: "left", md: "center" }}
         >
           {post.title}
         </Heading>
         {post.summary && (
           <Text
             fontSize={{ base: "md", md: "lg" }}
+            mb={1}
             maxW={"3xl"}
             color={summaryColor}
-            textAlign={"center"}
+            textAlign={{ base: "left", md: "center" }}
           >
             {post.summary}
           </Text>
         )}
       </Stack>
-      <Stack align={"center"}>
+      <Divider mb={3} />
+      <Stack align={{ base: "flex-start", md: "center" }}>
         <HStack>
           <Text as="span">By</Text>
           {post.author.avatar && (

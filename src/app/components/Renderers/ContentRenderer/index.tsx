@@ -61,7 +61,7 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           // Handle PostCard
           if (domNode.attribs?.["data-type"] === "post-card") {
             return (
-              <MiniPostCardRenderer
+              <MiniPostCardRenderer 
                 isEditing={false}
                 node={{
                   attrs: {

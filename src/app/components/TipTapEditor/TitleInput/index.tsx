@@ -1,7 +1,8 @@
 import { Box, useColorModeValue, Input } from "@chakra-ui/react";
 
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { debounce } from "lodash";
 
 export const TitleInput = ({
   onChange,
@@ -9,11 +10,9 @@ export const TitleInput = ({
   onChange?: (title: string) => void;
 }) => {
   const postTitle = useEditorPostManagerStore(
-      (state) => state.activePost?.title
-    );
-  const updateField = useEditorPostManagerStore(
-      (state) => state.updateField
-    );
+    (state) => state.activePost?.title
+  );
+  const updateField = useEditorPostManagerStore((state) => state.updateField);
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const [title, setTitle] = useState(postTitle || "");
 
@@ -23,15 +22,22 @@ export const TitleInput = ({
     },
     [onChange]
   );
+  const debouncedUpdate = useMemo(
+    () =>
+      debounce((value: string) => {
+        onChangeCb?.(value);
+        updateField("title", value, true);
+      }, 750),
+    [onChangeCb]
+  );
   const handleTitleChange = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => {
       const { value } = evt.target;
 
-      onChangeCb(value);
+      debouncedUpdate(value);
       setTitle(value);
-      updateField("title", value, true);
     },
-    [onChangeCb, updateField]
+    []
   );
 
   return (
