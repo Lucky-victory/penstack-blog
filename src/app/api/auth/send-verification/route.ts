@@ -39,8 +39,8 @@ export async function POST(req: NextRequest) {
     token,
     expires,
   });
-  const { origin } = new URL(req.url);
-  const appUrl = `${origin}`;
+
+  const appUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
   const verificationLink = `${appUrl}/verify-email?token=${token}`;
 

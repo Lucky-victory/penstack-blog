@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSettings, updateSettings } from "@/src/lib/queries/settings";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function GET() {
   try {
@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
     await updateSettings(data);
     revalidatePath("/");
+    revalidateTag("getSettings");
     return NextResponse.json({ success: true });
   } catch (error) {
     console.log(error);

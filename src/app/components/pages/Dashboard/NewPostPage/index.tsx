@@ -48,16 +48,15 @@ export default function NewPostPage() {
   }
   if (!loading && !post) redirect("/not-found");
   useEditorPostManagerStore.getState().setPost(post!);
-  return (
-    <AppEditorContextProvider post={post!}>
-      <PostEditor />
-    </AppEditorContextProvider>
-  );
+  return <PostEditor />;
 }
 
 export function PostEditor() {
-  const { activePost, setEditorContent, updateField } =
-    useCustomEditorContext();
+  const updateField = useEditorPostManagerStore((state) => state.updateField);
+  const activePost = useEditorPostManagerStore((state) => state.activePost);
+  const setEditorContent = usePenstackEditorStore(
+    (state) => state.setEditorContent
+  );
   const activePostZu = useEditorPostManagerStore((state) => state.activePost);
   console.log({
     afctivePost: activePostZu,
@@ -65,8 +64,7 @@ export function PostEditor() {
   const { user } = useAuth();
   function onEditorUpdate(content: { html: string; text?: string }) {
     setEditorContent(content);
-
-    updateField("content", encode(content.html), true);
+    updateField("content", encode(content.html));
   }
   return (
     <PermissionGuard

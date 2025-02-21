@@ -1,52 +1,30 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense } from "react";
 import {
   Box,
   Container,
-  Heading,
   VStack,
-  Text,
   Flex,
   Image,
   useColorModeValue,
   useBreakpointValue,
-  Button,
-  useToast,
-  Textarea,
-  Card,
-  CardBody,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Divider,
   HStack,
-  Stack,
-  Avatar,
   Tag,
 } from "@chakra-ui/react";
-import { LuMessageCircle } from "react-icons/lu";
 import { PostSelect } from "@/src/types";
 import Loader from "../../Loader";
 import PageWrapper from "../../PageWrapper";
-import { useTrackView } from "@/src/hooks/useTrackView";
-import { formatDate, objectToQueryParams } from "@/src/utils";
+import { objectToQueryParams } from "@/src/utils";
 import { motion } from "framer-motion";
-import { SocialActions } from "./SocialActions";
 import { ArticleHeader } from "./ArticleHeader";
 import { ArticleContent } from "./ArticleContent";
-import { AuthorSection } from "./AuthorSection";
-import { CommentCard } from "./CommentCard";
-import axios from "axios";
-import { encode } from "html-entities";
-import { useQuery } from "@tanstack/react-query";
-import { Link } from "@chakra-ui/next-js";
 import { CommentsSection } from "./CommentSection";
 import { Newsletter } from "../../NewsLetter";
 
 const MotionBox = motion(Box);
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
-  useTrackView(post.id);
+  // useTrackView(post.id);
 
   const sidebarWidth = useBreakpointValue({ base: "full", md: "300px" });
   const metaColor = useColorModeValue("gray.500", "gray.400");

@@ -4,7 +4,6 @@ import { Resend } from "resend";
 import { getSettings } from "../queries/settings";
 import isEmpty from "just-is-empty";
 import { ReactNode } from "react";
-import { decryptKey } from "../encryption";
 
 export const sendEmail = async ({
   to,
@@ -20,7 +19,7 @@ export const sendEmail = async ({
   react: ReactNode;
 }) => {
   const siteSettings = await getSettings();
-  const resendApiKey = decryptKey(siteSettings?.resendApiKey?.value);
+  const resendApiKey = siteSettings?.resendApiKey?.value;
   const resend = new Resend(resendApiKey);
   let defaultFrom = "";
 

@@ -86,14 +86,36 @@ export async function POST(req: NextRequest) {
     const referrer = await headers().get("referer");
     // check if subscriber already exist and do nothing
 
-    const alreadySubscribed = await db.query.newsletters.findFirst({
+    const existingEmail = await db.query.newsletters.findFirst({
       where: eq(newsletters.email, email),
     });
 
-    if (alreadySubscribed) {
+    if (existingEmail) {
+      // if the user previously unsubscribed
+      if (existingEmail.status === "unsubscribed") {
+        // resubscribe them
+        await db
+          .update(newsletters)
+          .set({
+            status: "subscribed",
+          })
+          .where(eq(newsletters.email, email));
+
+        return NextResponse.json({
+          data: {
+            isSubscribed: true,
+            isVerified: existingEmail.verification_status === "verified",
+          },
+          message: "Already subscribed but not verified",
+        });
+      }
+
       return NextResponse.json({
-        data: null,
-        message: "Already subscribed",
+        data: {
+          isSubscribed: existingEmail.status === "subscribed",
+          isVerified: existingEmail.verification_status === "verified",
+        },
+        message: "Member exist",
       });
     }
 
@@ -113,7 +135,10 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({
-      data: null,
+      data: {
+        isSubscribed: true,
+        isVerified: false,
+      },
       message: "Newsletter subscription created successfully",
     });
   } catch (error: any) {

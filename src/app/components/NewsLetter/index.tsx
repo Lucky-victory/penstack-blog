@@ -13,6 +13,8 @@ import {
   LightMode,
   Stack,
   useColorMode,
+  Alert,
+  AlertTitle,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useColorModeValue } from "@chakra-ui/react";
@@ -35,20 +37,15 @@ export const Newsletter = ({
   canWrap?: boolean;
 }) => {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState<"success" | "error" | "info" | null>(
+    null
+  );
   const { colorMode } = useColorMode();
   const formWrapBgColor = isDark || colorMode === "dark" ? "gray.800" : "white";
   const formWrapBorderColor =
     isDark || colorMode === "dark" ? "gray.700" : "gray.300";
   const textColor = useColorModeValue("gray.500", "gray.300");
   const headingColor = isDark || colorMode === "dark" ? "white" : "gray.800";
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (values: { email: string }) => {
-      const { data } = await axios.post("/api/newsletters", values);
-
-      return data;
-    },
-  });
   const {
     mutateAsync: sendVerificationEmail,
     isPending: isVerificationPending,
@@ -62,19 +59,34 @@ export const Newsletter = ({
       return data;
     },
   });
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async (values: { email: string }) => {
+      const { data: response } = await axios.post<{
+        data: { isSubscribed: boolean; isVerified: boolean };
+      }>("/api/newsletters", values);
+      const data = response.data;
+
+      return data;
+    },
+  });
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
       if (isEmpty(email)) {
         return;
       }
-      await mutateAsync({ email });
-      await sendVerificationEmail({ email });
-      setStatus("success");
-      setEmail("");
+      const data = await mutateAsync({ email });
+      if (data.isSubscribed && data.isVerified) {
+        setStatus("info");
+      } else {
+        await sendVerificationEmail({ email });
+        // await sendVerificationEmail({ email });
+        setStatus("success");
+        setEmail("");
+      }
       setTimeout(() => {
-        setStatus("");
-      }, 5000);
+        setStatus(null);
+      }, 10000);
     } catch (error) {}
   };
 
@@ -151,10 +163,16 @@ export const Newsletter = ({
             </Flex>
           </form>
         </Box>
-        {status === "success" && (
-          <Text color="green.500" fontWeight="medium">
-            🎉 Welcome aboard! Check your inbox to confirm subscription.
-          </Text>
+        {status && (
+          <Alert status={status}>
+            <AlertTitle>
+              {status === "error" && "Something went wrong...please try again."}
+              {status === "info" &&
+                "🎉You're already part of the family, thanks."}
+              {status === "success" &&
+                " 🎉 Welcome aboard! Check your inbox to confirm subscription."}
+            </AlertTitle>
+          </Alert>
         )}
       </Stack>
     </Box>

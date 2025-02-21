@@ -6,8 +6,6 @@ import {
   activePostViewers,
 } from "../../db/schemas";
 
-const DUPLICATE_VIEW_WINDOW = 5 * 60; // 5 minutes in seconds
-
 export const trackPostView = async ({
   postId,
   userId,
@@ -42,29 +40,14 @@ export const trackPostView = async ({
   };
 }) => {
   const now = new Date();
-  const duplicateWindow = new Date(
-    now.getTime() - DUPLICATE_VIEW_WINDOW * 1000
-  );
-
-  // Use a transaction for atomicity
   await db.transaction(async (tx) => {
-    const recentView = await tx.query.postViews.findFirst({
-      where: and(
-        eq(postViews.post_id, postId),
-        gte(postViews.viewed_at, duplicateWindow)
-      ),
+    await tx.insert(postViews).values({
+      post_id: postId,
+      user_id: userId,
+      ip_address: ipAddress,
+      user_agent: userAgent,
+      referrer: referrer,
     });
-
-    // If no recent view, insert a new view record
-    if (!recentView) {
-      await tx.insert(postViews).values({
-        post_id: postId,
-        user_id: userId,
-        ip_address: ipAddress,
-        user_agent: userAgent,
-        referrer: referrer,
-      });
-    }
 
     // Always update analytics for the session
     const existingAnalytics = await tx.query.postViewAnalytics.findFirst({
@@ -102,22 +85,22 @@ export const trackPostView = async ({
     }
 
     // Update active viewers
-    await tx
-      .insert(activePostViewers)
-      .values({
-        post_id: postId,
-        user_id: userId,
-        session_id: sessionId,
-      })
-      .onDuplicateKeyUpdate({
-        set: {
-          last_active: sql`CURRENT_TIMESTAMP`,
-        },
-      });
+    //   await tx
+    //     .insert(activePostViewers)
+    //     .values({
+    //       post_id: postId,
+    //       user_id: userId,
+    //       session_id: sessionId,
+    //     })
+    //     .onDuplicateKeyUpdate({
+    //       set: {
+    //         last_active: sql`CURRENT_TIMESTAMP`,
+    //       },
+    //     });
   });
 };
 
-const updateDailyStats = async (postId: number) => {
+export const updateDailyStats = async (postId: number) => {
   const today = new Date().toISOString().split("T")[0];
 
   const stats = (await db

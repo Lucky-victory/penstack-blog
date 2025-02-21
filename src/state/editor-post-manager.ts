@@ -89,7 +89,13 @@ export const useEditorPostManagerStore = create<
           : null,
       }),
 
-    updateField: (key, value, shouldAutosave = true, cb, updateSlug = true) => {
+    updateField: (
+      key,
+      value,
+      shouldAutosave = true,
+      cb,
+      updateSlug = false
+    ) => {
       const currentPost = get().activePost;
       if (!currentPost) return;
 

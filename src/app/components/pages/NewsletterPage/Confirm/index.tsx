@@ -12,66 +12,57 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { LuCheckCircle, LuMailWarning } from "react-icons/lu";
+import { useQuery } from "@tanstack/react-query";
 
 export default function NewsletterConfirm() {
   const searchParams = useSearchParams();
-  const toast = useToast();
-  const [status, setStatus] = useState<"loading" | "success" | "error">(
-    "loading"
-  );
+  const toast = useToast({
+    isClosable: true,
+    position: "top",
+    duration: 5000,
+  });
+
   const token = searchParams.get("token");
 
-  useEffect(() => {
-    const confirmSubscription = async () => {
-      if (!token) {
-        setStatus("error");
-        return;
-      }
-
+  const { status, isPending } = useQuery({
+    queryKey: ["confirmSubscription", token],
+    queryFn: async () => {
       try {
+        if (!token) throw new Error("No token provided");
+
         const response = await fetch(
           `/api/newsletters/confirmation?token=${token}`
         );
         const data = await response.json();
 
-        if (response.ok) {
-          setStatus("success");
-          toast({
-            title: "Subscription confirmed",
-            description: data.message,
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          });
-        } else {
-          setStatus("error");
-          toast({
-            title: "Error",
-            description: data.error,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
+        if (!response.ok) {
+          throw new Error(data.error);
         }
-      } catch (error) {
-        setStatus("error");
+        toast({
+          title: "Subscription confirmed",
+          description: data.message,
+          status: "success",
+        });
+
+        return data;
+      } catch (error: any) {
         toast({
           title: "Error",
-          description: "Something went wrong. Please try again later.",
+          description:
+            error.message || "Something went wrong. Please try again later.",
           status: "error",
-          duration: 5000,
-          isClosable: true,
         });
+        return {}
       }
-    };
-
-    confirmSubscription();
-  }, [token, toast]);
+    },
+    enabled: !!token,
+    retry: false,
+  });
 
   return (
     <Container maxW="container.md" py={20}>
       <VStack spacing={8} align="center">
-        {status === "loading" && (
+        {isPending && (
           <Box textAlign="center">
             <Spinner size="xl" mb={4} color="brand.500" />
             <Heading size="lg" mb={4}>

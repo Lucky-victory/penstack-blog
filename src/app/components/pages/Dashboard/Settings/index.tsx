@@ -124,7 +124,10 @@ export default function DashboardSettingsPage() {
 
       setOriginalSettings({ ...settings });
       setHasChanges(false);
-      queryClient.invalidateQueries({ queryKey: ["settings"] });
+      queryClient.invalidateQueries({
+        queryKey: ["settings"],
+        refetchType: "all",
+      });
       toast({
         title: "Settings saved successfully",
         status: "success",

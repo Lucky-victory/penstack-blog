@@ -18,8 +18,7 @@ export async function POST(req: NextRequest) {
       error: "email is required",
     });
   }
-  const { origin } = new URL(req.url);
-  const appUrl = `${origin}`;
+  const appUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const confirmationUrl = `${appUrl}/newsletter/confirm?token=${verificationToken}`;
 
   await db.insert(newsletters).values({
