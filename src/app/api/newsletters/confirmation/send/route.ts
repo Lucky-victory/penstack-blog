@@ -7,6 +7,7 @@ import { addHours } from "date-fns";
 import crypto from "crypto";
 import { sendEmail } from "@/src/lib/send-email";
 import { getSettings } from "@/src/lib/queries/settings";
+import { eq, sql } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
   const { email, name } = await req.json();
@@ -21,12 +22,33 @@ export async function POST(req: NextRequest) {
   const appUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const confirmationUrl = `${appUrl}/newsletter/confirm?token=${verificationToken}`;
 
-  await db.insert(newsletters).values({
-    email,
-    name,
-    verification_token: verificationToken,
-    verification_token_expires: tokenExpiry,
+  if (!appUrl) {
+    return NextResponse.json(
+      {
+        error: "NEXT_PUBLIC_SITE_URL is required",
+      },
+      { status: 400 }
+    );
+  }
+  const existingEmail = await db.query.newsletters.findFirst({
+    where: eq(sql`lower(${newsletters.email})`, email.toLowerCase()),
   });
+  if (existingEmail) {
+    await db
+      .update(newsletters)
+      .set({
+        verification_token: verificationToken,
+        verification_token_expires: tokenExpiry,
+      })
+      .where(eq(newsletters.email, email));
+  } else {
+    await db.insert(newsletters).values({
+      email,
+      name,
+      verification_token: verificationToken,
+      verification_token_expires: tokenExpiry,
+    });
+  }
 
   const siteSettings = await getSettings();
   await sendEmail({

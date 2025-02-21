@@ -1,54 +1,68 @@
 import { db } from "@/src/db";
 import { newsletters } from "@/src/db/schemas";
 import { NewsletterInsert } from "@/src/types";
-import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const page = Number(searchParams.get("page")) || 1;
-  const limit = Number(searchParams.get("limit")) || 20;
+  const page = Math.max(1, Number(searchParams.get("page")) || 1);
+  const limit = Math.min(
+    100,
+    Math.max(1, Number(searchParams.get("limit")) || 20)
+  );
   const search = searchParams.get("search");
   const status = (searchParams.get("status") || "subscribed") as
     | NewsletterInsert["status"]
     | "all";
-  const sortBy =
-    (searchParams.get("sortBy") as "created_at" | "email" | "name") ||
-    "created_at";
-  const sortOrder = searchParams.get("sortOrder") || "desc";
+  const validSortFields = ["created_at", "email", "name"] as const;
+  const sortBy = validSortFields.includes(searchParams.get("sortBy") as any)
+    ? (searchParams.get("sortBy") as "created_at" | "email" | "name")
+    : "created_at";
+
+  const validSortOrders = ["asc", "desc"] as const;
+  const sortOrder = validSortOrders.includes(
+    searchParams.get("sortOrder") as any
+  )
+    ? (searchParams.get("sortOrder") as "asc" | "desc")
+    : "desc";
 
   const offset = (page - 1) * limit;
 
   const whereConditions = [];
   if (search) {
-    whereConditions.push(ilike(newsletters.email, `%${search}%`));
-    whereConditions.push(ilike(newsletters.name, `%${search}%`));
+    whereConditions.push(
+      or(
+        ilike(newsletters.email, `%${search}%`),
+        ilike(newsletters.name, `%${search}%`)
+      )
+    );
   }
   if (status && status !== "all") {
     whereConditions.push(eq(newsletters.status, status));
   }
 
   try {
-    const totalResult = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(newsletters)
-      .where(and(...whereConditions));
-    const total = Number(totalResult[0].count);
-
     const orderBy = [
       sortOrder === "desc"
         ? desc(newsletters[sortBy])
         : asc(newsletters[sortBy]),
     ];
-
-    const subscribers = await db.query.newsletters.findMany({
-      limit,
-      offset,
-      orderBy,
-      where: whereConditions?.length > 0 ? and(...whereConditions) : undefined,
-    });
-
+    const [totalResult, subscribers] = await Promise.all([
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(newsletters)
+        .where(and(...whereConditions)),
+      db.query.newsletters.findMany({
+        limit,
+        offset,
+        orderBy,
+        where:
+          whereConditions?.length > 0 ? and(...whereConditions) : undefined,
+      }),
+    ]);
+    const total = totalResult[0].count;
     return NextResponse.json({
       data: subscribers,
       meta: {
@@ -75,19 +89,40 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, name } = await req.json();
+    const { email, name, referrer } = await req.json();
 
-    const referrer = await headers().get("referer");
-    // check if subscriber already exist and do nothing
-    if (!email) {
-      throw new Error("Email is required");
+    const _referrer = referrer || (await headers().get("referer")) || null;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      return NextResponse.json(
+        {
+          data: null,
+          error: "Invalid email format",
+          message: "Please provide a valid email address",
+        },
+        { status: 400 }
+      );
     }
+
+    if (name && name.length > 50) {
+      return NextResponse.json(
+        {
+          data: null,
+          error: "Name too long",
+          message: "Name must be less than 50 characters",
+        },
+        { status: 400 }
+      );
+    }
+    // check if subscriber already exist
+
     const existingEmail = await db.query.newsletters.findFirst({
       where: eq(sql`lower(${newsletters.email})`, email.toLowerCase()),
     });
-    console.log(existingEmail);
 
+  
     if (existingEmail) {
+      
       // if the user previously unsubscribed
       if (existingEmail.status === "unsubscribed") {
         // resubscribe them
@@ -96,14 +131,14 @@ export async function POST(req: NextRequest) {
           .set({
             status: "subscribed",
           })
-          .where(eq(newsletters.email, email));
+          .where(eq(newsletters.id, existingEmail.id));
 
         return NextResponse.json({
           data: {
             isSubscribed: true,
             isVerified: existingEmail.verification_status === "verified",
           },
-          message: "Already subscribed but not verified",
+          message: "Newsletter re-subscription created successfully",
         });
       }
 
@@ -112,29 +147,31 @@ export async function POST(req: NextRequest) {
           isSubscribed: existingEmail.status === "subscribed",
           isVerified: existingEmail.verification_status === "verified",
         },
-        message: "Member exist",
+        message: "Member exists",
       });
-    }
-
-    await db.transaction(async (tx) => {
-      await tx
+    } else {
+      await db
         .insert(newsletters)
         .values({
-          email,
+          email: email.toLowerCase(),
           name,
-
-          referrer,
+          referrer: _referrer,
         })
-        .$returningId();
-    });
+        .onDuplicateKeyUpdate({
+          set: {
+            email: email.toLowerCase(),
+            status: "subscribed",
+          },
+        });
 
-    return NextResponse.json({
-      data: {
-        isSubscribed: true,
-        isVerified: false,
-      },
-      message: "Newsletter subscription created successfully",
-    });
+      return NextResponse.json(
+        {
+          data: { isSubscribed: true, isVerified: false },
+          message: "Newsletter subscription created successfully",
+        },
+        { status: 201 }
+      );
+    }
   } catch (error: any) {
     return NextResponse.json(
       {
