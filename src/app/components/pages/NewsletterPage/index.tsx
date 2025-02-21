@@ -103,7 +103,7 @@ const Testimonial = ({
 );
 
 export const NewsletterPage = ({ title }: { title?: string }) => {
-  const [status, setStatus] = useState("");
+ 
   const bgColor = useColorModeValue("gray.50", "gray.900");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
@@ -155,12 +155,6 @@ export const NewsletterPage = ({ title }: { title?: string }) => {
           <HStack w={"full"} mx={"auto"} justify={"center"} pt={4}>
             <Newsletter isDark={false} />
           </HStack>
-
-          {status === "success" && (
-            <Text color="green.500" fontWeight="medium">
-              🎉 Welcome aboard! Check your inbox to confirm subscription.
-            </Text>
-          )}
 
           <Text fontSize="sm" color={textColor}>
             Join developers from Google, Microsoft, Amazon, and other top

@@ -46,7 +46,8 @@ export const NewsletterConfirmationTemplate: FC<
             </Button>
 
             <Text style={text}>
-              If the button doesn&apos;t work, you can also click this link:{" "}
+              If the button doesn&apos;t work, you can click/copy this link to
+              your browser:{" "}
               <Link href={confirmationUrl} style={link}>
                 {confirmationUrl}
               </Link>
@@ -79,9 +80,10 @@ const heading = {
   fontSize: "24px",
   letterSpacing: "-0.5px",
   lineHeight: "1.3",
-  fontWeight: "400",
+  fontWeight: "500",
   color: "#484848",
   padding: "17px 0 0",
+  textAlign: "center" as const,
 };
 
 const section = {

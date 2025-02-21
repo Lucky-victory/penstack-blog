@@ -50,7 +50,7 @@ const authOptions: AuthOptions = {
         return {
           id: profile.sub,
           name: profile.name,
-          email: profile.email,
+          email: profile.email.toLowerCase(),
           avatar: profile.picture,
           username: profile.email.split("@")[0],
           auth_type: "google",
@@ -66,7 +66,7 @@ const authOptions: AuthOptions = {
         return {
           id: profile.id?.toString(),
           name: profile.name || profile.login,
-          email: profile.email,
+          email: profile.email.toLowerCase(),
           avatar: profile.avatar_url,
           username: profile.login,
           auth_type: "github",
@@ -89,7 +89,7 @@ const authOptions: AuthOptions = {
         const user = await db.query.users.findFirst({
           where: or(
             eq(users.username, credentials.emailOrUsername),
-            eq(users.email, credentials.emailOrUsername)
+            eq(users.email, credentials.emailOrUsername.toLowerCase())
           ),
         });
 

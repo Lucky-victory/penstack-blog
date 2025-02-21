@@ -25,7 +25,7 @@ export default function VerifyEmail() {
     setIsLoading(true);
     try {
       const res = await axios.post("/api/auth/send-verification", {
-        email: email || initialEmail,
+        email: (email || initialEmail)?.toLowerCase(),
       });
       if (res.status >= 200 && res.status < 400) {
         toast({

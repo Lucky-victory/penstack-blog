@@ -19,6 +19,7 @@ import {
   AlertIcon,
   useToast,
   AbsoluteCenter,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 
@@ -27,7 +28,7 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const toast = useToast();
-
+  const dividerBg = useColorModeValue("white", "charcoalBlack");
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
@@ -37,8 +38,12 @@ export default function SignIn() {
     setError(null);
 
     const formData = new FormData(e.currentTarget);
+    const emailOrUsername = formData
+      .get("emailOrUsername")
+      ?.toString()
+      .toLowerCase();
     const result = await signIn("credentials", {
-      emailOrUsername: formData.get("emailOrUsername"),
+      emailOrUsername: emailOrUsername,
       password: formData.get("password"),
       redirect: false,
       callbackUrl,
@@ -46,7 +51,7 @@ export default function SignIn() {
 
     if (result?.error) {
       if (result.error === "Please verify your email before signing in") {
-        router.push(`/auth/verify?email=${formData.get("emailOrUsername")}`);
+        router.push(`/auth/verify?email=${emailOrUsername}`);
         return;
       }
       setError(result.error);
@@ -92,7 +97,7 @@ export default function SignIn() {
 
         <Box position="relative" padding="10">
           <Divider />
-          <AbsoluteCenter bg="white" px="4">
+          <AbsoluteCenter bg={dividerBg} px="4">
             <Text color="gray.500">or continue with</Text>
           </AbsoluteCenter>
         </Box>

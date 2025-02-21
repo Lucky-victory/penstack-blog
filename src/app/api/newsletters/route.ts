@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
     | NewsletterInsert["status"]
     | "all";
   const sortBy =
-    (searchParams.get("sortBy") as "created_at" | "updated_at") || "created_at";
+    (searchParams.get("sortBy") as "created_at" | "email" | "name") ||
+    "created_at";
   const sortOrder = searchParams.get("sortOrder") || "desc";
 
   const offset = (page - 1) * limit;
@@ -74,21 +75,17 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const {
-      email,
-      name,
-      status,
-      verification_status,
-      verification_token,
-      verification_token_expires,
-    } = await req.json();
+    const { email, name } = await req.json();
 
     const referrer = await headers().get("referer");
     // check if subscriber already exist and do nothing
-
+    if (!email) {
+      throw new Error("Email is required");
+    }
     const existingEmail = await db.query.newsletters.findFirst({
-      where: eq(newsletters.email, email),
+      where: eq(sql`lower(${newsletters.email})`, email.toLowerCase()),
     });
+    console.log(existingEmail);
 
     if (existingEmail) {
       // if the user previously unsubscribed
@@ -125,10 +122,7 @@ export async function POST(req: NextRequest) {
         .values({
           email,
           name,
-          status,
-          verification_status,
-          verification_token,
-          verification_token_expires,
+
           referrer,
         })
         .$returningId();

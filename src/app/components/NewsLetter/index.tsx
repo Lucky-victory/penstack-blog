@@ -46,27 +46,44 @@ export const Newsletter = ({
     isDark || colorMode === "dark" ? "gray.700" : "gray.300";
   const textColor = useColorModeValue("gray.500", "gray.300");
   const headingColor = isDark || colorMode === "dark" ? "white" : "gray.800";
-  const {
-    mutateAsync: sendVerificationEmail,
-    isPending: isVerificationPending,
-  } = useMutation({
-    mutationFn: async (values: { email: string }) => {
-      const { data } = await axios.post(
-        "/api/newsletters/confirmation/send",
-        values
-      );
+
+  async function sendVerificationEmail(email: string) {
+    try {
+      const { data } = await axios.post("/api/newsletters/confirmation/send", {
+        email,
+      });
 
       return data;
-    },
-  });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (values: { email: string }) => {
-      const { data: response } = await axios.post<{
-        data: { isSubscribed: boolean; isVerified: boolean };
-      }>("/api/newsletters", values);
-      const data = response.data;
+    mutationKey: ["newsletter", email],
+    mutationFn: async () => {
+      try {
+        const body = { email: email.toLowerCase() };
+        const { data: response } = await axios.post<{
+          data: { isSubscribed: boolean; isVerified: boolean };
+        }>("/api/newsletters", body);
+        const data = response.data;
+        console.log({ data });
 
-      return data;
+        if (data.isSubscribed && data.isVerified) {
+          setStatus("info");
+        } else {
+          await sendVerificationEmail(body.email);
+          setStatus("success");
+          setEmail("");
+        }
+        setTimeout(() => {
+          setStatus(null);
+        }, 10000);
+        return data;
+      } catch (error) {
+        setStatus("error");
+        return null;
+      }
     },
   });
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -75,18 +92,7 @@ export const Newsletter = ({
       if (isEmpty(email)) {
         return;
       }
-      const data = await mutateAsync({ email });
-      if (data.isSubscribed && data.isVerified) {
-        setStatus("info");
-      } else {
-        await sendVerificationEmail({ email });
-        // await sendVerificationEmail({ email });
-        setStatus("success");
-        setEmail("");
-      }
-      setTimeout(() => {
-        setStatus(null);
-      }, 10000);
+      const data = await mutateAsync();
     } catch (error) {}
   };
 
@@ -139,10 +145,10 @@ export const Newsletter = ({
                 <LightMode>
                   <Button
                     type="submit"
-                    isLoading={isPending || isVerificationPending}
-                    isDisabled={isPending || isVerificationPending}
+                    loadingText={"Subscribing..."}
+                    isLoading={isPending}
+                    isDisabled={isPending}
                     zIndex={2}
-                    // colorScheme="gray"
                     fontWeight={500}
                   >
                     Subscribe
@@ -151,10 +157,10 @@ export const Newsletter = ({
               ) : (
                 <Button
                   type="submit"
-                  isLoading={isPending || isVerificationPending}
-                  isDisabled={isPending || isVerificationPending}
+                  loadingText={"Subscribing..."}
+                  isLoading={isPending}
+                  isDisabled={isPending}
                   zIndex={2}
-                  colorScheme="brand"
                   fontWeight={500}
                 >
                   Subscribe

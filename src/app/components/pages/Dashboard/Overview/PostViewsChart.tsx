@@ -19,12 +19,21 @@ import {
   useColorModeValue,
   Box,
   Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Icon,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { AggregatedPostViews } from "@/src/types";
+import { LuChevronDown } from "react-icons/lu";
 
 const PostViewsChart = () => {
-  const [timeRange, setTimeRange] = useState("7");
+  const [selectedTimeRange, setSelectedTimeRange] = useState({
+    label: "7 days",
+    value: "7",
+  });
   const timeRanges = useMemo(
     () => [
       { label: "7 days", value: "7" },
@@ -37,10 +46,10 @@ const PostViewsChart = () => {
   );
 
   const { data: postViews, isPending } = useQuery({
-    queryKey: ["analyticsPostViews", timeRange],
+    queryKey: ["analyticsPostViews", selectedTimeRange],
     queryFn: async () => {
       const response = await fetch(
-        `/api/analytics/posts/views?timeRange=${timeRange}`
+        `/api/analytics/posts/views?timeRange=${selectedTimeRange.value}`
       );
       const data = await response.json();
       return data.data as AggregatedPostViews[];
@@ -95,18 +104,38 @@ const PostViewsChart = () => {
         <HStack wrap={"wrap"} justify={"space-between"} gap={4}>
           <Heading size={"md"}>Post Views</Heading>
           <HStack wrap={"wrap"} gap={2}>
-            {timeRanges.map((range) => (
-              <Button
-                size={"sm"}
-                rounded={"lg"}
-                key={range.value}
-                colorScheme={timeRange === range.value ? "brand" : "gray"}
-                variant={timeRange === range.value ? "solid" : "ghost"}
-                onClick={() => setTimeRange(range.value)}
-              >
-                {range.label}
-              </Button>
-            ))}
+            <Menu>
+              {({ isOpen }) => (
+                <>
+                  <MenuButton
+                    as={Button}
+                    size={"sm"}
+                    variant={"outline"}
+                    rightIcon={
+                      <Icon
+                        as={LuChevronDown}
+                        transition={"0.2s ease-in-out"}
+                        transform={isOpen ? "rotate(-180deg)" : "rotate(0deg)"}
+                      />
+                    }
+                  >
+                    {" "}
+                    {selectedTimeRange.label}
+                  </MenuButton>
+                  <MenuList>
+                    {timeRanges.map((range) => (
+                      <MenuItem
+                        key={range.value}
+                        rounded={"lg"}
+                        onClick={() => setSelectedTimeRange(range)}
+                      >
+                        {range.label}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </>
+              )}
+            </Menu>
           </HStack>
         </HStack>
       </CardHeader>

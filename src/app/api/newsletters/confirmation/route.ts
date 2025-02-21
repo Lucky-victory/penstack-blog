@@ -12,10 +12,7 @@ export async function GET(req: NextRequest) {
   }
 
   const subscriber = await db.query.newsletters.findFirst({
-    where: and(
-      eq(newsletters.verification_token, token),
-      eq(newsletters.verification_status, "unverified")
-    ),
+    where: and(eq(newsletters.verification_token, token)),
   });
 
   if (!subscriber || new Date() > subscriber.verification_token_expires!) {

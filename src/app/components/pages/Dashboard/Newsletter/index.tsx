@@ -21,6 +21,7 @@ import {
   ResponsiveValue,
   InputLeftElement,
   HStack,
+  Tag,
 } from "@chakra-ui/react";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { LuSearch } from "react-icons/lu";
@@ -143,31 +144,33 @@ export const DashboardNewsletterPage = () => {
                               <Td>{subscriber.email}</Td>
                               <Td>{subscriber.name || "-"}</Td>
                               <Td>
-                                <Box
-                                  bg={"transparent"}
+                                <Tag
+                                  size="sm"
+                                  // bg={"transparent"}
                                   textTransform={"capitalize"}
-                                  color={
+                                  colorScheme={
                                     subscriber.status === "subscribed"
-                                      ? "green.600"
-                                      : "red.500"
+                                      ? "green"
+                                      : "red"
                                   }
                                 >
                                   {subscriber.status}
-                                </Box>
+                                </Tag>
                               </Td>
                               <Td>
-                                <Box
+                                <Tag
+                                  size="sm"
                                   textTransform={"capitalize"}
-                                  bg={"transparent"}
-                                  color={
+                                  // bg={"transparent"}
+                                  colorScheme={
                                     subscriber.verification_status ===
                                     "verified"
-                                      ? "green.600"
-                                      : "yellow.600"
+                                      ? "green"
+                                      : "yellow"
                                   }
                                 >
                                   {subscriber.verification_status}
-                                </Box>
+                                </Tag>
                               </Td>
                               <Td>
                                 <Tooltip

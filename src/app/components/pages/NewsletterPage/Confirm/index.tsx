@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { LuCheckCircle, LuMailWarning } from "react-icons/lu";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export default function NewsletterConfirm() {
   const searchParams = useSearchParams();
@@ -21,38 +22,42 @@ export default function NewsletterConfirm() {
     position: "top",
     duration: 5000,
   });
-
+  const [status, setStatus] = useState<"success" | "error" | null>(null);
   const token = searchParams.get("token");
 
-  const { status, isPending } = useQuery({
+  const { isPending } = useQuery({
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
     queryKey: ["confirmSubscription", token],
     queryFn: async () => {
       try {
         if (!token) throw new Error("No token provided");
 
-        const response = await fetch(
-          `/api/newsletters/confirmation?token=${token}`
-        );
-        const data = await response.json();
+        const res = await axios(`/api/newsletters/confirmation?token=${token}`);
+        const data = res.data;
 
-        if (!response.ok) {
+        if (res.status >= 200 && res.status < 400) {
+          setStatus("success");
+          toast({
+            title: "Subscription confirmed",
+            description: data.message,
+            status: "success",
+          });
+        } else {
+          setStatus("error");
           throw new Error(data.error);
         }
-        toast({
-          title: "Subscription confirmed",
-          description: data.message,
-          status: "success",
-        });
 
         return data;
       } catch (error: any) {
+        setStatus("error");
         toast({
           title: "Error",
           description:
             error.message || "Something went wrong. Please try again later.",
           status: "error",
         });
-        return {}
+        return null;
       }
     },
     enabled: !!token,

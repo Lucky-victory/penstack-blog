@@ -22,7 +22,7 @@ export async function createUser({
       .insert(users)
       .values({
         name,
-        email,
+        email: email.toLowerCase(),
         password: hashedPassword,
         username,
         auth_type: "local",
