@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardBody,
@@ -10,16 +10,8 @@ import {
   TabPanel,
   Button,
   Input,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   Box,
   Flex,
-  Text,
   InputGroup,
   InputLeftElement,
 } from "@chakra-ui/react";
@@ -27,7 +19,6 @@ import { LuSearch, LuPlus } from "react-icons/lu";
 import { PageTitleHeader } from "@/src/app/components/Dashboard/PageTitleCard";
 import DashHeader from "@/src/app/components/Dashboard/Header";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
-import { TaxonomyItem } from "@/src/types";
 import { useTaxonomiesStore } from "./state";
 import { CategoriesPanel } from "./CategoriesPanel";
 import { TagsPanel } from "./TagsPanel";

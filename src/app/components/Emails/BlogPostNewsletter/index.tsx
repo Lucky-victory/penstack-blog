@@ -11,7 +11,9 @@ import {
   Text,
 } from "@react-email/components";
 import { PostSelect } from "../../../../types";
-import { formatPostPermalink } from "@/src/utils";
+import { formatPostPermalink, shortenText, stripHtml } from "@/src/utils";
+import { getSiteUrl, resolveUrl } from "@/src/utils/url";
+import { decode } from "html-entities";
 
 interface BlogPostEmailProps {
   post: PostSelect;
@@ -48,20 +50,32 @@ export const BlogPostNewsletter = ({
             By {post.author.name} •{" "}
             {new Date(post.published_at!).toLocaleDateString()}
           </Text>
-          {post?.summary && (
+          {post?.summary ? (
             <Section style={excerpt}>
-              <Text>{post.summary}</Text>
+              <Text>{stripHtml(decode(post.summary))}</Text>
+            </Section>
+          ) : (
+            <Section style={excerpt}>
+              <Text>
+                {shortenText(stripHtml(decode(post.content) || ""), 200)}
+              </Text>
             </Section>
           )}
 
           <Section style={buttonContainer}>
-            <Link href={formatPostPermalink(post)} style={button}>
+            <Link
+              href={resolveUrl(getSiteUrl(), formatPostPermalink(post))}
+              style={button}
+            >
               Read Full Post
             </Link>
           </Section>
 
           <Text style={footer}>
-            You received this email because you&apos;re subscribed to {siteName}
+            You received this email because you&apos;re subscribed to
+            <Link href={getSiteUrl()} style={{ color: "#2B6CB0" }}>
+              {siteName}
+            </Link>
             .
             <br />
             {siteDescription}

@@ -49,7 +49,7 @@ export type PostInsert = InferInsertModel<typeof posts>;
 type Permissions = InferInsertModel<typeof permissions>;
 export type TPermissions = Permissions["name"];
 export type PostSelect = InferSelectModel<typeof posts> & {
-  views: {
+  views?: {
     count: number;
   };
   featured_image: {
@@ -183,7 +183,8 @@ export const DASH_NAV_PERMISSIONS = {
 
 export type SettingEntry = {
   value: string;
-  enabled: boolean;encrypted: boolean;
+  enabled: boolean;
+  encrypted: boolean;
 };
 
 export type SiteSettings = {

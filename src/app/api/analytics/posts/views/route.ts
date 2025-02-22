@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
     const timeRange =
       (searchParams.get("timeRange") as "7" | "30" | "60" | "90" | "all") ||
-      "all";
+      "7";
 
     // Calculate date range
     const endDate = new Date();

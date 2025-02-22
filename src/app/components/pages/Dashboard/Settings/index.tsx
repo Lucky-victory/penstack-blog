@@ -31,6 +31,7 @@ import { EmailPanel } from "./TabPanels/EmailPanel";
 import { AdvancedPanel } from "./TabPanels/AdvancedPanel";
 import { PageTitleHeader } from "../../../Dashboard/PageTitleCard";
 import { useSiteConfig } from "@/src/context/SiteConfig";
+import { parseAsString, useQueryState } from "nuqs";
 
 export default function DashboardSettingsPage() {
   const toast = useToast({ position: "top" });
@@ -72,6 +73,18 @@ export default function DashboardSettingsPage() {
       });
     }
   }
+  const [activeTab, setActiveTab] = useQueryState(
+    "tab",
+    parseAsString.withDefault("general")
+  );
+  const tabs = [
+    { slug: "general", title: "General" },
+    { slug: "analytics", title: "Analytics" },
+    { slug: "monitoring", title: "Monitoring" },
+    { slug: "media", title: "Media" },
+    { slug: "email", title: "Email" },
+    { slug: "advanced", title: "Advanced" },
+  ];
 
   useEffect(() => {
     const settingsChanged =
@@ -176,14 +189,18 @@ export default function DashboardSettingsPage() {
               </Alert>
             )}
 
-            <Tabs>
+            <Tabs
+              defaultIndex={tabs.findIndex((tab) => tab.slug === activeTab)}
+              onChange={(index) => {
+                setActiveTab(tabs[index].slug);
+              }}
+            >
               <TabList overflowX="auto" className="no-scrollbar" pb={1} gap={3}>
-                <Tab>General</Tab>
-                <Tab>Analytics</Tab>
-                <Tab>Monitoring</Tab>
-                <Tab>Media</Tab>
-                <Tab>Email</Tab>
-                <Tab>Advanced</Tab>
+                {tabs.map((tab) => (
+                  <Tab key={tab.slug} onClick={() => setActiveTab(tab.slug)}>
+                    {tab.title}
+                  </Tab>
+                ))}
               </TabList>
 
               <TabPanels>
