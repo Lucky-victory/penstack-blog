@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Box,
   Container,
   Flex,
   Grid,
-  HStack,
   IconButton,
   DarkMode,
   Link,
@@ -17,7 +16,6 @@ import {
 } from "@chakra-ui/react";
 import { LuGithub, LuTwitter, LuMail } from "react-icons/lu";
 import { Newsletter } from "../NewsLetter";
-import { AppLogo } from "../AppLogoAndName/AppLogo";
 import { AppLogoAndName } from "../AppLogoAndName";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 
@@ -26,26 +24,35 @@ const Footer = () => {
   const textColor = "gray.400";
   const hoverColor = useColorModeValue("white", "gray.300");
   const siteSettings = useSiteConfig();
-  const navItems = [
-    { label: "Topics", href: "/topics" },
-    { label: "Resources", href: "/resources" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
-  ];
+  const navItems = useMemo(
+    () => [
+      { label: "Resources", href: "/resources/tutorials" },
 
-  const socialLinks = [
-    {
-      label: "GitHub",
-      href: "https://github.com/yourusername",
-      icon: LuGithub,
-    },
-    {
-      label: "Twitter",
-      href: "https://twitter.com/yourusername",
-      icon: LuTwitter,
-    },
-    { label: "Email", href: "mailto:hello@example.com", icon: LuMail },
-  ];
+      { label: "Contact", href: "/contact" },
+    ],
+    []
+  );
+
+  const socialLinks = useMemo(
+    () => [
+      {
+        label: "GitHub",
+        href: "https://github.com/lucky-victory",
+        icon: LuGithub,
+      },
+      {
+        label: "Twitter",
+        href: "https://twitter.com/codewithvick",
+        icon: LuTwitter,
+      },
+      {
+        label: "Email",
+        href: `mailto:${siteSettings.emailFrom.value}`,
+        icon: LuMail,
+      },
+    ],
+    []
+  );
 
   return (
     <Box as="footer" bg={bgColor}>

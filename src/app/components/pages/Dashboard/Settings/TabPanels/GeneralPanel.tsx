@@ -147,13 +147,22 @@ export const GeneralPanel = ({
           </HStack>
         </FormControl>
       </Box>
-      <FormControl display="flex" alignItems="center">
-        <FormLabel mb={0}>Maintenance Mode</FormLabel>
-        <Switch
-          isChecked={settings.maintenanceMode.enabled}
-          onChange={() => handleToggle("maintenanceMode")}
-        />
-      </FormControl>
+      <Stack>
+        <FormControl display="flex" alignItems="center">
+          <FormLabel mb={0}>Show Site Name with Logo</FormLabel>
+          <Switch
+            isChecked={settings.showSiteNameWithLogo?.enabled}
+            onChange={() => handleToggle("showSiteNameWithLogo")}
+          />
+        </FormControl>
+        <FormControl display="flex" alignItems="center">
+          <FormLabel mb={0}>Maintenance Mode</FormLabel>
+          <Switch
+            isChecked={settings.maintenanceMode.enabled}
+            onChange={() => handleToggle("maintenanceMode")}
+          />
+        </FormControl>
+      </Stack>
     </VStack>
   );
 };

@@ -1,6 +1,5 @@
 "use client";
-
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import { SiteSettings } from "../types";
 import { DEFAULT_SETTINGS } from "../lib/queries/settings/config";
 
@@ -21,8 +20,6 @@ export function SiteConfigProvider({
     </SiteConfigContext.Provider>
   );
 }
-import { useContext } from "react";
-
 export const useSiteConfig = () => {
   const context = useContext(SiteConfigContext);
 

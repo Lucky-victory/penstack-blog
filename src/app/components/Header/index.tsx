@@ -88,7 +88,6 @@ const Header = () => {
     { name: "Articles", href: "/articles" },
     { name: "Tutorials", href: "/resources/tutorials" },
     { name: "Newsletter", href: "/newsletter" },
-    { name: "About", href: "/about" },
   ];
   const router = useRouter();
   function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
