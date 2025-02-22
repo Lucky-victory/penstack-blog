@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/src/db";
-import { newsletters, posts } from "@/src/db/schemas";
+import { newsletters } from "@/src/db/schemas";
 import { sendEmail } from "@/src/lib/send-email"; // You'll need to implement this
 import { eq } from "drizzle-orm";
 import BlogPostNewsletter from "@/src/app/components/Emails/BlogPostNewsletter";
-import { PostSelect } from "@/src/types";
 import { getSettings } from "@/src/lib/queries/settings";
-import { render } from "@react-email/components";
 import { getPost } from "@/src/lib/queries/post";
 
 export async function POST(request: NextRequest) {

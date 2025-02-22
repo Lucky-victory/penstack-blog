@@ -4,8 +4,11 @@ import { NewsletterInsert } from "@/src/types";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { checkPermission } from "@/src/lib/auth/check-permission";
 
 export async function GET(req: NextRequest) {
+ return await checkPermission({requiredPermission:'newsletters:read'},async ()=>{ 
+  
   const { searchParams } = new URL(req.url);
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
   const limit = Math.min(
@@ -85,6 +88,7 @@ export async function GET(req: NextRequest) {
       }
     );
   }
+})
 }
 
 export async function POST(req: NextRequest) {
