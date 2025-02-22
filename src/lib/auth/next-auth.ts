@@ -14,7 +14,8 @@ import {
   JWTDecodeParams,
   JWTEncodeParams,
 } from "next-auth/jwt";
-import { UserInsert } from "@/src/types";
+import { TPermissions, UserInsert } from "@/src/types";
+import { getUser, getUserWithPermissions } from "../queries/get-user";
 
 interface CustomUser extends User {
   id: string;
@@ -86,13 +87,7 @@ const authOptions: AuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        const user = await db.query.users.findFirst({
-          where: or(
-            eq(users.username, credentials.emailOrUsername),
-            eq(users.email, credentials.emailOrUsername.toLowerCase())
-          ),
-        });
-
+        const user = await getUserWithPermissions(credentials.emailOrUsername);
         if (!user || !user.password) {
           throw new Error("Invalid credentials");
         }
@@ -112,6 +107,7 @@ const authOptions: AuthOptions = {
           id: user?.auth_id,
           image: user.avatar as string,
           role_id: user.role_id,
+          permissions: user.permissions,
         } as CustomUser;
       },
     }),
@@ -141,9 +137,7 @@ const authOptions: AuthOptions = {
     async signIn({ user, account }) {
       if (!user.email) return false;
 
-      const existingUser = await db.query.users.findFirst({
-        where: eq(users.email, user.email),
-      });
+      const existingUser = await getUser(user.email);
 
       if (existingUser) {
         // Skip email verification for OAuth providers
@@ -189,6 +183,8 @@ const authOptions: AuthOptions = {
         id: user?.id || (token?.sub as string),
 
         role_id: user?.role_id || (token?.role_id as number),
+        permissions:
+          user?.permissions || (token?.permissions as TPermissions[]),
       };
     },
     async session({ session, token }) {
@@ -199,12 +195,13 @@ const authOptions: AuthOptions = {
           id: token?.id,
 
           role_id: token?.role_id,
+          permissions: token?.permissions as TPermissions[],
         },
       };
     },
   },
 };
 
-const getSession = () => getServerSession(authOptions);
+const getSession = async () => await getServerSession(authOptions);
 
 export { authOptions, getSession };
