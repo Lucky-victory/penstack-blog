@@ -8,7 +8,6 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Heading,
   Button,
   useToast,
   Card,
@@ -16,7 +15,6 @@ import {
   Alert,
   AlertIcon,
   useDisclosure,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { SiteSettings } from "@/src/types";
@@ -42,10 +40,6 @@ export default function DashboardSettingsPage() {
   const queryClient = useQueryClient();
   const [hasChanges, setHasChanges] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const tabHoverBg = useColorModeValue("gray.100", "gray.900");
-  const tabActiveBg = useColorModeValue("brand.100", "brand.900");
-  const tabActiveColor = useColorModeValue("brand.600", "brand.300");
-  const tabActiveHoverBg = useColorModeValue("brand.200", "brand.800");
 
   const [originalSettings, setOriginalSettings] =
     useState<SiteSettings>(settingsContext);
@@ -117,7 +111,17 @@ export default function DashboardSettingsPage() {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      const { status } = await axios.post("/api/settings", settings);
+      const changedSettings = Object.entries(settings).reduce(
+        (acc, [key, value]) => {
+          if (JSON.stringify(value) !== JSON.stringify(originalSettings[key])) {
+            acc[key] = value;
+          }
+          return acc;
+        },
+        {} as Partial<SiteSettings>
+      );
+
+      const { status } = await axios.post("/api/settings", changedSettings);
 
       if (status < 200 || status >= 400)
         throw new Error("Failed to save settings");

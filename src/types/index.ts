@@ -183,7 +183,7 @@ export const DASH_NAV_PERMISSIONS = {
 
 export type SettingEntry = {
   value: string;
-  enabled: boolean;
+  enabled: boolean;encrypted: boolean;
 };
 
 export type SiteSettings = {

@@ -63,8 +63,8 @@ export default async function RootLayout({
       lang="en"
       className={`${fonts.body.variable} ${fonts.heading.variable}`}
     >
-      <AnalyticsProviders settings={siteSettings} />
       <body>
+        <AnalyticsProviders settings={siteSettings} />
         <SiteConfigProvider initialConfig={siteSettings}>
           <ReactQueryClient>
             <AuthProvider session={session}>

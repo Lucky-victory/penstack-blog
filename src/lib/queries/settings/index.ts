@@ -1,5 +1,4 @@
 import "server-only";
-import { cache } from "react";
 import { db } from "@/src/db";
 import { siteSettings } from "@/src/db/schemas";
 import { SiteSettings } from "@/src/types";
@@ -14,14 +13,10 @@ export const getSettings = unstable_cache(
     const settings = await db.select().from(siteSettings);
 
     const settingsObj = settings.reduce((acc, setting) => {
-      const value =
-        isSecretKey(setting.key) && setting.value
-          ? decryptKey(setting.value)
-          : setting.value;
-
       acc[setting.key] = {
-        value: value || "",
+        value: setting.value || "",
         enabled: setting.enabled as boolean,
+        encrypted: setting.encrypted as boolean,
       };
       return acc;
     }, {} as SiteSettings);
@@ -35,7 +30,7 @@ export const getSettings = unstable_cache(
 export async function updateSettings(newSettings: SiteSettings) {
   const operations = Object.entries(newSettings).map(([key, setting]) => {
     const value =
-      isSecretKey(key) && setting.value
+      isSecretKey(key) && setting.value && !setting.encrypted
         ? encryptKey(setting.value)
         : setting.value;
 

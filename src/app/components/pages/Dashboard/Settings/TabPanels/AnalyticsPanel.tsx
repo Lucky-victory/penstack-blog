@@ -6,6 +6,7 @@ import {
   Text,
   Switch,
   Input,
+  Stack,
 } from "@chakra-ui/react";
 import { SiteSettings } from "@/src/types";
 
@@ -59,6 +60,26 @@ export const AnalyticsPanel = ({
         />
       </FormControl>
       <FormControl>
+        <FormLabel>Mixpanel Token</FormLabel>
+        <HStack mb={1}>
+          <Text>
+            {settings.mixpanelToken?.enabled ? "Enabled" : "Disabled"}
+          </Text>
+          <Switch
+            isDisabled={!settings.mixpanelToken?.value}
+            isChecked={settings.mixpanelToken?.enabled}
+            onChange={() => handleToggle("mixpanelToken")}
+          />
+        </HStack>
+        <Input
+          maxW={600}
+          rounded="md"
+          value={settings.mixpanelToken?.value || ""}
+          onChange={(e) => handleInputChange("mixpanelToken", e.target.value)}
+          placeholder="5be8xxxxxxxxxxxxxxxxxxxx"
+        />
+      </FormControl>
+      <FormControl>
         <FormLabel>PostHog API Key</FormLabel>
         <HStack mb={1}>
           <Text>{settings.posthogKey.enabled ? "Enabled" : "Disabled"}</Text>
@@ -75,6 +96,19 @@ export const AnalyticsPanel = ({
           onChange={(e) => handleInputChange("posthogKey", e.target.value)}
           placeholder="phc_XXXXXXXXXXXXXXXXXX"
         />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Local Post Analytics</FormLabel>
+        <HStack mb={1}>
+          <Text>
+            {settings.localPostAnalytics?.enabled ? "Enabled" : "Disabled"}
+          </Text>
+          <Switch
+            isDisabled={!settings.localPostAnalytics?.value}
+            isChecked={settings.localPostAnalytics?.enabled}
+            onChange={() => handleToggle("localPostAnalytics")}
+          />
+        </HStack>
       </FormControl>
     </VStack>
   );

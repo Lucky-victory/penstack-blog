@@ -18,6 +18,7 @@ export const siteSettings = mysqlTable(
       length: 255,
     }).notNull(),
     value: text("value"),
+    encrypted: boolean("encrypted").default(false),
     enabled: boolean("enabled").default(false),
     created_at,
     updated_at,

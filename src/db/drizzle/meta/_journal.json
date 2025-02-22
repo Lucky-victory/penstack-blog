@@ -134,6 +134,13 @@
       "when": 1740178178188,
       "tag": "0018_lush_lockjaw",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1740215536532,
+      "tag": "0019_safe_the_hand",
+      "breakpoints": true
     }
   ]
 }
