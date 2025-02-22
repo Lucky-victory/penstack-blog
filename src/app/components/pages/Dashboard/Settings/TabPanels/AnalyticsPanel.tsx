@@ -104,7 +104,6 @@ export const AnalyticsPanel = ({
             {settings.localPostAnalytics?.enabled ? "Enabled" : "Disabled"}
           </Text>
           <Switch
-            isDisabled={!settings.localPostAnalytics?.value}
             isChecked={settings.localPostAnalytics?.enabled}
             onChange={() => handleToggle("localPostAnalytics")}
           />

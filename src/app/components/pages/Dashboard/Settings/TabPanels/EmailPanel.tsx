@@ -5,8 +5,8 @@ import {
   FormHelperText,
   Input,
   InputGroup,
-  InputRightElement,
   Button,
+  InputRightAddon,
 } from "@chakra-ui/react";
 import { SiteSettings } from "@/src/types";
 import { useState, useEffect } from "react";
@@ -42,24 +42,19 @@ export const EmailPanel = ({
         <InputGroup maxW={600}>
           <Input
             rounded="md"
-            mt={2}
             type={showApiKey ? "text" : "password"}
             value={settings?.resendApiKey?.value}
             onChange={(e) => handleInputChange("resendApiKey", e.target.value)}
             placeholder="re_1234567890"
           />
-          <InputRightElement width="4.5rem" mt={2}>
-            <Button
-              h="1.75rem"
-              size="sm"
-              variant={"ghost"}
-              onClick={async () => await handleShowApiKey()}
-            >
+          <InputRightAddon>
+            <Button size="sm" variant={"ghost"} onClick={handleShowApiKey}>
               {showApiKey ? "Hide" : "Show"}
             </Button>
-          </InputRightElement>
+          </InputRightAddon>
         </InputGroup>
       </FormControl>
+
       <FormControl isRequired>
         <FormLabel>From Email</FormLabel>
         <FormHelperText>The address to send emails from</FormHelperText>
