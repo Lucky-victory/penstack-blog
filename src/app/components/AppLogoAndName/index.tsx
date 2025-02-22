@@ -5,18 +5,18 @@ import { useSiteConfig } from "@/src/context/SiteConfig";
 
 interface Props {
   logoSize?: string;
-  nameSize?: string;
+  nameSize?: string;isFooter?:boolean
 }
 export const AppLogoAndName = ({
   logoSize = "30px",
-  nameSize = "md",
+  nameSize = "md",isFooter=false
 }: Props) => {
   const textColor = useColorModeValue("inherit", "inherit");
   const siteSettings = useSiteConfig();
   return (
     <HStack>
       <AppLogo size={logoSize} src={siteSettings?.siteLogo?.value} />
-      {siteSettings.showSiteNameWithLogo.enabled && (
+      {!isFooter && siteSettings.showSiteNameWithLogo.enabled && (
         <Text
           fontSize={nameSize}
           fontWeight="medium"
