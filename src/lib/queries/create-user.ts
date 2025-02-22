@@ -1,8 +1,9 @@
+import "server-only";
 import bcrypt from "bcryptjs";
 import { db } from "@/src/db";
 import { users } from "@/src/db/schemas";
 import { eq } from "drizzle-orm";
-import { UserInsert, UserSelect } from "@/src/types";
+import { UserInsert } from "@/src/types";
 
 export async function createUser({
   name,

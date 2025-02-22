@@ -1,8 +1,7 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Box,
   Button,
@@ -17,23 +16,21 @@ import {
   VStack,
   Alert,
   AlertIcon,
-  useToast,
   AbsoluteCenter,
   useColorModeValue,
   Center,
   Spinner,
 } from "@chakra-ui/react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
+import { signIn } from "next-auth/react";
+import axios from "axios";
 
-export default function SignIn() {
+export default function SignUp() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
-  const toast = useToast();
   const dividerBg = useColorModeValue("white", "charcoalBlack");
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,29 +38,28 @@ export default function SignIn() {
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    const emailOrUsername = formData
-      .get("emailOrUsername")
-      ?.toString()
-      .toLowerCase();
-    const result = await signIn("credentials", {
-      emailOrUsername: emailOrUsername,
-      password: formData.get("password"),
-      redirect: false,
-      callbackUrl,
-    });
+    const email = formData.get("email")?.toString().toLowerCase();
+    const username = formData.get("username")?.toString().toLowerCase();
+    const password = formData.get("password");
+    try {
+      const { status, data } = await axios.post("/api/auth/signup", {
+        name,
+        email,
+        password,
+        username,
+      });
 
-    if (result?.error) {
-      if (result.error === "Please verify your email before signing in") {
-        router.push(`/auth/verify?email=${emailOrUsername}`);
-        return;
+      if (!(status >= 200 && status < 400)) {
+        throw new Error(data?.message || "Failed to sign up");
       }
-      setError(result.error);
-    } else if (result?.url) {
-      setIsRedirecting(true);
-      router.push(result.url);
-    }
 
-    setIsLoading(false);
+      setIsRedirecting(true);
+      router.push("/auth/verify?email=" + email);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -83,7 +79,7 @@ export default function SignIn() {
             <VStack spacing={4}>
               <Spinner size="xl" color="white" />
               <Text color="white" fontSize="lg">
-                Successfully logged in! Redirecting...
+                Account created! Redirecting to verification...
               </Text>
             </VStack>
           </Center>
@@ -91,18 +87,27 @@ export default function SignIn() {
       )}
       <VStack spacing={8} align="stretch">
         <VStack spacing={3}>
-          <Heading size="xl">Sign in</Heading>
-          <Text color="gray.500">Welcome back!</Text>
+          <Heading size="xl">Sign up</Heading>
+          <Text color="gray.500">Create your account</Text>
         </VStack>
 
         <form onSubmit={handleSubmit}>
           <VStack spacing={4}>
-            <FormControl>
-              <FormLabel>Email or Username</FormLabel>
-              <Input name="emailOrUsername" type="text" required size="lg" />
+            <FormControl isRequired>
+              <FormLabel>Your Name:</FormLabel>
+              <Input name="email" type="email" required size="lg" />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Email</FormLabel>
+              <Input name="email" type="email" required size="lg" />
             </FormControl>
 
             <FormControl>
+              <FormLabel>Username</FormLabel>
+              <Input name="username" type="text" required size="lg" />
+            </FormControl>
+
+            <FormControl isRequired>
               <FormLabel>Password</FormLabel>
               <Input name="password" type="password" required size="lg" />
             </FormControl>
@@ -115,7 +120,7 @@ export default function SignIn() {
             )}
 
             <Button type="submit" size="lg" width="full" isLoading={isLoading}>
-              Sign in
+              Sign up
             </Button>
           </VStack>
         </form>
@@ -129,7 +134,7 @@ export default function SignIn() {
 
         <Stack direction="row" spacing={4}>
           <Button
-            onClick={() => signIn("github", { callbackUrl })}
+            onClick={() => signIn("github")}
             leftIcon={<FaGithub />}
             width="full"
             size="lg"
@@ -138,7 +143,7 @@ export default function SignIn() {
             GitHub
           </Button>
           <Button
-            onClick={() => signIn("google", { callbackUrl })}
+            onClick={() => signIn("google")}
             leftIcon={<FaGoogle />}
             width="full"
             size="lg"

@@ -31,8 +31,7 @@ export default function ContactPage() {
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.600");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setIsSubmitting(true);
 
     try {
@@ -72,66 +71,60 @@ export default function ContactPage() {
             </Text>
           </Box>
 
-          <Box
+          <VStack
             as="form"
             onSubmit={handleSubmit}
             bg={bgColor}
-            p={8}
+            p={{ base: 4, sm: 5, lg: 8 }}
             rounded="lg"
             shadow="sm"
             borderWidth="1px"
             borderColor={borderColor}
+            spacing={6}
           >
-            <VStack spacing={6}>
-              <FormControl isRequired>
-                <FormLabel>Name</FormLabel>
-                <Input
-                  type="text"
-                  placeholder="Your name"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  rounded="md"
-                />
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel>Email</FormLabel>
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  rounded="md"
-                />
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel>Message</FormLabel>
-                <Textarea
-                  placeholder="Your message"
-                  value={formData.message}
-                  onChange={(e) =>
-                    setFormData({ ...formData, message: e.target.value })
-                  }
-                  rows={6}
-                  rounded="md"
-                />
-              </FormControl>
-              <Button
-                type="submit"
-                colorScheme="brand"
-                size="lg"
-                width="full"
-                rounded="full"
-                isLoading={isSubmitting}
-              >
-                Send Message
-              </Button>
-              ;
-            </VStack>
-          </Box>
+            <FormControl isRequired>
+              <FormLabel>Name</FormLabel>
+              <Input
+                type="text"
+                placeholder="Your name"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Email</FormLabel>
+              <Input
+                type="email"
+                placeholder="your@email.com"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Message</FormLabel>
+              <Textarea
+                placeholder="Your message"
+                value={formData.message}
+                onChange={(e) =>
+                  setFormData({ ...formData, message: e.target.value })
+                }
+                rows={6}
+              />
+            </FormControl>
+            <Button
+              onClick={handleSubmit}
+              size="lg"
+              width="full"
+              rounded="full"
+              isLoading={isSubmitting}
+            >
+              Send Message
+            </Button>
+          </VStack>
         </VStack>
       </Container>
     </PageWrapper>

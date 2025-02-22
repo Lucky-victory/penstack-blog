@@ -128,14 +128,16 @@ const Header = () => {
           <HStack justify="space-between" align="center">
             <HStack as={Link} href="/">
               <AppLogo src={siteSettings?.siteLogo?.value} size={"30px"} />
-              <Text
-                hideBelow={"md"}
-                as={"span"}
-                fontSize={{ base: "medium", lg: "large" }}
-                fontWeight="medium"
-              >
-                {siteSettings?.siteName?.value}
-              </Text>
+              {siteSettings.showSiteNameWithLogo?.enabled && (
+                <Text
+                  hideBelow={"md"}
+                  as={"span"}
+                  fontSize={{ base: "medium", lg: "large" }}
+                  fontWeight="medium"
+                >
+                  {siteSettings?.siteName?.value}
+                </Text>
+              )}
             </HStack>
 
             <HStack
