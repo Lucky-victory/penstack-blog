@@ -1,6 +1,19 @@
 "use client";
-import { Flex, useColorModeValue } from "@chakra-ui/react";
+import { useAuth } from "@/src/hooks/useAuth";
+import {
+  Avatar,
+  Button,
+  Flex,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { signOut } from "next-auth/react";
 import { ReactNode } from "react";
+import { LuChevronDown } from "react-icons/lu";
 
 export default function DashHeader({
   children,
@@ -14,6 +27,7 @@ export default function DashHeader({
   [key: string]: any;
 }) {
   const bg = useColorModeValue("white", "gray.900");
+  const { user } = useAuth();
   return (
     <Flex
       // ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}
@@ -32,7 +46,35 @@ export default function DashHeader({
       justifyContent="space-between"
       {...rest}
     >
-      {children}
+      <HStack justify={"space-between"} w={"full"}>
+        <HStack ml={"auto"}>
+          <Menu>
+            <MenuButton
+              as={Button}
+              leftIcon={
+                <Avatar size={"sm"} name={user?.name} src={user?.avatar} />
+              }
+              rightIcon={<LuChevronDown />}
+              variant={"outline"}
+              rounded={"full"}
+            >
+              Hi, {user?.name?.split(" ")[0]}
+            </MenuButton>
+            <MenuList>
+              <MenuItem>
+                <Button
+                  colorScheme="red"
+                  onClick={() => {
+                    signOut();
+                  }}
+                >
+                  Logout
+                </Button>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </HStack>
+      </HStack>
     </Flex>
   );
 }

@@ -10,7 +10,7 @@ export const SignUp = () => {
       py={2}
       size={"sm"}
       h="auto"
-      href={"/auth/sign-up"}
+      href={"/auth/signup"}
       _hover={{
         textDecor: "none",
         bg: hoverBgSignup,

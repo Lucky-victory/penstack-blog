@@ -7,9 +7,21 @@ import { addMinutes } from "date-fns";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { sendEmail } from "@/src/lib/send-email";
+import { getSettings } from "@/src/lib/queries/settings";
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
+
+  if (!email) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Email is required",
+      },
+      { status: 400 }
+    );
+  }
+  const siteSettings = await getSettings();
   const user = await db.query.users.findFirst({
     where: eq(users.email, email),
   });
@@ -45,6 +57,7 @@ export async function POST(req: NextRequest) {
   const verificationLink = `${appUrl}/verify-email?token=${token}`;
 
   await sendEmail({
+    from: `${siteSettings?.siteName.value}: Account verification <${siteSettings?.emailFrom.value}>`,
     to: user?.email as string,
     subject: "Verify your email address",
     react: VerificationEmail({ verificationLink }),

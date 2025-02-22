@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Container,
@@ -16,10 +16,21 @@ import axios from "axios";
 export default function VerifyEmail() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [canResend, setCanResend] = useState(true);
+  const [countdown, setCountdown] = useState(0);
   const searchParams = useSearchParams();
   const toast = useToast({ position: "top", duration: 10000 });
 
   const initialEmail = searchParams.get("email");
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setCanResend(true);
+    }
+  }, [countdown]);
 
   const handleResend = async () => {
     setIsLoading(true);
@@ -33,6 +44,8 @@ export default function VerifyEmail() {
           description: "Please check your inbox",
           status: "success",
         });
+        setCanResend(false);
+        setCountdown(60);
       } else {
         throw new Error("Failed to send verification email");
       }
@@ -68,10 +81,13 @@ export default function VerifyEmail() {
           <Button
             onClick={handleResend}
             isLoading={isLoading}
+            isDisabled={!canResend}
             size="lg"
             width="full"
           >
-            Resend Verification Email
+            {canResend
+              ? "Resend Verification Email"
+              : `Resend in ${countdown}s`}
           </Button>
         </VStack>
       </VStack>

@@ -40,7 +40,7 @@ export async function generateMetadata(
       200
     ),
     creator: post?.author?.name,
-    authors: [{ name: post?.author?.name, url: "https://www.devvick.com" }],
+    authors: [{ name: post?.author?.name, url: "https://www.devvick.online" }],
     category: post?.category?.name,
     openGraph: {
       images: [
