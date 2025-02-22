@@ -8,22 +8,24 @@ interface Props {
   nameSize?: string;
 }
 export const AppLogoAndName = ({
-  logoSize = "25px",
+  logoSize = "30px",
   nameSize = "md",
 }: Props) => {
   const textColor = useColorModeValue("inherit", "inherit");
-  const siteConfig = useSiteConfig();
+  const siteSettings = useSiteConfig();
   return (
     <HStack>
-      <AppLogo size={logoSize} src={siteConfig?.siteLogo?.value} />
-      <Text
-        fontSize={nameSize}
-        fontWeight="medium"
-        color={textColor}
-        isTruncated
-      >
-        {siteConfig?.siteName?.value}
-      </Text>
+      <AppLogo size={logoSize} src={siteSettings?.siteLogo?.value} />
+      {siteSettings.showSiteNameWithLogo.enabled && (
+        <Text
+          fontSize={nameSize}
+          fontWeight="medium"
+          color={textColor}
+          isTruncated
+        >
+          {siteSettings?.siteName?.value}
+        </Text>
+      )}
     </HStack>
   );
 };

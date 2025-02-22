@@ -52,7 +52,7 @@ export const DashboardSidebar = ({
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
   const hoverTextColor = useColorModeValue("gray.800", "gray.100");
-  const siteConfig = useSiteConfig();
+  const siteSettings = useSiteConfig();
   const navBtnActiveColor = useColorModeValue("#fff", "black");
   const siteNameColor = useColorModeValue("gray.800", "gray.100");
   return (
@@ -91,7 +91,7 @@ export const DashboardSidebar = ({
             )}
             <VStack>
               {isMinimized && (
-                <AppLogo src={siteConfig?.siteLogo?.value} size={"30px"} />
+                <AppLogo src={siteSettings?.siteLogo?.value} size={"30px"} />
               )}
               <IconButton
                 aria-label="Toggle Sidebar"

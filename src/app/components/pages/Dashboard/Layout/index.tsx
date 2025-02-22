@@ -28,7 +28,7 @@ export default memo(function DashboardLayout({
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isMinimized, toggleMinimized } = useDashboardSidebarState();
-  const siteConfig = useSiteConfig();
+  const siteSettings = useSiteConfig();
 
   return (
     <NetworkAvailabiltyCheck>
@@ -86,7 +86,7 @@ export default memo(function DashboardLayout({
         >
           <Icon as={LuMenu} onClick={onOpen} fontSize="20" cursor="pointer" />
           <Text fontSize="lg" ml="4" fontWeight="bold" letterSpacing={1}>
-            {siteConfig?.siteName?.value}
+            {siteSettings?.siteName?.value}
           </Text>
         </Flex>
         <Flex flexDir={"column"} h={"var(--chakra-vh)"}>

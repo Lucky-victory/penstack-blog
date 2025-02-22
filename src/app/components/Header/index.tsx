@@ -55,7 +55,7 @@ const Header = () => {
   const textColor = useColorModeValue("gray.700", "gray.200");
   const hoverBgColor = useColorModeValue("gray.100", "gray.700");
   const navLinkHoverColor = useColorModeValue("brand.500", "brand.300");
-  const siteConfig = useSiteConfig();
+  const siteSettings = useSiteConfig();
   const pathname = usePathname();
   const { scrollY } = useScroll();
   const backgroundColor = useTransform(
@@ -128,14 +128,14 @@ const Header = () => {
         <Container maxW="container.2xl" py={"6px"}>
           <HStack justify="space-between" align="center">
             <HStack as={Link} href="/">
-              <AppLogo src={siteConfig?.siteLogo?.value} size={"30px"} />
+              <AppLogo src={siteSettings?.siteLogo?.value} size={"30px"} />
               <Text
                 hideBelow={"md"}
                 as={"span"}
                 fontSize={{ base: "medium", lg: "large" }}
                 fontWeight="medium"
               >
-                {siteConfig?.siteName?.value}
+                {siteSettings?.siteName?.value}
               </Text>
             </HStack>
 

@@ -29,4 +29,5 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   newsletterEmailFrom: { value: "", enabled: false, encrypted: false },
   emailFromName: { value: "", enabled: true, encrypted: false },
   localPostAnalytics: { value: "", enabled: false, encrypted: false },
+  showSiteNameWithLogo: { value: "", enabled: false, encrypted: false },
 };

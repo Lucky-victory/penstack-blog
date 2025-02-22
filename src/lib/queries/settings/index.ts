@@ -4,7 +4,7 @@ import { siteSettings } from "@/src/db/schemas";
 import { SiteSettings } from "@/src/types";
 import { DEFAULT_SETTINGS } from "./config";
 import { isSecretKey } from "@/src/utils";
-import { decryptKey, encryptKey } from "../../encryption";
+import {  encryptKey } from "../../encryption";
 
 import { unstable_cache } from "next/cache";
 

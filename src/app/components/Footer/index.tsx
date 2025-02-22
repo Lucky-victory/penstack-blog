@@ -25,7 +25,7 @@ const Footer = () => {
   const bgColor = useColorModeValue("charcoalBlack", "gray.900");
   const textColor = "gray.400";
   const hoverColor = useColorModeValue("white", "gray.300");
-  const siteConfig = useSiteConfig();
+  const siteSettings = useSiteConfig();
   const navItems = [
     { label: "Topics", href: "/topics" },
     { label: "Resources", href: "/resources" },
@@ -67,7 +67,7 @@ const Footer = () => {
             <Stack color={"white"}>
               <AppLogoAndName logoSize={"25px"} nameSize={"large"} />
               <Text fontSize="sm" color={textColor} maxW={300}>
-                {siteConfig?.siteDescription?.value}
+                {siteSettings?.siteDescription?.value}
               </Text>
             </Stack>
           </GridItem>
@@ -158,7 +158,7 @@ const Footer = () => {
         >
           <VStack align={"start"} spacing={4}>
             <Text fontSize="sm" color={"white"}>
-              &copy; {new Date().getFullYear()} {siteConfig?.siteName?.value}.
+              &copy; {new Date().getFullYear()} {siteSettings?.siteName?.value}.
               All rights reserved.
             </Text>
           </VStack>

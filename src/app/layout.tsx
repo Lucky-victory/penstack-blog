@@ -18,27 +18,27 @@ export async function generateMetadata(
   _: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const siteConfig = await getSettings();
+  const siteSettings = await getSettings();
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: siteConfig?.siteName?.value,
-    description: siteConfig?.siteDescription?.value,
+    title: siteSettings?.siteName?.value,
+    description: siteSettings?.siteDescription?.value,
     icons: {
-      icon: siteConfig?.siteFavicon?.value || "/favicon.ico",
-      shortcut: siteConfig?.siteFavicon?.value || "/favicon.ico",
-      apple: siteConfig?.siteFavicon?.value || "/favicon.ico",
+      icon: siteSettings?.siteFavicon?.value || "/favicon.ico",
+      shortcut: siteSettings?.siteFavicon?.value || "/favicon.ico",
+      apple: siteSettings?.siteFavicon?.value || "/favicon.ico",
     },
     openGraph: {
-      title: siteConfig?.siteName?.value,
-      description: siteConfig?.siteDescription?.value,
+      title: siteSettings?.siteName?.value,
+      description: siteSettings?.siteDescription?.value,
 
-      siteName: siteConfig?.siteName?.value,
+      siteName: siteSettings?.siteName?.value,
       images: [
         {
           url:
-            siteConfig.siteOpengraph?.value ||
-            `/api/og?title=${siteConfig.siteName?.value}`,
+            siteSettings.siteOpengraph?.value ||
+            `/api/og?title=${siteSettings.siteName?.value}`,
           width: 1200,
           height: 630,
         },

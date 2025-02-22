@@ -212,5 +212,6 @@ export type SiteSettings = {
   emailFrom: SettingEntry;
   emailFromName: SettingEntry;
   localPostAnalytics: SettingEntry;
+  showSiteNameWithLogo: SettingEntry;
   [key: string]: SettingEntry;
 };
