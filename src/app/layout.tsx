@@ -8,6 +8,7 @@ import { getSession } from "../lib/auth/next-auth";
 import { SiteConfigProvider } from "../context/SiteConfig";
 import { getSettings } from "../lib/queries/settings";
 import { NuqsProvider } from "../providers/nuqs";
+import { AnalyticsProviders } from "../providers/analytics";
 
 type Props = {
   params: { slug?: string } & Record<string, string | string[] | undefined>;
@@ -55,15 +56,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getSession();
-  const initialConfig = await getSettings();
+  const siteSettings = await getSettings();
 
   return (
     <html
       lang="en"
       className={`${fonts.body.variable} ${fonts.heading.variable}`}
     >
+      <AnalyticsProviders settings={siteSettings} />
       <body>
-        <SiteConfigProvider initialConfig={initialConfig}>
+        <SiteConfigProvider initialConfig={siteSettings}>
           <ReactQueryClient>
             <AuthProvider session={session}>
               <NuqsProvider>

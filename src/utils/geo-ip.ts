@@ -1,7 +1,6 @@
 export const getGeoLocation = async (ip: string) => {
-  const response = await fetch(`https://ipapi.co/${ip}/json/`);
+  const response = await fetch(`https://ip-api.com/${ip}`);
   const data = await response.json();
-  console.log("ip data", data);
 
   return {
     country: data.country_code,

@@ -195,6 +195,7 @@ export type SiteSettings = {
   maintenanceMode: SettingEntry;
   gaId: SettingEntry;
   gtmId: SettingEntry;
+  mixpanelToken: SettingEntry;
   posthogKey: SettingEntry;
   posthogHost: SettingEntry;
   sentryDsn: SettingEntry;
@@ -209,5 +210,6 @@ export type SiteSettings = {
   newsletterEmailFrom: SettingEntry;
   emailFrom: SettingEntry;
   emailFromName: SettingEntry;
+  localPostAnalytics: SettingEntry;
   [key: string]: SettingEntry;
 };

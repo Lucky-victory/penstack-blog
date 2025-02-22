@@ -37,8 +37,6 @@ export async function POST(req: NextRequest) {
       postId: post_id,
       userId,
       ipAddress: ip,
-      scrollDepth: scroll_depth,
-      timeSpent: time_spent,
       userAgent,
       referrer,
       sessionId,

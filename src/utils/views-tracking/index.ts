@@ -15,8 +15,7 @@ export const trackPostView = async ({
   sessionId,
   deviceInfo,
   location,
-  scrollDepth,
-  timeSpent,
+
   entryPoint,
 }: {
   postId: number;
@@ -25,8 +24,7 @@ export const trackPostView = async ({
   userAgent: string;
   referrer: string;
   sessionId: string;
-  scrollDepth: number;
-  timeSpent: number;
+
   entryPoint?: string;
   deviceInfo: {
     type: string;
@@ -59,22 +57,14 @@ export const trackPostView = async ({
 
     if (existingAnalytics) {
       // Update existing analytics with max values
-      await tx
-        .update(postViewAnalytics)
-        .set({
-          scroll_depth: sql`GREATEST(${scrollDepth}, scroll_depth)`,
-          time_spent: sql`GREATEST(${timeSpent}, time_spent)`,
-        })
-        .where(eq(postViewAnalytics.id, existingAnalytics.id));
     } else {
       // Insert new analytics record
       await tx.insert(postViewAnalytics).values({
         post_id: postId,
         user_id: userId,
         session_id: sessionId,
-        scroll_depth: scrollDepth,
         entry_point: entryPoint,
-        time_spent: timeSpent,
+
         device_type: deviceInfo.type,
         browser: deviceInfo.browser,
         os: deviceInfo.os,
@@ -83,20 +73,6 @@ export const trackPostView = async ({
         city: location.city,
       });
     }
-
-    // Update active viewers
-    //   await tx
-    //     .insert(activePostViewers)
-    //     .values({
-    //       post_id: postId,
-    //       user_id: userId,
-    //       session_id: sessionId,
-    //     })
-    //     .onDuplicateKeyUpdate({
-    //       set: {
-    //         last_active: sql`CURRENT_TIMESTAMP`,
-    //       },
-    //     });
   });
 };
 

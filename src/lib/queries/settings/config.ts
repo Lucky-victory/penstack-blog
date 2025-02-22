@@ -9,6 +9,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   maintenanceMode: { value: "false", enabled: false },
   gaId: { value: "", enabled: false },
   gtmId: { value: "", enabled: false },
+  mixpanelToken: { value: "", enabled: false },
   posthogKey: { value: "", enabled: false },
   posthogHost: { value: "https://app.posthog.com", enabled: false },
   sentryDsn: { value: "", enabled: false },
@@ -23,4 +24,5 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   emailFrom: { value: "", enabled: true },
   newsletterEmailFrom: { value: "", enabled: false },
   emailFromName: { value: "", enabled: true },
+  localPostAnalytics: { value: "", enabled: false },
 };
