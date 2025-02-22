@@ -15,12 +15,13 @@ export const trackPostView = async ({
   sessionId,
   deviceInfo,
   location,
-
+  timeSpent,
   entryPoint,
 }: {
   postId: number;
   userId?: string;
   ipAddress: string;
+  timeSpent?: number;
   userAgent: string;
   referrer: string;
   sessionId: string;
@@ -56,7 +57,18 @@ export const trackPostView = async ({
     });
 
     if (existingAnalytics) {
-      // Update existing analytics with max values
+      // Update existing analytics record
+      await tx
+        .update(postViewAnalytics)
+        .set({
+          time_spent: sql`GREATEST(${timeSpent}, time_spent)`,
+        })
+        .where(
+          and(
+            eq(postViewAnalytics.post_id, postId),
+            eq(postViewAnalytics.session_id, sessionId)
+          )
+        );
     } else {
       // Insert new analytics record
       await tx.insert(postViewAnalytics).values({
@@ -64,7 +76,7 @@ export const trackPostView = async ({
         user_id: userId,
         session_id: sessionId,
         entry_point: entryPoint,
-
+        time_spent: timeSpent,
         device_type: deviceInfo.type,
         browser: deviceInfo.browser,
         os: deviceInfo.os,

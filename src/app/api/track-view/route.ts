@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     const userId = session?.user?.id;
 
     const body = await req.json();
-    const { post_id, time_spent, scroll_depth } = body;
+    const { post_id, time_spent } = body;
     const cookieStore = cookies();
     const referrer = req.headers.get("referer") || "";
 
@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
       userAgent,
       referrer,
       sessionId,
+      timeSpent: time_spent,
       deviceInfo: {
         type: deviceInfo.device.type,
         browser: deviceInfo.browser.name,

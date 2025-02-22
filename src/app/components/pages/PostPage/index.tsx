@@ -20,16 +20,18 @@ import { ArticleHeader } from "./ArticleHeader";
 import { ArticleContent } from "./ArticleContent";
 import { CommentsSection } from "./CommentSection";
 import { Newsletter } from "../../NewsLetter";
+import { useSiteConfig } from "@/src/context/SiteConfig";
+import { ViewTracker } from "../../ViewTracker";
 
 const MotionBox = motion(Box);
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
-  // useTrackView(post.id);
-
+  const settings = useSiteConfig();
   const sidebarWidth = useBreakpointValue({ base: "full", md: "300px" });
   const metaColor = useColorModeValue("gray.500", "gray.400");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const bgColor = useColorModeValue("white", "#121212");
+  const newsletterBgColor = useColorModeValue("white", "gray.800");
 
   if (!post) {
     return <Loader />;
@@ -37,6 +39,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
 
   return (
     <PageWrapper styleProps={{ px: 0, bg: bgColor }}>
+      {settings.localPostAnalytics?.enabled && <ViewTracker postId={post.id} />}
       <MotionBox
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -111,11 +114,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               // justify={"center"}
               display={{ base: "none", lg: "flex" }}
             >
-              <Box
-                rounded={"xl"}
-                p={4}
-                bg={useColorModeValue("white", "gray.800")}
-              >
+              <Box rounded={"xl"} p={4} bg={newsletterBgColor}>
                 <Newsletter
                   title="Subscribe to our newsletter"
                   description=" Get the latest posts delivered right to your inbox!"
@@ -135,5 +134,4 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
     </PageWrapper>
   );
 };
-
 export default PostPage;
