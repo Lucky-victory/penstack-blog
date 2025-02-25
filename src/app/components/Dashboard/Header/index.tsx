@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { signOut } from "next-auth/react";
 import { ReactNode } from "react";
-import { LuChevronDown } from "react-icons/lu";
+import { LuChevronDown, LuLogOut } from "react-icons/lu";
 
 export default function DashHeader({
   children,
@@ -51,6 +51,7 @@ export default function DashHeader({
           <Menu>
             <MenuButton
               as={Button}
+              pl={1}
               leftIcon={
                 <Avatar size={"sm"} name={user?.name} src={user?.avatar} />
               }
@@ -61,15 +62,14 @@ export default function DashHeader({
               Hi, {user?.name?.split(" ")[0]}
             </MenuButton>
             <MenuList>
-              <MenuItem>
-                <Button
-                  colorScheme="red"
-                  onClick={() => {
-                    signOut();
-                  }}
-                >
-                  Logout
-                </Button>
+              <MenuItem
+                icon={<LuLogOut />}
+                color="red.500"
+                onClick={() => {
+                  signOut();
+                }}
+              >
+                Logout
               </MenuItem>
             </MenuList>
           </Menu>

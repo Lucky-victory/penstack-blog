@@ -5,7 +5,7 @@ import {
   theme as baseTheme,
   withDefaultProps,
 } from "@chakra-ui/react";
-import { CardConfig } from "./card";
+import { CardConfig, InputConfig } from "./card";
 const config: ThemeConfig = {
   useSystemColorMode: true,
   initialColorMode: "system",
@@ -47,6 +47,7 @@ export const chakraTheme = extendTheme(
   {
     components: {
       Card: CardConfig,
+      Input: InputConfig,
     },
     colors: {
       charcoalBlack: "#121212",

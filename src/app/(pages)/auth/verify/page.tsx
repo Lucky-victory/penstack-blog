@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Container,
@@ -20,7 +20,7 @@ export default function VerifyEmail() {
   const [countdown, setCountdown] = useState(0);
   const searchParams = useSearchParams();
   const toast = useToast({ position: "top", duration: 10000 });
-
+  const hasSent = useRef(false);
   const initialEmail = searchParams.get("email");
 
   useEffect(() => {
@@ -32,8 +32,17 @@ export default function VerifyEmail() {
     }
   }, [countdown]);
 
+  useEffect(() => {
+    const emailToUse = initialEmail;
+    if (emailToUse && !hasSent.current) {
+      handleResend();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialEmail]);
+
   const handleResend = async () => {
     setIsLoading(true);
+    hasSent.current = true;
     try {
       const res = await axios.post("/api/auth/send-verification", {
         email: (email || initialEmail)?.toLowerCase(),
@@ -48,6 +57,7 @@ export default function VerifyEmail() {
         setCountdown(60);
       } else {
         throw new Error("Failed to send verification email");
+        hasSent.current = false;
       }
     } catch (error) {
       toast({
@@ -57,6 +67,7 @@ export default function VerifyEmail() {
       });
     } finally {
       setIsLoading(false);
+      hasSent.current = false;
     }
   };
 
@@ -67,7 +78,7 @@ export default function VerifyEmail() {
           <Heading size="xl">Verify Your Email</Heading>
           <Text color="gray.500">
             Please verify your email address to continue. Haven&apos;t received
-            the email?
+            the email yet?
           </Text>
         </VStack>
 

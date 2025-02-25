@@ -1,9 +1,10 @@
 import { createMultiStyleConfigHelpers } from "@chakra-ui/styled-system";
 import { theme as baseTheme } from "@chakra-ui/react";
 // This function creates a set of function that helps us create multipart component styles.
-const helpers = createMultiStyleConfigHelpers(["container", "body"]);
+const cardHelpers = createMultiStyleConfigHelpers(["container", "body"]);
+const inputHelpers = createMultiStyleConfigHelpers(["field"]);
 
-export const CardConfig = helpers.defineMultiStyleConfig({
+export const CardConfig = cardHelpers.defineMultiStyleConfig({
   baseStyle: {
     ...baseTheme.components.Card.baseStyle,
     container: {
@@ -34,3 +35,14 @@ export const CardConfig = helpers.defineMultiStyleConfig({
     },
   },
 });
+
+const baseStyle = inputHelpers.definePartsStyle({
+  field: {
+    focusBorderColor: "brand.500",
+    _dark: {
+      focusBorderColor: "brand.300",
+    },
+  },
+});
+
+export const InputConfig = inputHelpers.defineMultiStyleConfig({ baseStyle });
