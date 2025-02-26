@@ -1,12 +1,17 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
 import { eq, or } from "drizzle-orm";
-import { unstable_cache } from "next/cache";
 
-export const getPost = async (slugOrPostId: string) => {
+export const getPost = async (slugOrPostId: string | number) => {
+  let orQuery = [];
+  if (typeof slugOrPostId === "number") {
+    orQuery.push(eq(posts.id, slugOrPostId));
+  } else {
+    orQuery.push(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId));
+  }
+
   const post = await db.query.posts.findFirst({
-    where: (posts, { eq }) =>
-      or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId)),
+    where: () => or(...orQuery),
     with: {
       views: {
         columns: { id: true },

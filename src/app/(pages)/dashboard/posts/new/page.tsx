@@ -4,7 +4,7 @@ import { posts } from "@/src/db/schemas";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { PostSelect } from "@/src/types";
 import { IdGenerator } from "@/src/utils";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -12,10 +12,12 @@ export const metadata: Metadata = {
   title: "Dashboard | New Post",
 };
 export default async function Page() {
-  try {
-    const shortId = IdGenerator.bigIntId().substring(0, 8);
+  let createdPost = null;
 
-    const createdPost = (await checkPermission(
+  try {
+    const shortId = IdGenerator.bigIntId().substring(0, 10);
+
+    createdPost = (await checkPermission(
       { requiredPermission: "posts:create" },
       async (user) => {
         const newPost = {
@@ -28,8 +30,7 @@ export default async function Page() {
           .values(newPost)
           .onDuplicateKeyUpdate({
             set: {
-              slug: newPost.slug + "-" + IdGenerator.bigIntId().substring(0, 8),
-              updated_at: new Date(),
+              slug: sql`slug`,
             },
           })
           .$returningId();
@@ -39,14 +40,14 @@ export default async function Page() {
       },
       true
     )) as PostSelect;
-
-    if (!createdPost) {
-      return <div>Failed to create post</div>;
-    }
-
-    redirect(`/dashboard/posts/new/${createdPost.post_id}`);
   } catch (error) {
     console.error("Error creating post:", error);
     return <div>Failed to create post</div>;
   }
+
+  if (!createdPost) {
+    return <div>Failed to create post</div>;
+  }
+
+  redirect(`/dashboard/posts/new/${createdPost.post_id}`);
 }
