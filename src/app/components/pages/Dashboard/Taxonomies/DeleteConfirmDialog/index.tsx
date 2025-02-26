@@ -6,33 +6,29 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   Button,
-  useDisclosure,
-  ChakraComponent,
-  ComponentWithAs,
 } from "@chakra-ui/react";
-import React, {
-  Component,
-  FunctionComponent,
-  JSX,
-  ReactElement,
-  ReactNode,
-} from "react";
+import React, { useState } from "react";
 
 export const DeleteConfirmDialog = ({
   isOpen,
   onClose,
   onConfirm,
-
+  isDeleting,
   title = "Delete",
 }: {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
   onConfirm: () => void;
+  isDeleting: boolean;
 }) => {
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
+
   function handleActionConfirm() {
     onConfirm?.();
+  }
+  function handleModalClose() {
+    onClose();
   }
   return (
     <>
@@ -40,7 +36,7 @@ export const DeleteConfirmDialog = ({
         isOpen={isOpen}
         motionPreset="slideInBottom"
         leastDestructiveRef={cancelRef}
-        onClose={onClose}
+        onClose={handleModalClose}
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
@@ -49,14 +45,21 @@ export const DeleteConfirmDialog = ({
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
+              Are you sure? You can&apos;t undo this action afterwards.
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose} colorScheme="gray">
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={handleActionConfirm} ml={3}>
+              <Button
+                isDisabled={isDeleting}
+                isLoading={isDeleting}
+                loadingText={"Deleting..."}
+                colorScheme="red"
+                onClick={handleActionConfirm}
+                ml={3}
+              >
                 Delete
               </Button>
             </AlertDialogFooter>

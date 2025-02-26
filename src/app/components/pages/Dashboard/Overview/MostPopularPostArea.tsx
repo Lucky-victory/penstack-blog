@@ -82,9 +82,9 @@ export default memo(function MostPopularPosts() {
           )}
         </CardBody>
       ) : (
-        <CardBody h={350}>
+        <CardBody h={300}>
           <VStack>
-            <Heading size={"md"}> Post view not available</Heading>
+            <Heading size={"md"}> Not available</Heading>
             <Text color={"gray.500"} fontSize={"smaller"}>
               {" "}
               Post Analytics is disabled

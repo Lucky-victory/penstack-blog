@@ -11,10 +11,10 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  HStack,
   Button,
   useDisclosure,
   useToast,
+  Checkbox,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import {
@@ -25,7 +25,6 @@ import {
   LuFileEdit,
   LuTrash2,
 } from "react-icons/lu";
-import Pagination from "../../../../Pagination";
 import { useTaxonomiesStore } from "../state";
 import { DeleteConfirmDialog } from "../DeleteConfirmDialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -56,30 +55,37 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
   const setisItemModalOpen = useTaxonomiesStore(
     (state) => state.setIsItemModalOpen
   );
-  const { mutateAsync, isPending } = useMutation({
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+
+  const { mutateAsync, isPending: isDeleting } = useMutation({
     mutationKey: ["taxonomies_delete", type],
     mutationFn: async () => {
       try {
-        const response = await axios.delete(
-          `/api/taxonomies/${type}/${deleteItemId}`
+        const itemsToDelete =
+          selectedItems.length > 0 ? selectedItems : [deleteItemId];
+        await Promise.all(
+          itemsToDelete.map((id) =>
+            axios.delete(`/api/taxonomies/${type}/${id}`)
+          )
         );
-        if (response.status < 200 || response.status >= 300) {
-          throw new Error("Failed to delete item");
-        }
       } catch (error) {
         throw error;
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [type] });
-      toast({
-        title: "Item deleted successfully",
+      queryClient.invalidateQueries({
+        queryKey: ["taxonomies", type],
+        refetchType: "all",
       });
+      toast({
+        title: `${selectedItems.length > 1 ? "Items" : "Item"} deleted successfully`,
+      });
+      setSelectedItems([]);
       onClose();
     },
     onError: (error) => {
       toast({
-        title: "Error deleting item",
+        title: "Error deleting items",
         description: error.message,
         status: "error",
       });
@@ -114,28 +120,63 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
     setDeleteItemId(id);
     onOpen();
   };
+
+  const handleBulkDelete = (): void => {
+    if (selectedItems.length > 0) {
+      onOpen();
+    }
+  };
+
+  const toggleItemSelection = (id: number): void => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+    );
+  };
+
+  const toggleAllSelection = (): void => {
+    setSelectedItems((prev) =>
+      prev.length === filteredItems.length
+        ? []
+        : filteredItems.map((item) => item.id)
+    );
+  };
+
   async function handleDeleteConfirm() {
     try {
       await mutateAsync();
-
       onClose();
     } catch (error) {
-      console.error("Error deleting item:", error);
+      console.error("Error deleting items:", error);
     }
   }
+
   const handleEdit = (item: TaxonomyItem): void => {
     setEditItem(item);
     setisItemModalOpen(true);
   };
+
   const headerBg = useColorModeValue("gray.100", "gray.700");
   const cellBg = useColorModeValue("white", "gray.800");
   const cellTextColor = useColorModeValue("gray.800", "gray.200");
   const borderColor = useColorModeValue("gray.200", "gray.600");
+
   return (
     <Flex gap={4} overflowX={"auto"}>
       <Box flexShrink={0} flexGrow={1} mb={4}>
+        <Flex justify="space-between" mb={4}>
+          {selectedItems.length > 0 && (
+            <Button
+              colorScheme="red"
+              size="sm"
+              leftIcon={<LuTrash2 />}
+              onClick={handleBulkDelete}
+            >
+              Delete Selected ({selectedItems.length})
+            </Button>
+          )}
+        </Flex>
         <Grid
-          templateColumns="repeat(12, 1fr)"
+          templateColumns="repeat(13, 1fr)"
           alignItems={"center"}
           gap={4}
           px={4}
@@ -146,6 +187,12 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
           fontWeight="medium"
           fontSize="sm"
         >
+          <GridItem colSpan={1}>
+            <Checkbox
+              isChecked={selectedItems.length === filteredItems.length}
+              onChange={toggleAllSelection}
+            />
+          </GridItem>
           <GridItem colSpan={1} />
           <GridItem colSpan={3}>
             <Button
@@ -179,7 +226,7 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
           {filteredItems.map((item) => (
             <Grid
               key={item.id}
-              templateColumns="repeat(12, 1fr)"
+              templateColumns="repeat(13, 1fr)"
               gap={4}
               px={4}
               py={3}
@@ -190,6 +237,12 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
               _hover={{ bg: headerBg }}
               alignItems="center"
             >
+              <GridItem colSpan={1}>
+                <Checkbox
+                  isChecked={selectedItems.includes(item.id)}
+                  onChange={() => toggleItemSelection(item.id)}
+                />
+              </GridItem>
               <GridItem colSpan={1}>
                 {type === "categories" ? <LuFolderTree /> : <LuTag />}
               </GridItem>
@@ -229,6 +282,7 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
         </Stack>
       </Box>
       <DeleteConfirmDialog
+        isDeleting={isDeleting}
         isOpen={isOpen}
         onClose={onClose}
         onConfirm={handleDeleteConfirm}
@@ -236,3 +290,4 @@ export const FilteredList: React.FC<FilteredListProps> = ({ items }) => {
     </Flex>
   );
 };
+// TODO: Refactor the delete API to accept multiple IDs to delete
