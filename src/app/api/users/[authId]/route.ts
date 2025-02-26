@@ -49,8 +49,7 @@ export async function PATCH(
   { params }: { params: { authId: string } }
 ) {
   const session = await getSession();
-  console.log(params, session);
-
+  const currentUser = session?.user;
   try {
     const body = await req.json();
     const user = await db.query.users.findFirst({
@@ -68,7 +67,7 @@ export async function PATCH(
     }
 
     // Check if user is owner or has permission
-    if (user.auth_id !== session?.user?.id || user?.role_id !== 1) {
+    if (user.auth_id !== currentUser?.id && currentUser?.role_id !== 1) {
       return NextResponse.json(
         {
           data: null,

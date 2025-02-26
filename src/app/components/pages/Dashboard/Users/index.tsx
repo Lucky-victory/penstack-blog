@@ -47,7 +47,7 @@ import {
   InputLeftElement,
 } from "@chakra-ui/react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PaginatedResponse, RolesSelect, UserSelect } from "@/src/types";
 import axios from "axios";
 import Loader from "../../../Loader";
@@ -72,6 +72,7 @@ const UsersDashboard = () => {
   const [currentUser, setCurrentUser] = useState<Partial<UserSelect> | null>(
     null
   );
+  const queryClient = useQueryClient();
   const borderColor = useColorModeValue("gray.200", "gray.500");
   const roleTextColor = useColorModeValue("gray.600", "gray.300");
   const { data: roles } = useQuery({
@@ -148,10 +149,16 @@ const UsersDashboard = () => {
       if (currentUser?.id) {
         await axios.patch(`/api/users/${currentUser?.auth_id}`, currentUser);
 
-        refetch();
+        queryClient.invalidateQueries({
+          queryKey: ["users"],
+          refetchType: "all",
+        });
       } else {
         await axios.post("/api/users", currentUser);
-        refetch();
+        queryClient.invalidateQueries({
+          queryKey: ["users"],
+          refetchType: "all",
+        });
       }
 
       toast({
