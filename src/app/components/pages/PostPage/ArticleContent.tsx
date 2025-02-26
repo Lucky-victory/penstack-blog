@@ -2,8 +2,9 @@ import React from "react";
 import { Box, Text, useColorModeValue } from "@chakra-ui/react";
 import { PostSelect } from "@/src/types";
 import { ContentRenderer } from "../../Renderers/ContentRenderer";
-import { decode } from "html-entities";
+
 import { motion } from "framer-motion";
+import { decodeAndSanitizeHtml } from "@/src/utils";
 
 const MotionBox = motion(Box);
 
@@ -21,7 +22,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ post }) => {
       pb={8}
     >
       <Box maxW="container.lg">
-        <ContentRenderer content={decode(post.content)} />
+        <ContentRenderer content={decodeAndSanitizeHtml(post.content || "")} />
       </Box>
     </MotionBox>
   );

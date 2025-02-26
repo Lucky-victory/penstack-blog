@@ -20,6 +20,7 @@ import { useState } from "react";
 import { LuMessageCircle } from "react-icons/lu";
 import { CommentCard } from "./CommentCard";
 import { PostSelect } from "@/src/types";
+import { sanitizeAndEncodeHtml } from "@/src/utils";
 
 export const CommentsSection = ({ post }: { post: PostSelect }) => {
   const [newComment, setNewComment] = useState("");
@@ -57,7 +58,7 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(`/api/posts/${post.post_id}/comments`, {
-        content: encode(newComment),
+        content: sanitizeAndEncodeHtml(newComment),
       });
 
       if (response.status === 201) {

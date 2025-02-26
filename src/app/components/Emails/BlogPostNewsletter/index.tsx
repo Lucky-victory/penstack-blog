@@ -11,9 +11,13 @@ import {
   Text,
 } from "@react-email/components";
 import { PostSelect } from "../../../../types";
-import { formatPostPermalink, shortenText, stripHtml } from "@/src/utils";
+import {
+  decodeAndSanitizeHtml,
+  formatPostPermalink,
+  shortenText,
+  stripHtml,
+} from "@/src/utils";
 import { getSiteUrl, resolveUrl } from "@/src/utils/url";
-import { decode } from "html-entities";
 
 interface BlogPostEmailProps {
   post: PostSelect;
@@ -52,12 +56,15 @@ export const BlogPostNewsletter = ({
           </Text>
           {post?.summary ? (
             <Section style={excerpt}>
-              <Text>{stripHtml(decode(post.summary))}</Text>
+              <Text>{stripHtml(decodeAndSanitizeHtml(post.summary))}</Text>
             </Section>
           ) : (
             <Section style={excerpt}>
               <Text>
-                {shortenText(stripHtml(decode(post.content) || ""), 200)}
+                {shortenText(
+                  stripHtml(decodeAndSanitizeHtml(post.content || "")),
+                  200
+                )}
               </Text>
             </Section>
           )}

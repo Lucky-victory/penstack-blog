@@ -1,6 +1,7 @@
 import { SearchPostsComponent } from "@/src/lib/editor/nodes/MiniPostCard/SearchPostsComponent";
 import { PostSelect } from "@/src/types";
 import {
+  decodeAndSanitizeHtml,
   formatPostPermalink,
   objectToQueryParams,
   shortenText,
@@ -24,7 +25,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { NodeViewProps } from "@tiptap/react";
 import axios from "axios";
-import { decode } from "html-entities";
+
 import { ChangeEvent, memo, useState } from "react";
 
 interface MiniPostCardProps {
@@ -166,7 +167,10 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
                       fontSize={{ base: "small", lg: "medium" }}
                       color={textColor}
                     >
-                      {shortenText(stripHtml(decode(post.content)), 150)}
+                      {shortenText(
+                        stripHtml(decodeAndSanitizeHtml(post.content || "")),
+                        150
+                      )}
                     </Text>
                   </Stack>
                 </HStack>

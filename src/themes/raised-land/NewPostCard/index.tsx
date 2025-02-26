@@ -1,5 +1,6 @@
 import { PostSelect } from "@/src/types";
 import {
+  decodeAndSanitizeHtml,
   formatPostPermalink,
   nativeFormatDate,
   objectToQueryParams,
@@ -22,8 +23,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { LuBookmark } from "react-icons/lu";
-import { Newsletter } from "../../../app/components/NewsLetter";
-import { decode } from "html-entities";
 
 export default function NewPostCard({
   post,
@@ -101,7 +100,8 @@ export default function NewPostCard({
             </Heading>
           </LinkOverlay>
           <Text fontSize="sm" color="gray.500" noOfLines={3}>
-            {post.summary || stripHtml(decode(post.content))}
+            {post.summary ||
+              stripHtml(decodeAndSanitizeHtml(post.content || ""))}
           </Text>
         </Box>
         {(showAuthor || showBookmark) && (

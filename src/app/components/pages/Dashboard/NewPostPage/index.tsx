@@ -2,19 +2,15 @@
 import { Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import { usePost } from "@/src/hooks";
 import { redirect, useParams } from "next/navigation";
-import Loader from "../../../Loader";
-import { decode, encode } from "html-entities";
+
 import TipTapEditor from "@/src/app/components/TipTapEditor";
-import {
-  AppEditorContextProvider,
-  useCustomEditorContext,
-} from "@/src/context/AppEditor";
+
 import { PermissionGuard } from "../../../PermissionGuard";
 import { useAuth } from "@/src/hooks/useAuth";
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { decodeAndSanitizeHtml, sanitizeAndEncodeHtml } from "@/src/utils";
 
 export default function NewPostPage() {
   const postId = useParams().postId as string;
@@ -57,14 +53,11 @@ export function PostEditor() {
   const setEditorContent = usePenstackEditorStore(
     (state) => state.setEditorContent
   );
-  const activePostZu = useEditorPostManagerStore((state) => state.activePost);
-  console.log({
-    afctivePost: activePostZu,
-  });
+
   const { user } = useAuth();
   function onEditorUpdate(content: { html: string; text?: string }) {
     setEditorContent(content);
-    updateField("content", encode(content.html));
+    updateField("content", sanitizeAndEncodeHtml(content.html));
   }
   return (
     <PermissionGuard
@@ -74,7 +67,7 @@ export function PostEditor() {
       <Box h="full" overflowY="auto">
         <TipTapEditor
           onUpdate={onEditorUpdate}
-          initialContent={decode(activePost?.content) || ""}
+          initialContent={decodeAndSanitizeHtml(activePost?.content || "")}
         />
       </Box>
     </PermissionGuard>

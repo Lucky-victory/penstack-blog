@@ -1,5 +1,6 @@
 import { PostSelect } from "@/src/types";
 import {
+  decodeAndSanitizeHtml,
   formatDate,
   formatPostPermalink,
   objectToQueryParams,
@@ -23,7 +24,6 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { decode } from "html-entities";
 
 const MotionPostCard = motion(Card);
 
@@ -133,7 +133,7 @@ export default function PostCard({
             </LinkOverlay>
 
             <Text noOfLines={2} color={textColor} fontSize={"small"}>
-              {post.summary || stripHtml(decode(post.content))}
+              {post.summary || stripHtml(decodeAndSanitizeHtml(post.content))}
             </Text>
           </VStack>
           {showAuthor && (

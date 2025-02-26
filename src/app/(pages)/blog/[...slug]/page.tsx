@@ -3,8 +3,12 @@ import PostPage from "@/src/app/components/pages/PostPage";
 import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { getPost } from "@/src/lib/queries/post";
-import { decode } from "html-entities";
-import { objectToQueryParams, shortenText, stripHtml } from "@/src/utils";
+import {
+  decodeAndSanitizeHtml,
+  objectToQueryParams,
+  shortenText,
+  stripHtml,
+} from "@/src/utils";
 
 async function getData(slug: string) {
   try {
@@ -36,7 +40,7 @@ export async function generateMetadata(
   return {
     title: post?.title,
     description: shortenText(
-      post.summary || stripHtml(decode(post.content)),
+      post.summary || stripHtml(decodeAndSanitizeHtml(post.content || "")),
       200
     ),
     creator: post?.author?.name,

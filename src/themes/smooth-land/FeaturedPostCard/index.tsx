@@ -1,5 +1,6 @@
 import { useFeaturedPost } from "@/src/hooks/useFeaturedPost";
 import {
+  decodeAndSanitizeHtml,
   formatPostPermalink,
   nativeFormatDate,
   objectToQueryParams,
@@ -22,7 +23,6 @@ import {
   Skeleton,
   SkeletonText,
 } from "@chakra-ui/react";
-import { decode } from "html-entities";
 
 export default function FeaturedPostCard() {
   const { featuredPost, loading } = useFeaturedPost();
@@ -51,7 +51,7 @@ export default function FeaturedPostCard() {
           py={{ base: 3, sm: 6 }}
         >
           <Skeleton height="350px" rounded={"lg"} />
-          <Skeleton height="25px"  rounded={"xl"} />
+          <Skeleton height="25px" rounded={"xl"} />
           <Skeleton height="15px" width="100px" rounded={"xl"} />
           <SkeletonText noOfLines={3} rounded={"xl"} />
         </Stack>
@@ -108,7 +108,7 @@ export default function FeaturedPostCard() {
                   </LinkOverlay>
                   <Text color={textColor} fontSize="lg" noOfLines={3}>
                     {featuredPost.summary ||
-                      stripHtml(decode(featuredPost.content))}
+                      stripHtml(decodeAndSanitizeHtml(featuredPost.content))}
                   </Text>
                 </VStack>
               </VStack>

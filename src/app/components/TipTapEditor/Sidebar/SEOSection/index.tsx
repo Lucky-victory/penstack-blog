@@ -17,6 +17,7 @@ import { SummaryInput } from "../components/SummaryInput";
 
 import { encode } from "html-entities";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { sanitizeAndEncodeHtml } from "@/src/utils";
 
 export const SEOSection = ({
   updateField,
@@ -45,7 +46,7 @@ export const SEOSection = ({
       />
       <SummaryInput
         summary={summary || ""}
-        onChange={(val) => updateField("summary", encode(val))}
+        onChange={(val) => updateField("summary", sanitizeAndEncodeHtml(val))}
       />
     </Stack>
   );
