@@ -53,12 +53,12 @@ export default function PostCard({
       as={LinkBox}
       key={post.id}
       bg={bgColor}
-      shadow={"none"}
+      // shadow={"none"}
       overflow="hidden"
       transition="all 0.3s"
       py={3}
-      px={3}
-      // _hover={{ shadow: "lg" }}
+      px={{ base: 3, sm: 4, md: 3 }}
+      _hover={{ shadow: "lg" }}
       sx={{
         "&:hover": {
           ".post-card-img": {
@@ -84,7 +84,7 @@ export default function PostCard({
           objectFit="cover"
           className="post-card-img"
           transition={"all 0.3s"}
-          height="180"
+          height={{ base: "180", sm: "240", md: "200" }}
           width="full"
         />
         {post?.category && post?.category?.name && (

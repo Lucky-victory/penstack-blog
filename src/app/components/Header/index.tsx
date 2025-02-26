@@ -193,7 +193,7 @@ const Header = () => {
                           <MenuItem
                             key={topic.name}
                             as={Link}
-                            href={`/category/${topic.slug}`}
+                            href={`/category/${topic.name}`}
                           >
                             {topic.name}
                           </MenuItem>

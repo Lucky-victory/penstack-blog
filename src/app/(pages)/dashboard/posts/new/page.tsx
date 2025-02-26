@@ -6,6 +6,7 @@ import { PostSelect } from "@/src/types";
 import { IdGenerator } from "@/src/utils";
 import { eq } from "drizzle-orm";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Dashboard | New Post",
@@ -43,7 +44,7 @@ export default async function Page() {
       return <div>Failed to create post</div>;
     }
 
-    return <NewPostRedirect postId={createdPost?.post_id as string} />;
+    redirect(`/dashboard/posts/new/${createdPost.post_id}`);
   } catch (error) {
     console.error("Error creating post:", error);
     return <div>Failed to create post</div>;

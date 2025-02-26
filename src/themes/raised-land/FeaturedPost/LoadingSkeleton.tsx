@@ -14,7 +14,7 @@ export const FeaturedPostSkeleton = () => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
   return (
-    <LinkBox mb={12} minH={400}>
+    <LinkBox mb={6} h={400}>
       <Box
         bg={cardBgColor}
         borderRadius="3xl"
@@ -23,7 +23,7 @@ export const FeaturedPostSkeleton = () => {
         borderColor={borderColor}
       >
         <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={6}>
-          <Box position="relative" height={{ base: "300px", lg: "auto" }}>
+          <Box position="relative" height={{ base: "300px", lg: "400px" }}>
             <Skeleton height="100%" width="100%" />
             <Skeleton
               position="absolute"

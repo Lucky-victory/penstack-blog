@@ -66,6 +66,7 @@ const PostsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("created_at");
+  const [isCreatingPost, setCreatingPost] = useState(false);
   const [sortOrder, setSortOrder] = useState("desc");
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
@@ -266,6 +267,10 @@ const PostsDashboard = () => {
               as={Link}
               href="/dashboard/posts/new"
               _hover={{ textDecoration: "none" }}
+              isLoading={isCreatingPost}
+              onClick={() => {
+                setCreatingPost(true);
+              }}
             >
               New Post
             </Button>
