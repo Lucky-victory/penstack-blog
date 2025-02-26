@@ -1,5 +1,5 @@
 import { useCategories } from "@/src/hooks/useCategories";
-import { HStack, Skeleton, Button } from "@chakra-ui/react";
+import { HStack, Skeleton, Button, Card } from "@chakra-ui/react";
 import { useQueryState } from "nuqs";
 import { useCallback, useEffect } from "react";
 
@@ -33,46 +33,50 @@ export const CategoryItemList = ({
   }
 
   return (
-    <HStack overflowX={"auto"} spacing={4}>
-      {isCategoryLoading && !categories?.length ? (
-        Array.from({ length: 6 }).map((_, index) => (
-          <Skeleton
-            key={index}
-            flexShrink={0}
-            height={30}
-            width={"80px"}
-            rounded={"lg"}
-          />
-        ))
-      ) : (
-        <>
-          <Button
-            onClick={() => {
-              handleSelectedCategory("");
-            }}
-            value={""}
-            size={"sm"}
-            variant={isSelected("") ? "solid" : "ghost"}
-          >
-            All
-          </Button>
-          {[...(categories || [])?.map((cat) => cat.name)].map((val) => {
-            return (
+    <Card>
+      <CardBody>
+        <HStack overflowX={"auto"} spacing={4}>
+          {isCategoryLoading && !categories?.length ? (
+            Array.from({ length: 6 }).map((_, index) => (
+              <Skeleton
+                key={index}
+                flexShrink={0}
+                height={30}
+                width={"80px"}
+                rounded={"lg"}
+              />
+            ))
+          ) : (
+            <>
               <Button
                 onClick={() => {
-                  handleSelectedCategory(val);
+                  handleSelectedCategory("");
                 }}
-                key={val}
-                value={val}
+                value={""}
                 size={"sm"}
-                variant={isSelected(val) ? "solid" : "ghost"}
+                variant={isSelected("") ? "solid" : "ghost"}
               >
-                {val}
+                All
               </Button>
-            );
-          })}
-        </>
-      )}
-    </HStack>
+              {[...(categories || [])?.map((cat) => cat.name)].map((val) => {
+                return (
+                  <Button
+                    onClick={() => {
+                      handleSelectedCategory(val);
+                    }}
+                    key={val}
+                    value={val}
+                    size={"sm"}
+                    variant={isSelected(val) ? "solid" : "ghost"}
+                  >
+                    {val}
+                  </Button>
+                );
+              })}
+            </>
+          )}
+        </HStack>
+      </CardBody>
+    </Card>
   );
 };

@@ -133,7 +133,8 @@ export default function PostCard({
             </LinkOverlay>
 
             <Text noOfLines={2} color={textColor} fontSize={"small"}>
-              {post.summary || stripHtml(decodeAndSanitizeHtml(post.content))}
+              {post.summary ||
+                stripHtml(decodeAndSanitizeHtml(post.content || ""))}
             </Text>
           </VStack>
           {showAuthor && (

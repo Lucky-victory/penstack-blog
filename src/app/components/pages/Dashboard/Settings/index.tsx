@@ -64,7 +64,7 @@ export default function DashboardSettingsPage() {
       const fetchedData = data.data;
       setSettings({ ...fetchedData });
       setOriginalSettings({ ...fetchedData });
-      return data?.data;
+      return fetchedData;
     } catch (error) {
       toast({
         title: "Failed to load settings",
@@ -139,7 +139,7 @@ export default function DashboardSettingsPage() {
       if (status < 200 || status >= 400)
         throw new Error("Failed to save settings");
 
-      setOriginalSettings({ ...settings });
+      // setOriginalSettings({ ...settings });
       setHasChanges(false);
       queryClient.invalidateQueries({
         queryKey: ["settings"],

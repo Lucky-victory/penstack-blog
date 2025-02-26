@@ -108,7 +108,9 @@ export default function FeaturedPostCard() {
                   </LinkOverlay>
                   <Text color={textColor} fontSize="lg" noOfLines={3}>
                     {featuredPost.summary ||
-                      stripHtml(decodeAndSanitizeHtml(featuredPost.content))}
+                      stripHtml(
+                        decodeAndSanitizeHtml(featuredPost.content || "")
+                      )}
                   </Text>
                 </VStack>
               </VStack>

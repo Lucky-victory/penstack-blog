@@ -4,7 +4,7 @@ import { siteSettings } from "@/src/db/schemas";
 import { SiteSettings } from "@/src/types";
 import { DEFAULT_SETTINGS } from "./config";
 import { isSecretKey } from "@/src/utils";
-import {  encryptKey } from "../../encryption";
+import { encryptKey } from "../../encryption";
 
 import { unstable_cache } from "next/cache";
 
@@ -24,7 +24,7 @@ export const getSettings = unstable_cache(
     return { ...DEFAULT_SETTINGS, ...settingsObj };
   },
   ["getSettings"],
-  { tags: ["settings", "getSettings"] }
+  { tags: ["getSettings"] }
 );
 
 export async function updateSettings(newSettings: SiteSettings) {

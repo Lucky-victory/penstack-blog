@@ -15,8 +15,9 @@ import {
   Image,
 } from "@chakra-ui/react";
 import PostCard from "../../../../themes/smooth-land/PostCard";
+import { FeaturedPost } from "@/src/themes/raised-land/FeaturedPost";
 
-const FrontPage = () => {
+const FrontPage2 = () => {
   const bgColor = useColorModeValue("gray.50", "gray.900");
   const cardBgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
@@ -92,63 +93,7 @@ const FrontPage = () => {
     <Box minH="100vh" bg={bgColor} py={8}>
       <Container maxW="7xl">
         {/* Featured Post Section */}
-        <LinkBox mb={12}>
-          <Box
-            bg={cardBgColor}
-            borderRadius="3xl"
-            overflow="hidden"
-            borderWidth="1px"
-            borderColor={borderColor}
-            transition="all 0.2s"
-            _hover={{ boxShadow: "lg" }}
-          >
-            <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={6}>
-              <Box position="relative" height={{ base: "300px", lg: "auto" }}>
-                <Image
-                  src={featuredPost.featured_image.url}
-                  alt={featuredPost.featured_image.alt_text}
-                  className="w-full h-full object-cover"
-                />
-                <Tag position="absolute" top={4} left={4} size="lg">
-                  Featured
-                </Tag>
-              </Box>
-              <VStack align="start" spacing={4} p={6} justify="center">
-                <Tag colorScheme="purple" borderRadius="full">
-                  {featuredPost.category.name}
-                </Tag>
-                <LinkOverlay href={`/post/${featuredPost.id}`}>
-                  <Heading size="2xl" mb={4}>
-                    {featuredPost.title}
-                  </Heading>
-                </LinkOverlay>
-                <Text color={textColor} fontSize="lg">
-                  {featuredPost.summary}
-                </Text>
-                <HStack spacing={4} mt={4}>
-                  <Image
-                    src={featuredPost.author.avatar}
-                    alt={featuredPost.author.name}
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <VStack align="start" spacing={0}>
-                    <Text fontWeight="bold">{featuredPost.author.name}</Text>
-                    <Text color={textColor} fontSize="sm">
-                      {new Date(featuredPost.published_at).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "long",
-                          day: "numeric",
-                          year: "numeric",
-                        }
-                      )}
-                    </Text>
-                  </VStack>
-                </HStack>
-              </VStack>
-            </Grid>
-          </Box>
-        </LinkBox>
+        <FeaturedPost />
 
         {/* Recent Posts Section */}
         <VStack align="start" spacing={8}>
@@ -172,4 +117,4 @@ const FrontPage = () => {
   );
 };
 
-export default FrontPage;
+export default FrontPage2;
