@@ -256,7 +256,7 @@ const Header = () => {
                       key={topic.name}
                       rounded={"full"}
                       as={Link}
-                      href={`/category/${topic.slug}`}
+                      href={`/category/${topic.name}`}
                       variant="ghost"
                       justifyContent="flex-start"
                       w="full"

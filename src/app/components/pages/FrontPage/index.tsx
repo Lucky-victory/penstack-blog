@@ -1,6 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Box, Button, Heading, HStack, Skeleton } from "@chakra-ui/react";
+import React, { Suspense, useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Heading,
+  HStack,
+  Skeleton,
+  SkeletonText,
+  Stack,
+} from "@chakra-ui/react";
 import FeaturedPostCard from "../../../../themes/smooth-land/FeaturedPostCard";
 import PageWrapper from "../../PageWrapper";
 import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
@@ -10,11 +18,9 @@ import { useCategories } from "@/src/hooks/useCategories";
 import { LuArrowRight } from "react-icons/lu";
 import { useQueryState } from "nuqs";
 import { CategoryItemList } from "../../CategoryItemList";
-import { usePermissionsStore } from "@/src/state/permissions";
 
 const FrontPage = () => {
   const { posts, loading, updateParams } = usePosts();
-  const permissions = usePermissionsStore((state) => state.permissions);
 
   return (
     <PageWrapper>
@@ -25,7 +31,24 @@ const FrontPage = () => {
           px={{ base: 2, md: 4, lg: 2 }}
           // pt={2}
         >
-          <FeaturedPostCard />
+          <Suspense
+            fallback={
+              <Stack
+                h={"full"}
+                minH={350}
+                spacing={4}
+                px={{ base: 3, sm: 6, lg: 8 }}
+                py={{ base: 3, sm: 6 }}
+              >
+                <Skeleton height="350px" rounded={"lg"} />
+                <Skeleton height="15px" width="100px" rounded={"xl"} />
+                <Skeleton height="25px" rounded={"xl"} />
+                <SkeletonText noOfLines={3} rounded={"xl"} />
+              </Stack>
+            }
+          >
+            <FeaturedPostCard />
+          </Suspense>
           <Box px={{ base: 0, lg: 4 }} py={5}>
             <Box mt={0} mb={6}>
               <CategoryItemList

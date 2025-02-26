@@ -20,6 +20,7 @@ import {
   useColorModeValue,
   VStack,
   Skeleton,
+  SkeletonText,
 } from "@chakra-ui/react";
 import { decode } from "html-entities";
 
@@ -49,10 +50,10 @@ export default function FeaturedPostCard() {
           px={{ base: 3, sm: 6, lg: 8 }}
           py={{ base: 3, sm: 6 }}
         >
-          <Skeleton height="350px" rounded={"xl"} />
-          <Skeleton height="20px" width="100px" rounded={"xl"} />
-          <Skeleton height="35px" rounded={"xl"} />
-          <Skeleton height="50px" rounded={"xl"} />
+          <Skeleton height="350px" rounded={"lg"} />
+          <Skeleton height="25px"  rounded={"xl"} />
+          <Skeleton height="15px" width="100px" rounded={"xl"} />
+          <SkeletonText noOfLines={3} rounded={"xl"} />
         </Stack>
       ) : (
         featuredPost && (
