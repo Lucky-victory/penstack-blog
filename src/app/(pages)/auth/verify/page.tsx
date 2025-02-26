@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
 import {
   Container,
   VStack,
@@ -12,17 +11,17 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { useQueryState } from "nuqs";
+import PageWrapper from "@/src/app/components/PageWrapper";
 
 export default function VerifyEmail() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [canResend, setCanResend] = useState(true);
   const [countdown, setCountdown] = useState(0);
-  const searchParams = useSearchParams();
   const toast = useToast({ position: "top", duration: 10000 });
   const hasSent = useRef(false);
-  const initialEmail = searchParams.get("email");
-
+  const [initialEmail] = useQueryState("email");
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
@@ -72,36 +71,39 @@ export default function VerifyEmail() {
   };
 
   return (
-    <Container maxW="md" py={{ base: 12, md: 24 }}>
-      <VStack spacing={8}>
-        <VStack spacing={3} textAlign="center">
-          <Heading size="xl">Verify Your Email</Heading>
-          <Text color="gray.500">
-            Please verify your email address to continue. Haven&apos;t received
-            the email yet?
-          </Text>
-        </VStack>
+    <PageWrapper>
+      <Container maxW="md" py={{ base: 12, md: 24 }}>
+        <VStack spacing={8}>
+          <VStack spacing={3} textAlign="center">
+            <Heading size="xl">Verify Your Email</Heading>
+            <Text color="gray.500">
+              Please verify your email address to continue. Haven&apos;t
+              received the email yet?
+            </Text>
+          </VStack>
 
-        <VStack spacing={4} width="full">
-          <Input
-            placeholder="Enter your email"
-            value={email || initialEmail || ""}
-            onChange={(e) => setEmail(e.target.value)}
-            size="lg"
-          />
-          <Button
-            onClick={handleResend}
-            isLoading={isLoading}
-            isDisabled={!canResend}
-            size="lg"
-            width="full"
-          >
-            {canResend
-              ? "Resend Verification Email"
-              : `Resend in ${countdown}s`}
-          </Button>
+          <VStack spacing={4} width="full">
+            <Input
+              placeholder="Enter your email"
+              value={email || initialEmail || ""}
+              onChange={(e) => setEmail(e.target.value)}
+              size="lg"
+              isDisabled
+            />
+            <Button
+              onClick={handleResend}
+              isLoading={isLoading}
+              isDisabled={!canResend}
+              size="lg"
+              width="full"
+            >
+              {canResend
+                ? "Resend Verification Email"
+                : `Resend in ${countdown}s`}
+            </Button>
+          </VStack>
         </VStack>
-      </VStack>
-    </Container>
+      </Container>
+    </PageWrapper>
   );
 }
