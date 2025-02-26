@@ -5,7 +5,7 @@ import { Spinner } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
 import { memo } from "react";
 
-export const PermissionGuard = memo(function ({
+export const PermissionGuard = memo(function PermissionGuard({
   requiredPermission,
   children,
   shouldRedirect,

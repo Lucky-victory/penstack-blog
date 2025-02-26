@@ -5,6 +5,7 @@ import { type NextRequest } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import isEmpty from "just-is-empty";
 import slugify from "slugify";
+import { decode, encode } from "html-entities";
 
 type PercentageDifferenceResult = {
   formatted: string;
@@ -47,8 +48,8 @@ export function calculatePercentageDifference(
     // Since anything from zero is technically an infinite increase,
     // we just return the new value as the percentage
     return {
-      formatted: `+${newValue}%`,
-      raw: newValue,
+      formatted: `+${newValue * 100}%`,
+      raw: newValue * 100,
     };
   }
 
@@ -82,7 +83,12 @@ export function calculateReadingTime(content: string) {
 export function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, "\n").replaceAll("\n", " ");
 }
-
+export function decodeAndSanitizeHtml(html: string) {
+  return decode(html);
+}
+export function sanitizeAndEncodeHtml(html: string) {
+  return encode(html);
+}
 type DatePart = "year" | "month" | "day" | "hour" | "minute" | "second";
 
 interface ConversionResult {

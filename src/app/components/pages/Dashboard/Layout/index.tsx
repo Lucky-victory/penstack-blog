@@ -20,11 +20,14 @@ import NetworkAvailabiltyCheck from "../../../NetworkAvailabiltyCheck";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 import { useDashboardSidebarState } from "@/src/hooks/useDashboardSidebarState";
 import Loader from "../../../Loader";
+import { NavItemWithoutPermission } from "@/src/types";
 
 export default memo(function DashboardLayout({
   children,
+  navLinks,
 }: {
   children: ReactNode;
+  navLinks: NavItemWithoutPermission[];
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isMinimized, toggleMinimized } = useDashboardSidebarState();
@@ -39,6 +42,7 @@ export default memo(function DashboardLayout({
       >
         <Suspense fallback={<Loader />}>
           <DashboardSidebar
+            navLinks={navLinks}
             onClose={() => onClose}
             display={{ base: "none", md: "block" }}
             isMinimized={isMinimized}
@@ -60,6 +64,7 @@ export default memo(function DashboardLayout({
             <DrawerBody px={0} p={0} mr={0}>
               <Suspense fallback={<Loader />}>
                 <DashboardSidebar
+                  navLinks={navLinks}
                   onClose={onClose}
                   isMinimized={false}
                   toggleMinimized={() => {}}

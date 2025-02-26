@@ -24,10 +24,12 @@ import {
   MenuList,
   MenuItem,
   Icon,
+  VStack,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { AggregatedPostViews } from "@/src/types";
 import { LuChevronDown } from "react-icons/lu";
+import { useSiteConfig } from "@/src/context/SiteConfig";
 
 const PostViewsChart = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState({
@@ -211,5 +213,82 @@ const PostViewsChart = () => {
     </Card>
   );
 };
-
-export default memo(PostViewsChart);
+const PostViewChartWrapper = () => {
+  const siteSettings = useSiteConfig();
+  const [selectedTimeRange, setSelectedTimeRange] = useState({
+    label: "7 days",
+    value: "7",
+  });
+  const timeRanges = useMemo(
+    () => [
+      { label: "7 days", value: "7" },
+      { label: "30 days", value: "30" },
+      { label: "60 days", value: "60" },
+      { label: "90 days", value: "90" },
+      { label: "All time", value: "all" },
+    ],
+    []
+  );
+  return (
+    <>
+      {siteSettings.localPostAnalytics.enabled ? (
+        <PostViewsChart />
+      ) : (
+        <Card variant={"outline"}>
+          <CardHeader>
+            <HStack wrap={"wrap"} justify={"space-between"} gap={4}>
+              <Heading size={"md"}>Post Views</Heading>
+              <HStack wrap={"wrap"} gap={2}>
+                <Menu>
+                  {({ isOpen }) => (
+                    <>
+                      <MenuButton
+                        isDisabled
+                        as={Button}
+                        size={"sm"}
+                        variant={"outline"}
+                        rightIcon={
+                          <Icon
+                            as={LuChevronDown}
+                            transition={"0.2s ease-in-out"}
+                            transform={
+                              isOpen ? "rotate(-180deg)" : "rotate(0deg)"
+                            }
+                          />
+                        }
+                      >
+                        {" "}
+                        {selectedTimeRange.label}
+                      </MenuButton>
+                      <MenuList>
+                        {timeRanges.map((range) => (
+                          <MenuItem
+                            key={range.value}
+                            rounded={"lg"}
+                            onClick={() => setSelectedTimeRange(range)}
+                          >
+                            {range.label}
+                          </MenuItem>
+                        ))}
+                      </MenuList>
+                    </>
+                  )}
+                </Menu>
+              </HStack>
+            </HStack>
+          </CardHeader>
+          <CardBody h={350}>
+            <VStack>
+              <Heading size={"md"}> Post view not available</Heading>
+              <Text color={"gray.500"} fontSize={"smaller"}>
+                {" "}
+                Post Analytics is disabled
+              </Text>
+            </VStack>
+          </CardBody>
+        </Card>
+      )}
+    </>
+  );
+};
+export default memo(PostViewChartWrapper);

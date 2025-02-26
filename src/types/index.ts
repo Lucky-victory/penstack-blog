@@ -154,10 +154,12 @@ export interface NavItemWithoutPermission {
   icon?: ElementType;
   label: string;
   href: string;
+  iconName?: string;
   children?: Array<{
     label: string;
     href: string;
     icon?: ElementType;
+    iconName?: string;
   }>;
 }
 export const navPermissionMapping = {

@@ -12,6 +12,7 @@ export default withAuth({
       }).then((res) => res.hasPermission);
     },
   },
+
   pages: {
     signIn: "/auth/signin",
   },

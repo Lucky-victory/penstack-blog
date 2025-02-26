@@ -13,9 +13,12 @@ export default function Providers({
   children: React.ReactNode;
 }) {
   const setPermissions = usePermissionsStore((state) => state.setPermissions);
+  const setisLoading = usePermissionsStore((state) => state.setIsLoading);
 
   useEffect(() => {
+    setisLoading(true);
     setPermissions(session?.user?.permissions || []);
-  }, [session?.user?.permissions, setPermissions]);
+    setisLoading(false);
+  }, [session?.user?.permissions, setPermissions, setisLoading]);
   return <SessionProvider session={session}>{children}</SessionProvider>;
 }

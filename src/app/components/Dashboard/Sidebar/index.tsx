@@ -7,17 +7,7 @@ import {
   Stack,
   IconButton,
 } from "@chakra-ui/react";
-import {
-  LuChevronsLeft,
-  LuChevronsRight,
-  LuFileImage,
-  LuFileStack,
-  LuHome,
-  LuMail,
-  LuSettings,
-  LuUsers,
-} from "react-icons/lu";
-import { NavItem, navPermissionMapping, TPermissions } from "@/src/types";
+import { LuChevronsLeft, LuChevronsRight, LuCombine, LuFileImage, LuFileSpreadsheet, LuHome, LuMail, LuMessageSquare, LuSettings, LuUsers } from "react-icons/lu";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
 import { AppLogo } from "../../AppLogoAndName/AppLogo";
 import { SidebarNavItem } from "./NavItem";
@@ -26,26 +16,45 @@ import { AppLogoAndName } from "../../AppLogoAndName";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 import { Link } from "@chakra-ui/next-js";
 import { useMemo } from "react";
-import {
-  dashboardNavLinks,
-  useDashboardNavigation,
-} from "@/src/lib/dashboard/nav-links";
+import { useDashboardNavigation } from "@/src/lib/dashboard/nav-links";
 import { usePermissionsStore } from "@/src/state/permissions";
+import { NavItemWithoutPermission } from "@/src/types";
 
+const iconMap = {
+  LuHome,
+  LuFileSpreadsheet,
+  LuFileImage,
+  LuUsers,
+  LuCombine,
+  LuMessageSquare,
+  LuMail,
+  LuSettings,
+};
 export const DashboardSidebar = ({
   onClose,
   isMinimized,
   toggleMinimized,
+  navLinks,
   ...rest
 }: {
   onClose: () => void;
   isMinimized: boolean;
   toggleMinimized: () => void;
+  navLinks: NavItemWithoutPermission[];
   [key: string]: any;
 }) => {
-  const permissions = usePermissionsStore((state) => state.permissions);
-  const filteredNavLinks = useDashboardNavigation(permissions);
-  const navItems = useMemo(() => filteredNavLinks, [permissions]);
+  const processedNavLinks = navLinks.map((link) => ({
+    ...link,
+    icon: iconMap[link.iconName as keyof typeof iconMap], // Convert string to component
+    children: link.children
+      ? link.children.map((child) => ({
+          ...child,
+          icon: child.iconName
+            ? iconMap[child.iconName as keyof typeof iconMap]
+            : undefined,
+        }))
+      : undefined,
+  }));
   const bg = useColorModeValue("white", "charcoalBlack");
   const navBtnBg = useColorModeValue("brand.600", "brand.300");
   const navBtnBgHover = useColorModeValue("gray.200", "gray.700");
@@ -116,7 +125,7 @@ export const DashboardSidebar = ({
           px={isMinimized ? 3 : 4}
           justifyContent={"space-between"}
         >
-          {navItems.map((item, index) => (
+          {processedNavLinks.map((item, index) => (
             <Box key={index}>
               {item.children ? (
                 <NavItemWithChildren
