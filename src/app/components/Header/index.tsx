@@ -1,11 +1,10 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React from "react";
 import {
   Box,
   Container,
   HStack,
   Button,
   IconButton,
-  useColorMode,
   useColorModeValue,
   Menu,
   MenuButton,
@@ -21,21 +20,12 @@ import {
   useDisclosure,
   VStack,
   Divider,
-  InputGroup,
-  Input,
-  InputRightElement,
   Icon,
   Hide,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import {
-  LuMenu,
-  LuChevronDown,
-  LuGithub,
-  LuTwitter,
-  LuSearch,
-} from "react-icons/lu";
-import { usePathname, useRouter } from "next/navigation";
+import { LuMenu, LuChevronDown, LuSearch } from "react-icons/lu";
+import { usePathname } from "next/navigation";
 import { Link } from "@chakra-ui/next-js";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
@@ -43,14 +33,9 @@ import { useCategories } from "@/src/hooks/useCategories";
 import { AppLogo } from "../AppLogoAndName/AppLogo";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useSiteConfig } from "@/src/context/SiteConfig";
-import { useQueryState } from "nuqs";
 
 const Header = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [searchValue, setSearchValue] = useState("");
-  const [query, setQuery] = useQueryState("q", { defaultValue: "" });
-  const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.100", "gray.700");
   const textColor = useColorModeValue("gray.700", "gray.200");
   const hoverBgColor = useColorModeValue("gray.100", "gray.700");
@@ -59,14 +44,6 @@ const Header = () => {
   const pathname = usePathname();
   const { scrollY } = useScroll();
   const backgroundColor = useTransform(
-    scrollY,
-    [0, 60],
-    [
-      useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(26, 32, 44, 0.3)"),
-      useColorModeValue("rgba(255, 255, 255, 0.9)", "rgba(26, 32, 44, 0.9)"),
-    ]
-  );
-  const navLinkColorBeforeScroll = useTransform(
     scrollY,
     [0, 60],
     [
@@ -89,17 +66,6 @@ const Header = () => {
     { name: "Tutorials", href: "/resources/tutorials" },
     { name: "Newsletter", href: "/newsletter" },
   ];
-  const router = useRouter();
-  function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const searchQuery = formData.get("search");
-    router.push(`/search?q=${searchQuery}`);
-  }
-  function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
-    setSearchValue(value);
-  }
   function isActiveUrl(url: string) {
     return pathname === url;
   }
@@ -210,7 +176,7 @@ const Header = () => {
                       borderBottomColor={"transparent"}
                     >
                       <HStack>
-                        <Text>Categories</Text>
+                        <Text>Topics</Text>
                         <Icon
                           as={LuChevronDown}
                           transition={"0.2s ease-out"}

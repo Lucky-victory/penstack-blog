@@ -32,6 +32,14 @@ const Footer = () => {
     ],
     []
   );
+  const legalNavItems = useMemo(
+    () => [
+      { label: "Privacy Policy", href: "/privacy-policy" },
+
+      { label: "Terms of Service", href: "#" },
+    ],
+    []
+  );
 
   const socialLinks = useMemo(
     () => [
@@ -113,9 +121,9 @@ const Footer = () => {
                   color={"white"}
                   fontWeight={500}
                 >
-                  About
+                  Legal
                 </Heading>
-                {navItems.map((item) => (
+                {legalNavItems.map((item) => (
                   <Link
                     key={item.label}
                     href={item.href}

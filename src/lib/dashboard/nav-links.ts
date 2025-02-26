@@ -188,9 +188,7 @@ export const getDashboardNavigation = (userPermissions: TPermissions[]) => {
       // Handle children recursively
       if (link.children) {
         link.children = filterNavLinks(link.children);
-        console.log({
-          child: link?.children,
-        });
+
         // Show parent if any children are visible
         return link?.children?.length > 0 || hasPermission;
       }
