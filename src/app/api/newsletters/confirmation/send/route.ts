@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { NewsletterConfirmationTemplate } from "@/src/app/components/Emails/Newsletter/Confirmation";
 import { db } from "@/src/db";
-import { newsletters } from "@/src/db/schemas/newsletter.sql";
+import { newsletterSubscribers } from "@/src/db/schemas/newsletter.sql";
 import { addHours } from "date-fns";
 import crypto from "crypto";
 import { sendEmail } from "@/src/lib/send-email";
@@ -31,18 +31,18 @@ export async function POST(req: NextRequest) {
     );
   }
   const existingEmail = await db.query.newsletters.findFirst({
-    where: eq(sql`lower(${newsletters.email})`, email.toLowerCase()),
+    where: eq(sql`lower(${newsletterSubscribers.email})`, email.toLowerCase()),
   });
   if (existingEmail) {
     await db
-      .update(newsletters)
+      .update(newsletterSubscribers)
       .set({
         verification_token: verificationToken,
         verification_token_expires: tokenExpiry,
       })
-      .where(eq(newsletters.email, email));
+      .where(eq(newsletterSubscribers.email, email));
   } else {
-    await db.insert(newsletters).values({
+    await db.insert(newsletterSubscribers).values({
       email,
       name,
       verification_token: verificationToken,

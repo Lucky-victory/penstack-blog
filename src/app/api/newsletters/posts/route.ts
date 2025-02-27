@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/src/db";
-import { newsletters } from "@/src/db/schemas";
+import { newsletterSubscribers } from "@/src/db/schemas";
 import { sendEmail } from "@/src/lib/send-email"; // You'll need to implement this
 import { eq } from "drizzle-orm";
 import BlogPostNewsletter from "@/src/app/components/Emails/BlogPostNewsletter";
@@ -14,8 +14,8 @@ export async function POST(request: NextRequest) {
     // Get all newsletter subscribers
     const subscribers = await db
       .select()
-      .from(newsletters)
-      .where(eq(newsletters.status, "subscribed"));
+      .from(newsletterSubscribers)
+      .where(eq(newsletterSubscribers.status, "subscribed"));
 
     const post = await getPost(postId);
     if (!post) {

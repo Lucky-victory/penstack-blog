@@ -1,5 +1,5 @@
 import { db } from "@/src/db";
-import { newsletters } from "@/src/db/schemas";
+import { newsletterSubscribers } from "@/src/db/schemas";
 import { NewsletterInsert } from "@/src/types";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -7,88 +7,90 @@ import { headers } from "next/headers";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 
 export async function GET(req: NextRequest) {
- return await checkPermission({requiredPermission:'newsletters:read'},async ()=>{ 
-  
-  const { searchParams } = new URL(req.url);
-  const page = Math.max(1, Number(searchParams.get("page")) || 1);
-  const limit = Math.min(
-    100,
-    Math.max(1, Number(searchParams.get("limit")) || 20)
-  );
-  const search = searchParams.get("search");
-  const status = (searchParams.get("status") || "subscribed") as
-    | NewsletterInsert["status"]
-    | "all";
-  const validSortFields = ["created_at", "email", "name"] as const;
-  const sortBy = validSortFields.includes(searchParams.get("sortBy") as any)
-    ? (searchParams.get("sortBy") as "created_at" | "email" | "name")
-    : "created_at";
+  return await checkPermission(
+    { requiredPermission: "newsletters:read" },
+    async () => {
+      const { searchParams } = new URL(req.url);
+      const page = Math.max(1, Number(searchParams.get("page")) || 1);
+      const limit = Math.min(
+        100,
+        Math.max(1, Number(searchParams.get("limit")) || 20)
+      );
+      const search = searchParams.get("search");
+      const status = (searchParams.get("status") || "subscribed") as
+        | NewsletterInsert["status"]
+        | "all";
+      const validSortFields = ["created_at", "email", "name"] as const;
+      const sortBy = validSortFields.includes(searchParams.get("sortBy") as any)
+        ? (searchParams.get("sortBy") as "created_at" | "email" | "name")
+        : "created_at";
 
-  const validSortOrders = ["asc", "desc"] as const;
-  const sortOrder = validSortOrders.includes(
-    searchParams.get("sortOrder") as any
-  )
-    ? (searchParams.get("sortOrder") as "asc" | "desc")
-    : "desc";
-
-  const offset = (page - 1) * limit;
-
-  const whereConditions = [];
-  if (search) {
-    whereConditions.push(
-      or(
-        ilike(newsletters.email, `%${search}%`),
-        ilike(newsletters.name, `%${search}%`)
+      const validSortOrders = ["asc", "desc"] as const;
+      const sortOrder = validSortOrders.includes(
+        searchParams.get("sortOrder") as any
       )
-    );
-  }
-  if (status && status !== "all") {
-    whereConditions.push(eq(newsletters.status, status));
-  }
+        ? (searchParams.get("sortOrder") as "asc" | "desc")
+        : "desc";
 
-  try {
-    const orderBy = [
-      sortOrder === "desc"
-        ? desc(newsletters[sortBy])
-        : asc(newsletters[sortBy]),
-    ];
-    const [totalResult, subscribers] = await Promise.all([
-      db
-        .select({ count: sql<number>`count(*)` })
-        .from(newsletters)
-        .where(and(...whereConditions)),
-      db.query.newsletters.findMany({
-        limit,
-        offset,
-        orderBy,
-        where:
-          whereConditions?.length > 0 ? and(...whereConditions) : undefined,
-      }),
-    ]);
-    const total = totalResult[0].count;
-    return NextResponse.json({
-      data: subscribers,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
-      message: "Newsletter subscribers fetched successfully",
-    });
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        data: null,
-        error: error?.message,
-        message: "Something went wrong... could not fetch subscribers",
-      },
-      {
-        status: 500,
+      const offset = (page - 1) * limit;
+
+      const whereConditions = [];
+      if (search) {
+        whereConditions.push(
+          or(
+            ilike(newsletterSubscribers.email, `%${search}%`),
+            ilike(newsletterSubscribers.name, `%${search}%`)
+          )
+        );
       }
-    );
-  }
-})
+      if (status && status !== "all") {
+        whereConditions.push(eq(newsletterSubscribers.status, status));
+      }
+
+      try {
+        const orderBy = [
+          sortOrder === "desc"
+            ? desc(newsletterSubscribers[sortBy])
+            : asc(newsletterSubscribers[sortBy]),
+        ];
+        const [totalResult, subscribers] = await Promise.all([
+          db
+            .select({ count: sql<number>`count(*)` })
+            .from(newsletterSubscribers)
+            .where(and(...whereConditions)),
+          db.query.newsletters.findMany({
+            limit,
+            offset,
+            orderBy,
+            where:
+              whereConditions?.length > 0 ? and(...whereConditions) : undefined,
+          }),
+        ]);
+        const total = totalResult[0].count;
+        return NextResponse.json({
+          data: subscribers,
+          meta: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+          },
+          message: "Newsletter subscribers fetched successfully",
+        });
+      } catch (error: any) {
+        return NextResponse.json(
+          {
+            data: null,
+            error: error?.message,
+            message: "Something went wrong... could not fetch subscribers",
+          },
+          {
+            status: 500,
+          }
+        );
+      }
+    }
+  );
 }
 
 export async function POST(req: NextRequest) {
@@ -121,21 +123,22 @@ export async function POST(req: NextRequest) {
     // check if subscriber already exist
 
     const existingEmail = await db.query.newsletters.findFirst({
-      where: eq(sql`lower(${newsletters.email})`, email.toLowerCase()),
+      where: eq(
+        sql`lower(${newsletterSubscribers.email})`,
+        email.toLowerCase()
+      ),
     });
 
-  
     if (existingEmail) {
-      
       // if the user previously unsubscribed
       if (existingEmail.status === "unsubscribed") {
         // resubscribe them
         await db
-          .update(newsletters)
+          .update(newsletterSubscribers)
           .set({
             status: "subscribed",
           })
-          .where(eq(newsletters.id, existingEmail.id));
+          .where(eq(newsletterSubscribers.id, existingEmail.id));
 
         return NextResponse.json({
           data: {
@@ -155,7 +158,7 @@ export async function POST(req: NextRequest) {
       });
     } else {
       await db
-        .insert(newsletters)
+        .insert(newsletterSubscribers)
         .values({
           email: email.toLowerCase(),
           name,

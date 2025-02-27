@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/src/db";
-import { newsletters } from "@/src/db/schemas/newsletter.sql";
+import { newsletterSubscribers } from "@/src/db/schemas/newsletter.sql";
 import { and, eq } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   }
 
   const subscriber = await db.query.newsletters.findFirst({
-    where: and(eq(newsletters.verification_token, token)),
+    where: and(eq(newsletterSubscribers.verification_token, token)),
   });
 
   if (!subscriber || new Date() > subscriber.verification_token_expires!) {
@@ -23,13 +23,13 @@ export async function GET(req: NextRequest) {
   }
 
   await db
-    .update(newsletters)
+    .update(newsletterSubscribers)
     .set({
       verification_status: "verified",
       verification_token: null,
       verification_token_expires: null,
     })
-    .where(eq(newsletters.id, subscriber.id));
+    .where(eq(newsletterSubscribers.id, subscriber.id));
 
   return NextResponse.json({
     message: "Your subscription has been confirmed",

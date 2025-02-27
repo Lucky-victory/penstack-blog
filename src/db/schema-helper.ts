@@ -60,3 +60,12 @@ export const rolesEnum = [
   "subscriber",
   "public",
 ] as const;
+export const emailEventsEnum = [
+  "sent",
+  "delivered",
+  "delivery_delayed",
+  "bounced",
+  "complained",
+  "opened",
+  "clicked",
+] as const;

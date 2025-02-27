@@ -2,7 +2,13 @@ import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { posts } from "@/src/db/schemas/posts.sql";
 import { Editor } from "@tiptap/react";
 import { IconType } from "react-icons";
-import { medias, newsletters, permissions, roles, users } from "../db/schemas";
+import {
+  medias,
+  newsletterSubscribers,
+  permissions,
+  roles,
+  users,
+} from "../db/schemas";
 import { useFormik } from "formik";
 import { ElementType } from "react";
 
@@ -31,8 +37,8 @@ export interface TaxonomyItem {
 export type UserSelect = InferSelectModel<typeof users>;
 export type UserInsert = InferInsertModel<typeof users>;
 export type RolesSelect = InferSelectModel<typeof roles>;
-export type NewsletterInsert = InferInsertModel<typeof newsletters>;
-export type NewsletterSelect = InferSelectModel<typeof newsletters>;
+export type NewsletterInsert = InferInsertModel<typeof newsletterSubscribers>;
+export type NewsletterSelect = InferSelectModel<typeof newsletterSubscribers>;
 export type PostToPost = PostInsert & {
   categories: string[];
   tags: string[];
@@ -162,23 +168,15 @@ export interface NavItemWithoutPermission {
     iconName?: string;
   }>;
 }
-export const navPermissionMapping = {
-  VIEW_DASHBOARD: "dashboard:view",
-  VIEW_POSTS: "posts:read",
-  CREATE_POST: "posts:create",
-  VIEW_USERS: "users:read",
-  VIEW_MEDIA: "media:read",
-  VIEW_SETTINGS: "settings:read",
-} as const;
 
 export const DASH_NAV_PERMISSIONS = {
-  VIEW_DASHBOARD: "dashboard:view",
-  VIEW_POSTS: "posts:read",
+  VIEW_DASHBOARD: "dashboard:access",
+  VIEW_POSTS: "posts:view",
   CREATE_POST: "posts:create",
   VIEW_USERS: "users:read",
   VIEW_MEDIA: "media:read",
   VIEW_SETTINGS: "settings:read",
-  VIEW_NEWSLETTERS: "dashboard:view",
+  VIEW_NEWSLETTERS: "newsletter:read",
   VIEW_ROLES: "roles:read",
   VIEW_COMMENTS: "comments:moderate",
 } as const;
@@ -216,4 +214,21 @@ export type SiteSettings = {
   localPostAnalytics: SettingEntry;
   showSiteNameWithLogo: SettingEntry;
   [key: string]: SettingEntry;
+};
+export type ResendWebhookEvent = {
+  type:
+    | "email.sent"
+    | "email.delivered"
+    | "email.delivery_delayed"
+    | "email.complained"
+    | "email.bounced"
+    | "email.opened"
+    | "email.clicked";
+  data: {
+    email_id: string;
+    created_at: string;
+    to: string;
+    from: string;
+    subject: string;
+  };
 };

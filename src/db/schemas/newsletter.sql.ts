@@ -1,14 +1,18 @@
 import {
   int,
+  json,
+  mysqlEnum,
   mysqlTable,
+  text,
   timestamp,
   uniqueIndex,
   varchar,
 } from "drizzle-orm/mysql-core";
-import { id, created_at, updated_at } from "../schema-helper";
+import { id, created_at, updated_at, emailEventsEnum } from "../schema-helper";
+import { IdGenerator } from "@/src/utils";
 
-export const newsletters = mysqlTable(
-  "NewsLetters",
+export const newsletterSubscribers = mysqlTable(
+  "NewsLetterSubscribers",
   {
     id,
     email: varchar("email", { length: 255 }).notNull().unique(),
@@ -43,3 +47,44 @@ export const newsletters = mysqlTable(
     ),
   })
 );
+
+export const newsletters = mysqlTable("NewsLetters", {
+  id,
+  content_id: varchar("content_id", { length: 36 })
+    .notNull()
+    .$defaultFn(() => IdGenerator.uuid()),
+  title: varchar("title", { length: 255 }).notNull(),
+  subject: varchar("subject", { length: 255 }).notNull(),
+  preview_text: varchar("preview_text", { length: 255 }),
+  content: text("content").notNull(),
+  status: mysqlEnum("status", ["draft", "scheduled", "sent", "failed"])
+    .notNull()
+    .default("draft"),
+  scheduled_for: timestamp("scheduled_for"),
+  sent_at: timestamp("sent_at"),
+  resend_email_id: varchar("resend_email_id", { length: 255 }),
+  created_at,
+  updated_at,
+});
+
+// Optional: If you want to track which subscribers received which newsletters
+export const newsletterRecipients = mysqlTable("NewsLetterRecipients", {
+  id,
+  newsletter_id: int("newsletter_id").notNull(),
+  subscriber_id: int("subscriber_id").notNull(),
+  sent_at: timestamp("sent_at"),
+  created_at,
+});
+
+export const emailEvents = mysqlTable("EmailEvents", {
+  id,
+  email_id: varchar("email_id", { length: 255 }).notNull(),
+  newsletter_id: int("newsletter_id"),
+  subscriber_id: int("subscriber_id"),
+  event_type: varchar("event_type", {
+    length: 50,
+    enum: emailEventsEnum,
+  }).notNull(),
+  event_data: json("event_data"), // Store full webhook payload
+  created_at,
+});
