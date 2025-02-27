@@ -105,18 +105,13 @@ async function main() {
       editorRole,
       authorRole,
       contributorRole,
+      moderatorRole,
+      seoManagerRole,
+      newsletterManagerRole,
       subscriberRole,
       publicRole,
     ] = createdRolesIds;
-
-    console.log("Roles created:", {
-      adminRole,
-      editorRole,
-      authorRole,
-      contributorRole,
-      subscriberRole,
-      publicRole,
-    });
+    console.log("✅ Roles created:");
 
     // 2. Create blog-specific permissions
     console.log("Creating permissions...");
@@ -126,8 +121,8 @@ async function main() {
         description: "Can access the dashboard",
       },
       {
-        name: "dashboard:view",
-        description: "Can view dashboard contents",
+        name: "posts:view",
+        description: "Can view posts contents in dashboard",
       },
       {
         name: "posts:create",
@@ -150,8 +145,21 @@ async function main() {
         description: "Can read posts",
       },
       {
+        name: "posts:schedule",
+        description: "Can schedule posts for future publication",
+      },
+      {
+        name: "posts:review",
+        description: "Can review and approve pending posts",
+      },
+
+      {
         name: "users:read",
         description: "Can view users",
+      },
+      {
+        name: "users:edit",
+        description: "Can edit users",
       },
       {
         name: "users:write",
@@ -186,6 +194,10 @@ async function main() {
         description: "Can delete media files",
       },
       {
+        name: "media:edit",
+        description: "Can edit media file properties",
+      },
+      {
         name: "settings:read",
         description: "Can view system settings",
       },
@@ -200,6 +212,75 @@ async function main() {
       {
         name: "comments:moderate",
         description: "Can moderate comments",
+      },
+      {
+        name: "comments:delete",
+        description: "Can delete comments",
+      },
+      {
+        name: "comments:read",
+        description: "Can view comments",
+      },
+      {
+        name: "comments:reply",
+        description: "Can reply to comments",
+      },
+
+      {
+        name: "newsletters:read",
+        description: "Can view newsletter settings and subscribers",
+      },
+      {
+        name: "newsletters:write",
+        description: "Can create and edit newsletters",
+      },
+      {
+        name: "newsletters:delete",
+        description: "Can delete newsletters",
+      },
+      {
+        name: "categories:read",
+        description: "Can view post categories",
+      },
+      {
+        name: "categories:create",
+        description: "Can create new categories",
+      },
+      {
+        name: "tags:read",
+        description: "Can view post tags",
+      },
+      {
+        name: "tags:create",
+        description: "Can create new tags",
+      },
+      {
+        name: "pages:read",
+        description: "Can view static pages",
+      },
+      {
+        name: "pages:edit",
+        description: "Can view static pages",
+      },
+      {
+        name: "pages:delete",
+        description: "Can view static pages",
+      },
+      {
+        name: "seo:edit",
+        description: "Can edit SEO settings and metadata",
+      },
+      {
+        name: "seo:view",
+        description: "Can view SEO settings and analytics",
+      },
+      {
+        name: "analytics:view",
+        description: "Can view site analytics and statistics",
+      },
+      {
+        name: "analytics:export",
+        description: "Can export analytics data",
       },
       {
         name: "auth:register",
@@ -253,52 +334,96 @@ async function main() {
 
     // Editor permissions
     await assignPermissionsToRole(editorRole, [
+      "dashboard:access",
       "posts:create",
       "posts:edit",
       "posts:delete",
       "posts:publish",
       "posts:read",
-      "comments:create",
-      "comments:moderate",
-      "auth:login",
-      "dashboard:access",
-      "dashboard:view",
+      "posts:schedule",
+      "posts:review",
       "media:upload",
       "media:read",
-      "media:delete",
+      "media:edit",
+      "comments:read",
+      "comments:create",
+      "comments:moderate",
+      "comments:delete",
+      "categories:read",
+      "categories:create",
+      "tags:read",
+      "tags:create",
+      "auth:login",
+      "posts:view",
     ]);
 
     // Author permissions
     await assignPermissionsToRole(authorRole, [
-      "posts:create",
-      "posts:edit",
-      "posts:read",
-      "comments:create",
-      "auth:login",
       "dashboard:access",
+      "posts:create",
+      "posts:read",
       "media:upload",
       "media:read",
+      "posts:view",
+      "comments:create",
+      "comments:read",
+      "comments:reply",
+      "categories:read",
+      "tags:read",
+      "auth:login",
     ]);
 
     // Contributor permissions
     await assignPermissionsToRole(contributorRole, [
+      "dashboard:access",
       "posts:create",
       "posts:read",
-      "comments:create",
-      "auth:login",
-      "dashboard:access",
+      "media:upload",
       "media:read",
+      "comments:read",
+      "comments:reply",
+      "categories:read",
+      "tags:read",
+      "auth:login",
     ]);
-
+    await assignPermissionsToRole(moderatorRole, [
+      "dashboard:access",
+      "comments:read",
+      "comments:moderate",
+      "comments:delete",
+      "comments:approve",
+      "posts:read",
+      "auth:login",
+    ]);
+    await assignPermissionsToRole(seoManagerRole, [
+      "dashboard:access",
+      "seo:edit",
+      "seo:view",
+      "analytics:view",
+      "analytics:export",
+      "posts:read",
+      "auth:login",
+    ]);
     // Subscriber permissions
     await assignPermissionsToRole(subscriberRole, [
       "posts:read",
       "comments:create",
+      "comments:reply",
+      "comments:read",
+      "auth:login",
+    ]);
+    await assignPermissionsToRole(newsletterManagerRole, [
+      "dashboard:access",
+      "newsletters:read",
+      "newsletters:write",
+      "newsletters:delete",
+      "posts:read",
       "auth:login",
     ]);
     // Public permissions
     await assignPermissionsToRole(publicRole, [
       "posts:read",
+      "comments:read",
       "auth:register",
       "auth:login",
     ]);

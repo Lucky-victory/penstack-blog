@@ -52,16 +52,11 @@ export const roles = mysqlTable(
   "Roles",
   {
     id,
-    name: varchar("name", {
-      length: 50,
-      enum: rolesEnum,
-    })
-      .notNull()
-      .unique(),
+    name: mysqlEnum("name", rolesEnum).notNull().unique(),
     description: varchar("description", { length: 255 }),
   },
   (table) => ({
-    idxName: index("idx_name").on(table.name),
+    idxName: index("roles_idx_name").on(table.name),
   })
 );
 
@@ -69,16 +64,17 @@ export const permissions = mysqlTable(
   "Permissions",
   {
     id,
-    name: varchar("name", {
-      length: 50,
-      enum: permissionsEnum,
-    })
+    name: mysqlEnum(
+      "name",
+
+      permissionsEnum
+    )
       .notNull()
       .unique(),
     description: varchar("description", { length: 255 }),
   },
   (table) => ({
-    idxName: index("idx_name").on(table.name),
+    idxName: index("permissions_idx_name").on(table.name),
   })
 );
 
