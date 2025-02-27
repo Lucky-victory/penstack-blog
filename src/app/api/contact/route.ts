@@ -1,5 +1,6 @@
 import { db } from "@/src/db";
 import { contactMessages } from "@/src/db/schemas/contact.sql";
+import { sanitizeAndEncodeHtml } from "@/src/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -24,7 +25,7 @@ export async function POST(request: NextRequest) {
     await db.insert(contactMessages).values({
       name,
       email,
-      message,
+      message: sanitizeAndEncodeHtml(message),
     });
 
     return NextResponse.json({

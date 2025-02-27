@@ -28,7 +28,8 @@ export const posts = mysqlTable(
     seo_meta_id: int("meta_id"),
     post_id: varchar("post_id", { length: 255 })
       .$defaultFn(() => IdGenerator.uuid())
-      .unique().notNull(),
+      .unique()
+      .notNull(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     status: mysqlEnum("status", ["draft", "published", "deleted"]).default(
       "draft"
@@ -44,6 +45,7 @@ export const posts = mysqlTable(
     reading_time: int("reading_time"),
     allow_comments: boolean("allow_comments").default(false),
     send_newsletter: boolean("send_newsletter").default(true),
+    newsletter_sent_at: timestamp("newsletter_sent_at"),
     featured_image_id: int("featured_image_id"),
     created_at,
     published_at: timestamp("published_at").generatedAlwaysAs(
