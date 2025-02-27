@@ -14,6 +14,7 @@ import {
 import { signOut } from "next-auth/react";
 import { ReactNode } from "react";
 import { LuChevronDown, LuLogOut } from "react-icons/lu";
+import { UserMenu } from "./UserMenu";
 
 export default function DashHeader({
   children,
@@ -27,7 +28,6 @@ export default function DashHeader({
   [key: string]: any;
 }) {
   const bg = useColorModeValue("white", "gray.900");
-  const { user } = useAuth();
   return (
     <Flex
       // ml={{ base: 0, md: isMinimized ? "var(--dash-sidebar-mini-w)" : "var(--dash-sidebar-w)" }}
@@ -47,33 +47,7 @@ export default function DashHeader({
       {...rest}
     >
       <HStack justify={"space-between"} w={"full"}>
-        <HStack ml={"auto"}>
-          <Menu>
-            <MenuButton
-              as={Button}
-              pl={1}
-              leftIcon={
-                <Avatar size={"sm"} name={user?.name} src={user?.avatar} />
-              }
-              rightIcon={<LuChevronDown />}
-              variant={"outline"}
-              rounded={"full"}
-            >
-              Hi, {user?.name?.split(" ")[0]}
-            </MenuButton>
-            <MenuList>
-              <MenuItem
-                icon={<LuLogOut />}
-                color="red.500"
-                onClick={() => {
-                  signOut();
-                }}
-              >
-                Logout
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        </HStack>
+        {children ? children : <UserMenu />}
       </HStack>
     </Flex>
   );

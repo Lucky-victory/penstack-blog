@@ -1,4 +1,3 @@
-// TwitterExtension.ts
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
 import { PenstackTwitterEmbed } from "@/src/app/components/Renderers/TwitterEmbedRenderer";
 
@@ -66,12 +65,15 @@ export const PenstackTwitterExtension = Node.create({
         find: /(?:https?:\/\/)?(?:www\.)?(twitter|x)\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+)/g,
         handler: ({ match, chain, range }) => {
           const tweetId = match[3];
+          const username = match[2];
+          console.log({ match });
+
           if (tweetId) {
             chain()
               .deleteRange(range)
               .insertContent({
                 type: this.name,
-                attrs: { tweetId },
+                attrs: { tweetId, username },
               })
               .run();
           }

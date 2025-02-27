@@ -13,6 +13,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
+import Script from "next/script";
 import { ChangeEvent, memo, useEffect, useState } from "react";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 
@@ -65,7 +66,7 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
                   color={"brand.500"}
                   textDecor={"underline"}
                   isExternal
-                  href={`https://twitter.com/x/status/${node.attrs.tweetId}`}
+                  href={`https://x.com/${node.attrs?.username || "x"}/status/${node.attrs.tweetId}`}
                 >
                   View tweet
                 </Link>
@@ -87,7 +88,7 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
           </Box>
 
           {!isEditing && node.attrs.caption && (
-            <Box fontSize="lg" fontWeight="bold">
+            <Box fontSize="md" fontWeight="semibold">
               {node.attrs.caption}
             </Box>
           )}
@@ -96,7 +97,16 @@ export const PenstackTwitterEmbed: React.FC<PenstackTwitterEmbedProps> = ({
     </Card>
   );
   return (
-    <>{isEditing ? <NodeViewWrapper>{content}</NodeViewWrapper> : content}</>
+    <>
+      <Script
+        src="https://platform.twitter.com/widgets.js"
+        async
+        onLoad={() => {
+          console.log("Twitter script loaded");
+        }}
+      />{" "}
+      {isEditing ? <NodeViewWrapper>{content}</NodeViewWrapper> : content}
+    </>
   );
 };
 
