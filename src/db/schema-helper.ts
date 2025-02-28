@@ -43,6 +43,7 @@ export const permissionsEnum = [
   "tags:create",
   "pages:read",
   "pages:edit",
+  "pages:delete",
   "pages:write",
   "seo:edit",
   "seo:view",

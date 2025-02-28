@@ -53,7 +53,10 @@ export const roles = mysqlTable(
   "Roles",
   {
     id,
-    name: mysqlEnum("name", rolesEnum).notNull().unique(),
+    name: mysqlEnum("name", rolesEnum)
+      .notNull()
+      .unique()
+      .$type<(typeof rolesEnum)[number]>(),
     description: varchar("description", { length: 255 }),
   },
   (table) => ({
@@ -71,13 +74,15 @@ export const permissions = mysqlTable(
       permissionsEnum
     )
       .notNull()
-      .unique(),
+      .unique()
+      .$type<(typeof permissionsEnum)[number]>(),
     description: varchar("description", { length: 255 }),
   },
   (table) => ({
     idxName: index("permissions_idx_name").on(table.name),
   })
 );
+
 const userMeta = mysqlTable("UserMeta", {
   id,
   user_id: int("user_id").notNull(),

@@ -10,7 +10,8 @@ import {
   users,
   posts,
 } from "../src/db/schemas";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
+import { permissionsEnum, rolesEnum } from "@/src/db/schema-helper";
 
 async function main() {
   try {
@@ -78,20 +79,23 @@ async function main() {
         name: "public",
         description: "Default role for non-authenticated users",
       },
-    ] as const;
+    ] as { name: (typeof rolesEnum)[number]; description: string }[];
 
     console.log("Creating roles...");
-    const [createdRoles] = await Promise.all(
-      seedRoles.map((role) =>
-        db
-          .insert(roles)
-          .values(role)
-          .onDuplicateKeyUpdate({
-            set: { name: role.name },
-          })
-          .$returningId()
-      )
-    );
+    const createdRoles = await db.transaction(async (tx) => {
+      await tx
+        .insert(roles)
+        .values(seedRoles)
+        .onDuplicateKeyUpdate({
+          set: { name: sql`name` },
+        })
+        .$returningId();
+      return await tx.query.roles.findMany({
+        columns: { id: true, name: true },
+      });
+    });
+
+    console.log("✅Roles created", createdRoles);
 
     const [
       adminRole,
@@ -109,20 +113,191 @@ async function main() {
 
     console.log("Creating permissions...");
     const blogPermissions = [
-      { name: "dashboard:access", description: "Can access the dashboard" },
+      {
+        name: "dashboard:access",
+        description: "Can access the dashboard",
+      },
       {
         name: "posts:view",
         description: "Can view posts contents in dashboard",
       },
-      // ... rest of the permissions array stays the same
-    ] as const;
+      {
+        name: "posts:create",
+        description: "Can create new posts",
+      },
+      {
+        name: "posts:edit",
+        description: "Can edit existing posts",
+      },
+      {
+        name: "posts:delete",
+        description: "Can delete posts",
+      },
+      {
+        name: "posts:publish",
+        description: "Can publish posts",
+      },
+      {
+        name: "posts:read",
+        description: "Can read posts",
+      },
+      {
+        name: "posts:schedule",
+        description: "Can schedule posts for future publication",
+      },
+      {
+        name: "posts:review",
+        description: "Can review and approve pending posts",
+      },
+
+      {
+        name: "users:read",
+        description: "Can view users",
+      },
+      {
+        name: "users:edit",
+        description: "Can edit users",
+      },
+      {
+        name: "users:write",
+        description: "Can create/edit users",
+      },
+      {
+        name: "users:delete",
+        description: "Can delete users",
+      },
+      {
+        name: "roles:read",
+        description: "Can view roles",
+      },
+      {
+        name: "roles:write",
+        description: "Can create/edit roles",
+      },
+      {
+        name: "roles:delete",
+        description: "Can delete roles",
+      },
+      {
+        name: "media:upload",
+        description: "Can upload media files",
+      },
+      {
+        name: "media:read",
+        description: "Can view media files",
+      },
+      {
+        name: "media:delete",
+        description: "Can delete media files",
+      },
+      {
+        name: "media:edit",
+        description: "Can edit media file properties",
+      },
+      {
+        name: "settings:read",
+        description: "Can view system settings",
+      },
+      {
+        name: "settings:write",
+        description: "Can modify system settings",
+      },
+      {
+        name: "comments:create",
+        description: "Can create comments",
+      },
+      {
+        name: "comments:moderate",
+        description: "Can moderate comments",
+      },
+      {
+        name: "comments:delete",
+        description: "Can delete comments",
+      },
+      {
+        name: "comments:read",
+        description: "Can view comments",
+      },
+      {
+        name: "comments:reply",
+        description: "Can reply to comments",
+      },
+
+      {
+        name: "newsletters:read",
+        description: "Can view newsletter settings and subscribers",
+      },
+      {
+        name: "newsletters:write",
+        description: "Can create and edit newsletters",
+      },
+      {
+        name: "newsletters:delete",
+        description: "Can delete newsletters",
+      },
+      {
+        name: "categories:read",
+        description: "Can view post categories",
+      },
+      {
+        name: "categories:create",
+        description: "Can create new categories",
+      },
+      {
+        name: "tags:read",
+        description: "Can view post tags",
+      },
+      {
+        name: "tags:create",
+        description: "Can create new tags",
+      },
+      {
+        name: "pages:read",
+        description: "Can view static pages",
+      },
+      {
+        name: "pages:edit",
+        description: "Can view static pages",
+      },
+      {
+        name: "pages:delete",
+        description: "Can view static pages",
+      },
+      {
+        name: "seo:edit",
+        description: "Can edit SEO settings and metadata",
+      },
+      {
+        name: "seo:view",
+        description: "Can view SEO settings and analytics",
+      },
+      {
+        name: "analytics:view",
+        description: "Can view site analytics and statistics",
+      },
+      {
+        name: "analytics:export",
+        description: "Can export analytics data",
+      },
+      {
+        name: "auth:register",
+        description: "Can register a new account",
+      },
+      {
+        name: "auth:login",
+        description: "Can login to existing account",
+      },
+    ] as { name: (typeof permissionsEnum)[number]; description: string }[];
 
     const createdPermissions = await Promise.all(
       blogPermissions.map((permission) =>
         db.transaction(async (tx) => {
           await tx
             .insert(permissions)
-            .values(permission)
+            .values({
+              name: permission.name,
+              description: permission.description,
+            })
             .onDuplicateKeyUpdate({
               set: { name: permission.name },
             });
@@ -233,7 +408,6 @@ async function main() {
       "dashboard:access",
       "seo:edit",
       "seo:view",
-
       "analytics:view",
       "analytics:export",
       "posts:read",
@@ -245,7 +419,6 @@ async function main() {
       "comments:create",
       "comments:reply",
       "media:upload",
-
       "comments:read",
       "auth:login",
     ]);
