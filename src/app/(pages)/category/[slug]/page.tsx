@@ -1,4 +1,5 @@
 import CategoryPage from "@/src/app/components/pages/CategoryPage";
+import { getPostsByCategory } from "@/src/lib/queries/category-posts";
 import { type Metadata } from "next";
 
 export async function generateMetadata({
@@ -35,6 +36,10 @@ export async function generateMetadata({
   };
 }
 
-export default function Page() {
-  return <CategoryPage />;
+export default async function Page({ params }: { params: { slug: string } }) {
+  const categoryName = params.slug.replace(/\+/g, " ");
+  const posts = await getPostsByCategory({
+    categoryNameOrSlugOrId: categoryName,
+  });
+  return <CategoryPage posts={posts} categoryName={categoryName} />;
 }

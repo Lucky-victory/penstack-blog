@@ -67,7 +67,13 @@ export default function PostCard({
         },
       }}
     >
-      <Box position="relative" pb={0} rounded={"xl"} overflow={"hidden"}>
+      <Box
+        position="relative"
+        pb={0}
+        rounded={"xl"}
+        overflow={"hidden"}
+        height={{ base: "180", sm: "240", md: "200" }}
+      >
         <Image
           src={
             (post.featured_image?.url as string) ||
@@ -84,7 +90,7 @@ export default function PostCard({
           objectFit="cover"
           className="post-card-img"
           transition={"all 0.3s"}
-          height={{ base: "180", sm: "240", md: "200" }}
+          h="full"
           width="full"
         />
         {post?.category && post?.category?.name && (

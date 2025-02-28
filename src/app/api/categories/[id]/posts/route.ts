@@ -1,42 +1,16 @@
-import { db } from "@/src/db";
-import { categories } from "@/src/db/schemas";
-import { eq } from "drizzle-orm";
+import { getPostsByCategory } from "@/src/lib/queries/category-posts";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: number } }
+  { params }: { params: { id: string | number } }
 ) {
   const { id } = params;
-  try {
-    const category = await db.query.categories.findFirst({
-      where: eq(categories.id, id),
-      with: {
-        posts: {
-          with: {
-            featured_image: {
-              columns: {
-                url: true,
-                id: true,
-                caption: true,
-                alt_text: true,
-              },
-            },
-            author: {
-              columns: {
-                name: true,
-                username: true,
-                id: true,
-                avatar: true,
-              },
-            },
-          },
-        },
-      },
-    });
 
+  try {
+    const posts = await getPostsByCategory({ categoryNameOrSlugOrId: id });
     return NextResponse.json({
-      data: category?.posts,
+      data: posts,
       message: "Category Posts fetched successfully",
     });
   } catch (error: any) {

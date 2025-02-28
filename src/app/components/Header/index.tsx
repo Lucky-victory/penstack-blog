@@ -193,7 +193,7 @@ const Header = () => {
                           <MenuItem
                             key={topic.name}
                             as={Link}
-                            href={`/category/${topic.name}`}
+                            href={`/category/${topic.name.replaceAll(" ", "+")}`}
                           >
                             {topic.name}
                           </MenuItem>

@@ -1,0 +1,46 @@
+import { db } from "@/src/db";
+import { categories } from "@/src/db/schemas";
+import { eq, or } from "drizzle-orm";
+import "server-only";
+export const getPostsByCategory = async ({
+  categoryNameOrSlugOrId,
+}: {
+  categoryNameOrSlugOrId: string | number;
+}) => {
+  let query;
+  if (typeof categoryNameOrSlugOrId === "number") {
+    query = eq(categories.id, categoryNameOrSlugOrId);
+  } else {
+    query = or(
+      eq(categories.slug, categoryNameOrSlugOrId),
+      eq(categories.name, categoryNameOrSlugOrId)
+    );
+  }
+  const category=await db.query.categories.findFirst({
+    where: query,columns:{},
+    with: {
+      posts: {
+        with: {
+          featured_image: {
+            columns: {
+              url: true,
+              id: true,
+              caption: true,
+              alt_text: true,
+            },
+          },
+          author: {
+            columns: {
+              name: true,
+              username: true,
+              id: true,
+              avatar: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return category?.posts
+};

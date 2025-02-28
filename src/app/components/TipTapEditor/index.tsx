@@ -24,17 +24,13 @@ import { debounce } from "lodash";
 import { PostCardExtension } from "@/src/lib/editor/extensions/mini-post-card";
 import { PenstackYouTubeExtension } from "@/src/lib/editor/extensions/youtube-embed";
 import { PenstackTwitterExtension } from "@/src/lib/editor/extensions/tweet-embed";
-
-import Heading from "@tiptap/extension-heading";
-import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { all, createLowlight } from "lowlight";
-
 const lowlight = createLowlight(all);
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { PenstackSlashCommandExtension } from "@/src/lib/editor/extensions/slash-command";
-import { generateSlug } from "@/src/utils";
 import PenstackBlockquote from "@/src/lib/editor/extensions/blockquote";
 import { PenstackCodeblock } from "@/src/lib/editor/extensions/code-block";
+import { PenstackHeadingExtension } from "@/src/lib/editor/extensions/heading";
 
 function TipTapEditor({
   onUpdate,
@@ -55,51 +51,7 @@ function TipTapEditor({
         },
       }),
 
-      Heading.extend({
-        priority: 1000,
-        addProseMirrorPlugins() {
-          return [
-            new Plugin({
-              key: new PluginKey("heading-ids"),
-              appendTransaction: (transactions, oldState, newState) => {
-                const docChanged = transactions.some((tr) => tr.docChanged);
-                if (!docChanged) return;
-
-                const tr = newState.tr;
-                let modified = false;
-
-                newState.doc.descendants((node, pos) => {
-                  if (node.type.name === "heading") {
-                    const newId = generateSlug(node.textContent);
-
-                    if (newId && node.attrs.id !== newId) {
-                      tr.setNodeMarkup(pos, undefined, {
-                        ...node.attrs,
-                        id: newId,
-                      });
-                      modified = true;
-                    }
-                  }
-                });
-
-                return modified ? tr : null;
-              },
-            }),
-          ];
-        },
-        addAttributes() {
-          return {
-            ...this.parent?.(),
-            id: {
-              default: null,
-              parseHTML: (element) => element.getAttribute("id"),
-              renderHTML: (attributes) => ({
-                id: attributes.id,
-              }),
-            },
-          };
-        },
-      }),
+      PenstackHeadingExtension,
       PenstackBlockquote.configure(),
       Placeholder.configure({
         placeholder: "Write something…",
@@ -139,7 +91,7 @@ function TipTapEditor({
       debounce((content: { html: string; text?: string }) => {
         onUpdate?.(content);
         setEditorContent(content);
-      }, 750),
+      }, 1000),
     [onUpdate]
   );
   const editor = useEditor({

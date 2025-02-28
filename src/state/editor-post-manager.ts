@@ -38,21 +38,21 @@ export const useEditorPostManagerStore = create<
         postData,
         get().excludedFields
       );
-      const response = await axios.put<{
+      const { status, data } = await axios.put<{
         data: PostSelect;
         message: string;
         lastUpdate: string | Date;
       }>(`/api/posts/${postData.post_id}`, filteredValues);
 
-      if (response.status < 200 || response.status >= 300) {
+      if (status < 200 || status >= 300) {
         throw new Error("Failed to update post");
       }
-
+      const responseData = data?.data;
       set((state) => ({
         activePost: {
           ...state.activePost,
-          ...response.data.data,
-          author_id: response.data.data.author?.auth_id,
+          ...responseData,
+          author_id: responseData.author?.auth_id,
         },
         isDirty: false,
         hasError: false,

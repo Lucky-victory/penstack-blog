@@ -40,7 +40,10 @@ export const FeaturedPost = () => {
               _hover={{ boxShadow: "lg" }}
             >
               <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={6}>
-                <Box position="relative" height={{ base: "300px", lg: "auto" }}>
+                <Box
+                  position="relative"
+                  height={{ base: "300px", lg: "500px" }}
+                >
                   <Image
                     src={
                       featuredPost?.featured_image?.url ||
@@ -54,7 +57,9 @@ export const FeaturedPost = () => {
                       })}`
                     }
                     alt={featuredPost?.featured_image?.alt_text || ""}
-                    className="w-full h-full object-cover"
+                    w="full"
+                    h="full"
+                    objectFit={"cover"}
                   />
                   <Tag position="absolute" top={4} left={4} size="lg">
                     Featured
