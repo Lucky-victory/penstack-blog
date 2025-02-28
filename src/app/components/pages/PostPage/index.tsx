@@ -72,7 +72,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             />
           </Box>
 
-          {post?.tags && (
+          {post?.tags?.length > 0 && (
             <HStack
               wrap="wrap"
               gap={2}

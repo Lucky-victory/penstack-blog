@@ -49,15 +49,20 @@ export async function generateMetadata(
     openGraph: {
       images: [
         ...previousImages,
-        post?.featured_image?.url ||
-          `/api/og?${objectToQueryParams({
-            title: post.title,
-            date: post?.published_at ? post?.published_at : post?.created_at,
-            username: post?.author?.username,
-            avatar: post?.author?.avatar,
-            name: post?.author?.name,
-            category: post?.category?.name,
-          })}`,
+        {
+          url:
+            post?.featured_image?.url ||
+            `/api/og?${objectToQueryParams({
+              title: post.title,
+              date: post?.published_at ? post?.published_at : post?.created_at,
+              username: post?.author?.username,
+              avatar: post?.author?.avatar,
+              name: post?.author?.name,
+              category: post?.category?.name,
+            })}`,
+          width: 1200,
+          height: 630,
+        },
       ],
     },
   };
