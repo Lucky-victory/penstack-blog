@@ -10,7 +10,7 @@ import {
   Textarea,
   Text,
 } from "@chakra-ui/react";
-import { FeaturedImageCard } from "@/src/app/components/TipTapEditor/FeaturedImageCard";
+import { FeaturedImageCard } from "@/src/app/components/TipTapEditor/Sidebar/components/FeaturedImageCard";
 import { EDITOR_CONTEXT_STATE, PostInsert } from "@/src/types";
 import { SlugInput } from "../components/SlugInput";
 import { SummaryInput } from "../components/SummaryInput";

@@ -36,6 +36,7 @@ import { SEOSection } from "./SEOSection";
 import { ActionButtons } from "./components/ActionButtons";
 import { MetricsItem } from "./components/MetricsItem";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { PublishMetadata } from "./components/PublishMetadata";
 
 export const SidebarContent = () => {
   const isSaving = useEditorPostManagerStore((state) => state.isSaving);
@@ -53,26 +54,10 @@ export const SidebarContent = () => {
   const allowComments = useEditorPostManagerStore(
     (state) => state.activePost?.allow_comments
   );
-  const [isPublishing, setIsPublishing] = useState<boolean>(false);
 
   const router = useRouter();
   const { isOpen, onClose, onToggle } = useDisclosure();
-  const toast = useToast({
-    duration: 3000,
-    status: "success",
-    position: "top",
-  });
 
-  function onDraft() {
-    updateField("status", "draft");
-  }
-  function onPublish() {
-    setIsPublishing(true);
-    updateField("status", "published");
-  }
-  function onDelete() {
-    updateField("status", "deleted");
-  }
   return (
     <>
       <Stack
@@ -110,137 +95,15 @@ export const SidebarContent = () => {
               </HStack>
             </>
           }
-          footer={
-            <ActionButtons
-              onDelete={onDelete}
-              onDraft={onDraft}
-              onPublish={onPublish}
-              isPublishing={isPublishing}
-            />
-          }
+          footer={<ActionButtons />}
         >
-          <Box p={4} pb={0}>
-            <Stack as={List} fontSize={14} gap={2}>
-              <ListItem>
-                <HStack>
-                  <Text as={"span"} color="gray.500">
-                    <Icon as={LuRadioReceiver} mr={1} />
-                    Status:
-                  </Text>
-                  <Text
-                    as={"span"}
-                    fontWeight="semibold"
-                    textTransform={"capitalize"}
-                  >
-                    {status}
-                  </Text>
-                </HStack>
-              </ListItem>
-              <ListItem>
-                <HStack justify={"space-between"}>
-                  <HStack>
-                    <Text as={"span"} color="gray.500">
-                      <Icon as={LuEye} mr={1} />
-                      Visibility:
-                    </Text>
-                    <Text
-                      as={"span"}
-                      fontWeight="semibold"
-                      textTransform={"capitalize"}
-                    >
-                      {visibility}
-                    </Text>
-                  </HStack>
-                  <Button variant={"ghost"} size={"xs"}>
-                    Edit
-                  </Button>
-                </HStack>
-              </ListItem>
-              <PermissionGuard requiredPermission={"posts:publish"}>
-                <ListItem>
-                  <HStack justify={"space-between"}>
-                    <HStack>
-                      <Text as={"span"} color="gray.500">
-                        <Icon as={LuClock} mr={1} />
-                        Schedule:
-                      </Text>
-                      <Text
-                        as={"span"}
-                        fontWeight="semibold"
-                        textTransform={"capitalize"}
-                      >
-                        {scheduledAt ? (
-                          <>
-                            <Text fontSize={"small"}>
-                              {format(
-                                new Date(scheduledAt as Date),
-                                "MMM d, yyyy hh:mm a"
-                              )}
-                            </Text>
-                          </>
-                        ) : (
-                          "Off"
-                        )}
-                      </Text>
-                    </HStack>
-                    <CalendarPicker
-                      defaultValue={
-                        scheduledAt ? new Date(scheduledAt as Date) : undefined
-                      }
-                      isOpen={isOpen}
-                      onClose={onClose}
-                      trigger={
-                        <Button
-                          variant={"ghost"}
-                          size={"xs"}
-                          onClick={() => onToggle()}
-                        >
-                          Edit
-                        </Button>
-                      }
-                    />
-                  </HStack>
-                </ListItem>
-              </PermissionGuard>
-              <MetricsItem />
-              <PermissionGuard requiredPermission="posts:publish">
-                <ListItem>
-                  <HStack>
-                    <Text as={"span"} color="gray.500">
-                      <Icon as={LuMessageSquare} mr={1} />
-                      Allow Comments:
-                    </Text>
-                    <Switch
-                      isChecked={allowComments as boolean}
-                      onChange={() => {
-                        updateField("allow_comments", !allowComments);
-                      }}
-                    />
-                  </HStack>
-                </ListItem>
-              </PermissionGuard>
-              <PermissionGuard requiredPermission="posts:publish">
-                <ListItem>
-                  <HStack>
-                    <Text as={"span"} color="gray.500">
-                      <Icon as={LuPin} mr={1} />
-                      Pinned:
-                    </Text>
-                    <Switch
-                      isChecked={isSticky as boolean}
-                      onChange={() => {
-                        updateField("is_sticky", !isSticky);
-                      }}
-                    />
-                  </HStack>
-                </ListItem>
-              </PermissionGuard>
-            </Stack>
-          </Box>
+         
+            <PublishMetadata />
+         
         </SectionCard>
-      
-          <SEOSection />
-      
+
+        <SEOSection />
+
         <CategorySection />
         <TagsSection />
       </Stack>

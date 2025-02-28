@@ -38,6 +38,8 @@ export const TitleInput = () => {
         placeholder="Awesome title"
         name="title"
         value={title}
+        size={{ base: "lg", md: "xl" }}
+        px={3}
         fontWeight={600}
         onChange={handleTitleChange}
         rounded="none"

@@ -5,14 +5,9 @@ import { PinnedToggle } from "./PinnedToggle";
 import { ScheduleItem } from "./ScheduleItem";
 import { StatusItem } from "./StatusItem";
 import { VisibilityItem } from "./VisibilityItem";
-import { EDITOR_CONTEXT_STATE } from "@/src/types";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
-export interface PublishMetadataProps {
-  activePost: EDITOR_CONTEXT_STATE["activePost"];
-}
-
-export const PublishMetadata = ({ activePost }: PublishMetadataProps) => {
+export const PublishMetadata = () => {
   const { isOpen, onClose, onToggle } = useDisclosure();
   const updateField = useEditorPostManagerStore((state) => state.updateField);
   const visibility = useEditorPostManagerStore(
