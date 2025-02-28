@@ -29,6 +29,7 @@ export const users = mysqlTable("Users", {
   username: varchar("username", { length: 255 }),
   avatar: varchar("avatar", { length: 255 }),
   social_id: int("social_id"),
+  meta_id: int("meta_id"),
   account_status: varchar("account_status", {
     length: 30,
     enum: ["active", "deleted", "banned", "inactive"],
@@ -77,6 +78,39 @@ export const permissions = mysqlTable(
     idxName: index("permissions_idx_name").on(table.name),
   })
 );
+const userMeta = mysqlTable("UserMeta", {
+  id,
+  user_id: int("user_id").notNull(),
+  isProMember: boolean("is_pro_member").default(false),
+  lastLogin: timestamp("last_login").default(sql`CURRENT_TIMESTAMP`),
+  lastLoginIP: varchar("last_login_ip", { length: 50 }),
+  lastLoginLocation: varchar("last_login_location", { length: 255 }),
+  lastLoginDevice: varchar("last_login_device", { length: 255 }),
+
+  created_at,
+  updated_at,
+});
+export const userMetaRelations = relations(userMeta, ({ one }) => ({
+  user: one(users, {
+    fields: [userMeta.user_id],
+    references: [users.id],
+  }),
+}));
+export const userRoles = mysqlTable("UserRoles", {
+  id,
+  user_id: int("user_id").notNull(),
+  role_id: int("role_id").notNull(),
+});
+export const userRoleRelations = relations(userRoles, ({ one }) => ({
+  user: one(users, {
+    fields: [userRoles.user_id],
+    references: [users.id],
+  }),
+  role: one(roles, {
+    fields: [userRoles.role_id],
+    references: [roles.id],
+  }),
+}));
 
 export const rolePermissions = mysqlTable("RolePermissions", {
   id,
@@ -113,6 +147,11 @@ export const userSocials = mysqlTable("UserSocials", {
   facebook: varchar("facebook", { length: 100 }),
   email: varchar("email", { length: 100 }),
   website: varchar("website", { length: 100 }),
+  twitter: varchar("twitter", { length: 100 }),
+  instagram: varchar("instagram", { length: 100 }),
+  linkedin: varchar("linkedin", { length: 100 }),
+  youtube: varchar("youtube", { length: 100 }),
+  created_at,
   updated_at,
 });
 export const UserRelations = relations(users, ({ many, one }) => ({
@@ -124,5 +163,10 @@ export const UserRelations = relations(users, ({ many, one }) => ({
   role: one(roles, {
     fields: [users.role_id],
     references: [roles.id],
+  }),
+  roles: many(userRoles),
+  meta: one(userMeta, {
+    fields: [users.meta_id],
+    references: [userMeta.id],
   }),
 }));

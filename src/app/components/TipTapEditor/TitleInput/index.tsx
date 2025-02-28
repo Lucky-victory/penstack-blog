@@ -1,5 +1,4 @@
 import { Box, useColorModeValue, Input } from "@chakra-ui/react";
-
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 import { debounce } from "lodash";
@@ -26,7 +25,7 @@ export const TitleInput = () => {
       debouncedUpdate(value);
       setTitle(value);
     },
-    []
+    [debouncedUpdate]
   );
 
   return (

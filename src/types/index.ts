@@ -119,9 +119,7 @@ export type EDITOR_CONTEXT_STATE = {
     characterCount: number;
   };
 };
-export interface NavItem extends NavItemWithoutPermission {
-  
-}
+export interface NavItem extends NavItemWithoutPermission {}
 export interface NavItemWithoutPermission {
   icon?: ElementType;
   label: string;
@@ -136,7 +134,7 @@ export interface NavItemWithoutPermission {
 }
 
 export const DASH_NAV_PERMISSIONS = {
-  VIEW_DASHBOARD: "dashboard:access",
+  VIEW_DASHBOARD: "analytics:view",
   VIEW_POSTS: "posts:view",
   CREATE_POST: "posts:create",
   VIEW_USERS: "users:read",

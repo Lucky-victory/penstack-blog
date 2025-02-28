@@ -11,7 +11,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:gen": "drizzle-kit generate",
     "db:create": "node -r dotenv/config scripts/create-db.mjs",
-    "db:seeds": "node -r dotenv/config scripts/seed.mjs",
+    "db:seeds": "tsx scripts/seed.ts",
     "db:init": "node -r dotenv/config scripts/init-db.mjs"
   },
   "dependencies": {

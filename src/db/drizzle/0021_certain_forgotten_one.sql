@@ -1,7 +1,0 @@
-DROP INDEX `idx_name` ON `Permissions`;--> statement-breakpoint
-DROP INDEX `idx_name` ON `Roles`;--> statement-breakpoint
-ALTER TABLE `Permissions` MODIFY COLUMN `name` enum('dashboard:access','dashboard:view','posts:create','posts:edit','posts:delete','posts:publish','posts:read','posts:schedule','posts:review','users:read','users:write','users:edit','users:delete','roles:read','roles:write','roles:delete','media:upload','media:read','media:delete','media:edit','settings:read','settings:write','comments:create','comments:moderate','comments:delete','newsletters:read','newsletters:write','newsletters:delete','auth:register','auth:login','comments:read','comments:reply','comments:spam','categories:read','tags:read','tags:create','categories:create','pages:read','seo:edit','seo:view','analytics:view','analytics:export') NOT NULL;--> statement-breakpoint
-ALTER TABLE `Roles` MODIFY COLUMN `name` enum('admin','editor','author','contributor','moderator','seo_manager','newsletter_manager','subscriber','public') NOT NULL;--> statement-breakpoint
-ALTER TABLE `Posts` ADD `newsletter_sent_at` timestamp;--> statement-breakpoint
-CREATE INDEX `permissions_idx_name` ON `Permissions` (`name`);--> statement-breakpoint
-CREATE INDEX `roles_idx_name` ON `Roles` (`name`);

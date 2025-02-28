@@ -1,1 +1,0 @@
-ALTER TABLE `SiteSettings` ADD `encrypted` boolean DEFAULT false;
