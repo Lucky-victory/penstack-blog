@@ -119,16 +119,8 @@ export type EDITOR_CONTEXT_STATE = {
     characterCount: number;
   };
 };
-export interface NavItem {
-  icon: ElementType;
-  label: string;
-  href: string;
-  permission?: TPermissions;
-  children?: Array<{
-    label: string;
-    href: string;
-    permission?: TPermissions;
-  }>;
+export interface NavItem extends NavItemWithoutPermission {
+  
 }
 export interface NavItemWithoutPermission {
   icon?: ElementType;

@@ -1,10 +1,44 @@
-
 import {
   DASH_NAV_PERMISSIONS,
   NavItemWithoutPermission,
   TPermissions,
 } from "@/src/types";
+import {
+  LuHome,
+  LuFileSpreadsheet,
+  LuFileImage,
+  LuUsers,
+  LuCombine,
+  LuMessageSquare,
+  LuMail,
+  LuSettings,
+} from "react-icons/lu";
 
+const iconMap = {
+  LuHome,
+  LuFileSpreadsheet,
+  LuFileImage,
+  LuUsers,
+  LuCombine,
+  LuMessageSquare,
+  LuMail,
+  LuSettings,
+};
+export const processedNavLinksWithIcons = (
+  navLinks: NavItemWithoutPermission[]
+) =>
+  navLinks.map((link) => ({
+    ...link,
+    icon: iconMap[link.iconName as keyof typeof iconMap], // Convert string to component
+    children: link.children
+      ? link.children.map((child) => ({
+          ...child,
+          icon: child.iconName
+            ? iconMap[child.iconName as keyof typeof iconMap]
+            : undefined,
+        }))
+      : undefined,
+  }));
 const routePermissions = {
   "/dashboard/overview": DASH_NAV_PERMISSIONS.VIEW_DASHBOARD,
   "/dashboard/posts": DASH_NAV_PERMISSIONS.VIEW_POSTS,

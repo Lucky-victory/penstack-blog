@@ -1,9 +1,10 @@
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 import { FormControl, FormLabel, Textarea } from "@chakra-ui/react";
+import { sanitizeAndEncodeHtml } from "@/src/utils";
 
-import React, { ChangeEvent, useCallback, useState } from "react";
+import React, { ChangeEvent, memo, useCallback, useState } from "react";
 
-export const SummaryInput = () => {
+export const SummaryInput = memo(() => {
   const summary = useEditorPostManagerStore(
     (state) => state.activePost?.summary
   );
@@ -14,7 +15,7 @@ export const SummaryInput = () => {
       const { value } = evt.target;
 
       setField(value);
-      updateField("summary", value);
+      updateField("summary", sanitizeAndEncodeHtml(value || ""));
     },
     [updateField]
   );
@@ -32,4 +33,6 @@ export const SummaryInput = () => {
       />
     </FormControl>
   );
-};
+});
+
+SummaryInput.displayName = "SummaryInput";

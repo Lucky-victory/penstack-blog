@@ -18,24 +18,19 @@ import { SummaryInput } from "../components/SummaryInput";
 import { encode } from "html-entities";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 import { sanitizeAndEncodeHtml } from "@/src/utils";
+import { SectionCard } from "../../../Dashboard/SectionCard";
 
 export const SEOSection = () => {
-  const featuredImage = useEditorPostManagerStore(
-    (state) => state.activePost?.featured_image
-  );
-  const summary = useEditorPostManagerStore(
-    (state) => state.activePost?.summary
-  );
-  const updateField = useEditorPostManagerStore((state) => state.updateField);
-  const slug = useEditorPostManagerStore((state) => state.activePost?.slug);
   return (
-    <Stack p={4}>
-      <Text as="span" fontWeight={500}>
-        Featured Image:
-      </Text>
-      <FeaturedImageCard />
-      <SlugInput />
-      <SummaryInput />
-    </Stack>
+    <SectionCard title="SEO">
+      <Stack p={4}>
+        <Text as="span" fontWeight={500}>
+          Featured Image:
+        </Text>
+        <FeaturedImageCard />
+        <SlugInput />
+        <SummaryInput />
+      </Stack>
+    </SectionCard>
   );
 };

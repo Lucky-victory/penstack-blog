@@ -16,16 +16,18 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import { SectionCard } from "../../../Dashboard/SectionCard";
-import { memo, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { generateSlug } from "@/src/utils";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { debounce } from "lodash";
 
 export const TagsSection = memo(() => {
   const [tagToRemoveId, setTagToRemoveId] = useState<null | number>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchInputValue, setSearchInputValue] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
   const queryClient = useQueryClient();
@@ -33,7 +35,17 @@ export const TagsSection = memo(() => {
     (state) => state.activePost?.post_id
   );
 
-  const { data: postTags, isLoading } = useQuery({
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSearchQuery = useCallback(
+    debounce((value: string) => {
+      setSearchQuery(value);
+    }, 1000),
+    []
+  );
+
+  const { data: postTags } = useQuery({
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     queryKey: ["postTags", postId],
     queryFn: async () => {
       const { data } = await axios.get(`/api/posts/${postId}/tags`);
@@ -107,6 +119,9 @@ export const TagsSection = memo(() => {
     setTagToRemoveId(tagId);
     removeTagFromPostMutation.mutate(tagId);
   }
+  useEffect(() => {
+    debouncedSearchQuery(searchInputValue);
+  }, [debouncedSearchQuery, searchInputValue]);
   return (
     <SectionCard title="Tags">
       <HStack p={4} pb={0} gap={2} wrap={"wrap"}>
@@ -144,10 +159,10 @@ export const TagsSection = memo(() => {
           <Input
             placeholder="Search or create tag"
             size={"sm"}
-            value={searchQuery}
+            value={searchInputValue}
             rounded={"full"}
             onChange={(e) => {
-              setSearchQuery(e.target.value);
+              setSearchInputValue(e.target.value);
               setShowDropdown(true);
             }}
           />
@@ -213,3 +228,4 @@ export const TagsSection = memo(() => {
     </SectionCard>
   );
 });
+TagsSection.displayName = "TagsSection";

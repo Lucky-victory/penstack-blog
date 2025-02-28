@@ -1,4 +1,4 @@
-import { NavItem, NavItemWithoutPermission, TPermissions } from "@/src/types";
+import { NavItemWithoutPermission } from "@/src/types";
 import {
   useDisclosure,
   Popover,
@@ -17,11 +17,9 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { LuChevronDown } from "react-icons/lu";
-import { PermissionGuard } from "../../PermissionGuard";
 import { SidebarNavItem } from "./NavItem";
 import { usePathname } from "next/navigation";
-import { ReactNode, useEffect, useMemo, useState } from "react";
-import { dashboardNavLinks } from "@/src/lib/dashboard/nav-links";
+import { useEffect, useState } from "react";
 
 export const NavItemWithChildren = ({
   item,
@@ -31,10 +29,11 @@ export const NavItemWithChildren = ({
   hoverTextColor,
   isMinimized,
   navBtnActiveColor,
+  navItems,
   bg,
 }: {
   item: NavItemWithoutPermission;
-
+  navItems: NavItemWithoutPermission[];
   isMinimized?: boolean;
   navBtnBg: string;
   navBtnBgHover: string;
@@ -55,8 +54,6 @@ export const NavItemWithChildren = ({
         : [...prev, href]
     );
   };
-
-  const navItems: NavItem[] = useMemo(() => dashboardNavLinks, []);
   useEffect(() => {
     const activeParent = navItems.find(
       (item) =>
@@ -68,7 +65,7 @@ export const NavItemWithChildren = ({
         prev.includes(activeParent.href) ? prev : [...prev, activeParent.href]
       );
     }
-  }, [pathname]);
+  }, [navItems, pathname]);
   if (isMinimized) {
     return (
       <Popover

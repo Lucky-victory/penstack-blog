@@ -4,11 +4,7 @@ import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 import { debounce } from "lodash";
 
-export const TitleInput = ({
-  onChange,
-}: {
-  onChange?: (title: string) => void;
-}) => {
+export const TitleInput = () => {
   const postTitle = useEditorPostManagerStore(
     (state) => state.activePost?.title
   );
@@ -16,19 +12,12 @@ export const TitleInput = ({
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const [title, setTitle] = useState(postTitle || "");
 
-  const onChangeCb = useCallback(
-    (value: string) => {
-      onChange?.(value);
-    },
-    [onChange]
-  );
   const debouncedUpdate = useMemo(
     () =>
       debounce((value: string) => {
-        onChangeCb?.(value);
-        updateField("title", value, true);
-      }, 750),
-    [onChangeCb]
+        updateField("title", value, true, true);
+      }, 1000),
+    [updateField]
   );
   const handleTitleChange = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => {

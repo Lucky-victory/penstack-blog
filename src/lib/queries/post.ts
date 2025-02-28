@@ -74,7 +74,6 @@ export const getPostForEditing = async (slugOrPostId: string | number) => {
     columns: {
       published_at: false,
       created_at: false,
-      updated_at: false,
     },
     with: {
       featured_image: {

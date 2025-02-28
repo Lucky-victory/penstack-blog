@@ -28,7 +28,7 @@ function EditorHeader() {
   const isDirty = useEditorPostManagerStore((state) => state.isDirty);
   const hasError = useEditorPostManagerStore((state) => state.hasError);
   const lastUpdate = useEditorPostManagerStore(
-    (state) => state.activePost?.updated_at
+    (state) => state.activePost?.updated_at || state.lastUpdate
   );
 
   return (
@@ -48,7 +48,11 @@ function EditorHeader() {
               Last saved:{" "}
               {lastUpdate
                 ? formatDate(new Date(lastUpdate))
-                : isDirty && "You have Unsaved changes..."}
+                : isDirty && (
+                    <Text as={"span"} color={"orange.500"}>
+                      You have Unsaved changes...
+                    </Text>
+                  )}
             </Text>
           )}
         </Stack>

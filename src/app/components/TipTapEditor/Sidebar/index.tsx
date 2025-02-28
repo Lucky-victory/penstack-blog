@@ -238,9 +238,9 @@ export const SidebarContent = () => {
             </Stack>
           </Box>
         </SectionCard>
-        <SectionCard title="SEO">
+      
           <SEOSection />
-        </SectionCard>
+      
         <CategorySection />
         <TagsSection />
       </Stack>

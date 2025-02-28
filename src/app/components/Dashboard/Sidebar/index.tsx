@@ -7,7 +7,7 @@ import {
   Stack,
   IconButton,
 } from "@chakra-ui/react";
-import { LuChevronsLeft, LuChevronsRight, LuCombine, LuFileImage, LuFileSpreadsheet, LuHome, LuMail, LuMessageSquare, LuSettings, LuUsers } from "react-icons/lu";
+import { LuChevronsLeft, LuChevronsRight } from "react-icons/lu";
 import { LightDarkModeSwitch } from "../../LightDarkModeSwitch";
 import { AppLogo } from "../../AppLogoAndName/AppLogo";
 import { SidebarNavItem } from "./NavItem";
@@ -15,21 +15,9 @@ import { NavItemWithChildren } from "./NavItemWithDropdown";
 import { AppLogoAndName } from "../../AppLogoAndName";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 import { Link } from "@chakra-ui/next-js";
-import { useMemo } from "react";
-import { useDashboardNavigation } from "@/src/lib/dashboard/nav-links";
-import { usePermissionsStore } from "@/src/state/permissions";
+import { processedNavLinksWithIcons } from "@/src/lib/dashboard/nav-links";
 import { NavItemWithoutPermission } from "@/src/types";
 
-const iconMap = {
-  LuHome,
-  LuFileSpreadsheet,
-  LuFileImage,
-  LuUsers,
-  LuCombine,
-  LuMessageSquare,
-  LuMail,
-  LuSettings,
-};
 export const DashboardSidebar = ({
   onClose,
   isMinimized,
@@ -43,18 +31,7 @@ export const DashboardSidebar = ({
   navLinks: NavItemWithoutPermission[];
   [key: string]: any;
 }) => {
-  const processedNavLinks = navLinks.map((link) => ({
-    ...link,
-    icon: iconMap[link.iconName as keyof typeof iconMap], // Convert string to component
-    children: link.children
-      ? link.children.map((child) => ({
-          ...child,
-          icon: child.iconName
-            ? iconMap[child.iconName as keyof typeof iconMap]
-            : undefined,
-        }))
-      : undefined,
-  }));
+  const processedNavLinks = processedNavLinksWithIcons(navLinks);
   const bg = useColorModeValue("white", "charcoalBlack");
   const navBtnBg = useColorModeValue("brand.600", "brand.300");
   const navBtnBgHover = useColorModeValue("gray.200", "gray.700");
@@ -129,6 +106,7 @@ export const DashboardSidebar = ({
             <Box key={index}>
               {item.children ? (
                 <NavItemWithChildren
+                  navItems={navLinks}
                   item={item}
                   isMinimized={isMinimized}
                   navBtnBg={navBtnBg}
