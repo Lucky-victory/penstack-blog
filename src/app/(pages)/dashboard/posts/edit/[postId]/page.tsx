@@ -1,5 +1,5 @@
 import EditPostPage from "@/src/app/components/pages/Dashboard/NewPostPage";
-import { getPost } from "@/src/lib/queries/post";
+import { getPostForEditing } from "@/src/lib/queries/post";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 export default async function Page({ params }: { params: { postId: string } }) {
   const postId = params.postId;
-  const post = await getPost(postId);
+  const post = await getPostForEditing(postId);
 
   if (!post) {
     return <div className=" font-bold text-xl text-center">Post not found</div>;

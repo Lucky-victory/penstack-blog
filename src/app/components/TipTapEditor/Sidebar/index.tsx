@@ -64,33 +64,14 @@ export const SidebarContent = () => {
   });
 
   function onDraft() {
-    updateField("status", "draft", undefined, () => {
-      toast({
-        title: "Draft saved successfully",
-      });
-    });
+    updateField("status", "draft");
   }
   function onPublish() {
     setIsPublishing(true);
-    updateField("status", "published", undefined, () => {
-      toast({
-        title: "Post published successfully",
-      });
-      setTimeout(() => {
-        router.push("/dashboard/posts");
-        setIsPublishing(false);
-      }, 2000);
-    });
+    updateField("status", "published");
   }
   function onDelete() {
-    updateField("status", "deleted", undefined, () => {
-      toast({
-        title: "Post deleted successfully",
-      });
-      setTimeout(() => {
-        router.replace("/dashboard/posts");
-      }, 2000);
-    });
+    updateField("status", "deleted");
   }
   return (
     <>
@@ -258,7 +239,7 @@ export const SidebarContent = () => {
           </Box>
         </SectionCard>
         <SectionCard title="SEO">
-          <SEOSection updateField={updateField} />
+          <SEOSection />
         </SectionCard>
         <CategorySection />
         <TagsSection />

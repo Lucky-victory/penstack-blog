@@ -11,6 +11,7 @@ import {
 } from "../db/schemas";
 import { useFormik } from "formik";
 import { ElementType } from "react";
+import { getPost, getPostForEditing } from "../lib/queries/post";
 
 export type AggregatedPostViews = {
   viewed_date: Date | string;
@@ -54,33 +55,10 @@ export type MediaResponse = InferSelectModel<typeof medias>;
 export type PostInsert = InferInsertModel<typeof posts>;
 type Permissions = InferInsertModel<typeof permissions>;
 export type TPermissions = Permissions["name"];
-export type PostSelect = InferSelectModel<typeof posts> & {
-  views?: {
-    count: number;
-  };
-  featured_image: {
-    url: string;
-    alt_text?: string;
-    caption?: string;
-  } | null;
-  author: {
-    auth_id: string;
-    name: string;
-    avatar: string;
-    username: string;
-    bio?: string;
-  };
-  category?: {
-    id: number;
-    slug: string;
-    name: string;
-  };
-  tags?: Array<{
-    id: number;
-    slug: string;
-    name: string;
-  }> | null;
-};
+export type PostSelect = Awaited<ReturnType<typeof getPost>>;
+export type PostSelectForEditing = Awaited<
+  ReturnType<typeof getPostForEditing>
+>;
 
 export interface EditorActionItem {
   id: string | number;
@@ -118,10 +96,6 @@ export type EDITOR_CONTEXT_STATE = {
     key: K,
     value: PostInsert[K],
     shouldAutosave?: boolean,
-    /**
-     * Callback to call after the field is updated.
-     */
-    cb?: () => void,
     updateSlug?: boolean
   ) => void;
   activePost: PostSelect | null;

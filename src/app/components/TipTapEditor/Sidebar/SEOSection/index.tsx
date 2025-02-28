@@ -19,35 +19,23 @@ import { encode } from "html-entities";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 import { sanitizeAndEncodeHtml } from "@/src/utils";
 
-export const SEOSection = ({
-  updateField,
-}: {
-  updateField: EDITOR_CONTEXT_STATE["updateField"];
-}) => {
+export const SEOSection = () => {
   const featuredImage = useEditorPostManagerStore(
     (state) => state.activePost?.featured_image
   );
   const summary = useEditorPostManagerStore(
     (state) => state.activePost?.summary
   );
+  const updateField = useEditorPostManagerStore((state) => state.updateField);
   const slug = useEditorPostManagerStore((state) => state.activePost?.slug);
   return (
     <Stack p={4}>
       <Text as="span" fontWeight={500}>
         Featured Image:
       </Text>
-      <FeaturedImageCard
-        onChange={(imageId) => updateField("featured_image_id", imageId)}
-        image={featuredImage || null}
-      />
-      <SlugInput
-        slug={slug || ""}
-        onChange={(val) => updateField("slug", val)}
-      />
-      <SummaryInput
-        summary={summary || ""}
-        onChange={(val) => updateField("summary", sanitizeAndEncodeHtml(val))}
-      />
+      <FeaturedImageCard />
+      <SlugInput />
+      <SummaryInput />
     </Stack>
   );
 };

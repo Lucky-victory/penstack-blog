@@ -2,7 +2,12 @@ import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { getSession } from "@/src/lib/auth/next-auth";
-import { getPlainPost, getPost } from "@/src/lib/queries/post";
+import {
+  getPlainPost,
+  getPlainPostWithCache,
+  getPost,
+  getPostForEditing,
+} from "@/src/lib/queries/post";
 import { or, eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
@@ -42,7 +47,7 @@ export async function PUT(
   const { slugOrPostId } = params;
   const body = await req.json();
   const session = await getSession();
-  const oldPost = await getPlainPost(slugOrPostId);
+  const oldPost = await getPlainPostWithCache(slugOrPostId);
   return await checkPermission(
     {
       requiredPermission: "posts:edit",
@@ -65,12 +70,14 @@ export async function PUT(
             scheduled_at: body.scheduled_at
               ? new Date(body.scheduled_at)
               : null,
+            updated_at: body.updated_at ? new Date(body.updated_at) : null,
           })
           .where(
             or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId))
           );
-        const post = await getPost(slugOrPostId);
-        revalidateTag("getPost");
+        const post = await getPostForEditing(slugOrPostId);
+        revalidateTag("getPostWithCache");
+        revalidateTag("getPlainPostWithCache");
 
         return NextResponse.json(
           {

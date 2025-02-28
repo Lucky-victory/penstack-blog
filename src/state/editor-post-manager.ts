@@ -1,59 +1,97 @@
 import { create } from "zustand";
-import { PostInsert, PostSelect } from "../types";
+import { PostInsert, PostSelectForEditing } from "../types";
 import { debounce } from "lodash";
 import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
 import { generateSlug } from "../utils";
+import { isEqual } from "lodash";
+import isEmpty from "just-is-empty";
 
 type EditorPostManagerState = {
-  activePost: PostSelect | null;
+  activePost: PostSelectForEditing | null;
   isDirty: boolean;
   isSaving: boolean;
   hasError: boolean;
-  excludedFields: readonly string[];
+  lastUpdate: string | Date | null;
 };
 
 type EditorPostManagerActions = {
-  setPost: (post: PostSelect | null) => void;
+  setPost: (post: PostSelectForEditing | null) => void;
   updateField: <K extends keyof PostInsert>(
     key: K,
     value: PostInsert[K],
     shouldAutosave?: boolean,
-    cb?: () => void,
     updateSlug?: boolean
   ) => void;
+  lastUpdate: string | Date | null;
   savePost: () => Promise<void>;
   setIsSaving: (isSaving: boolean) => void;
   setIsDirty: (isDirty: boolean) => void;
   setHasError: (hasError: boolean) => void;
 };
-
 export const useEditorPostManagerStore = create<
   EditorPostManagerState & EditorPostManagerActions
 >((set, get) => {
+  // Keep track of the original post data for comparison
+  let originalPost: PostInsert | null = null;
+
   const debouncedSave = debounce(async (postData: PostInsert) => {
     try {
+      if (!originalPost) return;
+
       set({ isSaving: true });
-      const filteredValues = preparePostForUpdate(
-        postData,
-        get().excludedFields
-      );
+
+      // Only include fields that have changed from original values
+      const changedValues: Partial<PostInsert> = {};
+      Object.keys(postData).forEach((key) => {
+        // Skip excluded fields and undefined values
+        if (postData[key as keyof PostInsert] === undefined) {
+          return;
+        }
+
+        // Only include if value has changed from original
+        const currentValue = postData[key as keyof PostInsert];
+        const originalValue = originalPost?.[key as keyof PostInsert];
+
+        if (
+          !isEqual(currentValue, originalValue) &&
+          currentValue !== undefined &&
+          currentValue !== null
+        ) {
+          (changedValues as any)[key as keyof PostInsert] = currentValue;
+        }
+      });
+      // If no changes, skip the API call
+      if (isEmpty(changedValues)) {
+        set({ isDirty: false, isSaving: false });
+        return;
+      }
+
       const { status, data } = await axios.put<{
-        data: PostSelect;
+        data: NonNullable<PostSelectForEditing>;
         message: string;
         lastUpdate: string | Date;
-      }>(`/api/posts/${postData.post_id}`, filteredValues);
+      }>(`/api/posts/${postData.post_id}`, changedValues);
 
       if (status < 200 || status >= 300) {
         throw new Error("Failed to update post");
       }
+
       const responseData = data?.data;
+
+      // Update the original post with the new values
+      originalPost = {
+        ...originalPost,
+        ...responseData,
+        author_id: responseData.author_id,
+      };
+
       set((state) => ({
         activePost: {
           ...state.activePost,
           ...responseData,
-          author_id: responseData.author?.auth_id,
+          author_id: responseData.author_id,
         },
+        lastUpdate: data?.lastUpdate,
         isDirty: false,
         hasError: false,
         isSaving: false,
@@ -69,33 +107,19 @@ export const useEditorPostManagerStore = create<
     isDirty: false,
     isSaving: false,
     hasError: false,
-    excludedFields: [
-      "featured_image",
-      "published_at",
-      "created_at",
-      "updated_at",
-      "tags",
-      "author",
-      "category",
-    ],
+    lastUpdate: null,
+    setPost: (post) => {
+      // Store the original post data for future comparisons
+      originalPost = post || null;
 
-    setPost: (post) =>
       set({
-        activePost: post
-          ? {
-              ...post,
-              author_id: post.author?.auth_id,
-            }
-          : null,
-      }),
+        activePost: post || null,
+        isDirty: false, // Reset dirty state when setting a new post
+        hasError: false, // Reset error state
+      });
+    },
 
-    updateField: (
-      key,
-      value,
-      shouldAutosave = true,
-      cb,
-      updateSlug = false
-    ) => {
+    updateField: (key, value, shouldAutosave = true, updateSlug = false) => {
       const currentPost = get().activePost;
       if (!currentPost) return;
 
@@ -105,10 +129,18 @@ export const useEditorPostManagerStore = create<
         newPost.slug = generateSlug(value as string);
       }
 
-      set({ activePost: newPost, isDirty: true });
-      cb?.();
+      // Only mark as dirty if value has actually changed from original
+      const isDirty =
+        !originalPost ||
+        !isEqual(
+          newPost[key as keyof PostSelectForEditing],
+          originalPost[key]
+        ) ||
+        (updateSlug && !isEqual(newPost.slug, originalPost.slug));
 
-      if (shouldAutosave) {
+      set({ activePost: newPost, isDirty });
+
+      if (shouldAutosave && isDirty) {
         debouncedSave(newPost);
       }
     },
@@ -125,17 +157,3 @@ export const useEditorPostManagerStore = create<
     setHasError: (hasError) => set({ hasError }),
   };
 });
-
-function preparePostForUpdate(
-  postData: PostInsert,
-  excludedFields: readonly string[]
-): Partial<PostInsert> {
-  if (!postData) return {};
-
-  return Object.entries(postData).reduce((acc, [key, value]) => {
-    if (!excludedFields.includes(key)) {
-      acc[key as keyof PostInsert] = value as any;
-    }
-    return acc;
-  }, {} as Partial<PostInsert>);
-}

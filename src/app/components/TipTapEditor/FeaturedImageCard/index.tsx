@@ -11,40 +11,43 @@ import {
   Button,
   HStack,
 } from "@chakra-ui/react";
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import isEmpty from "just-is-empty";
 import { MediaResponse } from "@/src/types";
 import { MediaModal } from "../../Dashboard/Medias/MediaModal";
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
-export const FeaturedImageCard = ({
-  image,
-  onChange,
-}: {
-  image: { url: string; alt_text?: string; caption?: string } | null;
-  onChange: (imageId: number | null) => void;
-}) => {
+export const FeaturedImageCard = () => {
+  const originalFeaturedImage = useEditorPostManagerStore(
+    (state) => state.activePost?.featured_image
+  );
+  const updateField = useEditorPostManagerStore(
+    (state) => state.updateField
+  );
   const borderColor = useColorModeValue("gray.400", "gray.700");
   const bgColor = useColorModeValue("gray.100", "gray.900");
   const textColor = useColorModeValue("gray.500", "gray.200");
-  const [featuredImage, setFeaturedImage] =
-    useState<Partial<MediaResponse | null>>(image);
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const [featuredImage, setFeaturedImage] = useState<
+    Partial<MediaResponse | null|undefined>
+  >(originalFeaturedImage);
 
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const handleImageSelect = useCallback(
     (media: MediaResponse | MediaResponse[]) => {
       if (Array.isArray(media) && media.length > 0) {
         setFeaturedImage(media[0]);
-        onChange(media[0]?.id);
+        updateField("featured_image_id", media[0]?.id);
+     
       }
     },
-    [onChange]
+    [updateField]
   );
 
   const handleImageRemove = useCallback(() => {
     setFeaturedImage(null);
-    onChange(null);
-  }, [onChange]);
+    updateField('featured_image_id',null);
+  }, [updateField]);
 
   return (
     <Box mb={3}>

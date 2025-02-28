@@ -1,29 +1,22 @@
+import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 import { FormControl, FormLabel, Textarea } from "@chakra-ui/react";
 
 import React, { ChangeEvent, useCallback, useState } from "react";
 
-export const SummaryInput = ({
-  summary,
-  onChange,
-}: {
-  summary: string;
-  onChange: (val: string) => void;
-}) => {
-  const [field, setField] = useState(summary || "");
-  const onChangeCb = useCallback(
-    (value: string) => {
-      onChange?.(value);
-    },
-    [onChange]
+export const SummaryInput = () => {
+  const summary = useEditorPostManagerStore(
+    (state) => state.activePost?.summary
   );
+  const [field, setField] = useState(summary || "");
+  const updateField = useEditorPostManagerStore((state) => state.updateField);
   const handleChange = useCallback(
     (evt: ChangeEvent<HTMLTextAreaElement>) => {
       const { value } = evt.target;
 
       setField(value);
-      onChangeCb?.(value);
+      updateField("summary", value);
     },
-    [onChangeCb]
+    [updateField]
   );
   console.log("SummaryInput rendered", { summary });
   return (
