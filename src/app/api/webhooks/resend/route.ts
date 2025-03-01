@@ -1,6 +1,7 @@
 import { Webhook } from "svix";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { WebhookRequiredHeaders } from "svix";
 import { db } from "@/src/db";
 import {
   emailEvents,
@@ -9,15 +10,16 @@ import {
 } from "@/src/db/schemas";
 import { eq } from "drizzle-orm";
 import { ResendWebhookEvent } from "@/src/types";
+import { IncomingMessage } from "http";
 
-export async function POST(req: Request) {
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+export async function POST(req: NextRequest) {
   try {
-    const signature = headers().get("resend-signature");
-    if (!signature || !verifyWebhookSignature(signature)) {
-      return new NextResponse("Invalid signature", { status: 401 });
-    }
-
-    const payload = (await req.json()) as ResendWebhookEvent;
+    const payload = await verifyWebhookSignature(req);
 
     // Find associated newsletter and subscriber
     const [newsletter] = await db
@@ -65,24 +67,33 @@ export async function POST(req: Request) {
     return new NextResponse("OK", { status: 200 });
   } catch (error) {
     console.error("Webhook error:", error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse("Internal error", { status: 400 });
   }
 }
 
-function verifyWebhookSignature(signature: string | null): boolean {
-  if (!signature) return false;
+async function verifyWebhookSignature(req: NextRequest) {
   const secret = process.env.RESEND_WEBHOOK_SECRET;
   if (!secret) throw new Error("RESEND_WEBHOOK_SECRET is not set");
-  // These were all sent from the server
-  const headers = {
-    "svix-id": "msg_p5jXN8AQM9LWM0D4loKWxJek",
-    "svix-timestamp": "1614265330",
-    "svix-signature": "v1,g0hM9SsE+OTPJTGt/tmIKtSyZlE3uFJELVlNIOLJ1OE=",
-  };
-  const body = JSON.stringify({ test: 2432232314 });
 
-  const wh = new Webhook(secret);
-  // Throws on error, returns the verified content on success
-  const payload = wh.verify(body, headers);
-  return true;
+  console.log({
+    head: req.headers,
+    secret,
+    payload2: req.text(),
+  });
+
+  const payload = await req.json();
+  const reqHeaders = headers() as unknown as IncomingMessage["headers"] &
+    WebhookRequiredHeaders;
+
+  const webhook = new Webhook(secret);
+  const event = webhook.verify(payload, reqHeaders) as ResendWebhookEvent;
+  if (!event) {
+    throw new Error("Invalid webhook payload");
+  }
+  const body = JSON.stringify(event) as unknown as ResendWebhookEvent;
+  console.log({ body, event });
+
+  return body;
 }
+
+// TODO: fix this API

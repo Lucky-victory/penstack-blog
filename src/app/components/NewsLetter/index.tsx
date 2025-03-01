@@ -67,7 +67,6 @@ export const Newsletter = ({
           data: { isSubscribed: boolean; isVerified: boolean };
         }>("/api/newsletters", body);
         const data = response.data;
-        console.log({ data });
 
         if (data.isSubscribed && data.isVerified) {
           setStatus("info");

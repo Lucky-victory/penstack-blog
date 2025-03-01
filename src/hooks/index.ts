@@ -114,6 +114,8 @@ export function useAuthor(username: string) {
       );
       return data.data;
     },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     staleTime: 1000 * 60 * 30,
   });
 
@@ -138,6 +140,8 @@ export function useAuthorPosts({
     refetch,
   } = useQuery({
     queryKey: ["POSTS", status, limit, page, username],
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     queryFn: async () => {
       const { data } = await axios.get<{ data: PostSelect[] }>(
         `/api/authors/${username}/posts?${objectToQueryParams({
