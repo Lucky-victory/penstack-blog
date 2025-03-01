@@ -59,7 +59,7 @@ const Footer = () => {
         icon: LuMail,
       },
     ],
-    []
+    [siteSettings.emailFrom.value]
   );
 
   return (

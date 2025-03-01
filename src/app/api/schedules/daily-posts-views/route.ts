@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { aggregatePostViews } from "@/src/lib/queries/aggregated-post-views";
+import { getAggregatedPostViews } from "@/src/lib/queries/aggregated-post-views";
 import { db } from "@/src/db";
 
 export async function POST(request: NextRequest) {
   try {
     try {
-      await aggregatePostViews(db);
+      await getAggregatedPostViews();
     } catch (error) {
       throw error;
     }

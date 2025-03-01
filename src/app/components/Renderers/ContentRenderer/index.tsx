@@ -213,7 +213,8 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
             return (
               <Code
                 color={"red.600"}
-                bg={useColorModeValue("gray.200", "gray.800")}
+                bg="gray.200"
+                _dark={{ bg: "gray.800" }}
               >
                 {domToReact(domNode.children as Element[], options)}
               </Code>
@@ -252,8 +253,7 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
             );
           }
         }
-      },
-    };
+      },    };
 
     return <Box className={className}>{parse(content, options)}</Box>;
   }

@@ -1,11 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 export const useTrackView = (postId: number) => {
   const timeSpentRef = useRef<number>(0);
   const startTimeRef = useRef<number>(Date.now());
   const isTrackingRef = useRef<boolean>(false);
 
-  const trackView = async () => {
+  const trackView = useCallback(async () => {
     // Prevent concurrent tracking requests
     if (isTrackingRef.current) return;
 
@@ -32,7 +32,7 @@ export const useTrackView = (postId: number) => {
     } finally {
       isTrackingRef.current = false;
     }
-  };
+  }, [postId]);
 
   useEffect(() => {
     // Track initial view with a slight delay to prevent duplicate entries
@@ -54,5 +54,5 @@ export const useTrackView = (postId: number) => {
 
       trackView();
     };
-  }, []);
+  }, [trackView]);
 };

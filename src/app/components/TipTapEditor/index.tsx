@@ -92,7 +92,7 @@ function TipTapEditor({
         onUpdate?.(content);
         setEditorContent(content);
       }, 1000),
-    [onUpdate]
+    [onUpdate, setEditorContent]
   );
   const editor = useEditor({
     editorProps: { attributes: { class: "penstack-post-editor" } },

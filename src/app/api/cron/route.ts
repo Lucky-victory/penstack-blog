@@ -1,9 +1,9 @@
 import { CronJobHandler, CronJobPayload } from "@/src/lib/cron";
-import { resolveUrl } from "@/src/utils/url";
+import { getSiteUrl, resolveUrl } from "@/src/utils/url";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const baseUrl = new URL(req.url)?.origin;
+  const baseUrl = getSiteUrl();
 
   const body = (await req.json()) as CronJobPayload;
 

@@ -62,6 +62,7 @@ export const PenstackCodeblockComponent: React.FC<
       );
     }
   );
+  LanguageRow.displayName = "LanguageRow";
   return (
     <Stack
       as={NodeViewWrapper}

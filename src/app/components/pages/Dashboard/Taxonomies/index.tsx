@@ -50,7 +50,7 @@ const DashboardTaxonomyPage: React.FC = () => {
   };
   useEffect(() => {
     setType(activeTab);
-  }, [activeTab]);
+  }, [activeTab, setType]);
   return (
     <Box>
       <DashHeader />

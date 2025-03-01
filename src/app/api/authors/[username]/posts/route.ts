@@ -10,7 +10,7 @@ export async function GET(
   { params }: { params: { username: string } }
 ) {
   const searchParams = getServerSearchParams<{
-    status: NonNullable<PostSelect["status"]> | "all";
+    status: "draft" | "deleted" | "published" | "all";
     limit: number;
     page: number;
   }>(req);
