@@ -69,6 +69,14 @@ const Header = () => {
   function isActiveUrl(url: string) {
     return pathname === url;
   }
+  const logo = useBreakpointValue({
+    base: siteSettings?.siteMobileLogo?.value || siteSettings?.siteLogo?.value,
+    md: siteSettings?.siteLogo?.value,
+  });
+  const logoSize = useBreakpointValue({
+    base: "50px",
+    md: "40px",
+  });
   return (
     <motion.div
       style={{
@@ -93,7 +101,7 @@ const Header = () => {
         <Container maxW="container.2xl" py={"6px"}>
           <HStack justify="space-between" align="center">
             <HStack as={Link} href="/">
-              <AppLogo src={siteSettings?.siteLogo?.value} size={"30px"} />
+              <AppLogo src={logo!} size={logoSize!} />
               {siteSettings.showSiteNameWithLogo?.enabled && (
                 <Text
                   hideBelow={"md"}

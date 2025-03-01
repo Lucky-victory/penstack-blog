@@ -1,7 +1,19 @@
 import { Image } from "@chakra-ui/react";
 
-export const AppLogo = ({ size, src }: { src: string; size: string }) => {
-  return src ? <Image src={src} alt="Logo" maxH={size} /> : <DefaultLogo />;
+export const AppLogo = ({
+  size,
+  src,
+  bg,
+}: {
+  src: string;
+  size: string;
+  bg?: string;
+}) => {
+  return src ? (
+    <Image bg={bg} src={src} alt="Logo" maxH={size} />
+  ) : (
+    <DefaultLogo />
+  );
 };
 
 const DefaultLogo = () => {

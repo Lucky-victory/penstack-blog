@@ -80,7 +80,7 @@ const Footer = () => {
         >
           <GridItem>
             <Stack color={"white"}>
-              <AppLogoAndName isFooter nameSize={"large"} />
+              <AppLogoAndName logoBg="white" isFooter nameSize={"large"} />
               <Text fontSize="sm" color={textColor} maxW={300}>
                 {siteSettings?.siteDescription?.value}
               </Text>

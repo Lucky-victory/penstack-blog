@@ -18,7 +18,9 @@ interface GeneralPanelProps {
   settings: SiteSettings;
   handleInputChange: (key: string, value: string) => void;
   handleToggle: (key: string) => void;
-  openMediaModal: (field: "siteLogo" | "siteFavicon" | "siteOpengraph") => void;
+  openMediaModal: (
+    field: "siteLogo" | "siteMobileLogo" | "siteFavicon" | "siteOpengraph"
+  ) => void;
 }
 
 export const GeneralPanel = ({
@@ -87,8 +89,41 @@ export const GeneralPanel = ({
         </Stack>
         <Box>
           <FormControl>
+            <FormLabel>Site Mobile Logo</FormLabel>
+            <FormHelperText>Recommended size 300x300</FormHelperText>
+            {settings.siteMobileLogo?.value && (
+              <Box mb={2} mt={1}>
+                <Image
+                  src={settings?.siteMobileLogo?.value}
+                  alt="Site Mobile Logo"
+                  maxH="100px"
+                />
+              </Box>
+            )}
+            <HStack>
+              <Button
+                size="sm"
+                onClick={() => openMediaModal("siteMobileLogo")}
+              >
+                {settings?.siteMobileLogo?.value ? "Change Logo" : "Add Logo"}
+              </Button>
+              {settings?.siteMobileLogo?.value && (
+                <Button
+                  size="sm"
+                  colorScheme="red"
+                  variant={"ghost"}
+                  onClick={() => handleInputChange("siteMobileLogo", "")}
+                >
+                  Remove
+                </Button>
+              )}
+            </HStack>
+          </FormControl>
+        </Box>
+        <Box>
+          <FormControl>
             <FormLabel>Site Logo</FormLabel>
-            <FormHelperText>Recommended size 500x500</FormHelperText>
+            <FormHelperText>Recommended size 650x250</FormHelperText>
             {settings.siteLogo?.value && (
               <Box mb={2} mt={1}>
                 <Image
