@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
             display: "flex",
             background: selectedGradient,
             position: "relative",
-            // fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Plus Jakarta Sans",
           }}
         >
           {/* Content Section */}
@@ -191,7 +191,7 @@ export async function GET(request: NextRequest) {
                   gap: "16px",
                 }}
               >
-                {avatar ? (
+                {/* {avatar ? (
                   <div
                     style={{
                       width: "52px",
@@ -237,7 +237,7 @@ export async function GET(request: NextRequest) {
                       {getNameInitials(name)}
                     </div>
                   )
-                )}
+                )} */}
                 <div
                   style={{
                     display: "flex",
@@ -290,13 +290,13 @@ export async function GET(request: NextRequest) {
       {
         width: 1200,
         height: 630,
-        // fonts: [
-        //   {
-        //     name: "Plus Jakarta Sans",
-        //     data: await loadGoogleFont("Plus+Jakarta+Sans", title),
-        //     weight: 700,
-        //   },
-        // ],
+        fonts: [
+          {
+            name: "Plus Jakarta Sans",
+            data: await loadGoogleFont("Plus+Jakarta+Sans", title),
+            weight: 700,
+          },
+        ],
       }
     );
   } catch (e: any) {

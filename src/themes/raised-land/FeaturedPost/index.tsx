@@ -51,6 +51,7 @@ export const FeaturedPost = () => {
                           : featuredPost?.created_at,
 
                         category: featuredPost?.category?.name,
+                        name: featuredPost?.author?.name,
                       })}`
                     }
                     alt={featuredPost?.featured_image?.alt_text || ""}

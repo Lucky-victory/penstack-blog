@@ -45,6 +45,7 @@ import {
   Center,
   Switch,
   InputLeftElement,
+  Textarea,
 } from "@chakra-ui/react";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -477,6 +478,7 @@ const UsersDashboard = () => {
                     }
                   />
                 </FormControl>
+
                 <FormControl isRequired>
                   <FormLabel>Role</FormLabel>
 
@@ -525,6 +527,39 @@ const UsersDashboard = () => {
                         ))}
                     </MenuList>
                   </Menu>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Job title</FormLabel>
+                  <Input
+                    autoComplete="off"
+                    placeholder="Job Title"
+                    type="text"
+                    name="title"
+                    value={currentUser?.title || ""}
+                    onChange={(e) =>
+                      setCurrentUser((prev) => ({
+                        ...prev,
+                        title: e.target.value,
+                      }))
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Bio</FormLabel>
+                  <Textarea
+                    autoComplete="off"
+                    placeholder="Tell us about yourself"
+                    rows={4}
+                    maxH={200}
+                    name="bio"
+                    value={currentUser?.bio || ""}
+                    onChange={(e) =>
+                      setCurrentUser((prev) => ({
+                        ...prev,
+                        bio: e.target.value,
+                      }))
+                    }
+                  />
                 </FormControl>
                 <FormControl w={"full"}>
                   {!currentUser?.id && (

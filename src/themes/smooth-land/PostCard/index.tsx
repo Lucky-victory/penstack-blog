@@ -81,7 +81,7 @@ export default function PostCard({
               title: post?.title,
               date: post?.published_at ? post?.published_at : post?.created_at,
               username: post?.author?.username,
-              avatar: post?.author?.avatar,
+              // avatar: post?.author?.avatar,
               name: post?.author?.name,
               category: post?.category?.name,
             })}`
