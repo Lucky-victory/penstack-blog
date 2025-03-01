@@ -21,8 +21,8 @@ const FrontPage = () => {
           px={{ base: 2, md: 4, lg: 2 }}
           // pt={2}
         >
-          <FeaturedPost />
-          <Box px={{ base: 0, lg: 4 }} py={5}>
+          <Box px={{ base: 0, lg: 4 }}>
+            <FeaturedPost />
             <Box mt={0} mb={6}>
               <CategoryItemList
                 onChange={(category) => updateParams({ category })}
