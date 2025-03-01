@@ -12,11 +12,6 @@ import { eq } from "drizzle-orm";
 import { ResendWebhookEvent } from "@/src/types";
 import { IncomingMessage } from "http";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
 export async function POST(req: NextRequest) {
   try {
     const payload = await verifyWebhookSignature(req);

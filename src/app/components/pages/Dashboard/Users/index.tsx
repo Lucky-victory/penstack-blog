@@ -60,6 +60,7 @@ import {
   LuSearch,
   LuTrash2,
 } from "react-icons/lu";
+import { MediaModal } from "../../../Dashboard/Medias/MediaModal";
 
 const UsersDashboard = () => {
   const [users, setUsers] = useState<UserSelect[]>([]);
@@ -96,6 +97,11 @@ const UsersDashboard = () => {
     staleTime: 1000 * 60 * 60, // 1 hour
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isMediaOpen,
+    onOpen: onMediaOpen,
+    onClose: onMediaClose,
+  } = useDisclosure();
   const toast = useToast();
 
   useEffect(() => {
@@ -394,6 +400,19 @@ const UsersDashboard = () => {
             </ModalHeader>
             <ModalBody>
               <VStack spacing={4} align={"start"} as={"form"} id="user-form">
+                <FormControl>
+                  <FormLabel>Avatar</FormLabel>
+                  <HStack>
+                    <Avatar
+                      src={currentUser?.avatar || ""}
+                      name={currentUser?.name}
+                      size={"lg"}
+                    />
+                    <Button size={"sm"} onClick={() => onMediaOpen()}>
+                      Change Image
+                    </Button>
+                  </HStack>
+                </FormControl>
                 <FormControl isRequired>
                   <FormLabel>Name</FormLabel>
                   <Input
@@ -546,6 +565,20 @@ const UsersDashboard = () => {
           </ModalContent>
         </Modal>
       </Box>
+      <MediaModal
+        multiple={false}
+        isOpen={isMediaOpen}
+        onClose={onMediaClose}
+        maxSelection={1}
+        onSelect={(media) => {
+          if (!Array.isArray(media)) {
+            setCurrentUser((prev) => ({
+              ...prev,
+              avatar: media?.url,
+            }));
+          }
+        }}
+      />
     </Box>
   );
 };
