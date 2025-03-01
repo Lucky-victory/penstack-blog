@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-
 import DashboardLayout from "../../components/pages/Dashboard/Layout";
 import { getSession } from "@/src/lib/auth/next-auth";
 import { getDashboardNavigation } from "@/src/lib/dashboard/nav-links";

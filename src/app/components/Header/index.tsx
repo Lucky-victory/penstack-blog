@@ -193,7 +193,7 @@ const Header = () => {
                           <MenuItem
                             key={topic.name}
                             as={Link}
-                            href={`/category/${topic.name.replaceAll(" ", "+")}`}
+                            href={`/category/${topic.slug}`}
                           >
                             {topic.name}
                           </MenuItem>
@@ -256,7 +256,7 @@ const Header = () => {
                       key={topic.name}
                       rounded={"full"}
                       as={Link}
-                      href={`/category/${topic.name}`}
+                      href={`/category/${topic.slug}`}
                       variant="ghost"
                       justifyContent="flex-start"
                       w="full"

@@ -6,8 +6,11 @@ import { TPermissions } from "@/src/types";
 export default async function Page() {
   const session = await getSession();
 
-  const permissions = (await session?.user?.permissions) as TPermissions[];
+  const permissions = session?.user?.permissions as TPermissions[];
   const firstAccessiblePage = getDashboardNavigation(permissions);
+  console.log({
+    firstAccessiblePage,
+  });
 
   return redirect(firstAccessiblePage[0].href);
 }

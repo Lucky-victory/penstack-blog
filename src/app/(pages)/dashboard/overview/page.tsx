@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 export default function Page() {
   return (
-    <PermissionGuard requiredPermission={"dashboard:view"} shouldRedirect>
+    <PermissionGuard requiredPermission={'analytics:view'} shouldRedirect>
       <Overview />
     </PermissionGuard>
   );

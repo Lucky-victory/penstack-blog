@@ -28,7 +28,7 @@ export function PostsCards({
             <PostCardLoader key={index} />
           ))
         : posts?.map((post) => (
-            <PostCard showAuthor={showAuthor} key={post.id} post={post} />
+            <PostCard showAuthor={showAuthor} key={post?.id} post={post} />
           ))}
     </Grid>
   );

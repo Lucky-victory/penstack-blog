@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
-  const existingEmail = await db.query.newsletters.findFirst({
+  const existingEmail = await db.query.newsletterSubscribers.findFirst({
     where: eq(sql`lower(${newsletterSubscribers.email})`, email.toLowerCase()),
   });
   if (existingEmail) {

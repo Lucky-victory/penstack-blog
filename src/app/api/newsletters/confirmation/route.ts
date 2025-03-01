@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Token is required" }, { status: 400 });
   }
 
-  const subscriber = await db.query.newsletters.findFirst({
+  const subscriber = await db.query.newsletterSubscribers.findFirst({
     where: and(eq(newsletterSubscribers.verification_token, token)),
   });
 

@@ -51,9 +51,9 @@ export default function PostCard({
       }}
       viewport={{ once: true, margin: "-50px" }}
       as={LinkBox}
-      key={post.id}
+      key={post?.id}
       bg={bgColor}
-      // shadow={"none"}
+      maxW={350}
       overflow="hidden"
       transition="all 0.3s"
       py={3}
@@ -72,13 +72,13 @@ export default function PostCard({
         pb={0}
         rounded={"xl"}
         overflow={"hidden"}
-        height={{ base: "180", sm: "240", md: "200" }}
+        height={"180"}
       >
         <Image
           src={
-            (post.featured_image?.url as string) ||
+            (post?.featured_image?.url as string) ||
             `/api/og?${objectToQueryParams({
-              title: post.title,
+              title: post?.title,
               date: post?.published_at ? post?.published_at : post?.created_at,
               username: post?.author?.username,
               avatar: post?.author?.avatar,
@@ -86,7 +86,7 @@ export default function PostCard({
               category: post?.category?.name,
             })}`
           }
-          alt={post.featured_image?.alt_text}
+          alt={post?.featured_image?.alt_text || ""}
           objectFit="cover"
           className="post-card-img"
           transition={"all 0.3s"}
@@ -121,7 +121,7 @@ export default function PostCard({
               </Text>
               <Box w={"1"} h={1} bg={textColor} rounded="full"></Box>
               <Text fontSize="small" as={"span"} color={textColor}>
-                {post.reading_time || 1} min read
+                {post?.reading_time || 1} min read
               </Text>
             </HStack>
             <LinkOverlay
@@ -134,20 +134,20 @@ export default function PostCard({
                 noOfLines={2}
                 lineHeight={1}
               >
-                {post.title}
+                {post?.title}
               </Heading>
             </LinkOverlay>
 
             <Text noOfLines={2} color={textColor} fontSize={"small"}>
-              {post.summary ||
-                stripHtml(decodeAndSanitizeHtml(post.content || ""))}
+              {post?.summary ||
+                stripHtml(decodeAndSanitizeHtml(post?.content || ""))}
             </Text>
           </VStack>
           {showAuthor && (
-            <Link href={`/author/${post.author?.username}`}>
+            <Link href={`/author/${post?.author?.username}`}>
               <HStack gap={3} display={"inline-flex"}>
                 <Avatar
-                  src={post?.author?.avatar}
+                  src={post?.author?.avatar || ""}
                   name={post?.author?.name}
                   size="xs"
                 />

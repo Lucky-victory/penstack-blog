@@ -40,6 +40,19 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category") || "";
     const publishDate = searchParams.get("date") || new Date().toISOString();
     const readingTime = searchParams.get("readingTime");
+    const gradient = searchParams.get("gradient") || "5"; // Default gradient option
+
+    // Define a set of modern gradients
+    const gradients = {
+      "1": "linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)", // Indigo to Purple to Pink
+      "2": "linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)", // Sky to Purple
+      "3": "linear-gradient(135deg, #10B981 0%, #3B82F6 100%)", // Emerald to Blue
+      "4": "linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)", // Amber to Red
+      "5": "linear-gradient(135deg, #111827 0%, #4B5563 100%)", // Dark
+    };
+
+    const selectedGradient =
+      gradients[gradient as keyof typeof gradients] || gradients["1"];
 
     return new ImageResponse(
       (
@@ -48,9 +61,9 @@ export async function GET(request: NextRequest) {
             width: "100%",
             height: "100%",
             display: "flex",
-
-            background: "white",
+            background: selectedGradient,
             position: "relative",
+            // fontFamily: "Plus Jakarta Sans",
           }}
         >
           {/* Content Section */}
@@ -60,191 +73,235 @@ export async function GET(request: NextRequest) {
               width: "100%",
               display: "flex",
               flexDirection: "column",
-              padding: "60px",
-              justifyContent: "center",
-              alignItems: "center",
-              textAlign: "center",
+              padding: "64px 100px",
+              justifyContent: "space-between",
               height: "100%",
+              zIndex: 1,
             }}
           >
-            {/* Category & Date */}
+            {/* Top Section */}
             <div
               style={{
                 display: "flex",
+                justifyContent: "space-between",
                 alignItems: "center",
-                flexDirection: "column",
-                gap: "16px",
-                marginBottom: "24px",
+                width: "100%",
               }}
             >
+              {/* Category Tag */}
               {category && (
                 <div
                   style={{
-                    // background:
-                    //   "linear-gradient(90deg, rgba(223, 113, 85, 1) 0%, rgba(59, 6, 66, 1) 10%)",
-                    padding: "6px 14px",
-                    borderRadius: "999px",
-                    border: "2px solid #1a1a1a",
-                    display: "flex",
-                    // color: "white",
+                    padding: "8px 16px",
+                    borderRadius: "24px",
+                    backgroundColor: "rgba(255, 255, 255, 0.15)",
+                    backdropFilter: "blur(8px)",
+                    color: "white",
                     fontSize: "20px",
-                    fontWeight: "semibold",
+                    fontWeight: "600",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                   }}
                 >
                   {category}
                 </div>
               )}
 
-              {/* Title */}
+              {/* Reading Time & Date */}
               <div
                 style={{
-                  fontSize: "72px",
-                  fontWeight: "bold",
-                  // color: "white",
+                  color: "rgba(255, 255, 255, 0.85)",
+                  fontSize: "18px",
                   display: "flex",
-                  lineHeight: 1.2,
-                  marginBottom: "18px",
-                  maxWidth: "80%",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                {formatDate(publishDate)}
+                {readingTime && (
+                  <>
+                    <div
+                      style={{
+                        width: "4px",
+                        height: "4px",
+                        borderRadius: "50%",
+                        backgroundColor: "rgba(255, 255, 255, 0.5)",
+                      }}
+                    />
+                    <span>{readingTime} min read</span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Middle Section - Title */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                gap: "24px",
+                marginTop: "-40px", // Offset to center vertically
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "76px",
+                  fontWeight: "800",
+                  color: "white",
+                  lineHeight: 1.15,
+                  letterSpacing: "-0.02em",
+                  maxWidth: "60%",
+                  textAlign: "left",
+                  textShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
                 }}
               >
                 {title}
               </div>
+
+              {/* Visual accent line */}
               <div
                 style={{
-                  color: "#4a4a4a",
-                  fontSize: "24px",
-                  display: "flex",
-                  justifyContent: "center",
+                  width: "120px",
+                  height: "6px",
+                  backgroundColor: "white",
+                  borderRadius: "3px",
+                  opacity: 0.8,
                 }}
-              >
-                {formatDate(publishDate)}{" "}
-                {readingTime && `· ${readingTime} min read time`}
-              </div>
+              />
             </div>
 
-            {/* Author Section */}
+            {/* Bottom Section - Author & Host */}
             <div
               style={{
                 display: "flex",
+                justifyContent: "space-between",
                 alignItems: "center",
-                gap: "16px",
-                marginTop: "60px",
+                width: "100%",
               }}
             >
-              {name && (
-                <p
-                  style={{
-                    // color: "white",
-                    fontSize: "20px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  By
-                </p>
-              )}
-              {avatar ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={avatar}
-                  width={45}
-                  height={45}
-                  alt={name}
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "128px",
-                    border: "2px solid #1a1a1a",
-                  }}
-                />
-              ) : (
-                name && (
-                  <div
-                    style={{
-                      width: "45px",
-                      height: "45px",
-                      borderRadius: "128px",
-
-                      // background:
-                      //   "linear-gradient(90deg, rgba(223, 113, 85, 1) 0%, rgba(59, 6, 66, 1) 10%)",
-                      // color: "white",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "20px",
-                      fontWeight: "bold",
-                      border: "2px solid #1a1a1a",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    <p>{getNameInitials(name)}</p>
-                  </div>
-                )
-              )}
+              {/* Author Section */}
               <div
                 style={{
                   display: "flex",
-                  flexDirection: "column",
-                  gap: "4px",
+                  alignItems: "center",
+                  gap: "16px",
                 }}
               >
-                {name && (
+                {avatar ? (
                   <div
                     style={{
-                      // color: "white",
-                      fontSize: "24px",
-                      fontWeight: "bold",
-                      display: "flex",
+                      width: "52px",
+                      height: "52px",
+                      borderRadius: "26px",
+                      overflow: "hidden",
+                      border: "3px solid rgba(255, 255, 255, 0.8)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
                     }}
                   >
-                    {name}
+                    <img
+                      src={avatar}
+                      width={52}
+                      height={52}
+                      alt={name}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
                   </div>
+                ) : (
+                  name && (
+                    <div
+                      style={{
+                        width: "52px",
+                        height: "52px",
+                        borderRadius: "26px",
+                        backgroundColor: "rgba(255, 255, 255, 0.15)",
+                        backdropFilter: "blur(8px)",
+                        border: "3px solid rgba(255, 255, 255, 0.5)",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "22px",
+                        fontWeight: "700",
+                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {getNameInitials(name)}
+                    </div>
+                  )
                 )}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "2px",
+                  }}
+                >
+                  <div
+                    style={{
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Written by
+                  </div>
+                  {name && (
+                    <div
+                      style={{
+                        color: "white",
+                        fontSize: "24px",
+                        fontWeight: "700",
+                      }}
+                    >
+                      {name}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Host/Website URL */}
+              <div
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  backdropFilter: "blur(8px)",
+                  padding: "10px 20px",
+                  borderRadius: "24px",
+                  color: "white",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                {host}
               </div>
             </div>
-          </div>
-
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 1440 320"
-            style={{ position: "absolute", bottom: 0, left: 0 }}
-          >
-            <path
-              fill="#0099ff"
-              fill-opacity="1"
-              d="M0,256L80,245.3C160,235,320,213,480,208C640,203,800,213,960,186.7C1120,160,1280,96,1360,64L1440,32L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
-            ></path>
-          </svg>
-
-          {/* Watermark/Brand */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: "40px",
-              right: "50px",
-              display: "flex",
-              zIndex: 10,
-
-              fontSize: "20px",
-            }}
-          >
-            {host}
           </div>
         </div>
       ),
       {
         width: 1200,
         height: 630,
-        fonts: [
-          {
-            name: "Plus+Jakarta+Sans",
-            data: await loadGoogleFont("Plus+Jakarta+Sans", title),
-            weight: 700,
-          },
-        ],
+        // fonts: [
+        //   {
+        //     name: "Plus Jakarta Sans",
+        //     data: await loadGoogleFont("Plus+Jakarta+Sans", title),
+        //     weight: 700,
+        //   },
+        // ],
       }
     );
-  } catch (e) {
-    return new Response(`Failed to generate image`, {
+  } catch (e: any) {
+    console.error("OG Image generation error:", e.message);
+    return new Response(`Failed to generate image: ${e.message}`, {
       status: 500,
     });
   }

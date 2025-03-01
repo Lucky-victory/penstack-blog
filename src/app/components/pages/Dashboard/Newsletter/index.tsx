@@ -79,7 +79,7 @@ export const DashboardNewsletterPage = () => {
     color: headerColor,
   };
   return (
-    <PermissionGuard requiredPermission={"dashboard:view"}>
+    <PermissionGuard requiredPermission={"newsletters:read"}>
       <Box>
         <DashHeader />
         <Box p={{ base: 4, md: 5 }}>
