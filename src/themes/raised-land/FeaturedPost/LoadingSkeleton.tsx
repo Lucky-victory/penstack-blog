@@ -14,7 +14,7 @@ export const FeaturedPostSkeleton = () => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
   return (
-    <LinkBox mb={6} h={400}>
+    <LinkBox mb={6} minH={400}>
       <Box
         bg={cardBgColor}
         borderRadius="3xl"
