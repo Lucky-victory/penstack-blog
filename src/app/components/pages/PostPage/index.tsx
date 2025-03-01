@@ -10,6 +10,10 @@ import {
   useBreakpointValue,
   HStack,
   Tag,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Text,
 } from "@chakra-ui/react";
 import { PostSelect } from "@/src/types";
 import Loader from "../../Loader";
@@ -22,6 +26,7 @@ import { CommentsSection } from "./CommentSection";
 import { Newsletter } from "../../NewsLetter";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 import { ViewTracker } from "../../ViewTracker";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 
 const MotionBox = motion(Box);
 
@@ -46,11 +51,34 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
         transition={{ duration: 0.5 }}
       >
         {/* Post Content Section */}
-        <Container maxW="container.xl" py={8} whiteSpace={"break-spaces"}>
+        <Container maxW="container.xl" py={8}>
+          <Breadcrumb
+            spacing="8px"
+            separator={<ChevronRightIcon color={metaColor} />}
+            mb={6}
+            listProps={{ flexWrap: "wrap" }}
+          >
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            {post.category && (
+              <BreadcrumbItem>
+                <BreadcrumbLink href={`/category/${post.category.slug}`}>
+                  {post.category.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
+            <BreadcrumbItem isCurrentPage color={metaColor}>
+              <Text isTruncated maxW="300px">
+                {post.title}
+              </Text>
+            </BreadcrumbItem>
+          </Breadcrumb>
+
           <ArticleHeader post={post} />
 
           {/* Hero Image */}
-          <Box mb={6}>
+          <Box mb={8}>
             <Image
               src={
                 post.featured_image?.url ||
@@ -67,7 +95,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
               w="full"
               h="auto"
               maxH={600}
-              // aspectRatio={"16/9"}
+              aspectRatio={"16/9"}
               objectFit="cover"
             />
           </Box>

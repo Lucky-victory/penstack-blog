@@ -12,6 +12,7 @@ import {
   Image,
   Text,
   Avatar,
+  Card,
 } from "@chakra-ui/react";
 import { Suspense } from "react";
 import { FeaturedPostSkeleton } from "./LoadingSkeleton";
@@ -30,19 +31,15 @@ export const FeaturedPost = () => {
       ) : (
         featuredPost && (
           <LinkBox mb={6}>
-            <Box
-              bg={cardBgColor}
-              borderRadius="3xl"
+            <Card
               overflow="hidden"
-              borderWidth="1px"
-              borderColor={borderColor}
               transition="all 0.2s"
               _hover={{ boxShadow: "lg" }}
             >
               <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={6}>
                 <Box
                   position="relative"
-                  height={{ base: "300px", lg: "500px" }}
+                  height={{ base: "250px", lg: "500px" }}
                 >
                   <Image
                     src={
@@ -72,7 +69,7 @@ export const FeaturedPost = () => {
                     </Tag>
                   )}
                   <LinkOverlay href={`${formatPostPermalink(featuredPost)}`}>
-                    <Heading size="2xl" mb={4}>
+                    <Heading size="2xl" mb={2}>
                       {featuredPost.title}
                     </Heading>
                   </LinkOverlay>
@@ -100,7 +97,7 @@ export const FeaturedPost = () => {
                   </HStack>
                 </VStack>
               </Grid>
-            </Box>
+            </Card>
           </LinkBox>
         )
       )}

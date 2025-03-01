@@ -54,9 +54,9 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
           fontWeight={700}
           textAlign={{ base: "left", md: "center" }}
         >
-          {post.title}
+          {post?.title}
         </Heading>
-        {post.summary && (
+        {post?.summary && (
           <Text
             fontSize={{ base: "md", md: "lg" }}
             mb={1}
@@ -64,7 +64,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
             color={summaryColor}
             textAlign={{ base: "left", md: "center" }}
           >
-            {post.summary}
+            {post?.summary}
           </Text>
         )}
       </Stack>
@@ -72,30 +72,30 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
       <Stack align={{ base: "flex-start", md: "center" }}>
         <HStack>
           <Text as="span">By</Text>
-          {post.author.avatar && (
+          {post?.author.avatar && (
             <Avatar
-              src={post.author.avatar}
-              name={post.author.name}
+              src={post?.author.avatar}
+              name={post?.author.name}
               size={"sm"}
             />
           )}
 
           <Link
-            href={"/author/" + post.author.username}
+            href={"/author/" + post?.author.username}
             fontWeight={500}
             textDecor={"underline"}
             lineHeight={"tighter"}
           >
-            {post.author.name}
+            {post?.author.name}
           </Link>
         </HStack>
         <HStack>
           <Text as={"span"} fontSize={"14px"}>
             {formatDate(
               new Date(
-                (post.published_at
+                (post?.published_at
                   ? post?.published_at
-                  : post.created_at) as Date
+                  : post?.created_at) as Date
               )
             )}
           </Text>
@@ -105,7 +105,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
           </Text>
         </HStack>
 
-        <ShareButtons url={shareUrl} title={post.title || ""} />
+        <ShareButtons url={shareUrl} title={post?.title || ""} />
       </Stack>
     </Box>
   );

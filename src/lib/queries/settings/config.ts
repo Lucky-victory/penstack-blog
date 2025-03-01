@@ -5,6 +5,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   siteDescription: { value: "", enabled: true, encrypted: false },
   siteOpengraph: { value: "", enabled: true, encrypted: false },
   siteLogo: { value: "", enabled: true, encrypted: false },
+  siteLogoMobile: { value: "", enabled: true, encrypted: false },
   siteFavicon: { value: "", enabled: true, encrypted: false },
   maintenanceMode: { value: "false", enabled: false, encrypted: false },
   gaId: { value: "", enabled: false, encrypted: false },
