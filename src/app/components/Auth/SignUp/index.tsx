@@ -116,7 +116,12 @@ export default function SignUp() {
               <FormControl isRequired>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
-                  <Input name="password" type="password" required size="lg" />
+                  <Input
+                    name="password"
+                    type={show ? "text" : "password"}
+                    required
+                    size="lg"
+                  />
                   <InputRightElement>
                     <IconButton
                       variant="ghost"

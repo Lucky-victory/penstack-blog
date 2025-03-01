@@ -124,7 +124,7 @@ export default function SignIn() {
                     <InputGroup>
                       <Input
                         name="password"
-                        type="password"
+                        type={show ? "text" : "password"}
                         required
                         size="lg"
                       />
