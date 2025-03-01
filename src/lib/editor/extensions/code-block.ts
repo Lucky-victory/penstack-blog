@@ -23,3 +23,4 @@ export const PenstackCodeblock = CodeBlockLowlight.extend({
     };
   },
 });
+PenstackCodeblock.name = "PenstackCodeBlock";
