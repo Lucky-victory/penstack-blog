@@ -9,6 +9,7 @@ import { SiteConfigProvider } from "../context/SiteConfig";
 import { getSettings } from "../lib/queries/settings";
 import { NuqsProvider } from "../providers/nuqs";
 import { AnalyticsProviders } from "../providers/analytics";
+import { getSiteUrl } from "../utils/url";
 
 type Props = {
   params: { slug?: string } & Record<string, string | string[] | undefined>;
@@ -22,8 +23,23 @@ export async function generateMetadata(
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
+    metadataBase: new URL(getSiteUrl()),
     title: siteSettings?.siteName?.value,
     description: siteSettings?.siteDescription?.value,
+    robots: {
+      index: true,
+      follow: true,
+      nocache: false,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+      noimageindex: false,
+      nositelinkssearchbox: false,
+    },
     icons: {
       icon: siteSettings?.siteFavicon?.value || "/favicon.ico",
       shortcut: siteSettings?.siteFavicon?.value || "/favicon.ico",
@@ -44,6 +60,7 @@ export async function generateMetadata(
         },
         ...previousImages,
       ],
+
       locale: "en-US",
       type: "website",
     },

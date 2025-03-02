@@ -87,14 +87,5 @@ export function getSiteUrl() {
     return ""; // Return empty string on client-side
   }
 
-  // On server side
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL;
-  }
-
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-
-  return "http://localhost:3000";
+  return process.env.NEXT_PUBLIC_SITE_URL || "";
 }
