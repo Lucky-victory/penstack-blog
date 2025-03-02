@@ -8,6 +8,11 @@ import {
   getPost,
   getPostForEditing,
 } from "@/src/lib/queries/post";
+import {
+  calculateReadingTime,
+  decodeAndSanitizeHtml,
+  stripHtml,
+} from "@/src/utils";
 import { or, eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
@@ -70,6 +75,9 @@ export async function PUT(
             scheduled_at: body.scheduled_at
               ? new Date(body.scheduled_at)
               : null,
+            reading_time: calculateReadingTime(
+              stripHtml(decodeAndSanitizeHtml(body?.content || ""))
+            ),
             updated_at: body.updated_at ? new Date(body.updated_at) : null,
           })
           .where(

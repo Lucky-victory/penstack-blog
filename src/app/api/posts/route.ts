@@ -3,6 +3,11 @@ import { posts } from "@/src/db/schemas";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { getSession } from "@/src/lib/auth/next-auth";
 import { PostInsert } from "@/src/types";
+import {
+  calculateReadingTime,
+  decodeAndSanitizeHtml,
+  stripHtml,
+} from "@/src/utils";
 import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -149,7 +154,6 @@ export async function POST(req: NextRequest) {
       author_id,
       visibility,
       category_id,
-      post_id,
     } = await req.json();
 
     try {
@@ -166,6 +170,9 @@ export async function POST(req: NextRequest) {
             status,
             visibility,
             category_id,
+            reading_time: calculateReadingTime(
+              stripHtml(decodeAndSanitizeHtml(content))
+            ),
           })
           .$returningId();
         return await tx.query.posts.findFirst({
