@@ -103,7 +103,10 @@ const UsersDashboard = () => {
     onOpen: onMediaOpen,
     onClose: onMediaClose,
   } = useDisclosure();
-  const toast = useToast();
+  const toast = useToast({
+    position: "top",
+    duration: 3000,
+  });
 
   useEffect(() => {
     if (data) {
@@ -160,14 +163,12 @@ const UsersDashboard = () => {
           queryKey: ["users"],
           refetchType: "all",
         });
-        refetch();
       } else {
         await axios.post("/api/users", currentUser);
         queryClient.invalidateQueries({
           queryKey: ["users"],
           refetchType: "all",
         });
-        refetch();
       }
 
       toast({

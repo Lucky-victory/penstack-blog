@@ -140,7 +140,7 @@ export const DASH_NAV_PERMISSIONS = {
   VIEW_USERS: "users:read",
   VIEW_MEDIA: "media:read",
   VIEW_SETTINGS: "settings:read",
-  VIEW_NEWSLETTERS: "newsletter:read",
+  VIEW_NEWSLETTERS: "newsletters:read",
   VIEW_ROLES: "roles:read",
   VIEW_COMMENTS: "comments:moderate",
 } as const;

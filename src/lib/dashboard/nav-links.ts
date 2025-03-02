@@ -47,7 +47,7 @@ const routePermissions = {
   "/dashboard/media": DASH_NAV_PERMISSIONS.VIEW_MEDIA,
   "/dashboard/settings": DASH_NAV_PERMISSIONS.VIEW_SETTINGS,
   "/dashboard/comments": DASH_NAV_PERMISSIONS.VIEW_COMMENTS,
-  "/dashboard/newletters": DASH_NAV_PERMISSIONS.VIEW_DASHBOARD,
+  "/dashboard/newletters": DASH_NAV_PERMISSIONS.VIEW_NEWSLETTERS,
   "/dashboard/taxonomies": DASH_NAV_PERMISSIONS.VIEW_DASHBOARD,
 } as const;
 
