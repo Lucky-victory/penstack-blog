@@ -36,33 +36,33 @@ export const BlogPostNewsletter = ({
     <Html>
       <Head />
       <Preview>
-        {previewText || `New post from ${siteName}: ${post.title}`}
+        {previewText || `New post from ${siteName}: ${post?.title}`}
       </Preview>
       <Body style={main}>
         <Container style={container}>
-          {post.featured_image && (
+          {post?.featured_image && (
             <Img
-              src={post.featured_image.url}
-              alt={post.featured_image.alt_text || post.title || ""}
+              src={post?.featured_image.url}
+              alt={post?.featured_image.alt_text || post?.title || ""}
               style={featuredImage}
             />
           )}
 
-          <Heading style={heading}>{post.title}</Heading>
+          <Heading style={heading}>{post?.title}</Heading>
 
           <Text style={authorStyle}>
-            By {post.author.name} •{" "}
-            {new Date(post.published_at!).toLocaleDateString()}
+            By {post?.author.name} •{" "}
+            {new Date(post?.published_at!).toLocaleDateString()}
           </Text>
           {post?.summary ? (
             <Section style={excerpt}>
-              <Text>{stripHtml(decodeAndSanitizeHtml(post.summary))}</Text>
+              <Text>{stripHtml(decodeAndSanitizeHtml(post?.summary))}</Text>
             </Section>
           ) : (
             <Section style={excerpt}>
               <Text>
                 {shortenText(
-                  stripHtml(decodeAndSanitizeHtml(post.content || "")),
+                  stripHtml(decodeAndSanitizeHtml(post?.content || "")),
                   200
                 )}
               </Text>

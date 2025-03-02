@@ -31,7 +31,7 @@ export const MiniPostCard: React.FC<MiniPostCardProps> = ({
         .command(({ tr }) => {
           tr.setNodeMarkup(pos, undefined, {
             ...node.attrs,
-            postIds: [selectedPost.post_id].join(","),
+            postIds: [selectedPost?.post_id].join(","),
           });
           return true;
         })

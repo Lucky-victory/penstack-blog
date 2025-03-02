@@ -200,10 +200,10 @@ export function formatPostPermalink(
       convertToDateFnsFormatAndSlug(
         slugPattern || "%year%/%month%/%day%/%slug%"
       ).dateFormat
-    )}/${post.slug}`;
+    )}/${post?.slug}`;
   }
 
-  return `/${prefix}/${post.slug}`;
+  return `/${prefix}/${post?.slug}`;
 }
 
 type QueryParamValue =

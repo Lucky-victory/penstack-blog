@@ -44,7 +44,9 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
 
   return (
     <PageWrapper styleProps={{ px: 0, bg: bgColor }}>
-      {settings.localPostAnalytics?.enabled && <ViewTracker postId={post.id} />}
+      {settings.localPostAnalytics?.enabled && (
+        <ViewTracker postId={post?.id} />
+      )}
       <MotionBox
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -61,16 +63,16 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             <BreadcrumbItem>
               <BreadcrumbLink href="/">Home</BreadcrumbLink>
             </BreadcrumbItem>
-            {post.category && (
+            {post?.category && (
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/category/${post.category.slug}`}>
-                  {post.category.name}
+                <BreadcrumbLink href={`/category/${post?.category.slug}`}>
+                  {post?.category.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
             <BreadcrumbItem isCurrentPage color={metaColor}>
               <Text isTruncated maxW="300px">
-                {post.title}
+                {post?.title}
               </Text>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -81,9 +83,9 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
           <Box mb={8}>
             <Image
               src={
-                post.featured_image?.url ||
+                post?.featured_image?.url ||
                 `/api/og?${objectToQueryParams({
-                  title: post.title,
+                  title: post?.title,
                   date: post?.published_at || post?.created_at,
                   username: post?.author?.username,
                   avatar: post?.author?.avatar,
@@ -91,7 +93,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                   category: post?.category?.name,
                 })}`
               }
-              alt={post.featured_image?.alt_text || post.title || ""}
+              alt={post?.featured_image?.alt_text || post?.title || ""}
               w="full"
               h="auto"
               maxH={600}

@@ -1,6 +1,5 @@
 import { Text, ListItem, HStack, Icon } from "@chakra-ui/react";
 import { LuFileText, LuType } from "react-icons/lu";
-import { MetricsItemProps } from "../types";
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 
 export const MetricsItem = () => {

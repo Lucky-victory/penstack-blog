@@ -137,7 +137,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
           {posts?.length > 0 &&
             posts.map((post) => (
               <Link
-                key={post.id}
+                key={post?.id}
                 color={"var(--link-color)"}
                 href={formatPostPermalink(post)}
                 _hover={{ textDecoration: "none" }}
@@ -146,10 +146,10 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
                 }}
               >
                 <HStack spacing={4} align="start">
-                  {post.featured_image && (
+                  {post?.featured_image && (
                     <Image
-                      src={post.featured_image.url}
-                      alt={post.featured_image.alt_text}
+                      src={post?.featured_image.url}
+                      alt={post?.featured_image.alt_text || ""}
                       boxSize={{ base: "80px", lg: "80px" }}
                       maxH={{ base: "80px", lg: "80px" }}
                       objectFit="cover"
@@ -161,14 +161,14 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
                       fontSize={{ base: "medium", lg: "large" }}
                       fontWeight="bold"
                     >
-                      {post.title}
+                      {post?.title}
                     </Text>
                     <Text
                       fontSize={{ base: "small", lg: "medium" }}
                       color={textColor}
                     >
                       {shortenText(
-                        stripHtml(decodeAndSanitizeHtml(post.content || "")),
+                        stripHtml(decodeAndSanitizeHtml(post?.content || "")),
                         150
                       )}
                     </Text>
@@ -182,7 +182,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
                 <SearchPostsComponent
                   onPostSelect={(post) => {
                     updateAttributes?.({
-                      postIds: node?.attrs?.postIds + "," + post.post_id,
+                      postIds: node?.attrs?.postIds + "," + post?.post_id,
                     });
                     setShowPostSearch(false);
                     refetch();

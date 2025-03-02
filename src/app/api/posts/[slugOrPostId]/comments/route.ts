@@ -51,13 +51,13 @@ export async function GET(
     const totalComments = await db
       .select({ count: sql<number>`count(*)` })
       .from(comments)
-      .where(eq(comments.post_id, post.id));
+      .where(eq(comments.post_id, post?.id));
 
     const total = totalComments[0].count;
     const totalPages = Math.ceil(total / limit);
 
     return NextResponse.json({
-      data: post.comments,
+      data: post?.comments,
       meta: {
         page,
         totalPages,
@@ -107,7 +107,7 @@ export async function POST(
 
     const [newComment] = await db
       .insert(comments)
-      .values({ post_id: post.id, content, author_id: session?.user?.id })
+      .values({ post_id: post?.id, content, author_id: session?.user?.id })
       .$returningId();
 
     return NextResponse.json(

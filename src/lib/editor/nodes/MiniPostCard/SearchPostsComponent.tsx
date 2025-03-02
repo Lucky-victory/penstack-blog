@@ -73,7 +73,7 @@ export const SearchPostsComponent: React.FC<SearchPostsComponentProps> = ({
         <VStack align="stretch" width="100%">
           {posts.map((searchPost) => (
             <Button
-              key={searchPost.id}
+              key={searchPost?.id}
               onClick={() => onPostSelect(searchPost)}
               variant="ghost"
               justifyContent="flex-start"
@@ -81,16 +81,16 @@ export const SearchPostsComponent: React.FC<SearchPostsComponentProps> = ({
               py={2}
             >
               <HStack spacing={3}>
-                {searchPost.featured_image && (
+                {searchPost?.featured_image && (
                   <Image
-                    src={searchPost.featured_image.url}
-                    alt={searchPost.featured_image.alt_text}
+                    src={searchPost?.featured_image.url}
+                    alt={searchPost?.featured_image.alt_text || ""}
                     boxSize="40px"
                     objectFit="cover"
                     rounded="md"
                   />
                 )}
-                <Text>{searchPost.title}</Text>
+                <Text>{searchPost?.title}</Text>
               </HStack>
             </Button>
           ))}

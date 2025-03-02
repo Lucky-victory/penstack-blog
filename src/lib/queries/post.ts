@@ -26,6 +26,7 @@ export const getPost = async (slugOrPostId: string | number) => {
       },
       author: {
         columns: {
+          auth_id: true,
           username: true,
           name: true,
           avatar: true,

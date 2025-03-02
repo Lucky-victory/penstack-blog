@@ -2,8 +2,8 @@ import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { getSession } from "@/src/lib/auth/next-auth";
-import { PostSelect } from "@/src/types";
-import { and, asc, desc, eq, ilike, inArray, sql } from "drizzle-orm";
+import { PostInsert } from "@/src/types";
+import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 // export const revalidate = 3600; // revalidate every hour
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
   const session = await getSession();
   const status =
-    (searchParams.get("status") as NonNullable<PostSelect["status"] | "all">) ||
+    (searchParams.get("status") as NonNullable<PostInsert["status"] | "all">) ||
     "published";
   const sortBy =
     (searchParams.get("sortBy") as "recent" | "published_at" | "popular") ||

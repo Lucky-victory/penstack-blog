@@ -12,10 +12,8 @@ import {
   Divider,
   Text,
 } from "@chakra-ui/react";
-
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { encode } from "html-entities";
 import { useState } from "react";
 import { LuMessageCircle } from "react-icons/lu";
 import { CommentCard } from "./CommentCard";
@@ -29,14 +27,13 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
 
   const highlightColor = useColorModeValue("brand.50", "brand.900");
 
-  const sidebarWidth = useBreakpointValue({ base: "60px", md: "80px" });
   // const bgColor = useColorModeValue("gray.50", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const bgColor = useColorModeValue("white", "gray.800");
 
   async function fetchComments() {
     try {
-      const { data } = await axios(`/api/posts/${post.post_id}/comments`);
+      const { data } = await axios(`/api/posts/${post?.post_id}/comments`);
       return data.data;
     } catch (error) {
       console.error("Failed to fetch comments:", error);
@@ -57,9 +54,12 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post(`/api/posts/${post.post_id}/comments`, {
-        content: sanitizeAndEncodeHtml(newComment),
-      });
+      const response = await axios.post(
+        `/api/posts/${post?.post_id}/comments`,
+        {
+          content: sanitizeAndEncodeHtml(newComment),
+        }
+      );
 
       if (response.status === 201) {
         toast({

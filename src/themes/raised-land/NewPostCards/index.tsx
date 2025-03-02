@@ -22,7 +22,7 @@ export function NewPostsCards({
         ? Array.from({ length: 4 }).map((_, index) => (
             <NewPostCardLoader key={index} />
           ))
-        : posts?.map((post) => <NewPostCard key={post.id} post={post} />)}
+        : posts?.map((post) => <NewPostCard key={post?.id} post={post} />)}
     </Grid>
   );
 }

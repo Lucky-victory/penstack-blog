@@ -1,8 +1,5 @@
 "use client";
 import { Box, Stack, useColorModeValue } from "@chakra-ui/react";
-import { DataTable } from "../../../DataTable";
-import { Avatar, HStack, Link, Text } from "@chakra-ui/react";
-import { formatDate } from "@/src/utils";
 import DashHeader from "../../../Dashboard/Header";
 
 export default function CommentsPage() {

@@ -32,6 +32,7 @@ import { AdvancedPanel } from "./TabPanels/AdvancedPanel";
 import { PageTitleHeader } from "../../../Dashboard/PageTitleCard";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 import { parseAsString, useQueryState } from "nuqs";
+import { isEqual } from "lodash";
 
 export default function DashboardSettingsPage() {
   const toast = useToast({ position: "top" });
@@ -45,7 +46,7 @@ export default function DashboardSettingsPage() {
   const [originalSettings, setOriginalSettings] =
     useState<SiteSettings>(settingsContext);
   const [currentMediaField, setCurrentMediaField] = useState<
-    "siteLogo" | "siteFavicon" | "siteOpengraph" | null
+    "siteLogo" | "siteFavicon" | "siteOpengraph" | "siteMobileLogo" | null
   >(null);
 
   const { data, isFetching } = useQuery({
@@ -87,8 +88,7 @@ export default function DashboardSettingsPage() {
   ];
 
   useEffect(() => {
-    const settingsChanged =
-      JSON.stringify(settings) !== JSON.stringify(originalSettings);
+    const settingsChanged = !isEqual(settings, originalSettings);
     setHasChanges(settingsChanged);
   }, [settings, originalSettings]);
 
@@ -115,7 +115,7 @@ export default function DashboardSettingsPage() {
   };
 
   const openMediaModal = (
-    field: "siteLogo" | "siteFavicon" | "siteOpengraph"
+    field: "siteLogo" | "siteFavicon" | "siteOpengraph" | "siteMobileLogo"
   ) => {
     setCurrentMediaField(field);
     onOpen();
@@ -126,7 +126,7 @@ export default function DashboardSettingsPage() {
     try {
       const changedSettings = Object.entries(settings).reduce(
         (acc, [key, value]) => {
-          if (JSON.stringify(value) !== JSON.stringify(originalSettings[key])) {
+          if (!isEqual(value, originalSettings[key])) {
             acc[key] = value;
           }
           return acc;

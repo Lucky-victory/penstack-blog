@@ -1,7 +1,7 @@
 import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
 import { getSession } from "@/src/lib/auth/next-auth";
-import { PostSelect } from "@/src/types";
+import { PostInsert } from "@/src/types";
 import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     | "recent"
     | "popular";
   const status =
-    (searchParams.get("status") as NonNullable<PostSelect["status"] | "all">) ||
+    (searchParams.get("status") as NonNullable<PostInsert["status"] | "all">) ||
     "published";
   const offset = (page - 1) * limit;
 

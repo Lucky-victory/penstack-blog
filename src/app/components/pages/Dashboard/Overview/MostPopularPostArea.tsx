@@ -44,15 +44,15 @@ export default memo(function MostPopularPosts() {
           {!loading && posts && posts?.length > 0 && (
             <Stack gap={1} divider={<StackDivider />}>
               {posts.map((post, index) => (
-                <HStack key={post.id} justify={"space-between"}>
-                  <Stack key={post.id} justify={"space-between"}>
+                <HStack key={post?.id} justify={"space-between"}>
+                  <Stack key={post?.id} justify={"space-between"}>
                     <HStack>
                       <Heading size={"sm"} noOfLines={1}>
                         <Link href={formatPostPermalink(post)}>
                           <Text as={"span"} color={"green.500"} mr={2}>
                             #{index + 1}
                           </Text>
-                          {post.title}
+                          {post?.title}
                         </Link>
                       </Heading>
                     </HStack>
@@ -64,7 +64,7 @@ export default memo(function MostPopularPosts() {
                   <HStack>
                     <Avatar
                       size={"xs"}
-                      src={post?.author?.avatar}
+                      src={post?.author?.avatar || ""}
                       name={post?.author?.name}
                     />
                     <Stack spacing={"2px"}>

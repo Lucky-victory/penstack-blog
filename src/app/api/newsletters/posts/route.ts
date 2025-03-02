@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const emailPromises = subscribers.map(async (subscriber) => {
       return await sendEmail({
         to: subscriber.email,
-        subject: subject || post.title,
+        subject: subject || post?.title,
         from: ``,
         react: BlogPostNewsletter({
           post: post as any,

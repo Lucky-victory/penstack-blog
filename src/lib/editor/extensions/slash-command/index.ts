@@ -106,7 +106,7 @@ export const PenstackSlashCommandExtension = Extension.create({
                 popup?.[0].hide();
                 return true;
               }
-              return component?.ref?.onKeyDown(props);
+              // return component?.ref?.onKeyDown(props);
             },
             onExit: () => {
               popup?.[0].destroy();

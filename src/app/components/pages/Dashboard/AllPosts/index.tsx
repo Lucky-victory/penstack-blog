@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  Heading,
   Card,
   CardBody,
   Stack,
@@ -11,7 +10,6 @@ import {
   HStack,
   Badge,
   InputGroup,
-  InputLeftAddon,
   Input,
   Select,
   useToast,
@@ -31,7 +29,6 @@ import {
   IconButton,
   Tooltip,
   VStack,
-  ButtonGroup,
   TableContainer,
   InputLeftElement,
 } from "@chakra-ui/react";
@@ -40,7 +37,7 @@ import { format } from "date-fns";
 import { Link } from "@chakra-ui/next-js";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { useAuth } from "@/src/hooks/useAuth";
-import { PaginatedResponse, PostSelect } from "@/src/types";
+import { PaginatedResponse, PostInsert, PostSelect } from "@/src/types";
 import { formatPostPermalink, objectToQueryParams } from "@/src/utils";
 import DashHeader from "../../../Dashboard/Header";
 import Loader from "../../../Loader";
@@ -130,13 +127,13 @@ const PostsDashboard = () => {
             </Tooltip>
             <PermissionGuard
               requiredPermission="posts:edit"
-              isOwner={post.author?.auth_id === user?.id}
+              isOwner={post?.author?.auth_id === user?.id}
             >
               <Tooltip label="Edit">
                 <IconButton
                   icon={<LuFileEdit />}
                   as={Link}
-                  href={`/dashboard/posts/edit/${post.post_id}`}
+                  href={`/dashboard/posts/edit/${post?.post_id}`}
                   aria-label="Edit"
                   size="sm"
                   variant="ghost"
@@ -248,7 +245,7 @@ const PostsDashboard = () => {
     }
   };
 
-  const getStatusColor = (status: PostSelect["status"]) =>
+  const getStatusColor = (status: PostInsert["status"]) =>
     ({
       published: "green",
       draft: "gray",

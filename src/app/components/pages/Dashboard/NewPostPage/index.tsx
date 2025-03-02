@@ -6,9 +6,9 @@ import { useAuth } from "@/src/hooks/useAuth";
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 import { decodeAndSanitizeHtml, sanitizeAndEncodeHtml } from "@/src/utils";
-import { PostSelect } from "@/src/types";
+import { PostSelectForEditing } from "@/src/types";
 
-export default function NewPostPage({ post }: { post: PostSelect }) {
+export default function NewPostPage({ post }: { post: PostSelectForEditing }) {
   useEditorPostManagerStore.getState().setPost(post!);
   return <PostEditor />;
 }
@@ -28,7 +28,7 @@ export function PostEditor() {
   return (
     <PermissionGuard
       requiredPermission={"posts:create"}
-      isOwner={activePost?.author?.auth_id === user?.id}
+      isOwner={activePost?.author_id === user?.id}
     >
       <Box h="full" overflowY="auto">
         <TipTapEditor

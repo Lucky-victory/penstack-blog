@@ -40,7 +40,7 @@ export async function generateMetadata(
   return {
     title: post?.title,
     description: shortenText(
-      post.summary || stripHtml(decodeAndSanitizeHtml(post.content || "")),
+      post?.summary || stripHtml(decodeAndSanitizeHtml(post?.content || "")),
       200
     ),
     creator: post?.author?.name,
@@ -53,7 +53,7 @@ export async function generateMetadata(
           url:
             post?.featured_image?.url ||
             `/api/og?${objectToQueryParams({
-              title: post.title,
+              title: post?.title,
               date: post?.published_at ? post?.published_at : post?.created_at,
               username: post?.author?.username,
               avatar: post?.author?.avatar,

@@ -1,7 +1,7 @@
 interface CommandListProps {
   items: Array<{
-    title: string;
     command: (props: { editor: Editor; range: any }) => void;
+    title: string;
   }>;
 }
 
@@ -9,7 +9,7 @@ import { VStack, Text, Box, HStack } from "@chakra-ui/react";
 import { Editor } from "@tiptap/core";
 import { useState, useEffect } from "react";
 
-export const CommandList = ({ items, command }: CommandListProps) => {
+export const CommandList = ({ items }: CommandListProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
@@ -27,14 +27,14 @@ export const CommandList = ({ items, command }: CommandListProps) => {
       if (e.key === "Enter") {
         const item = items[selectedIndex];
         if (item) {
-          command(item);
+          // item?.command(item);
         }
       }
     };
 
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [items, selectedIndex, command]);
+  }, [items, selectedIndex]);
 
   return (
     <VStack
@@ -55,7 +55,7 @@ export const CommandList = ({ items, command }: CommandListProps) => {
           cursor="pointer"
           bg={index === selectedIndex ? "gray.100" : "transparent"}
           _hover={{ bg: "gray.50" }}
-          onClick={() => command(item)}
+          onClick={() => {}}
           rounded="md"
         >
           <HStack spacing={2}>
@@ -66,3 +66,4 @@ export const CommandList = ({ items, command }: CommandListProps) => {
     </VStack>
   );
 };
+// TODO: Add a command to insert a post

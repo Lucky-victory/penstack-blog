@@ -22,7 +22,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({ post }) => {
       pb={8}
     >
       <Box maxW="container.lg">
-        <ContentRenderer content={decodeAndSanitizeHtml(post.content || "")} />
+        <ContentRenderer content={decodeAndSanitizeHtml(post?.content || "")} />
       </Box>
     </MotionBox>
   );

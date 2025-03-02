@@ -52,13 +52,13 @@ export default function NewPostCard({
       spacing={4}
       as={LinkBox}
     >
-      {post.featured_image?.url && (
+      {post?.featured_image?.url && (
         <Box pos="relative" h="200px">
           <Image
             src={
-              (post.featured_image?.url as string) ||
+              (post?.featured_image?.url as string) ||
               `/api/og?${objectToQueryParams({
-                title: post.title,
+                title: post?.title,
                 date: post?.published_at
                   ? post?.published_at
                   : post?.created_at,
@@ -68,7 +68,7 @@ export default function NewPostCard({
                 category: post?.category?.name,
               })}`
             }
-            alt={post.featured_image?.alt_text || (post.title as string)}
+            alt={post?.featured_image?.alt_text || (post?.title as string)}
             w="full"
             h="full"
             objectFit="cover"
@@ -88,7 +88,7 @@ export default function NewPostCard({
             color={"brand.500"}
             textTransform={"capitalize"}
           >
-            {post.category.name}
+            {post?.category.name}
           </Tag>
         </Box>
       )}
@@ -96,12 +96,12 @@ export default function NewPostCard({
         <Box p={2}>
           <LinkOverlay href={formatPostPermalink(post)}>
             <Heading size="md" noOfLines={2} mb={2}>
-              {post.title}
+              {post?.title}
             </Heading>
           </LinkOverlay>
           <Text fontSize="sm" color="gray.500" noOfLines={3}>
-            {post.summary ||
-              stripHtml(decodeAndSanitizeHtml(post.content || ""))}
+            {post?.summary ||
+              stripHtml(decodeAndSanitizeHtml(post?.content || ""))}
           </Text>
         </Box>
         {(showAuthor || showBookmark) && (
@@ -115,24 +115,24 @@ export default function NewPostCard({
           >
             {showAuthor && (
               <HStack spacing={2}>
-                <Link href={`/author/${post.author?.username}`}>
+                <Link href={`/author/${post?.author?.username}`}>
                   <Avatar
-                    src={post?.author?.avatar}
+                    src={post?.author?.avatar || ""}
                     name={post?.author?.name}
                     borderRadius="md"
                     boxSize="32px"
                   />
                 </Link>
                 <VStack spacing={0} align="start">
-                  <Link href={`/author/${post.author?.username}`}>
+                  <Link href={`/author/${post?.author?.username}`}>
                     <Text fontWeight="medium" fontSize="sm">
                       {post?.author?.name}
                     </Text>
                   </Link>
                   <Text fontSize="xs" color="gray.500">
                     {post?.published_at
-                      ? nativeFormatDate(post.published_at)
-                      : nativeFormatDate(post.updated_at as Date)}
+                      ? nativeFormatDate(post?.published_at)
+                      : nativeFormatDate(post?.updated_at as Date)}
                   </Text>
                 </VStack>
               </HStack>
