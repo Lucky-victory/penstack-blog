@@ -7,7 +7,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import bcrypt from "bcryptjs";
 import { db } from "@/src/db";
-import { users } from "@/src/db/schemas";
+import { roles, users } from "@/src/db/schemas";
 import {
   JWT,
   encode,
@@ -33,7 +33,12 @@ interface CustomUser extends User {
 function normalizeEmail(email: string): string {
   return email.toLowerCase().trim();
 }
-
+async function getSubscriberRoleId(): Promise<number> {
+  const subscriberRole = await db.query.roles.findFirst({
+    where: eq(roles.name, "subscriber"),
+  });
+  return subscriberRole?.id as number;
+}
 /**
  * Check if a user can authenticate with the given provider
  * @returns Error message string if authentication should be denied, false if allowed
@@ -75,8 +80,9 @@ const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      profile(profile) {
+      async profile(profile) {
         const email = normalizeEmail(profile.email);
+        const roleId = await getSubscriberRoleId();
         return {
           id: profile.sub,
           name: profile.name,
@@ -84,7 +90,7 @@ const authOptions: AuthOptions = {
           avatar: profile.picture,
           username: profile.email.split("@")[0],
           auth_type: "google",
-          role_id: 5,
+          role_id: roleId,
           image: profile.picture,
         } as CustomUser;
       },
@@ -92,7 +98,7 @@ const authOptions: AuthOptions = {
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
-      profile(profile) {
+      async profile(profile) {
         // Check if email exists before accessing it
         const email = profile.email ? normalizeEmail(profile.email) : "";
         if (!email) {
@@ -100,6 +106,7 @@ const authOptions: AuthOptions = {
             "Email is required. Please add a public email to your GitHub profile."
           );
         }
+        const roleId = await getSubscriberRoleId();
 
         return {
           id: profile.id?.toString(),
@@ -108,7 +115,7 @@ const authOptions: AuthOptions = {
           avatar: profile.avatar_url,
           username: profile.login,
           auth_type: "github",
-          role_id: 5,
+          role_id: roleId,
           image: profile?.avatar_url,
         } as CustomUser;
       },
