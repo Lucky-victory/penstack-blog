@@ -33,7 +33,11 @@ export const UserInfoComp = ({ showLabel = true }: { showLabel?: boolean }) => {
         maxW={200}
       >
         <HStack justify={"start"}>
-          <Avatar size={"sm"} name={user?.name} src={user?.image} />
+          <Avatar
+            size={"sm"}
+            name={user?.name}
+            src={user?.image || user?.avatar}
+          />
           {showLabel && (
             <Stack gap={0} pr={4} align={"baseline"}>
               <Text as={"span"} fontSize={"small"} fontWeight={500}>

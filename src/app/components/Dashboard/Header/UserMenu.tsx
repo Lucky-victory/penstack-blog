@@ -21,7 +21,13 @@ export const UserMenu = () => {
         <MenuButton
           as={Button}
           pl={1}
-          leftIcon={<Avatar size={"sm"} name={user?.name} src={user?.avatar} />}
+          leftIcon={
+            <Avatar
+              size={"sm"}
+              name={user?.name}
+              src={user?.avatar || user?.image}
+            />
+          }
           rightIcon={<LuChevronDown />}
           variant={"outline"}
           rounded={"full"}
