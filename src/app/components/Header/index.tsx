@@ -260,7 +260,9 @@ const Header = () => {
             </HStack>
 
             <HStack spacing={4} align={"center"}>
-              <SearchComp />
+              <Box display={{ base: "none", lg: "flex" }}>
+                <SearchComp />
+              </Box>
 
               <HStack spacing={2} display={{ base: "none", xl: "flex" }}>
                 <Show above="lg">
