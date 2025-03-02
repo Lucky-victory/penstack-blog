@@ -224,6 +224,7 @@ const authOptions: AuthOptions = {
           if (usernameExists) {
             finalUsername = `${finalUsername}${Math.floor(Math.random() * 10000)}`;
           }
+          const roleId = await getSubscriberRoleId();
 
           await db.insert(users).values({
             email: normalizedEmail,
@@ -231,7 +232,7 @@ const authOptions: AuthOptions = {
             username: finalUsername,
             avatar: (user as CustomUser).avatar || user.image || "",
             auth_type: (user as CustomUser).auth_type,
-            role_id: (user as CustomUser).role_id || 5,
+            role_id: (user as CustomUser).role_id || roleId,
             auth_id: (user as CustomUser).id,
             email_verified: true, // OAuth providers are pre-verified
           });

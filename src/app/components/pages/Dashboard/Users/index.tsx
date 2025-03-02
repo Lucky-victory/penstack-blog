@@ -160,25 +160,25 @@ const UsersDashboard = () => {
           queryKey: ["users"],
           refetchType: "all",
         });
+        refetch();
       } else {
         await axios.post("/api/users", currentUser);
         queryClient.invalidateQueries({
           queryKey: ["users"],
           refetchType: "all",
         });
+        refetch();
       }
 
       toast({
         title: currentUser?.id ? "User Updated" : "User Created",
         status: "success",
-        duration: 3000,
       });
       onClose();
     } catch (error) {
       toast({
         title: currentUser?.id ? "Error updating User" : "Error creating User",
         status: "error",
-        duration: 3000,
       });
     } finally {
       setIsUpdating(false);
@@ -191,7 +191,6 @@ const UsersDashboard = () => {
     toast({
       title: `Performed ${action} on ${selectedUsers.length} users`,
       status: "info",
-      duration: 3000,
     });
     setSelectedUsers([]);
   };
@@ -219,6 +218,10 @@ const UsersDashboard = () => {
         return "yellow";
       case 4:
         return "teal";
+      case 5:
+        return "orange";
+      case 6:
+        return "green";
       default:
         return "gray";
     }
