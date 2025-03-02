@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Container,
@@ -23,9 +23,14 @@ import {
   Icon,
   Hide,
   useBreakpointValue,
+  Show,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
 } from "@chakra-ui/react";
 import { LuMenu, LuChevronDown, LuSearch } from "react-icons/lu";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Link } from "@chakra-ui/next-js";
 import { LightDarkModeSwitch } from "../LightDarkModeSwitch";
 import { AuthButtons } from "./AuthButtons";
@@ -43,12 +48,14 @@ const Header = () => {
   const siteSettings = useSiteConfig();
   const pathname = usePathname();
   const { scrollY } = useScroll();
+  const [searchInput, setSearchInput] = useState("");
+  const router = useRouter();
   const backgroundColor = useTransform(
     scrollY,
     [0, 60],
     [
-      useColorModeValue("rgba(255, 255, 255, 0.2)", "rgba(26, 32, 44, 0.3)"),
-      useColorModeValue("rgba(255, 255, 255, 0.9)", "rgba(26, 32, 44, 0.9)"),
+      useColorModeValue("rgba(255, 255, 255, 1)", "rgba(26, 32, 44, 0.4)"),
+      useColorModeValue("rgba(255, 255, 255, 1)", "rgba(26, 32, 44, 1)"),
     ]
   );
   const borderOpacity = useTransform(scrollY, [0, 60], [0, 1]);
@@ -77,6 +84,45 @@ const Header = () => {
     base: "50px",
     md: "40px",
   });
+  const SearchComp = () => (
+    <HStack
+      as="form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (searchInput) {
+          router.push(`/search?q=${searchInput}`);
+        }
+      }}
+    >
+      <InputGroup>
+        <Input
+          rounded={"full"}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+          }}
+          w="full"
+          placeholder="Search Articles..."
+        />
+        <InputRightElement>
+          <IconButton
+            size="sm"
+            rounded={"full"}
+            // variant={"ghost"}
+            icon={<LuSearch />}
+            isDisabled={!searchInput}
+            onClick={() => {
+              if (searchInput) {
+                router.push(`/search?q=${searchInput}`);
+              }
+            }}
+            aria-label="Search"
+          />
+        </InputRightElement>
+      </InputGroup>
+    </HStack>
+  );
+  SearchComp.displayName = "SearchComp";
+
   return (
     <motion.div
       style={{
@@ -97,6 +143,7 @@ const Header = () => {
           backdropFilter: backdrop,
         }}
         transition="all 0.3s ease-in-out"
+        shadow={"md"}
       >
         <Container maxW="container.2xl" py={"6px"}>
           <HStack justify="space-between" align="center">
@@ -213,26 +260,17 @@ const Header = () => {
             </HStack>
 
             <HStack spacing={4} align={"center"}>
-              <IconButton
-                display={{ base: "none", lg: "flex" }}
-                as={Link}
-                href="/search"
-                aria-label="Search"
-                colorScheme="gray"
-                rounded={"full"}
-                icon={<LuSearch size={16} />}
-                variant="ghost"
-              />
+              <SearchComp />
 
-              <HStack spacing={2} display={{ base: "none", lg: "flex" }}>
-                <Hide below="lg">
+              <HStack spacing={2} display={{ base: "none", xl: "flex" }}>
+                <Show above="lg">
                   <LightDarkModeSwitch />
-                </Hide>
+                </Show>
                 <AuthButtons />
               </HStack>
-              <Hide above="lg">
+              <Show below="lg">
                 <AuthButtons />
-              </Hide>
+              </Show>
 
               <IconButton
                 // colorScheme="black"
@@ -253,62 +291,53 @@ const Header = () => {
             <DrawerCloseButton />
             <DrawerHeader borderBottomWidth="1px">Menu</DrawerHeader>
             <DrawerBody>
-              <VStack align="stretch" spacing={4}>
-                <Text fontWeight="bold" color={textColor}>
-                  Categories
-                </Text>
-                {categories &&
-                  categories?.length > 0 &&
-                  categories.map((topic) => (
+              <VStack align="stretch" spacing={4} divider={<Divider />}>
+                <Box>
+                  <Text fontWeight="bold" color={textColor}>
+                    Categories
+                  </Text>
+                  {categories &&
+                    categories?.length > 0 &&
+                    categories.map((topic) => (
+                      <Button
+                        key={topic.name}
+                        rounded={"full"}
+                        as={Link}
+                        href={`/category/${topic.slug}`}
+                        variant="ghost"
+                        justifyContent="flex-start"
+                        w="full"
+                        onClick={onClose}
+                      >
+                        {topic.name}
+                      </Button>
+                    ))}
+                </Box>
+                <Box>
+                  <Text fontWeight="bold" color={textColor}>
+                    Resources
+                  </Text>
+                  {resources.map((resource) => (
                     <Button
-                      key={topic.name}
+                      key={resource.name}
                       rounded={"full"}
                       as={Link}
-                      href={`/category/${topic.slug}`}
+                      href={resource.href}
                       variant="ghost"
                       justifyContent="flex-start"
                       w="full"
                       onClick={onClose}
                     >
-                      {topic.name}
+                      {resource.name}
                     </Button>
                   ))}
+                </Box>
 
-                <Divider />
-
-                <Text fontWeight="bold" color={textColor}>
-                  Resources
-                </Text>
-                {resources.map((resource) => (
-                  <Button
-                    key={resource.name}
-                    rounded={"full"}
-                    as={Link}
-                    href={resource.href}
-                    variant="ghost"
-                    justifyContent="flex-start"
-                    w="full"
-                    onClick={onClose}
-                  >
-                    {resource.name}
-                  </Button>
-                ))}
-
-                <Divider />
-
-                <Button
-                  rounded={"full"}
-                  as={Link}
-                  href="/search"
-                  variant="ghost"
-                  justifyContent="flex-start"
-                  w="full"
-                  onClick={onClose}
-                >
-                  Search
-                </Button>
+                <SearchComp />
 
                 <AuthButtons />
+
+                <LightDarkModeSwitch showLabel />
               </VStack>
             </DrawerBody>
           </DrawerContent>

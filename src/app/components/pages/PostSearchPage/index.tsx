@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Container,
@@ -41,7 +41,6 @@ const SearchResults = () => {
   const mutedColor = useColorModeValue("gray.600", "gray.400");
   const { data: categories } = useCategories({});
   const categoriesResults = categories?.results || [];
-
   const sortByOptions = ["relevant", "recent", "popular"] as const;
   const [queryParams, setQueryParam] = useQueryStates(
     {
@@ -52,6 +51,7 @@ const SearchResults = () => {
     },
     { throttleMs: 200 }
   );
+  const [searchInputValue, setSearchInputValue] = useState(queryParams.q || "");
 
   const { data, isLoading } = useSearchResults({
     queryParams,
@@ -60,7 +60,7 @@ const SearchResults = () => {
   const totalResult = data?.meta?.total;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQueryParam({ q: e.target.value });
+    setSearchInputValue(e.target.value);
   };
 
   const handleCategorySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -69,6 +69,15 @@ const SearchResults = () => {
   const handleSortSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setQueryParam({ sortBy: e.target.value as (typeof sortByOptions)[number] });
   };
+  const debouncedSearchQuery = useCallback(
+    debounce((value: string) => {
+      setQueryParam({ q: value });
+    }, 1000),
+    []
+  );
+  useEffect(() => {
+    debouncedSearchQuery(searchInputValue);
+  }, [debouncedSearchQuery, searchInputValue]);
   return (
     <Box minH="calc(100vh - 180px)">
       <Container maxW="7xl" py={8}>
@@ -84,7 +93,7 @@ const SearchResults = () => {
               bg={bgColor}
               borderColor={borderColor}
               onChange={handleSearch}
-              value={queryParams?.q || ""}
+              value={searchInputValue || ""}
               _hover={{
                 borderColor: useColorModeValue("brand.500", "brand.300"),
               }}
@@ -162,6 +171,15 @@ const SearchResults = () => {
         </Box>
 
         <PostsCards posts={searchResults} loading={isLoading} />
+
+        {!isLoading && !searchResults?.length && searchInputValue && (
+          <VStack>
+            <Text color={mutedColor} my={6}>
+              No results found for{" "}
+              <Text as="b">&quot;{queryParams?.q}&quot;</Text>
+            </Text>
+          </VStack>
+        )}
       </Container>
     </Box>
   );

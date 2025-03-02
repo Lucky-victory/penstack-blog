@@ -30,7 +30,7 @@ export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {
         />
       )}
       {showLabel && (
-        <ButtonGroup size={"sm"} rounded={"full"}>
+        <ButtonGroup size={"sm"} rounded={"lg"}>
           {["Light", "Dark"].map((mode, i) => (
             <Button
               key={i}
@@ -39,7 +39,7 @@ export const LightDarkModeSwitch = ({ showLabel }: { showLabel?: boolean }) => {
               leftIcon={<LuSun size={16} />}
               onClick={() => setColorMode(mode.toLowerCase())}
               variant={colorMode === mode.toLowerCase() ? "solid" : "ghost"}
-              rounded={"full"}
+              rounded={"lg"}
             >
               {" "}
               <Text as="span">{mode}</Text>{" "}

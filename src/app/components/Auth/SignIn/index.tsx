@@ -31,6 +31,7 @@ import {
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import PageWrapper from "@/src/app/components/PageWrapper";
 import { LuEye, LuEyeOff } from "react-icons/lu";
+import { Link } from "@chakra-ui/next-js";
 
 export default function SignIn() {
   const [error, setError] = useState<string | null>(null);
@@ -101,7 +102,7 @@ export default function SignIn() {
                 </Center>
               </Box>
             )}
-            <VStack spacing={8} align="stretch">
+            <VStack spacing={5} align="stretch">
               <VStack spacing={3}>
                 <Heading size="xl">Sign in</Heading>
                 <Text color="gray.500">Welcome back!</Text>
@@ -157,7 +158,13 @@ export default function SignIn() {
                   </Button>
                 </VStack>
               </form>
-
+              <Box>
+                <Text as={"span"}>Don&apos;t have an account yet?</Text>
+                <Link href={"/auth/signup"} color={"brand.500"}>
+                  {" "}
+                  Create account
+                </Link>
+              </Box>
               <Box position="relative" padding="10">
                 <Divider />
                 <AbsoluteCenter bg={dividerBg} px="4">
@@ -171,7 +178,7 @@ export default function SignIn() {
                   leftIcon={<FaGithub />}
                   width="full"
                   size="lg"
-                  colorScheme="grey"
+                  colorScheme="gray"
                 >
                   GitHub
                 </Button>

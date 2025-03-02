@@ -30,7 +30,7 @@ export const FeaturedPost = () => {
         <FeaturedPostSkeleton />
       ) : (
         featuredPost && (
-          <LinkBox mb={6}>
+          <LinkBox mb={6} mt={4}>
             <Card
               overflow="hidden"
               transition="all 0.2s"
