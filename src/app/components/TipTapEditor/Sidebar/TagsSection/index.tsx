@@ -76,7 +76,7 @@ export const TagsSection = memo(() => {
         queryKey: ["tagSearch", postId],
         exact: true,
       });
-      setSearchQuery("");
+      setSearchInputValue("");
       setShowDropdown(false);
     },
   });
@@ -92,7 +92,7 @@ export const TagsSection = memo(() => {
         queryKey: ["postTags", postId],
         exact: true,
       });
-      setSearchQuery("");
+      setSearchInputValue("");
       setShowDropdown(false);
     },
   });

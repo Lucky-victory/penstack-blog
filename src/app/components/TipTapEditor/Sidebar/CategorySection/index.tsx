@@ -19,6 +19,7 @@ import axios from "axios";
 import { useState } from "react";
 import { generateSlug } from "@/src/utils";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const CategorySection = () => {
   const categoryId = useEditorPostManagerStore(
@@ -28,31 +29,41 @@ export const CategorySection = () => {
 
   const [newCategory, setNewCategory] = useState("");
   const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);
-  const [isCreating, setIsCreating] = useState<boolean>(false);
 
-  const { data, refetch, isFetching } = useCategories();
-  const categories = data?.results || [];
+  const queryClient = useQueryClient();
+  const { data: categories, isPending } = useQuery({
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data } = await axios.get(`/api/taxonomies/categories`);
+      return (data?.data || []) as { id: number; name: string; slug: string }[];
+    },
+  });
+
   const toast = useToast({
     duration: 3000,
     status: "success",
     position: "top",
   });
-  const handleAddCategory = async () => {
-    try {
-      setIsCreating(true);
+  const { mutateAsync: createCategoryMutation, isPending: isCreating } =
+    useMutation({
+      mutationFn: async (categoryName: string) => {
+        const { data } = await axios.post("/api/categories", {
+          name: categoryName,
+          slug: generateSlug(categoryName),
+        });
+        return data?.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["categories"],
+          exact: true,
+        });
+        setNewCategory("");
+      },
+    });
 
-      await axios.post("/api/categories", {
-        name: newCategory,
-        slug: generateSlug(newCategory, { lower: true }),
-      });
-      setNewCategory("");
-      await refetch();
-    } catch (error) {
-      console.log("Error adding category", error);
-    } finally {
-      setIsCreating(false);
-    }
-  };
   return (
     <SectionCard title="Categories">
       <Box p={4}>
@@ -65,7 +76,7 @@ export const CategorySection = () => {
             updateField("category_id", !isEmpty(val) ? Number(val) : null)
           }
         >
-          {categories?.length > 0 && (
+          {categories && categories?.length > 0 && (
             <>
               <Radio variant="solid" value={""}>
                 None
@@ -93,13 +104,15 @@ export const CategorySection = () => {
                 onChange={(e) => setNewCategory(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    handleAddCategory();
+                    createCategoryMutation(newCategory);
                   }
                 }}
               />
               <Button
                 isDisabled={isEmpty(newCategory) || isCreating}
-                onClick={handleAddCategory}
+                onClick={() => {
+                  createCategoryMutation(newCategory);
+                }}
                 isLoading={isCreating}
                 size={"sm"}
                 variant={"outline"}
