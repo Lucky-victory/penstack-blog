@@ -92,9 +92,10 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             alt={post?.featured_image?.alt_text || post?.title || ""}
             w="full"
             h="auto"
+            minH={{ base: 150, lg: 500 }}
             maxH={600}
-            aspectRatio={"16/9"}
-            objectFit="cover"
+            // aspectRatio={"16/9"}
+            objectFit="contain"
           />
         </Box>
 

@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category") || "";
     const publishDate = searchParams.get("date") || new Date().toISOString();
     const readingTime = searchParams.get("readingTime");
-    const gradient = searchParams.get("gradient") || "5"; // Default gradient option
+    const gradient = searchParams.get("gradient") || "4"; // Default gradient option
 
     // Define a set of modern gradients
     const gradients = {
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     };
 
     const selectedGradient =
-      gradients[gradient as keyof typeof gradients] || gradients["1"];
+      gradients[gradient as keyof typeof gradients] || gradients["4"];
 
     return new ImageResponse(
       (
@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
             background: selectedGradient,
             position: "relative",
             fontFamily: "Plus Jakarta Sans",
+            padding: "20px",
           }}
         >
           {/* Content Section */}
@@ -75,7 +76,9 @@ export async function GET(request: NextRequest) {
               flexDirection: "column",
               padding: "64px 100px",
               justifyContent: "space-between",
+              background: gradients["5"],
               height: "100%",
+              borderRadius: "20px",
               zIndex: 1,
             }}
           >
@@ -149,13 +152,14 @@ export async function GET(request: NextRequest) {
             >
               <div
                 style={{
-                  fontSize: "76px",
+                  fontSize: "70px",
                   fontWeight: "800",
                   color: "white",
-                  lineHeight: 1.15,
+                  lineHeight: 1.1,
                   letterSpacing: "-0.02em",
                   maxWidth: "60%",
                   textAlign: "left",
+                  textTransform: "uppercase",
                   textShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
                 }}
               >
