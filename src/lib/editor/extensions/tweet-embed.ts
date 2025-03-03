@@ -66,7 +66,6 @@ export const PenstackTwitterExtension = Node.create({
         handler: ({ match, chain, range }) => {
           const tweetId = match[3];
           const username = match[2];
-          console.log({ match });
 
           if (tweetId) {
             chain()

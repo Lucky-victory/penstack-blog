@@ -19,7 +19,6 @@ export const SummaryInput = memo(() => {
     },
     [updateField]
   );
-  console.log("SummaryInput rendered", { summary });
   return (
     <FormControl>
       <FormLabel>Summary:</FormLabel>

@@ -69,7 +69,7 @@ export const PenstackCodeblockComponent: React.FC<
       className="penstack-code-block"
       spellCheck="false"
     >
-      <HStack justify={"flex-end"}>
+      <HStack justify={"flex-end"} p={0}>
         <Menu>
           {({ isOpen }) => (
             <>

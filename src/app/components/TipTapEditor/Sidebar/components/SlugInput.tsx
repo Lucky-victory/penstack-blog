@@ -27,7 +27,6 @@ export const SlugInput = memo(() => {
     },
     [updateField]
   );
-  console.log("SlugInput rendered", { slug });
   useEffect(() => {
     setField(slug);
   }, [slug]);

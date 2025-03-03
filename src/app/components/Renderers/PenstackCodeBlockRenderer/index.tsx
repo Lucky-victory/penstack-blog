@@ -9,10 +9,10 @@ import {
   useClipboard,
 } from "@chakra-ui/react";
 import React, { PropsWithChildren } from "react";
-import { all, createLowlight } from "lowlight";
+import { all, common, createLowlight } from "lowlight";
 import { LuCheckCircle, LuClipboard } from "react-icons/lu";
 
-const lowlight = createLowlight(all);
+const lowlight = createLowlight(common);
 interface PenstackCodeBlockRendererProps {
   language: string;
   code: string;

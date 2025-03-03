@@ -17,8 +17,6 @@ interface PageProps {
 
 export default async function DynamicPage({ params }: PageProps) {
   const path = params.paths?.join("/") || "";
-  console.log({ paths: params.paths });
-  console.log({ path });
 
   // Skip processing if this is a known Next.js file route
   // This is a safety check but should rarely be needed since
