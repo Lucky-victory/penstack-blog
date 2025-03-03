@@ -49,7 +49,7 @@ export const CategorySection = () => {
   const { mutateAsync: createCategoryMutation, isPending: isCreating } =
     useMutation({
       mutationFn: async (categoryName: string) => {
-        const { data } = await axios.post("/api/categories", {
+        const { data } = await axios.post("/api/taxonomies/categories", {
           name: categoryName,
           slug: generateSlug(categoryName),
         });
@@ -58,7 +58,6 @@ export const CategorySection = () => {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ["categories"],
-          exact: true,
         });
         setNewCategory("");
       },
@@ -71,6 +70,7 @@ export const CategorySection = () => {
           as={RadioGroup}
           gap={2}
           value={categoryId?.toString() || ""}
+          defaultChecked
           name="category_id"
           onChange={(val) =>
             updateField("category_id", !isEmpty(val) ? Number(val) : null)
@@ -78,9 +78,6 @@ export const CategorySection = () => {
         >
           {categories && categories?.length > 0 && (
             <>
-              <Radio variant="solid" value={""}>
-                None
-              </Radio>
               {categories.map((category) => (
                 <Radio
                   key={category.id}

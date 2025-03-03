@@ -78,7 +78,7 @@ export async function PUT(
             reading_time: calculateReadingTime(
               stripHtml(decodeAndSanitizeHtml(body?.content || ""))
             ),
-            updated_at: body.updated_at ? new Date(body.updated_at) : null,
+            updated_at: new Date(),
           })
           .where(
             or(eq(posts.slug, slugOrPostId), eq(posts.post_id, slugOrPostId))

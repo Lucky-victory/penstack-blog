@@ -75,6 +75,7 @@ export async function GET(request: NextRequest) {
               display: "flex",
               flexDirection: "column",
               padding: "64px 100px",
+              paddingBottom: "50px",
               justifyContent: "space-between",
               background: gradients["5"],
               height: "100%",
@@ -147,7 +148,7 @@ export async function GET(request: NextRequest) {
                 alignItems: "flex-start",
                 justifyContent: "center",
                 gap: "24px",
-                marginTop: "-40px", // Offset to center vertically
+                marginTop: "-35px", // Offset to center vertically
               }}
             >
               <div
@@ -157,7 +158,7 @@ export async function GET(request: NextRequest) {
                   color: "white",
                   lineHeight: 1.1,
                   letterSpacing: "-0.02em",
-                  maxWidth: "60%",
+                  maxWidth: "90%",
                   textAlign: "left",
                   textTransform: "uppercase",
                   textShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
@@ -172,7 +173,7 @@ export async function GET(request: NextRequest) {
                   width: "120px",
                   height: "6px",
                   backgroundColor: "white",
-                  borderRadius: "3px",
+                  borderRadius: "2px",
                   opacity: 0.8,
                 }}
               />

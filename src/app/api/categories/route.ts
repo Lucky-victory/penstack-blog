@@ -3,6 +3,7 @@ import { db } from "@/src/db";
 import { categories, posts } from "@/src/db/schemas/posts.sql";
 import { and, eq, sql } from "drizzle-orm";
 import { checkPermission } from "@/src/lib/auth/check-permission";
+import { revalidateTag } from "next/cache";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -117,6 +118,8 @@ export async function POST(request: NextRequest) {
           .insert(categories)
           .values({ name, slug })
           .onDuplicateKeyUpdate({ set: { name: sql`name`, slug: sql`slug` } });
+        revalidateTag("queryCategoriesWithFilters");
+
         return NextResponse.json(
           { data: newCategory, message: "Category created successfully" },
           { status: 201 }
