@@ -184,76 +184,29 @@ export async function GET(request: NextRequest) {
               }}
             >
               {/* Author Section */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "16px",
-                }}
-              >
-                {/* {avatar ? (
-                  <div
-                    style={{
-                      width: "52px",
-                      height: "52px",
-                      borderRadius: "26px",
-                      overflow: "hidden",
-                      border: "3px solid rgba(255, 255, 255, 0.8)",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                    }}
-                  >
-                    <img
-                      src={avatar}
-                      width={52}
-                      height={52}
-                      alt={name}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </div>
-                ) : (
-                  name && (
-                    <div
-                      style={{
-                        width: "52px",
-                        height: "52px",
-                        borderRadius: "26px",
-                        backgroundColor: "rgba(255, 255, 255, 0.15)",
-                        backdropFilter: "blur(8px)",
-                        border: "3px solid rgba(255, 255, 255, 0.5)",
-                        color: "white",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "22px",
-                        fontWeight: "700",
-                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {getNameInitials(name)}
-                    </div>
-                  )
-                )} */}
+              {name && (
                 <div
                   style={{
                     display: "flex",
-                    flexDirection: "column",
-                    gap: "2px",
+                    alignItems: "center",
+                    gap: "16px",
                   }}
                 >
                   <div
                     style={{
-                      color: "rgba(255, 255, 255, 0.7)",
-                      fontSize: "16px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "2px",
                     }}
                   >
-                    Written by
-                  </div>
-                  {name && (
+                    <div
+                      style={{
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontSize: "16px",
+                      }}
+                    >
+                      Written by
+                    </div>
                     <div
                       style={{
                         color: "white",
@@ -263,9 +216,9 @@ export async function GET(request: NextRequest) {
                     >
                       {name}
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Host/Website URL */}
               <div

@@ -170,3 +170,12 @@ export const getPlainPostWithCache = unstable_cache(
   undefined,
   { tags: ["getPlainPostWithCache"], revalidate: 60 * 60 * 24 }
 );
+export const getPostBySlug = async (slug: string) => {
+  try {
+    return await getPost(slug);
+  } catch (error) {
+    console.log(error);
+
+    return null;
+  }
+};

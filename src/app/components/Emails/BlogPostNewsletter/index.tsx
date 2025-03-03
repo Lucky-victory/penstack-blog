@@ -13,7 +13,7 @@ import {
 import { PostSelect } from "../../../../types";
 import {
   decodeAndSanitizeHtml,
-  formatPostPermalink,
+  generatePostUrl,
   shortenText,
   stripHtml,
 } from "@/src/utils";
@@ -71,7 +71,7 @@ export const BlogPostNewsletter = ({
 
           <Section style={buttonContainer}>
             <Link
-              href={resolveUrl(getSiteUrl(), formatPostPermalink(post))}
+              href={resolveUrl(getSiteUrl(), generatePostUrl(post))}
               style={button}
             >
               Read Full Post

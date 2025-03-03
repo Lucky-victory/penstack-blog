@@ -2,7 +2,7 @@ import { SearchPostsComponent } from "@/src/lib/editor/nodes/MiniPostCard/Search
 import { PostSelect } from "@/src/types";
 import {
   decodeAndSanitizeHtml,
-  formatPostPermalink,
+  generatePostUrl,
   objectToQueryParams,
   shortenText,
   stripHtml,
@@ -139,7 +139,7 @@ export const MiniPostCardRenderer: React.FC<MiniPostCardProps> = memo(
               <Link
                 key={post?.id}
                 color={"var(--link-color)"}
-                href={formatPostPermalink(post)}
+                href={generatePostUrl(post)}
                 _hover={{ textDecoration: "none" }}
                 onClick={(e) => {
                   if (isEditing) e.preventDefault();

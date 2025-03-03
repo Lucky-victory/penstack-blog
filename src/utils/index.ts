@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import isEmpty from "just-is-empty";
 import slugify from "slugify";
 import { decode, encode } from "html-entities";
+import { permalinkFormats, PermalinkType } from "./permalink";
 
 type PercentageDifferenceResult = {
   formatted: string;
@@ -204,6 +205,22 @@ export function formatPostPermalink(
   }
 
   return `/${prefix}/${post?.slug}`;
+}
+export function generatePostUrl(
+  post: PostSelect,
+  format: PermalinkType = "plain"
+): string {
+  const date = new Date((post?.published_at as Date) || post?.updated_at);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  const template = permalinkFormats[format];
+  return template
+    .replace("%year%", String(year))
+    .replace("%month%", month)
+    .replace("%day%", day)
+    .replace("%postname%", post?.slug || "");
 }
 
 type QueryParamValue =

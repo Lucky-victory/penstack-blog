@@ -15,7 +15,7 @@ import { LuEye } from "react-icons/lu";
 import Loader from "../../../Loader";
 import { format } from "date-fns";
 import { Link } from "@chakra-ui/next-js";
-import { formatPostPermalink } from "@/src/utils";
+import { generatePostUrl } from "@/src/utils";
 import { memo } from "react";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 
@@ -48,7 +48,7 @@ export default memo(function MostPopularPosts() {
                   <Stack key={post?.id} justify={"space-between"}>
                     <HStack>
                       <Heading size={"sm"} noOfLines={1}>
-                        <Link href={formatPostPermalink(post)}>
+                        <Link href={generatePostUrl(post)}>
                           <Text as={"span"} color={"green.500"} mr={2}>
                             #{index + 1}
                           </Text>

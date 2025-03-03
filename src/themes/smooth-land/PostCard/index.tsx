@@ -2,7 +2,7 @@ import { PostSelect } from "@/src/types";
 import {
   decodeAndSanitizeHtml,
   formatDate,
-  formatPostPermalink,
+  generatePostUrl,
   objectToQueryParams,
   stripHtml,
 } from "@/src/utils";
@@ -125,7 +125,7 @@ export default function PostCard({
               </Text>
             </HStack>
             <LinkOverlay
-              href={formatPostPermalink(post)}
+              href={generatePostUrl(post)}
               _hover={{ textDecoration: "underline" }}
             >
               <Heading

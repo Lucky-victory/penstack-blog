@@ -1,7 +1,7 @@
 import { PostSelect } from "@/src/types";
 import {
   decodeAndSanitizeHtml,
-  formatPostPermalink,
+  generatePostUrl,
   nativeFormatDate,
   objectToQueryParams,
   stripHtml,
@@ -94,7 +94,7 @@ export default function NewPostCard({
       )}
       <VStack align="stretch" flex={1} justify="space-between" spacing={2}>
         <Box p={2}>
-          <LinkOverlay href={formatPostPermalink(post)}>
+          <LinkOverlay href={generatePostUrl(post)}>
             <Heading size="md" noOfLines={2} mb={2}>
               {post?.title}
             </Heading>

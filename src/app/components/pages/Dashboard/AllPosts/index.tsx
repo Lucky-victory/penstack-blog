@@ -38,7 +38,7 @@ import { Link } from "@chakra-ui/next-js";
 import { PermissionGuard } from "../../../PermissionGuard";
 import { useAuth } from "@/src/hooks/useAuth";
 import { PaginatedResponse, PostInsert, PostSelect } from "@/src/types";
-import { formatPostPermalink, objectToQueryParams } from "@/src/utils";
+import { generatePostUrl, objectToQueryParams } from "@/src/utils";
 import DashHeader from "../../../Dashboard/Header";
 import Loader from "../../../Loader";
 import axios from "axios";
@@ -119,7 +119,7 @@ const PostsDashboard = () => {
                 icon={<LuExternalLink />}
                 as={Link}
                 isExternal
-                href={formatPostPermalink(post)}
+                href={generatePostUrl(post)}
                 aria-label="Preview"
                 size="sm"
                 variant="ghost"

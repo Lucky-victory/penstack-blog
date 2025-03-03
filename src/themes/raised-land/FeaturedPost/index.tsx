@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { Suspense } from "react";
 import { FeaturedPostSkeleton } from "./LoadingSkeleton";
-import { formatPostPermalink, objectToQueryParams } from "@/src/utils";
+import { generatePostUrl, objectToQueryParams } from "@/src/utils";
 
 export const FeaturedPost = () => {
   const cardBgColor = useColorModeValue("white", "gray.800");
@@ -69,7 +69,7 @@ export const FeaturedPost = () => {
                       {featuredPost.category?.name}
                     </Tag>
                   )}
-                  <LinkOverlay href={`${formatPostPermalink(featuredPost)}`}>
+                  <LinkOverlay href={`${generatePostUrl(featuredPost)}`}>
                     <Heading size="2xl" mb={2}>
                       {featuredPost.title}
                     </Heading>

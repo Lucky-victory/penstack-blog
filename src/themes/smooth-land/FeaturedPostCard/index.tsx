@@ -1,7 +1,7 @@
 import { useFeaturedPost } from "@/src/hooks/useFeaturedPost";
 import {
   decodeAndSanitizeHtml,
-  formatPostPermalink,
+  generatePostUrl,
   nativeFormatDate,
   objectToQueryParams,
   stripHtml,
@@ -101,7 +101,7 @@ export default function FeaturedPostCard() {
                       Featured
                     </Text>
                   </Box>
-                  <LinkOverlay href={formatPostPermalink(featuredPost)}>
+                  <LinkOverlay href={generatePostUrl(featuredPost)}>
                     <Heading color={"white"} size="2xl" mb={4}>
                       {featuredPost.title}
                     </Heading>
