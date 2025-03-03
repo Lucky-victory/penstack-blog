@@ -6,7 +6,13 @@ import { v4 as uuidv4 } from "uuid";
 import isEmpty from "just-is-empty";
 import slugify from "slugify";
 import { decode, encode } from "html-entities";
-import { permalinkFormats, PermalinkType } from "./permalink";
+import {
+  defaultPermalinkPrefix,
+  defaultPermalinkType,
+  permalinkFormats,
+  PermalinkType,
+} from "./permalink";
+import { cleanUrl, resolveUrl } from "./url";
 
 type PercentageDifferenceResult = {
   formatted: string;
@@ -47,7 +53,7 @@ export function calculatePercentageDifference(
     }
     // For zero to non-zero, return the actual percentage increase
     // Since anything from zero is technically an infinite increase,
-    // we just return the new value as the percentage
+    // we just return the new value mutliplied by percentage
     return {
       formatted: `+${newValue * 100}%`,
       raw: newValue * 100,
@@ -90,49 +96,6 @@ export function decodeAndSanitizeHtml(html: string) {
 export function sanitizeAndEncodeHtml(html: string) {
   return encode(html);
 }
-type DatePart = "year" | "month" | "day" | "hour" | "minute" | "second";
-
-interface ConversionResult {
-  dateFormat: string;
-  postSlug: string;
-}
-
-const formatMap: Record<DatePart, string> = {
-  year: "yyyy",
-  month: "MM",
-  day: "dd",
-  hour: "HH",
-  minute: "mm",
-  second: "ss",
-};
-
-export function convertToDateFnsFormatAndSlug(input: string): ConversionResult {
-  // Split the input by either '-' or '/'
-  const parts = input.split(/[-/]/);
-  const slug = parts.pop()?.replace(/%(\w+)%/g, "$1") || ""; // Extract the last part as slug
-
-  const dateFormatParts = parts.join("-"); // Rejoin the remaining parts with '-'
-
-  const dateFormat = dateFormatParts.replace(
-    /%(\w+)%/g,
-    (match, part: string) => {
-      const datePart = part.toLowerCase() as DatePart;
-      return formatMap[datePart] || match;
-    }
-  );
-
-  // Preserve the original separators in the dateFormat
-  const originalSeparators = input.match(/[-/]/g) || [];
-  let formattedDate = dateFormat;
-  originalSeparators.forEach((separator, index) => {
-    formattedDate = formattedDate.replace("-", separator);
-  });
-
-  return {
-    dateFormat: formattedDate,
-    postSlug: slug,
-  };
-}
 
 export const snowflakeIdGenerator = new SnowflakeIdGenerator({
   nodeId: 10,
@@ -141,20 +104,6 @@ export const snowflakeIdGenerator = new SnowflakeIdGenerator({
 export const IdGenerator = {
   bigIntId: () => snowflakeIdGenerator.bigIntId(),
   uuid: () => uuidv4(),
-};
-export const debounce = <T extends (...args: any[]) => any>(
-  func: T,
-  wait: number
-): ((...args: Parameters<T>) => void) => {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-
-  return (...args: Parameters<T>) => {
-    const context = this;
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    timeout = setTimeout(() => func.apply(context, args), wait);
-  };
 };
 
 export function formatDate(date: Date): string {
@@ -187,40 +136,31 @@ export function shortenText(text: string, len = 50) {
   return text?.length > len ? text?.substring(0, len) + "..." : text;
 }
 
-export function formatPostPermalink(
-  post: PostSelect,
-  prefix: string | "blog" = "blog",
-  slugPattern?: string,
-  includeSlugPattern = true
-) {
-  if (includeSlugPattern) {
-    return `/${prefix}/${format(
-      new Date(
-        post?.published_at ? post?.published_at : (post?.updated_at as Date)
-      ),
-      convertToDateFnsFormatAndSlug(
-        slugPattern || "%year%/%month%/%day%/%slug%"
-      ).dateFormat
-    )}/${post?.slug}`;
-  }
-
-  return `/${prefix}/${post?.slug}`;
-}
+// Helper function to generate URLs based on format
 export function generatePostUrl(
   post: PostSelect,
-  format: PermalinkType = "plain"
+  format: PermalinkType = defaultPermalinkType,
+  prefix = ""
 ): string {
   const date = new Date((post?.published_at as Date) || post?.updated_at);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
 
-  const template = permalinkFormats[format];
-  return template
+  let permalink = permalinkFormats[format]
+    .replace("%prefix%", prefix)
     .replace("%year%", String(year))
     .replace("%month%", month)
     .replace("%day%", day)
+    .replace("%category%", post?.category?.slug || "")
     .replace("%postname%", post?.slug || "");
+  console.log({
+    permalink: cleanUrl(permalink),
+    format,
+    prefix,
+  });
+
+  return cleanUrl(permalink);
 }
 
 type QueryParamValue =

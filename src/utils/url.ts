@@ -1,3 +1,18 @@
+export const cleanUrl = (...paths: (string | undefined)[]) => {
+  const cleanPaths = paths
+    .filter((path): path is string => !!path)
+    .map((path) => {
+      // Remove leading and trailing slashes and clean up multiple consecutive slashes
+      return path
+        .trim()
+        .replace(/^\/+|\/+$/g, "")
+        .replace(/\/+/g, "/");
+    })
+    .filter((path) => path.length > 0);
+
+  return cleanPaths.join("/");
+};
+
 /**
  * Resolves and combines base URL and path segments into a proper URL
  * Handles cases like:
@@ -27,23 +42,14 @@ export function resolveUrl(baseUrl: string, ...paths: (string | undefined)[]) {
     cleanBaseUrl = cleanBaseUrl.replace(/\/+$/, "");
 
     // Filter out undefined/null paths and clean the remaining ones
-    const cleanPaths = paths
-      .filter((path): path is string => !!path)
-      .map((path) => {
-        // Remove leading and trailing slashes and clean up multiple consecutive slashes
-        return path
-          .trim()
-          .replace(/^\/+|\/+$/g, "")
-          .replace(/\/+/g, "/");
-      })
-      .filter((path) => path.length > 0); // Remove empty strings after cleaning
+    const cleanPaths = cleanUrl(...paths);
 
     // Combine base URL with paths
     if (cleanPaths.length === 0) {
       return cleanBaseUrl;
     }
 
-    return `${cleanBaseUrl}/${cleanPaths.join("/")}`;
+    return `${cleanBaseUrl}/${cleanPaths}`;
   } catch (error) {
     throw new Error(
       `Failed to resolve URL: ${
