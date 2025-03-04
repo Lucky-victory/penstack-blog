@@ -9,19 +9,31 @@ import { LuArrowRight } from "react-icons/lu";
 import { CategoryItemList } from "../../CategoryItemList";
 import { FeaturedPost } from "@/src/themes/raised-land/FeaturedPost";
 import { FeaturedPostType, PostSelect } from "@/src/types";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 interface FrontPageProps {
   featuredPost: FeaturedPostType;
-  posts: PostSelect[];
+  posts?: PostSelect[];
 }
 const FrontPage: FC<FrontPageProps> = ({ featuredPost, posts }) => {
-  const { updateParams } = usePosts();
+  const [canFetch, setCanFetch] = useState(false);
+  const {
+    updateParams,
+    posts: clientPosts,
+    loading: isLoading,
+  } = usePosts({ canFetch });
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [_posts, setPosts] = useState(posts);
+  const category = searchParams.get("category");
   useEffect(() => {
     setLoading(false);
   }, [posts]);
+  useEffect(() => {
+    setCanFetch(true);
+    setLoading(isLoading);
+    setPosts(clientPosts);
+  }, [category, clientPosts, isLoading]);
   return (
     <PageWrapper>
       <Box mb={12}>
@@ -35,15 +47,11 @@ const FrontPage: FC<FrontPageProps> = ({ featuredPost, posts }) => {
             <FeaturedPost post={featuredPost} />
             <Box mt={0} mb={6}>
               <CategoryItemList
-                onChange={(category) => {
-                  updateParams({ category });
-                  router.replace("?category=" + category, { scroll: false });
-                  router.refresh();
-                }}
+                onChange={(category) => updateParams({ category })}
               />
             </Box>
 
-            <PostsCards posts={posts} loading={loading} />
+            <PostsCards posts={_posts} loading={loading} />
             {!loading && (
               <HStack justify={"center"} my={8}>
                 <Button

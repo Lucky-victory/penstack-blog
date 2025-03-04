@@ -54,6 +54,7 @@ export const CategoryItemList = ({
                   handleSelectedCategory("");
                 }}
                 value={""}
+                letterSpacing={"0.02em"}
                 size={"sm"}
                 variant={isSelected("") ? "solid" : "ghost"}
               >
@@ -62,6 +63,7 @@ export const CategoryItemList = ({
               {[...(categories || [])?.map((cat) => cat.name)].map((val) => {
                 return (
                   <Button
+                    letterSpacing={"0.04em"}
                     flexShrink={0}
                     onClick={() => {
                       handleSelectedCategory(val);

@@ -54,7 +54,7 @@ interface UsePostsProps {
   access?: "dashboard";
   sortBy?: "created_at" | "published_at" | "recent" | "popular";
   sortOrder?: "desc" | "asc";
-  category?: string;
+  category?: string;canFetch?:boolean;
 }
 export function usePosts({
   status = "published",
@@ -63,7 +63,7 @@ export function usePosts({
   sortBy,
   access,
   sortOrder,
-  category,
+  category,canFetch=true
 }: UsePostsProps = {}) {
   const [params, setParams] = useState({
     status,
@@ -72,7 +72,7 @@ export function usePosts({
     sortBy,
     access,
     sortOrder,
-    category,
+    category,canFetch
   });
   const {
     data: posts,
@@ -88,7 +88,7 @@ export function usePosts({
       );
       return data.data;
     },
-    staleTime: 1000 * 60 * 30,
+    staleTime: 1000 * 60 * 30,enabled:canFetch
   });
 
   const refetchPosts = async () => {

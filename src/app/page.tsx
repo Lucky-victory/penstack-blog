@@ -8,7 +8,6 @@ export default async function Home({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const category = searchParams?.category as string;
-  console.log({ category });
 
   const posts = await getPosts({ category });
   const featuredPost = await getFeaturedPost();
