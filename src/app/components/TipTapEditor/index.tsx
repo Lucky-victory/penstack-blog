@@ -24,8 +24,8 @@ import { debounce } from "lodash";
 import { PostCardExtension } from "@/src/lib/editor/extensions/mini-post-card";
 import { PenstackYouTubeExtension } from "@/src/lib/editor/extensions/youtube-embed";
 import { PenstackTwitterExtension } from "@/src/lib/editor/extensions/tweet-embed";
-import { all, createLowlight } from "lowlight";
-const lowlight = createLowlight(all);
+import { common, createLowlight } from "lowlight";
+const lowlight = createLowlight(common);
 import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { PenstackSlashCommandExtension } from "@/src/lib/editor/extensions/slash-command";
 import PenstackBlockquote from "@/src/lib/editor/extensions/blockquote";
@@ -63,6 +63,7 @@ function TipTapEditor({
         openOnClick: false,
         autolink: true,
       }),
+
       Typography,
       Image,
       TextAlign.configure({

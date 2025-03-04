@@ -1,6 +1,6 @@
 import { formatDistanceToNowStrict, format } from "date-fns";
 import { SnowflakeIdGenerator } from "@green-auth/snowflake-unique-id";
-import { PostSelect } from "../types";
+import { FeaturedPostType, PostSelect } from "../types";
 import { type NextRequest } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import isEmpty from "just-is-empty";
@@ -144,7 +144,7 @@ export function shortenText(text: string, len = 50) {
 
 // Helper function to generate URLs based on format
 export function generatePostUrl(
-  post: PostSelect,
+  post: PostSelect|FeaturedPostType,
   format: PermalinkType = defaultPermalinkType,
   prefix = ""
 ): string {

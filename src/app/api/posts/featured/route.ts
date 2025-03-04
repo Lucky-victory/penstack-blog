@@ -55,7 +55,12 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+    const tags = featuredPost?.tags.map((t) => t.tag);
 
+    const p = {
+      ...featuredPost,
+      tags,
+    };
     return NextResponse.json({
       data: featuredPost,
       message: "Featured Post retrieved successfully",

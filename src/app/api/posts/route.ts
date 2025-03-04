@@ -2,6 +2,7 @@ import { db } from "@/src/db";
 import { posts } from "@/src/db/schemas";
 import { checkPermission } from "@/src/lib/auth/check-permission";
 import { getSession } from "@/src/lib/auth/next-auth";
+import { getPosts } from "@/src/lib/queries/posts";
 import { PostInsert } from "@/src/types";
 import {
   calculateReadingTime,
@@ -17,115 +18,31 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page = Number(searchParams.get("page")) || 1;
   const limit = Number(searchParams.get("limit")) || 20;
-  const search = searchParams.get("search");
-  const access = searchParams.get("access");
+  const search = searchParams.get("search") as string;
+  const access = searchParams.get("access") as "dashboard" | "public";
 
-  const session = await getSession();
   const status =
     (searchParams.get("status") as NonNullable<PostInsert["status"] | "all">) ||
     "published";
   const sortBy =
     (searchParams.get("sortBy") as "recent" | "published_at" | "popular") ||
     "recent";
-  const sortOrder = searchParams.get("sortOrder") || "desc";
-  const category = searchParams.get("category");
-  const offset = (page - 1) * limit;
-
-  // Build where conditions
-  const whereConditions = [];
-  if (search) {
-    whereConditions.push(ilike(posts.title, `%${search}%`));
-    whereConditions.push(ilike(posts.content, `%${search}%`));
-  }
-  if (status && status !== "all") {
-    whereConditions.push(eq(posts.status, status));
-  }
-  if (access === "dashboard" && session?.user?.role_id !== 1) {
-    whereConditions.push(eq(posts.author_id, session?.user?.id as string));
-  }
-  if (category) {
-    whereConditions.push(
-      sql`EXISTS (
-          SELECT 1 FROM categories 
-          WHERE categories.id = ${posts.category_id} 
-          AND categories.name ILIKE ${`%${category}%`}
-        )`
-    );
-  }
+  const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || "desc";
+  const category = searchParams.get("category") as string;
   try {
-    // Get total count
-    const totalResult = await db
-      .select({ count: sql<number>`count(*)` })
-
-      .from(posts)
-      .where(and(...whereConditions));
-    const total = Number(totalResult[0].count);
-
-    let orderBy;
-    const popularOrderSql = sql`(SELECT COUNT(*) FROM PostViews WHERE post_id = ${posts.id})`;
-    switch (sortBy) {
-      case "recent":
-        orderBy = [desc(posts.created_at), desc(posts.is_sticky)];
-        break;
-      case "popular":
-        orderBy = [
-          sortOrder === "desc" ? desc(popularOrderSql) : asc(popularOrderSql),
-          desc(posts.is_sticky),
-        ];
-        break;
-      default:
-        orderBy = [
-          sortOrder === "desc" ? desc(posts[sortBy]) : asc(posts[sortBy]),
-          desc(posts.is_sticky),
-        ];
-        break;
-    }
-    const _posts = await db.query.posts.findMany({
+    const results = await getPosts({
+      page,
       limit,
-      offset,
-      orderBy,
-      where: whereConditions?.length > 0 ? and(...whereConditions) : undefined,
-      with: {
-        views: {
-          columns: { id: true },
-        },
-        featured_image: {
-          columns: {
-            url: true,
-            alt_text: true,
-            caption: true,
-          },
-        },
-        category: {
-          columns: {
-            name: true,
-            slug: true,
-            id: true,
-          },
-        },
-        author: {
-          columns: { auth_id: true, name: true, avatar: true, username: true },
-        },
-      },
-    });
-
-    const transformedPosts = _posts.map((post) => {
-      const { views, ...postWithoutViews } = post;
-      const viewsCount = views.length;
-      return {
-        ...postWithoutViews,
-        views: { count: viewsCount },
-      };
+      search,
+      status,
+      sortBy,
+      sortOrder,
+      category,
+      access,
     });
 
     return NextResponse.json({
-      data: transformedPosts,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
+      ...results,
       message: "All posts fetched successfully",
     });
   } catch (error: any) {

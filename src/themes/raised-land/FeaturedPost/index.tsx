@@ -17,19 +17,16 @@ import {
 import { Suspense } from "react";
 import { FeaturedPostSkeleton } from "./LoadingSkeleton";
 import { generatePostUrl, objectToQueryParams } from "@/src/utils";
+import { FeaturedPostType } from "@/src/types";
 
-export const FeaturedPost = () => {
-  const cardBgColor = useColorModeValue("white", "gray.800");
-  const borderColor = useColorModeValue("gray.200", "gray.700");
+export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
   const textColor = useColorModeValue("gray.600", "gray.300");
 
-  const { featuredPost, loading } = useFeaturedPost();
+
   return (
     <Suspense fallback={<FeaturedPostSkeleton />}>
-      {loading ? (
-        <FeaturedPostSkeleton />
-      ) : (
-        featuredPost && (
+     
+        {post && (
           <LinkBox mb={6} mt={4}>
             <Card
               overflow="hidden"
@@ -43,18 +40,18 @@ export const FeaturedPost = () => {
                 >
                   <Image
                     src={
-                      featuredPost?.featured_image?.url ||
+                      post?.featured_image?.url ||
                       `/api/og?${objectToQueryParams({
-                        title: featuredPost.title,
-                        date: featuredPost?.published_at
-                          ? featuredPost?.published_at
-                          : featuredPost?.created_at,
+                        title: post?.title,
+                        date: post?.published_at
+                          ? post?.published_at
+                          : post?.created_at,
 
-                        category: featuredPost?.category?.name,
-                        name: featuredPost?.author?.name,
+                        category: post?.category?.name,
+                        name: post?.author?.name,
                       })}`
                     }
-                    alt={featuredPost?.featured_image?.alt_text || ""}
+                    alt={post?.featured_image?.alt_text || ""}
                     w="full"
                     h="full"
                     objectFit={"cover"}
@@ -64,30 +61,30 @@ export const FeaturedPost = () => {
                   </Tag>
                 </Box>
                 <VStack align="start" spacing={4} p={6} justify="center">
-                  {featuredPost.category?.name && (
+                  {post?.category?.name && (
                     <Tag colorScheme="purple" borderRadius="full">
-                      {featuredPost.category?.name}
+                      {post?.category?.name}
                     </Tag>
                   )}
-                  <LinkOverlay href={`${generatePostUrl(featuredPost)}`}>
+                  <LinkOverlay href={`${generatePostUrl(post)}`}>
                     <Heading size="2xl" mb={2}>
-                      {featuredPost.title}
+                      {post?.title}
                     </Heading>
                   </LinkOverlay>
                   <Text color={textColor} fontSize="lg" noOfLines={3}>
-                    {featuredPost.summary}
+                    {post?.summary}
                   </Text>
                   <HStack spacing={4} mt={4}>
                     <Avatar
-                      src={featuredPost.author.avatar || ""}
-                      name={featuredPost.author.name}
+                      src={post?.author?.avatar || ""}
+                      name={post?.author?.name}
                       className="w-10 h-10 rounded-full"
                     />
                     <VStack align="start" spacing={0}>
-                      <Text fontWeight="bold">{featuredPost.author.name}</Text>
+                      <Text fontWeight="bold">{post?.author?.name}</Text>
                       <Text color={textColor} fontSize="sm">
                         {new Date(
-                          featuredPost.published_at as Date
+                          post?.published_at as Date
                         ).toLocaleDateString("en-US", {
                           month: "long",
                           day: "numeric",
@@ -101,7 +98,7 @@ export const FeaturedPost = () => {
             </Card>
           </LinkBox>
         )
-      )}
+      }
     </Suspense>
   );
 };

@@ -1,3 +1,4 @@
+import "server-only";
 import { and, asc, desc, eq, gt, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/mysql-core";
 import {
@@ -10,6 +11,7 @@ import {
   postTags,
   reactionTypes,
 } from "../../db/schemas";
+import { db } from "@/src/db";
 
 // Helper function to get base published posts query
 export const getPublishedPostsQuery = () => {
@@ -237,4 +239,63 @@ export const getFeaturedPosts = async (db: any) => {
     combinedMetrics,
     tagBased,
   };
+};
+export const getFeaturedPost = async () => {
+  try {
+    const featuredPost = await db.query.posts.findFirst({
+      where: getPublishedPostsQuery(),
+      orderBy: [desc(posts.content)],
+      columns: {
+        author_id: false,
+      },
+      with: {
+        featured_image: {
+          columns: {
+            url: true,
+            alt_text: true,
+            id: true,
+            caption: true,
+          },
+        },
+        category: {
+          columns: {
+            name: true,
+            slug: true,
+            id: true,
+          },
+        },
+        author: {
+          columns: {
+            name: true,
+            username: true,
+            id: true,
+
+            avatar: true,
+          },
+        },
+        tags: {
+          with: {
+            tag: {
+              columns: {
+                name: true,
+                slug: true,
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    const tags = featuredPost?.tags.map((t) => t.tag);
+
+    const post = {
+      ...featuredPost,
+      tags,
+    };
+
+    return post;
+  } catch (error) {
+    console.error("Error fetching featured post:", error);
+    throw new Error("Failed to fetch featured post");
+  }
 };

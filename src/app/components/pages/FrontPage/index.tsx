@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Box, Button, HStack } from "@chakra-ui/react";
 import PageWrapper from "../../PageWrapper";
 import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
@@ -8,10 +8,20 @@ import { usePosts } from "@/src/hooks";
 import { LuArrowRight } from "react-icons/lu";
 import { CategoryItemList } from "../../CategoryItemList";
 import { FeaturedPost } from "@/src/themes/raised-land/FeaturedPost";
+import { FeaturedPostType, PostSelect } from "@/src/types";
+import { useRouter } from "next/navigation";
 
-const FrontPage = () => {
-  const { posts, loading, updateParams } = usePosts();
-
+interface FrontPageProps {
+  featuredPost: FeaturedPostType;
+  posts: PostSelect[];
+}
+const FrontPage: FC<FrontPageProps> = ({ featuredPost, posts }) => {
+  const { updateParams } = usePosts();
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  useEffect(() => {
+    setLoading(false);
+  }, [posts]);
   return (
     <PageWrapper>
       <Box mb={12}>
@@ -22,10 +32,14 @@ const FrontPage = () => {
           // pt={2}
         >
           <Box px={{ base: 0, lg: 4 }}>
-            <FeaturedPost />
+            <FeaturedPost post={featuredPost} />
             <Box mt={0} mb={6}>
               <CategoryItemList
-                onChange={(category) => updateParams({ category })}
+                onChange={(category) => {
+                  updateParams({ category });
+                  router.replace("?category=" + category, { scroll: false });
+                  router.refresh();
+                }}
               />
             </Box>
 

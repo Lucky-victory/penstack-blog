@@ -12,6 +12,8 @@ import {
 import { useFormik } from "formik";
 import { ElementType } from "react";
 import { getPost, getPostForEditing } from "../lib/queries/post";
+import { getPosts } from "../lib/queries/posts";
+import { getFeaturedPost } from "../lib/queries/featured";
 
 export type AggregatedPostViews = {
   viewed_date: Date | string;
@@ -55,7 +57,10 @@ export type MediaResponse = InferSelectModel<typeof medias>;
 export type PostInsert = InferInsertModel<typeof posts>;
 type Permissions = InferInsertModel<typeof permissions>;
 export type TPermissions = Permissions["name"];
-export type PostSelect = Awaited<ReturnType<typeof getPost>>;
+export type PostSelect =
+  | Awaited<ReturnType<typeof getPost>>
+  | Awaited<ReturnType<typeof getPosts>>["data"][0];
+export type FeaturedPostType = Awaited<ReturnType<typeof getFeaturedPost>>;
 export type PostSelectForEditing = Awaited<
   ReturnType<typeof getPostForEditing>
 >;
