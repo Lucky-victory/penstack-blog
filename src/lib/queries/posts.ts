@@ -101,6 +101,17 @@ export async function getPosts({
             id: true,
           },
         },
+        tags: {
+          with: {
+            tag: {
+              columns: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        },
         author: {
           columns: {
             auth_id: true,
@@ -114,10 +125,12 @@ export async function getPosts({
     });
 
     const transformedPosts = _posts.map((post) => {
-      const { views, ...postWithoutViews } = post;
+      const { views, tags, ...postWithoutViews } = post;
       const viewsCount = views.length;
+      const postTags = post.tags.map((t) => t.tag);
       return {
         ...postWithoutViews,
+        tags: postTags,
         views: { count: viewsCount },
       };
     });
