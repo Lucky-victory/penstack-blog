@@ -75,9 +75,11 @@ export async function PUT(
             scheduled_at: body.scheduled_at
               ? new Date(body.scheduled_at)
               : null,
-            reading_time: calculateReadingTime(
-              stripHtml(decodeAndSanitizeHtml(body?.content || ""))
-            ),
+            reading_time: body?.content
+              ? calculateReadingTime(
+                  stripHtml(decodeAndSanitizeHtml(body?.content || ""))
+                )
+              : oldPost?.reading_time,
             updated_at: new Date(),
           })
           .where(

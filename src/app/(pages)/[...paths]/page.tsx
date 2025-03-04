@@ -85,7 +85,7 @@ export async function generateMetadata(
                 avatar: post?.author?.avatar,
                 name: post?.author?.name,
                 category: post?.category?.name,
-                readTime: post?.reading_time,
+                readingTime: post?.reading_time,
               })}`,
             width: 1200,
             height: 630,

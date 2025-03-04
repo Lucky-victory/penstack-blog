@@ -84,6 +84,7 @@ export default function PostCard({
               // avatar: post?.author?.avatar,
               name: post?.author?.name,
               category: post?.category?.name,
+              readingTime: post?.reading_time,
             })}`
           }
           alt={post?.featured_image?.alt_text || ""}
@@ -131,8 +132,8 @@ export default function PostCard({
               <Heading
                 size={"md"}
                 fontWeight={500}
-                noOfLines={2}
-                lineHeight={1}
+                noOfLines={3}
+                lineHeight={1.05}
               >
                 {post?.title}
               </Heading>

@@ -85,7 +85,13 @@ export function calculateReadingTime(content: string) {
   const wordsPerMinute = 238;
   const words = content.split(/\s+/).length;
   const minutes = Math.ceil(words / wordsPerMinute);
-  return minutes || 1;
+  console.log({
+    minutes,
+
+    wordsPerMinute,
+  });
+
+  return minutes;
 }
 export function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, "\n").replaceAll("\n", " ");
