@@ -59,6 +59,11 @@ const Header = () => {
     ]
   );
   const borderOpacity = useTransform(scrollY, [0, 60], [0, 1]);
+  const boxShadow = useTransform(
+    scrollY,
+    [0, 60],
+    ["none", "var(--chakra-shadows-md)"]
+  );
   const backdrop = useTransform(scrollY, [0, 60], ["none", "blur(10px"]) as any;
   const canFetchCategories = useBreakpointValue({ base: isOpen, md: true });
   const { data } = useCategories({
@@ -141,9 +146,9 @@ const Header = () => {
             opacity === 0 ? "none" : `1px solid ${borderColor}`
           ),
           backdropFilter: backdrop,
+          boxShadow,
         }}
         transition="all 0.3s ease-in-out"
-        shadow={"md"}
       >
         <Container maxW="container.2xl" py={"6px"}>
           <HStack justify="space-between" align="center">

@@ -10,6 +10,7 @@ import { getSettings } from "../lib/queries/settings";
 import { NuqsProvider } from "../providers/nuqs";
 import { AnalyticsProviders } from "../providers/analytics";
 import { getSiteUrl } from "../utils/url";
+import { objectToQueryParams } from "../utils";
 
 type Props = {
   params: { slug?: string } & Record<string, string | string[] | undefined>;
@@ -54,7 +55,7 @@ export async function generateMetadata(
         {
           url:
             siteSettings.siteOpengraph?.value ||
-            `/api/og?title=${siteSettings.siteName?.value}`,
+            `/api/og?${objectToQueryParams({title:siteSettings.siteName?.value,description:siteSettings.siteDescription?.value})}`,
           width: 1200,
           height: 630,
         },

@@ -17,3 +17,5 @@ export default function MainAuthorPage({
     </>
   );
 }
+// TODO: Implement fetching author data and posts from server not client
+// TODO: Implement SEO and metadata for author pages

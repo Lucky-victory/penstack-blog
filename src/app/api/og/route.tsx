@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
               width: "100%",
               display: "flex",
               flexDirection: "column",
-              padding: "58px 100px",
+              padding: "50px 100px",
               paddingBottom: "50px",
               justifyContent: "space-between",
               background: gradients["5"],
@@ -148,12 +148,12 @@ export async function GET(request: NextRequest) {
                 alignItems: "flex-start",
                 justifyContent: "center",
                 gap: "24px",
-                marginTop: "-35px", // Offset to center vertically
+                marginTop: "-25px", // Offset to center vertically
               }}
             >
               <div
                 style={{
-                  fontSize: "70px",
+                  fontSize: "65px",
                   fontWeight: "800",
                   color: "white",
                   lineHeight: 1.1,

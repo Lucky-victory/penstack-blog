@@ -19,7 +19,6 @@ import { PostSelect } from "@/src/types";
 import Loader from "../../Loader";
 import PageWrapper from "../../PageWrapper";
 import { objectToQueryParams } from "@/src/utils";
-import { motion } from "framer-motion";
 import { ArticleHeader } from "./ArticleHeader";
 import { ArticleContent } from "./ArticleContent";
 import { CommentsSection } from "./CommentSection";
@@ -27,8 +26,6 @@ import { Newsletter } from "../../NewsLetter";
 import { useSiteConfig } from "@/src/context/SiteConfig";
 import { ViewTracker } from "../../ViewTracker";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-
-const MotionBox = motion(Box);
 
 const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
   const settings = useSiteConfig();

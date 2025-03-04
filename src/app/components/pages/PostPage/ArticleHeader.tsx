@@ -38,7 +38,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
         {post?.category?.name && (
           <Badge
             px={3}
-            fontSize={{ base: "0.7em" }}
+            fontSize={{ base: "0.8em" }}
             py={1}
             mb={1}
             rounded={"xl"}
@@ -48,7 +48,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
         )}
         <Heading
           as="h1"
-          mb={1}
+          mb={2}
           size={{ base: "xl", sm: "2xl", md: "3xl" }}
           // lineHeight={"1"}
           fontWeight={700}
@@ -56,12 +56,15 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
         >
           {post?.title}
         </Heading>
+        <Divider my={1} />
+
         {post?.summary && (
           <Text
             fontSize={{ base: "md", md: "lg" }}
-            mb={1}
+            my={2}
             maxW={"3xl"}
             color={summaryColor}
+            fontWeight={"semibold"}
             textAlign={{ base: "left", md: "center" }}
           >
             {post?.summary}
