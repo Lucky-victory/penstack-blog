@@ -45,13 +45,11 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
               (child): child is Element =>
                 child instanceof Element && child.name === "code"
             );
-
+            let language = domNode.attribs?.language;
             if (firstChild) {
               const langClass = firstChild.attribs.class || "";
-              const language =
-                langClass.replace("language-", "") ||
-                firstChild.attribs?.language ||
-                "";
+              language = language || langClass.replace("language-", "");
+              ("");
               const code =
                 (firstChild.children[0] as DOMNode & { data?: string })?.data ||
                 "";
