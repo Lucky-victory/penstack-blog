@@ -37,7 +37,7 @@ export default async function DynamicPage({ params }: PageProps) {
     } else {
       match = matchPermalink(path, defaultPermalinkType);
     }
-    console.log({ match }, "with default");
+
     if (match?.postname) {
       const post = await getPostBySlug(match.postname);
       if (post) {

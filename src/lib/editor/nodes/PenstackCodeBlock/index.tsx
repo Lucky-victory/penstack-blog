@@ -30,7 +30,10 @@ export const PenstackCodeblockComponent: React.FC<
   },
   extension,
 }) => {
-  const languages = extension.options.lowlight.listLanguages();
+  const languages = useMemo(
+    () => extension.options.lowlight.listLanguages(),
+    []
+  );
   const heights = useMemo(
     () => ({
       itemHeight: 30,

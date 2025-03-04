@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
               width: "100%",
               display: "flex",
               flexDirection: "column",
-              padding: "64px 100px",
+              padding: "58px 100px",
               paddingBottom: "50px",
               justifyContent: "space-between",
               background: gradients["5"],
@@ -160,7 +160,7 @@ export async function GET(request: NextRequest) {
                   letterSpacing: "-0.02em",
                   maxWidth: "90%",
                   textAlign: "left",
-                  textTransform: "uppercase",
+
                   textShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
                 }}
               >
@@ -171,10 +171,10 @@ export async function GET(request: NextRequest) {
               <div
                 style={{
                   width: "120px",
-                  height: "6px",
+                  height: "4px",
                   backgroundColor: "white",
                   borderRadius: "2px",
-                  opacity: 0.8,
+                  opacity: 0.7,
                 }}
               />
             </div>
@@ -230,10 +230,10 @@ export async function GET(request: NextRequest) {
                 style={{
                   backgroundColor: "rgba(255, 255, 255, 0.1)",
                   backdropFilter: "blur(8px)",
-                  padding: "10px 20px",
+                  padding: "6px 16px",
                   borderRadius: "24px",
                   color: "white",
-                  fontSize: "18px",
+                  fontSize: "16px",
                   fontWeight: "600",
                   border: "1px solid rgba(255, 255, 255, 0.2)",
                   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",

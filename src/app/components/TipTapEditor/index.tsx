@@ -69,7 +69,9 @@ function TipTapEditor({
         types: ["heading", "paragraph"],
       }),
       Highlight,
-      CharacterCount,
+      CharacterCount.configure({
+        limit: 100000,
+      }),
       TableOfContents,
       MediaExtension,
       PostCardExtension,

@@ -48,7 +48,10 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
 
             if (firstChild) {
               const langClass = firstChild.attribs.class || "";
-              const language = langClass.replace("language-", "") || "";
+              const language =
+                langClass.replace("language-", "") ||
+                firstChild.attribs?.language ||
+                "";
               const code =
                 (firstChild.children[0] as DOMNode & { data?: string })?.data ||
                 "";
@@ -110,14 +113,14 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           }
           if (domNode.name === "h1") {
             return (
-              <Heading {...domNode.attribs} as="h1" size="4xl" mt={8} mb={4}>
+              <Heading {...domNode.attribs} as="h1" size="3xl" mt={8} mb={4}>
                 {domToReact(domNode.children as Element[], options)}
               </Heading>
             );
           }
           if (domNode.name === "h2") {
             return (
-              <Heading {...domNode.attribs} as="h2" size="2xl" mt={6} mb={3}>
+              <Heading {...domNode.attribs} as="h2" size="xl" mt={6} mb={4}>
                 {domToReact(domNode.children as Element[], options)}
               </Heading>
             );
@@ -211,11 +214,7 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           }
           if (domNode.name === "code") {
             return (
-              <Code
-                color={"red.600"}
-                bg="gray.200"
-                _dark={{ bg: "gray.800" }}
-              >
+              <Code color={"red.600"} bg="gray.200" _dark={{ bg: "gray.800" }}>
                 {domToReact(domNode.children as Element[], options)}
               </Code>
             );
@@ -228,6 +227,9 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
               <Link
                 href={domNode.attribs.href}
                 isExternal={domNode.attribs.target === "_blank"}
+                _hover={{ textDecoration: "underline" }}
+                color={"brand.600"}
+                _dark={{ color: "brand.300" }}
               >
                 {domToReact(domNode.children as Element[], options)}
               </Link>
@@ -253,7 +255,8 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
             );
           }
         }
-      },    };
+      },
+    };
 
     return <Box className={className}>{parse(content, options)}</Box>;
   }
