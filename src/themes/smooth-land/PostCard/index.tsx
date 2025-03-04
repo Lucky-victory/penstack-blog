@@ -34,7 +34,7 @@ export default function PostCard({
   showAuthor?: boolean;
   post: PostSelect;
 }) {
-  const textColor = useColorModeValue("gray.500", "gray.400");
+  const textColor = useColorModeValue("gray.600", "gray.400");
   const tagBgColor = useColorModeValue("blackAlpha.700", "black");
   const tagColor = useColorModeValue("gray.50", "gray.300");
   const bgColor = useColorModeValue("transparent", "gray.900");
@@ -113,7 +113,7 @@ export default function PostCard({
       </Box>
       <CardBody px={0} pt={3} pb={0} display={"flex"} flexDir={"column"}>
         <Stack flex={1}>
-          <VStack align={"start"} spacing={1} flex={1}>
+          <VStack align={"start"} spacing={2} flex={1}>
             <HStack mb={2}>
               <Text fontSize="small" as={"span"} color={textColor}>
                 {post?.published_at
@@ -146,7 +146,7 @@ export default function PostCard({
           </VStack>
           {showAuthor && (
             <Link href={`/author/${post?.author?.username}`}>
-              <HStack gap={3} display={"inline-flex"}>
+              <HStack gap={3} display={"inline-flex"} mt={1}>
                 <Avatar
                   src={post?.author?.avatar || ""}
                   name={post?.author?.name}

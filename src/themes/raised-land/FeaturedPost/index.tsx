@@ -74,7 +74,7 @@ export const FeaturedPost = () => {
                       {featuredPost.title}
                     </Heading>
                   </LinkOverlay>
-                  <Text color={textColor} fontSize="lg">
+                  <Text color={textColor} fontSize="lg" noOfLines={3}>
                     {featuredPost.summary}
                   </Text>
                   <HStack spacing={4} mt={4}>

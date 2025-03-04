@@ -12,7 +12,7 @@ import {
   permalinkFormats,
   PermalinkType,
 } from "./permalink";
-import { cleanUrl, resolveUrl } from "./url";
+import { cleanUrl, getSiteUrl, resolveUrl } from "./url";
 
 type PercentageDifferenceResult = {
   formatted: string;
@@ -160,13 +160,8 @@ export function generatePostUrl(
     .replace("%day%", day)
     .replace("%category%", post?.category?.slug || "")
     .replace("%postname%", post?.slug || "");
-  console.log({
-    permalink: cleanUrl(permalink),
-    format,
-    prefix,
-  });
 
-  return cleanUrl(permalink);
+  return resolveUrl(getSiteUrl(), cleanUrl(permalink));
 }
 
 type QueryParamValue =

@@ -33,10 +33,10 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams, host } = new URL(request.url);
 
-    const username = searchParams.get("username") || "";
     const name = searchParams.get("name") || "";
     const avatar = searchParams.get("avatar") || "";
     const title = searchParams.get("title") || "";
+    const description = searchParams.get("description") || "";
     const category = searchParams.get("category") || "";
     const publishDate = searchParams.get("date") || new Date().toISOString();
     const readingTime = searchParams.get("readingTime");
@@ -166,7 +166,23 @@ export async function GET(request: NextRequest) {
               >
                 {title}
               </div>
+              {description && (
+                <div
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "400",
+                    color: "white",
+                    lineHeight: 1,
+                    letterSpacing: "-0.02em",
+                    maxWidth: "90%",
+                    textAlign: "left",
 
+                    textShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
+                  }}
+                >
+                  {description}
+                </div>
+              )}
               {/* Visual accent line */}
               <div
                 style={{
