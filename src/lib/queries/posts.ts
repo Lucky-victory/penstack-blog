@@ -102,7 +102,13 @@ export async function getPosts({
           },
         },
         author: {
-          columns: { auth_id: true, name: true, avatar: true, username: true },
+          columns: {
+            auth_id: true,
+            name: true,
+            avatar: true,
+            username: true,
+            bio: true,
+          },
         },
       },
     });
