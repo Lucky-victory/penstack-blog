@@ -1,7 +1,7 @@
 import "server-only";
 import { db } from "@/src/db";
 import { categories, posts } from "@/src/db/schemas/posts.sql";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 
 export const queryCategoriesWithFilters = unstable_cache(
@@ -37,7 +37,13 @@ export const queryCategoriesWithFilters = unstable_cache(
             postCount: sql<number>`count(${posts.id})`.as("post_count"),
           })
           .from(categories)
-          .leftJoin(posts, eq(posts.category_id, categories.id))
+          .leftJoin(
+            posts,
+            and(
+              eq(posts.category_id, categories.id),
+              eq(posts.status, "published")
+            )
+          )
           .groupBy(categories.id)
       );
 
