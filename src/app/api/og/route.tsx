@@ -10,281 +10,211 @@ function formatDate(dateString: string) {
   });
 }
 
-async function loadGoogleFont(font: string, text: string) {
-  const url = `https://fonts.googleapis.com/css?family=${font}&text=${encodeURIComponent(
-    text
-  )}`;
-  const css = await (await fetch(url)).text();
-  const resource = css.match(
-    /src: url\((.+)\) format\('(opentype|truetype)'\)/
-  );
-
-  if (resource) {
-    const response = await fetch(resource[1]);
-    if (response.status == 200) {
-      return await response.arrayBuffer();
-    }
-  }
-
-  throw new Error("failed to load font data");
-}
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams, host } = new URL(request.url);
 
     const name = searchParams.get("name") || "";
+    const showImage = searchParams.get("showImage") === "true" || false;
     const avatar = searchParams.get("avatar") || "";
     const title = searchParams.get("title") || "";
     const description = searchParams.get("description") || "";
     const category = searchParams.get("category") || "";
-    const publishDate = searchParams.get("date") || new Date().toISOString();
+    const date = searchParams.get("date") || new Date().toISOString();
     const readingTime = searchParams.get("readingTime");
-    const gradient = searchParams.get("gradient") || "4"; // Default gradient option
+    const gradient = searchParams.get("gradient") || "blue";
+    const gradientIntensity =
+      parseInt(searchParams.get("gradientIntensity") || "50") || 50;
 
     // Define a set of modern gradients
     const gradients = {
-      "1": "linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)", // Indigo to Purple to Pink
-      "2": "linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)", // Sky to Purple
-      "3": "linear-gradient(135deg, #10B981 0%, #3B82F6 100%)", // Emerald to Blue
-      "4": "linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)", // Amber to Red
-      "5": "linear-gradient(135deg, #111827 0%, #4B5563 100%)", // Dark
+      purple: `rgba(13, 3, 33, 1) 0%, rgba(76, 29, 149, 0.8) 50%, rgba(0, 0, 0, 0.9) 100%`,
+      cyan: `rgba(3, 33, 33, 1) 0%, rgba(8, 145, 178, 0.8) 50%, rgba(0, 0, 0, 0.9) 100%`,
+      emerald: `rgba(3, 33, 20, 1) 0%, rgba(4, 120, 87, 0.8) 50%,rgba(0, 0, 0, 0.9) 100%`,
+      blue: `rgba(3, 13, 33, 1) 0%, rgba(30, 64, 175, 0.8) 50%, rgba(0, 0, 0, 0.9) 100%`,
     };
 
     const selectedGradient =
-      gradients[gradient as keyof typeof gradients] || gradients["4"];
+      gradients[gradient as keyof typeof gradients] || gradients["blue"];
+    console.log({
+      gradient,
+      selectedGradient,
+    });
 
     return new ImageResponse(
       (
         <div
           style={{
+            position: "relative",
+            // aspectRatio: "1.91/1",
             width: "100%",
             height: "100%",
+            overflow: "hidden",
+            borderRadius: "0.5rem",
+            border: "1px solid #e2e8f0",
+            boxShadow:
+              "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
             display: "flex",
-            background: selectedGradient,
-            position: "relative",
-            fontFamily: "Plus Jakarta Sans",
-            padding: "20px",
           }}
         >
-          {/* Content Section */}
           <div
             style={{
-              position: "relative",
-              width: "100%",
+              position: "absolute",
+
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `linear-gradient(to bottom right, ${selectedGradient})`,
+            }}
+          />
+
+          <div
+            style={{
+              position: "absolute",
+
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.3)",
+              backdropFilter: "blur(2px)",
+            }}
+          />
+
+          {/* Decorative elements */}
+          <div
+            style={{
+              position: "absolute",
+              top: "3.5rem",
+              right: "3.5rem",
+              width: "6rem",
+              height: "6rem",
+              borderRadius: "9999px",
+              backgroundColor: "rgba(0,0,0,0.3)",
+              filter: "blur(32px)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              bottom: "4rem",
+              left: "5rem",
+              width: "4rem",
+              height: "4rem",
+              borderRadius: "9999px",
+              backgroundColor: "rgba(0,0,0,0.3)",
+              filter: "blur(16px)",
+            }}
+          />
+
+          {/* Content */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              padding: "50px 80px",
               display: "flex",
               flexDirection: "column",
-              padding: "50px 100px",
-              paddingBottom: "50px",
-              justifyContent: "space-between",
-              background: gradients["5"],
-              height: "100%",
-              borderRadius: "20px",
-              zIndex: 1,
+              justifyContent: "flex-end",
             }}
           >
-            {/* Top Section */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              {/* Category Tag */}
-              {category && (
-                <div
+            {/* Category badge */}
+            {category && (
+              <div
+                style={{
+                  marginBottom: "1rem",
+                  display: "flex",
+                }}
+              >
+                <span
                   style={{
-                    padding: "8px 16px",
-                    borderRadius: "24px",
-                    backgroundColor: "rgba(255, 255, 255, 0.15)",
-                    backdropFilter: "blur(8px)",
+                    padding: "0.5rem 1rem",
+                    fontSize: "1.5rem",
+                    fontWeight: 500,
+                    borderRadius: "9999px",
+                    backgroundColor: "rgba(0,0,0, 0.2)",
                     color: "white",
-                    fontSize: "20px",
-                    fontWeight: "600",
-                    border: "1px solid rgba(255, 255, 255, 0.2)",
-                    display: "flex",
-                    alignItems: "center",
-                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                    border: "1px solid rgba(0,0,0, 0.3)",
                   }}
                 >
-                  {category}
-                </div>
-              )}
-
-              {/* Reading Time & Date */}
-              <div
-                style={{
-                  color: "rgba(255, 255, 255, 0.85)",
-                  fontSize: "18px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                {formatDate(publishDate)}
-                {readingTime && (
-                  <>
-                    <div
-                      style={{
-                        width: "4px",
-                        height: "4px",
-                        borderRadius: "50%",
-                        backgroundColor: "rgba(255, 255, 255, 0.5)",
-                      }}
-                    />
-                    <span>{readingTime} min read</span>
-                  </>
-                )}
+                  {category || "Design"}
+                </span>
               </div>
-            </div>
+            )}
 
-            {/* Middle Section - Title */}
             <div
               style={{
+                maxWidth: "70%",
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "flex-start",
-                justifyContent: "center",
-                gap: "24px",
-                marginTop: "-25px", // Offset to center vertically
               }}
             >
-              <div
+              <h2
                 style={{
-                  fontSize: "65px",
-                  fontWeight: "800",
+                  fontSize: "3.25rem",
+                  fontWeight: "extrabold",
                   color: "white",
-                  lineHeight: 1.1,
-                  letterSpacing: "-0.02em",
-                  maxWidth: "90%",
-                  textAlign: "left",
-
-                  textShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
+                  marginBottom: "1.45rem",
+                  lineHeight: 1.2,
                 }}
               >
-                {title}
-              </div>
+                {title || "Modern Design System"}
+              </h2>
               {description && (
-                <div
+                <p
                   style={{
-                    fontSize: "20px",
-                    fontWeight: "400",
-                    color: "white",
-                    lineHeight: 1,
-                    letterSpacing: "-0.02em",
-                    maxWidth: "90%",
-                    textAlign: "left",
-
-                    textShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
+                    fontSize: "1.30rem",
+                    color: "rgba(255, 255, 255, 0.8)",
+                    marginBottom: "1rem",
                   }}
                 >
                   {description}
-                </div>
+                </p>
               )}
-              {/* Visual accent line */}
-              <div
-                style={{
-                  width: "120px",
-                  height: "4px",
-                  backgroundColor: "white",
-                  borderRadius: "2px",
-                  opacity: 0.7,
-                }}
-              />
             </div>
 
-            {/* Bottom Section - Author & Host */}
+            {/* Author and date */}
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-between",
                 alignItems: "center",
-                width: "100%",
+                fontSize: "1.65rem",
+                color: "rgba(255, 255, 255, 0.9)",
+                marginTop: "0.5rem",
               }}
             >
-              {/* Author Section */}
-              {name && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "16px",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "2px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        color: "rgba(255, 255, 255, 0.7)",
-                        fontSize: "16px",
-                      }}
-                    >
-                      Written by
-                    </div>
-                    <div
-                      style={{
-                        color: "white",
-                        fontSize: "24px",
-                        fontWeight: "700",
-                      }}
-                    >
-                      {name}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Host/Website URL */}
-              <div
-                style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  backdropFilter: "blur(8px)",
-                  padding: "6px 16px",
-                  borderRadius: "24px",
-                  color: "white",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                {host}
-              </div>
+              <span style={{ fontWeight: 500 }}>{name}</span>
+              <span style={{ margin: "0 0.5rem" }}>•</span>
+              <span>{formatDate(date)}</span>
             </div>
+
+            {/* Bottom bar */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: "0.375rem",
+                backgroundColor: "black",
+              }}
+            />
           </div>
         </div>
       ),
       {
         width: 1200,
         height: 630,
-        fonts: [
-          {
-            name: "Plus Jakarta Sans",
-            data: await loadGoogleFont("Plus+Jakarta+Sans", title),
-            weight: 700,
-          },
-        ],
       }
     );
   } catch (e: any) {
-    console.error("OG Image generation error:", e.message);
-    return new Response(`Failed to generate image: ${e.message}`, {
+    // console.error("OG Image generation error:", e.message);
+    return new Response(e, {
       status: 500,
     });
   }
-}
-
-function getNameInitials(name: string) {
-  const names = name.split(" ");
-  if (names.length === 1) {
-    return name.slice(0, 2);
-  }
-  return names[0].charAt(0) + names[names.length - 1].charAt(0);
 }

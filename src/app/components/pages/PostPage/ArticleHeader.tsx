@@ -56,19 +56,21 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
         >
           {post?.title}
         </Heading>
-        <Divider my={1} />
 
         {post?.summary && (
-          <Text
-            fontSize={{ base: "md", md: "lg" }}
-            my={2}
-            maxW={"3xl"}
-            color={summaryColor}
-            fontWeight={"semibold"}
-            textAlign={{ base: "left", md: "center" }}
-          >
-            {post?.summary}
-          </Text>
+          <>
+            <Divider my={1} />
+            <Text
+              fontSize={{ base: "md", md: "lg" }}
+              my={2}
+              maxW={"3xl"}
+              color={summaryColor}
+              fontWeight={"semibold"}
+              textAlign={{ base: "left", md: "center" }}
+            >
+              {post?.summary}
+            </Text>
+          </>
         )}
       </Stack>
       <Divider mb={3} />

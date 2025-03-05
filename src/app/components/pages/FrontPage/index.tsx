@@ -30,9 +30,11 @@ const FrontPage: FC<FrontPageProps> = ({ featuredPost, posts }) => {
     setLoading(false);
   }, [posts]);
   useEffect(() => {
-    setCanFetch(true);
-    setLoading(isLoading);
-    setPosts(clientPosts);
+    if (category) {
+      setCanFetch(true);
+      setLoading(isLoading);
+      setPosts(clientPosts);
+    }
   }, [category, clientPosts, isLoading]);
   return (
     <PageWrapper>
