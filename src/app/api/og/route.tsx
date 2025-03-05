@@ -22,9 +22,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category") || "";
     const date = searchParams.get("date") || new Date().toISOString();
     const readingTime = searchParams.get("readingTime");
-    const gradient = searchParams.get("gradient") || "blue";
-    const gradientIntensity =
-      parseInt(searchParams.get("gradientIntensity") || "50") || 50;
+    const gradient = searchParams.get("gradient") || "emerald";
 
     // Define a set of modern gradients
     const gradients = {
@@ -36,10 +34,6 @@ export async function GET(request: NextRequest) {
 
     const selectedGradient =
       gradients[gradient as keyof typeof gradients] || gradients["blue"];
-    console.log({
-      gradient,
-      selectedGradient,
-    });
 
     return new ImageResponse(
       (
@@ -117,9 +111,13 @@ export async function GET(request: NextRequest) {
               right: 0,
               bottom: 0,
               padding: "50px 80px",
+              paddingRight: "50px",
+              paddingTop: "50px",
+              paddingBottom: "50px",
+              paddingLeft: "120px",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "flex-end",
+              justifyContent: "center",
             }}
           >
             {/* Category badge */}
