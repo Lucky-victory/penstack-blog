@@ -30,6 +30,7 @@ import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { PenstackSlashCommandExtension } from "@/src/lib/editor/extensions/slash-command";
 import PenstackBlockquote from "@/src/lib/editor/extensions/blockquote";
 import { PenstackCodeblock } from "@/src/lib/editor/extensions/code-block";
+import { MarkdownPasteExtension } from "@/src/lib/editor/extensions/markdown-paste";
 import { PenstackHeadingExtension } from "@/src/lib/editor/extensions/heading";
 
 function TipTapEditor({
@@ -41,6 +42,7 @@ function TipTapEditor({
 }) {
   const extensions = useMemo(
     () => [
+      MarkdownPasteExtension,
       StarterKit.configure({
         heading: false,
         codeBlock: false,
@@ -50,7 +52,6 @@ function TipTapEditor({
           keepAttributes: false,
         },
       }),
-
       PenstackHeadingExtension,
       PenstackBlockquote.configure(),
       Placeholder.configure({

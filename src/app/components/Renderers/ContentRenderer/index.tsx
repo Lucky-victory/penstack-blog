@@ -27,9 +27,11 @@ import {
   Link,
   Image,
   useColorModeValue,
+  As,
 } from "@chakra-ui/react";
 import { PenstackCodeBlockRenderer } from "../PenstackCodeBlockRenderer";
 import PenstackBlockquoteRenderer from "../PenstackBlockquoteRenderer";
+import { PenstackHeadingsRenderer } from "../HeadingsRenderer";
 interface ContentRendererProps {
   content: string;
   className?: string;
@@ -109,46 +111,15 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
               </Text>
             );
           }
-          if (domNode.name === "h1") {
+
+          if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(domNode.name)) {
             return (
-              <Heading {...domNode.attribs} as="h1" size="3xl" mt={8} mb={4}>
+              <PenstackHeadingsRenderer
+                attrs={{ as: `${domNode?.name}` as As, ...domNode.attribs }}
+                isEditing={false}
+              >
                 {domToReact(domNode.children as Element[], options)}
-              </Heading>
-            );
-          }
-          if (domNode.name === "h2") {
-            return (
-              <Heading {...domNode.attribs} as="h2" size="xl" mt={6} mb={4}>
-                {domToReact(domNode.children as Element[], options)}
-              </Heading>
-            );
-          }
-          if (domNode.name === "h3") {
-            return (
-              <Heading {...domNode.attribs} as="h3" size="lg" mt={4} mb={2}>
-                {domToReact(domNode.children as Element[], options)}
-              </Heading>
-            );
-          }
-          if (domNode.name === "h4") {
-            return (
-              <Heading {...domNode.attribs} as="h4" size="md" mb={2}>
-                {domToReact(domNode.children as Element[], options)}
-              </Heading>
-            );
-          }
-          if (domNode.name === "h5") {
-            return (
-              <Heading {...domNode.attribs} as="h5" size="sm" mb={2}>
-                {domToReact(domNode.children as Element[], options)}
-              </Heading>
-            );
-          }
-          if (domNode.name === "h6") {
-            return (
-              <Heading {...domNode.attribs} as="h6" size="xs" mb={2}>
-                {domToReact(domNode.children as Element[], options)}
-              </Heading>
+              </PenstackHeadingsRenderer>
             );
           }
           if (domNode.name === "ul") {

@@ -75,64 +75,8 @@
   margin-bottom: 0.5rem;
 }
 
-.penstack-post-editor h1,
-.penstack-post-editor h2,
-.penstack-post-editor h3,
-.penstack-post-editor h4,
-.penstack-post-editor h5,
-.penstack-post-editor h6 {
-  line-height: 1.1;
-}
-
-.penstack-post-editor h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-top: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-.penstack-post-editor h2 {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-top: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-.penstack-post-editor h3 {
-  font-size: 1.75rem;
-  font-weight: bold;
-  margin-top: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-.penstack-post-editor h4 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-.penstack-post-editor h5 {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-top: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-.penstack-post-editor h6 {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-top: 1.2rem;
-  margin-bottom: 1rem;
-}
-
 .penstack-post-editor mark {
   background-color: yellow;
-}
-
-.penstack-post-editor img {
-  max-width: 100%;
-  height: auto;
 }
 
 .penstack-post-editor hr {

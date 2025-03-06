@@ -1,6 +1,14 @@
+import { PenstackHeadingsRenderer } from "@/src/app/components/Renderers/HeadingsRenderer";
 import { generateSlug } from "@/src/utils";
+import { As, Heading as ChakraHeading } from "@chakra-ui/react";
 import Heading from "@tiptap/extension-heading";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
+import {
+  Node,
+  NodeViewRendererProps,
+  NodeViewWrapper,
+  ReactNodeViewRenderer,
+} from "@tiptap/react";
 
 export const PenstackHeadingExtension = Heading.extend({
   priority: 1000,
@@ -34,6 +42,20 @@ export const PenstackHeadingExtension = Heading.extend({
       }),
     ];
   },
+  addNodeView() {
+    const Comp = ({ node }: { node: NodeViewRendererProps["node"] }) => {
+      const level = node.attrs.level || 1;
+      return (
+        <PenstackHeadingsRenderer
+          attrs={{ as: `h${level}` as As, id: node.attrs?.id }}
+          isEditing={true}
+        >
+          {node.content.firstChild?.text}
+        </PenstackHeadingsRenderer>
+      );
+    };
+    return ReactNodeViewRenderer(Comp);
+  },
   addAttributes() {
     return {
       ...this.parent?.(),
@@ -42,6 +64,13 @@ export const PenstackHeadingExtension = Heading.extend({
         parseHTML: (element) => element.getAttribute("id"),
         renderHTML: (attributes) => ({
           id: attributes.id,
+        }),
+      },
+      level: {
+        default: 1,
+        parseHTML: (element) => Number(element.tagName.replace("h", "")),
+        renderHTML: (attributes) => ({
+          level: attributes.level,
         }),
       },
     };

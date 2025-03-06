@@ -85,11 +85,6 @@ export function calculateReadingTime(content: string) {
   const wordsPerMinute = 238;
   const words = content.split(/\s+/).length;
   const minutes = Math.ceil(words / wordsPerMinute);
-  console.log({
-    minutes,
-
-    wordsPerMinute,
-  });
 
   return minutes;
 }
@@ -144,7 +139,7 @@ export function shortenText(text: string, len = 50) {
 
 // Helper function to generate URLs based on format
 export function generatePostUrl(
-  post: PostSelect|FeaturedPostType,
+  post: PostSelect | FeaturedPostType,
   format: PermalinkType = defaultPermalinkType,
   prefix = ""
 ): string {
