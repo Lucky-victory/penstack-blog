@@ -30,12 +30,12 @@ import { usePenstackEditorStore } from "@/src/state/penstack-editor";
 import { PenstackSlashCommandExtension } from "@/src/lib/editor/extensions/slash-command";
 import PenstackBlockquote from "@/src/lib/editor/extensions/blockquote";
 import { PenstackCodeblock } from "@/src/lib/editor/extensions/code-block";
-import { MarkdownPasteExtension } from "@/src/lib/editor/extensions/markdown-paste";
 import { PenstackHeadingExtension } from "@/src/lib/editor/extensions/heading";
 import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
+import { extensions } from "@/src/lib/editor/extensions";
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -43,58 +43,6 @@ function TipTapEditor({
   onUpdate?: (content: { html: string; text?: string }) => void;
   initialContent?: string;
 }) {
-  const extensions = useMemo(
-    () => [
-      MarkdownPasteExtension,
-      StarterKit.configure({
-        heading: false,
-        codeBlock: false,
-        blockquote: false,
-        bulletList: {
-          keepMarks: true,
-          keepAttributes: false,
-        },
-      }),
-      Table.configure({
-        resizable: true,
-      }),
-      TableRow,
-      TableHeader,
-      TableCell,
-      PenstackHeadingExtension,
-      PenstackBlockquote.configure(),
-      Placeholder.configure({
-        placeholder: "Write something…",
-      }),
-      Link.configure({
-        HTMLAttributes: {
-          rel: "noopener noreferrer",
-        },
-        openOnClick: false,
-        autolink: true,
-      }),
-
-      Typography,
-      Image,
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
-      Highlight,
-      CharacterCount.configure({
-        limit: 100000,
-      }),
-      TableOfContents,
-      MediaExtension,
-      PostCardExtension,
-      PenstackCodeblock.configure({
-        lowlight,
-      }),
-      PenstackYouTubeExtension,
-      PenstackTwitterExtension,
-      PenstackSlashCommandExtension,
-    ],
-    []
-  );
   const setEditor = usePenstackEditorStore((state) => state.setEditor);
   const setEditorContent = usePenstackEditorStore(
     (state) => state.setEditorContent

@@ -5,15 +5,28 @@ import Heading from "@tiptap/extension-heading";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import {
   Node,
+  nodePasteRule,
   NodeViewRendererProps,
   NodeViewWrapper,
   ReactNodeViewRenderer,
 } from "@tiptap/react";
 
 export const PenstackHeadingExtension = Heading.extend({
-  priority: 100,
+  priority: 1000,
+
+  addPasteRules() {
+    return [
+      ...(this.parent?.() || []),
+      nodePasteRule({
+        find: /^(#{1,6})\s(.+)$/gm,
+        type: this.type,
+      }),
+    ];
+  },
+
   addProseMirrorPlugins() {
     return [
+      ...(this.parent?.() || []),
       new Plugin({
         key: new PluginKey("heading-ids"),
         appendTransaction: (transactions, oldState, newState) => {
@@ -49,9 +62,9 @@ export const PenstackHeadingExtension = Heading.extend({
   },
 
   addNodeView() {
-    const Comp = ({ node }: { node: NodeViewRendererProps["node"] }) => {
+    const Comp = ({ node }: NodeViewRendererProps) => {
       const level = node.attrs.level || 1;
-      // console.log({ node, level, attrs: node.attrs });
+      console.log({ node, level, attrs: node.attrs });
 
       return (
         <PenstackHeadingsRenderer
@@ -75,13 +88,13 @@ export const PenstackHeadingExtension = Heading.extend({
           id: attributes.id,
         }),
       },
-      level: {
-        default: 1,
-        parseHTML: (element) => Number(element.tagName.replace("h", "")),
-        renderHTML: (attributes) => ({
-          level: attributes.level,
-        }),
-      },
+      // level: {
+      //   default: 1,
+      //   parseHTML: (element) => Number(element.tagName.replace("h", "")),
+      //   renderHTML: (attributes) => ({
+      //     level: attributes.level,
+      //   }),
+      // },
     };
   },
 });

@@ -1,10 +1,18 @@
-import { ReactNodeViewRenderer } from "@tiptap/react";
+import {
+  nodePasteRule,
+  ReactNodeViewRenderer,
+  textPasteRule,
+} from "@tiptap/react";
 import { PenstackCodeblockComponent } from "../nodes/PenstackCodeBlock";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 
-export const PenstackCodeblock = CodeBlockLowlight.extend({
-  name: "penstackCodeBlock",
+export const backtickInputRegex = /^```([a-z]+)?[\s\n]/;
 
+/**
+ * Matches a code block with tildes.
+ */
+export const tildeInputRegex = /^~~~([a-z]+)?[\s\n]/;
+export const PenstackCodeblock = CodeBlockLowlight.extend({
   addAttributes() {
     return {
       ...this.parent?.(),
@@ -13,7 +21,24 @@ export const PenstackCodeblock = CodeBlockLowlight.extend({
       },
     };
   },
-
+  // addPasteRules() {
+  //   return [
+  //     nodePasteRule({
+  //       find: backtickInputRegex,
+  //       type: this.type,
+  //       getAttributes: (match) => ({
+  //         language: match[1],
+  //       }),
+  //     }),
+  //     nodePasteRule({
+  //       find: tildeInputRegex,
+  //       type: this.type,
+  //       getAttributes: (match) => ({
+  //         language: match[1],
+  //       }),
+  //     }),
+  //   ];
+  // },
   addNodeView() {
     return ReactNodeViewRenderer(PenstackCodeblockComponent);
   },

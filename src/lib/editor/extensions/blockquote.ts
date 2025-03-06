@@ -1,4 +1,4 @@
-import { mergeAttributes } from "@tiptap/core";
+import { mergeAttributes, nodePasteRule } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import PenstackBlockquoteComponent from "../nodes/PenstackBlockquote";
 import Blockquote from "@tiptap/extension-blockquote";
@@ -13,6 +13,18 @@ const PenstackBlockquote = Blockquote.extend({
     return {
       HTMLAttributes: {},
     };
+  },
+  addPasteRules() {
+    return [
+      ...(this.parent?.() || []),
+      nodePasteRule({
+        find: /^>\s(.+)$/gm,
+        type: this.type,
+        getAttributes(match, event) {
+          return { variant: "plain" };
+        },
+      }),
+    ];
   },
   addNodeView() {
     return ReactNodeViewRenderer(PenstackBlockquoteComponent);
