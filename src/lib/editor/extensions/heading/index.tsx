@@ -11,7 +11,7 @@ import {
 } from "@tiptap/react";
 
 export const PenstackHeadingExtension = Heading.extend({
-  priority: 1000,
+  priority: 100,
   addProseMirrorPlugins() {
     return [
       new Plugin({
@@ -26,6 +26,11 @@ export const PenstackHeadingExtension = Heading.extend({
           newState.doc.descendants((node, pos) => {
             if (node.type.name === "heading") {
               const newId = generateSlug(node.textContent);
+              console.log({
+                node,
+                pos,
+                newId,
+              });
 
               if (newId && node.attrs.id !== newId) {
                 tr.setNodeMarkup(pos, undefined, {
@@ -42,9 +47,12 @@ export const PenstackHeadingExtension = Heading.extend({
       }),
     ];
   },
+
   addNodeView() {
     const Comp = ({ node }: { node: NodeViewRendererProps["node"] }) => {
       const level = node.attrs.level || 1;
+      // console.log({ node, level, attrs: node.attrs });
+
       return (
         <PenstackHeadingsRenderer
           attrs={{ as: `h${level}` as As, id: node.attrs?.id }}
@@ -56,6 +64,7 @@ export const PenstackHeadingExtension = Heading.extend({
     };
     return ReactNodeViewRenderer(Comp);
   },
+
   addAttributes() {
     return {
       ...this.parent?.(),

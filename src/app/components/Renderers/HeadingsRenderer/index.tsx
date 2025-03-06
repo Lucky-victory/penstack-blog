@@ -4,7 +4,7 @@ import { NodeViewWrapper } from "@tiptap/react";
 import { memo, PropsWithChildren, useMemo } from "react";
 
 interface HeadingsRendererProps {
-  isEditing: boolean;
+  isEditing?: boolean;
   attrs: { as: As } & Record<string, any>;
 }
 export const PenstackHeadingsRenderer: React.FC<
@@ -48,6 +48,8 @@ export const PenstackHeadingsRenderer: React.FC<
     }),
     []
   );
+  console.log({ attrs }, "from PenstackHeadingsRenderer");
+
   const heading = (
     <Heading {...attrs} {...styles[attrs.as as any]}>
       {children}

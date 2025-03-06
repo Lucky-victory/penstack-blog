@@ -32,7 +32,10 @@ import PenstackBlockquote from "@/src/lib/editor/extensions/blockquote";
 import { PenstackCodeblock } from "@/src/lib/editor/extensions/code-block";
 import { MarkdownPasteExtension } from "@/src/lib/editor/extensions/markdown-paste";
 import { PenstackHeadingExtension } from "@/src/lib/editor/extensions/heading";
-
+import Table from "@tiptap/extension-table";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
+import TableRow from "@tiptap/extension-table-row";
 function TipTapEditor({
   onUpdate,
   initialContent,
@@ -52,6 +55,12 @@ function TipTapEditor({
           keepAttributes: false,
         },
       }),
+      Table.configure({
+        resizable: true,
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
       PenstackHeadingExtension,
       PenstackBlockquote.configure(),
       Placeholder.configure({

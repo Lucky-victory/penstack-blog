@@ -1,4 +1,4 @@
-import { marked } from "marked";
+import { marked, Token, Tokens } from "marked";
 
 // Basic markdown to HTML conversion
 export function markdownToHtml(markdown: string): string {
@@ -7,14 +7,36 @@ export function markdownToHtml(markdown: string): string {
     breaks: true, // Convert line breaks to <br>
     gfm: true, // GitHub Flavored Markdown
     pedantic: false, // Don't conform to obscure parts of markdown
+    renderer: createCustomRenderer(), // Use custom renderer for headings
   });
 
   try {
-    return marked.parse(markdown, { async: false });
+    const parsedHtml = marked.parse(markdown, { async: false }) as string;
+    console.log({
+      parsedHtml,
+      markdown,
+    });
+    return parsedHtml;
   } catch (error) {
     console.error("Markdown conversion error:", error);
     return markdown; // Fallback to original text
   }
+}
+
+function createCustomRenderer() {
+  const renderer = new marked.Renderer();
+
+  // Override the heading renderer to add level attribute
+  renderer.heading = function ({ depth, text }: Tokens.Heading) {
+    console.log({
+      depth,
+      text,
+    });
+    
+    return `<h${depth} level="${depth}">${text}</h${depth}>`;
+  };
+
+  return renderer;
 }
 
 // Enhanced Tiptap Extension with Marked Conversion
@@ -24,7 +46,7 @@ import { Slice } from "@tiptap/pm/model";
 
 export const MarkdownPasteExtension = Extension.create({
   name: "markdownPaste",
-
+  priority: 1,
   addProseMirrorPlugins() {
     return [
       new Plugin({
@@ -44,10 +66,16 @@ export const MarkdownPasteExtension = Extension.create({
                 schema: view.state.schema,
                 htmlContent,
               });
+              const extensions = this.editor.extensionManager.extensions;
+              const txtJson = generateJSON(htmlContent, extensions);
+              console.log({
+                extensions,
+                txtJson: txtJson?.content,
+              });
 
               // Create a new slice with the HTML content
               const htmlSlice = Slice.fromJSON(view.state.schema, {
-                content: htmlContent,
+                content: txtJson?.content,
               });
 
               // Replace the pasted content with the converted HTML
@@ -75,6 +103,10 @@ function isLikelyMarkdown(text: string): boolean {
     /`{1,3}[^`\n]+`{1,3}/, // Inline code
     /\*\*.*\*\*/, // Bold
     /\*.*\*/, // Italic
+    /^\|(.+\|)+$/, // Table row
+    /^(\|:?-+:?\|)+$/, // Table alignment row
+    /^\s*\|.*\|\s*$/, // Alternative table row pattern
+    /^\s*\|-+\|(-+\|)*\s*$/, // Alternative table alignment pattern
   ];
 
   return markdownPatterns.some((pattern) => pattern.test(text));
