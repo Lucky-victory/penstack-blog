@@ -1,15 +1,8 @@
 import { PenstackHeadingsRenderer } from "@/src/app/components/Renderers/HeadingsRenderer";
 import { generateSlug } from "@/src/utils";
-import { As, Heading as ChakraHeading } from "@chakra-ui/react";
 import Heading from "@tiptap/extension-heading";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
-import {
-  Node,
-  nodePasteRule,
-  NodeViewRendererProps,
-  NodeViewWrapper,
-  ReactNodeViewRenderer,
-} from "@tiptap/react";
+import { ReactNodeViewRenderer } from "@tiptap/react";
 
 export const PenstackHeadingExtension = Heading.extend({
   priority: 2,
@@ -29,12 +22,6 @@ export const PenstackHeadingExtension = Heading.extend({
           newState.doc.descendants((node, pos) => {
             if (node.type.name === "heading") {
               const newId = generateSlug(node.textContent);
-              console.log({
-                node,
-                pos,
-                newId,
-              });
-
               if (newId && node.attrs.id !== newId) {
                 tr.setNodeMarkup(pos, undefined, {
                   ...node.attrs,

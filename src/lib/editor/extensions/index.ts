@@ -18,11 +18,12 @@ import TextAlign from "@tiptap/extension-text-align";
 import Typography from "@tiptap/extension-typography";
 import Image from "@tiptap/extension-image";
 import CharacterCount from "@tiptap/extension-character-count";
-
-import { TableOfContents } from "@/src/lib/editor/extensions/toc";
 import { MediaExtension } from "@/src/lib/editor/extensions/media";
 import { MarkdownPasteExtension } from "./markdown-paste";
 import { PenstackHeadingExtension } from "./heading";
+import { TableOfContents } from "./table-of-content";
+
+
 export const extensions = [
   StarterKit.configure({
     heading: false,

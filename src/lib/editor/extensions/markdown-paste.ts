@@ -1,3 +1,6 @@
+import { Extension, generateJSON } from "@tiptap/core";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { Slice } from "@tiptap/pm/model";
 import { marked, Token, Tokens } from "marked";
 
 // Basic markdown to HTML conversion
@@ -35,7 +38,7 @@ function createCustomRenderer() {
 
     return `<h${depth} level="${depth}">${text}</h${depth}>`;
   };
-  renderer.code = function ({ text, lang }: Tokens.Code) {
+  renderer.code = function ({ text, lang, ...r }: Tokens.Code) {
     console.log({
       code: text,
       lang,
@@ -47,49 +50,11 @@ function createCustomRenderer() {
   return renderer;
 }
 
-// Enhanced Tiptap Extension with Marked Conversion
-import { Extension, generateJSON } from "@tiptap/core";
-import { Plugin, PluginKey } from "@tiptap/pm/state";
-import { Slice } from "@tiptap/pm/model";
-
 export const MarkdownPasteExtension = Extension.create({
   name: "markdownPaste",
   priority: 1,
   addPasteRules() {
-    return [
-      ...(this.parent?.() || []),
-      //   {
-      //     find: /^(#{1,6})\s(.+)$/gm,
-      //     handler: ({ state, range, match }) => {
-      //       const [fullMatch, hashes, content] = match;
-      //       console.log(
-      //         {
-      //           fullMatch,
-      //           hashes,
-      //           content,
-      //         },
-      //         " from heading paste rules"
-      //       );
-
-      //       const level = hashes.length;
-      //       const { tr } = state;
-      //       const start = range.from;
-      //       const end = range.to;
-      //       if (content) {
-      //         tr.delete(start, end).insert(
-      //           start,
-      //           state.schema.node(
-      //             "heading",
-      //             {
-      //               level,
-      //             },
-      //             state.schema.text(content)
-      //           )
-      //         );
-      //       }
-      //     },
-      //   },
-    ];
+    return [...(this.parent?.() || [])];
   },
   addProseMirrorPlugins() {
     return [
@@ -144,13 +109,16 @@ function isLikelyMarkdown(text: string): boolean {
     /^\d+\.\s/, // Ordered list
     /^>\s/, // Blockquote
     /\[.*\]\(.*\)/, // Markdown link
-    /`{1,3}[^`\n]+`{1,3}/, // Inline code
+    /`{1,3}[^`\n]+~{3}/, // Inline code
+    /^\s*```\s*[\w-]*\s*[\s\S]*?\s*```\s*$/, // Code block
+    /^~~~([a-z]+)?\s*[\s\S]*?\s*~~~/,
     /\*\*.*\*\*/, // Bold
     /\*.*\*/, // Italic
     /^\|(.+\|)+$/, // Table row
     /^(\|:?-+:?\|)+$/, // Table alignment row
     /^\s*\|.*\|\s*$/, // Alternative table row pattern
     /^\s*\|-+\|(-+\|)*\s*$/, // Alternative table alignment pattern
+    /!\[.*?\]\(.*?\)/, // Markdown image
   ];
 
   return markdownPatterns.some((pattern) => pattern.test(text));

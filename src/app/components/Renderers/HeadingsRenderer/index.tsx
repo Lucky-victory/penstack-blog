@@ -23,27 +23,33 @@ export const PenstackHeadingsRenderer: React.FC<HeadingsRendererProps> = memo(
           as: "h2",
           mt: 6,
           mb: 5,
+
+          fontWeight: 600,
         },
         h3: {
           size: "lg",
           as: "h3",
-          mt: 4,
-          mb: 2,
+          mt: 5,
+          mb: 3,
+          fontWeight: 500,
         },
         h4: {
           size: "md",
           as: "h4",
+          mt: 4,
           mb: 2,
         },
         h5: {
           size: "sm",
           as: "h5",
+          mt: 3,
           mb: 2,
         },
         h6: {
           size: "xs",
           as: "h6",
-          mb: 2,
+
+          my: 2,
         },
       }),
       []
