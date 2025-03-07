@@ -113,13 +113,19 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           }
 
           if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(domNode.name)) {
+            const children = domToReact(domNode.children as Element[], options);
             return (
-              <PenstackHeadingsRenderer
-                attrs={{ as: `${domNode?.name}` as As, ...domNode.attribs }}
-                isEditing={false}
-              >
-                {domToReact(domNode.children as Element[], options)}
-              </PenstackHeadingsRenderer>
+              <>
+                <PenstackHeadingsRenderer
+                  isEditing={false}
+                  content={children}
+                  node={{
+                    attrs: {
+                      ...(domNode.attribs || {}),
+                    },
+                  }}
+                />
+              </>
             );
           }
           if (domNode.name === "ul") {

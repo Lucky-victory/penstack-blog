@@ -109,8 +109,12 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({ post }) => {
             {post?.reading_time || 1} min read
           </Text>
         </HStack>
-
-        <ShareButtons url={shareUrl} title={post?.title || ""} />
+        <HStack align={"center"} wrap={"wrap"} mt={4}>
+          <Text as={"span"} fontWeight={"semibold"}>
+            Share this post:
+          </Text>
+          <ShareButtons url={shareUrl} title={post?.title || ""} />
+        </HStack>
       </Stack>
     </Box>
   );

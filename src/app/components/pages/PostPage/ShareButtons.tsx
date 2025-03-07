@@ -31,7 +31,7 @@ export const ShareButtons: React.FC<{ url: string; title: string }> = ({
   };
 
   return (
-    <HStack spacing={4} mt={4}>
+    <HStack spacing={4}>
       <FacebookShareButton url={url} title={title}>
         <FacebookIcon {...shareButtonProps} />
         <FacebookShareCount url={url} />
