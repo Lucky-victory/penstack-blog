@@ -21,7 +21,7 @@ export function PostsCards({
       templateColumns="repeat(auto-fill, minmax(300px, 1fr))"
       // columnGap={{ base: 2, md: 2, lg: 3 }}
       gap={{ base: 4, md: 5 }}
-      maxW={{ base: "100%", lg: (maxW as string | number) || "auto" }}
+      maxW={"max-content"}
     >
       {loading
         ? Array.from({ length: 6 }).map((_, index) => (

@@ -1,6 +1,6 @@
 import { db } from "@/src/db";
-import { categories } from "@/src/db/schemas";
-import { eq, or } from "drizzle-orm";
+import { categories, posts } from "@/src/db/schemas";
+import { eq, or, and } from "drizzle-orm";
 import "server-only";
 export const getPostsByCategory = async ({
   categoryNameOrSlugOrId,
@@ -16,10 +16,12 @@ export const getPostsByCategory = async ({
       eq(categories.name, categoryNameOrSlugOrId)
     );
   }
-  const category=await db.query.categories.findFirst({
-    where: query,columns:{},
+  const category = await db.query.categories.findFirst({
+    where: query,
+    columns: {},
     with: {
       posts: {
+        // where: eq(posts.status, "published"),
         with: {
           featured_image: {
             columns: {
@@ -42,5 +44,5 @@ export const getPostsByCategory = async ({
     },
   });
 
-  return category?.posts
+  return category?.posts;
 };

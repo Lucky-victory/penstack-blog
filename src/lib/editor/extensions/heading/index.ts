@@ -12,17 +12,7 @@ import {
 } from "@tiptap/react";
 
 export const PenstackHeadingExtension = Heading.extend({
-  priority: 1000,
-
-  addPasteRules() {
-    return [
-      ...(this.parent?.() || []),
-      nodePasteRule({
-        find: /^(#{1,6})\s(.+)$/gm,
-        type: this.type,
-      }),
-    ];
-  },
+  priority: 2,
 
   addProseMirrorPlugins() {
     return [
@@ -62,20 +52,7 @@ export const PenstackHeadingExtension = Heading.extend({
   },
 
   addNodeView() {
-    const Comp = ({ node }: NodeViewRendererProps) => {
-      const level = node.attrs.level || 1;
-      console.log({ node, level, attrs: node.attrs });
-
-      return (
-        <PenstackHeadingsRenderer
-          attrs={{ as: `h${level}` as As, id: node.attrs?.id }}
-          isEditing={true}
-        >
-          {node.content.firstChild?.text}
-        </PenstackHeadingsRenderer>
-      );
-    };
-    return ReactNodeViewRenderer(Comp);
+    return ReactNodeViewRenderer(PenstackHeadingsRenderer);
   },
 
   addAttributes() {
@@ -88,13 +65,14 @@ export const PenstackHeadingExtension = Heading.extend({
           id: attributes.id,
         }),
       },
-      // level: {
-      //   default: 1,
-      //   parseHTML: (element) => Number(element.tagName.replace("h", "")),
-      //   renderHTML: (attributes) => ({
-      //     level: attributes.level,
-      //   }),
-      // },
+      level: {
+        default: 1,
+        parseHTML: (element) =>
+          Number(element.tagName.toLowerCase().replace("h", "")),
+        renderHTML: (attributes) => ({
+          level: attributes.level,
+        }),
+      },
     };
   },
 });

@@ -1,15 +1,15 @@
 import { Link } from "@chakra-ui/next-js";
 import { As, Heading } from "@chakra-ui/react";
-import { NodeViewWrapper } from "@tiptap/react";
+import { NodeViewProps, NodeViewWrapper } from "@tiptap/react";
 import { memo, PropsWithChildren, useMemo } from "react";
 
-interface HeadingsRendererProps {
+interface HeadingsRendererProps extends NodeViewProps {
   isEditing?: boolean;
   attrs: { as: As } & Record<string, any>;
 }
 export const PenstackHeadingsRenderer: React.FC<
   PropsWithChildren<HeadingsRendererProps>
-> = memo(({ attrs, children, isEditing }) => {
+> = memo(({ attrs, children, isEditing = true, node }) => {
   const styles: Record<string, Record<string, any>> = useMemo(
     () => ({
       h1: {
@@ -48,11 +48,15 @@ export const PenstackHeadingsRenderer: React.FC<
     }),
     []
   );
-  console.log({ attrs }, "from PenstackHeadingsRenderer");
+  console.log({ attrs, node }, "from PenstackHeadingsRenderer");
 
   const heading = (
-    <Heading {...attrs} {...styles[attrs.as as any]}>
-      {children}
+    <Heading
+      {...node?.attrs}
+      as={("h" + node?.attrs?.level) as As}
+      {...styles[("h" + node?.attrs?.level) as any]}
+    >
+      {node?.firstChild?.text}
     </Heading>
   );
   return (
