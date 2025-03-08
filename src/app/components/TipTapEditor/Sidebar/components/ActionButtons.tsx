@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useEditorPostManagerStore } from "@/src/state/editor-post-manager";
 
 export const ActionButtons = () => {
+  const isSaving = useEditorPostManagerStore((state) => state.isSaving);
   const [isPublishing, setIsPublishing] = useState<boolean>(false);
   const toast = useToast({
     duration: 3000,
@@ -49,8 +50,8 @@ export const ActionButtons = () => {
       <PermissionGuard requiredPermission="posts:publish">
         <Button
           size="xs"
-          isDisabled={isPublishing}
-          isLoading={isPublishing}
+          isDisabled={isSaving && isPublishing}
+          isLoading={isSaving && isPublishing}
           loadingText="Publishing..."
           flex={1}
           rounded="md"

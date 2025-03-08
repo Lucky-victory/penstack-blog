@@ -15,10 +15,7 @@ export function markdownToHtml(markdown: string): string {
 
   try {
     const parsedHtml = marked.parse(markdown, { async: false }) as string;
-    console.log({
-      parsedHtml,
-      markdown,
-    });
+ 
     return parsedHtml;
   } catch (error) {
     console.error("Markdown conversion error:", error);
@@ -31,21 +28,13 @@ function createCustomRenderer() {
 
   // Override the heading renderer to add level attribute
   renderer.heading = function ({ depth, text }: Tokens.Heading) {
-    console.log({
-      depth,
-      text,
-    });
-
     return `<h${depth} level="${depth}">${text}</h${depth}>`;
   };
-  renderer.code = function ({ text, lang, ...r }: Tokens.Code) {
-    console.log({
-      code: text,
-      lang,
-    });
+//   renderer.code = function ({ text, lang, ...r }: Tokens.Code) {
+   
 
-    return `<pre language='${lang}'><code class="language-${lang}">${text}</code></pre>`;
-  };
+//     return `<pre language='${lang}'><code class="language-${lang}">${text}</code></pre>`;
+//   };
 
   return renderer;
 }
@@ -71,16 +60,9 @@ export const MarkdownPasteExtension = Extension.create({
             if (isLikelyMarkdown(pastedText)) {
               // Convert markdown to HTML
               const htmlContent = markdownToHtml(pastedText);
-              console.log({
-                schema: view.state.schema,
-                htmlContent,
-              });
+
               const extensions = this.editor.extensionManager.extensions;
               const txtJson = generateJSON(htmlContent, extensions);
-              console.log({
-                extensions,
-                txtJson: txtJson?.content,
-              });
 
               // Create a new slice with the HTML content
               const htmlSlice = Slice.fromJSON(view.state.schema, {
