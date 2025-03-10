@@ -23,9 +23,7 @@
 .penstack-post-editor:focus {
   outline: none;
 }
-.penstack-post-editor > * + * {
-  margin-top: 0.5em;
-}
+
 .penstack-post-editor p.is-editor-empty:first-child::before {
   color: #939aa0;
   content: attr(data-placeholder);
@@ -95,9 +93,7 @@
     --link-color: var(--chakra-colors-brand-300);
   }
 }
-.penstack-post-editor :first-child {
-  margin-top: 0;
-}
+
 .penstack-code-block {
   --white: var(--chakra-colors-white);
   --black: var(--chakra-colors-black);
