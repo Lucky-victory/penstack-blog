@@ -25,7 +25,7 @@ import { PostSelect } from "@/src/types";
 import { sanitizeAndEncodeHtml } from "@/src/utils";
 import { useAuth } from "@/src/hooks/useAuth";
 import isEmpty from "just-is-empty";
-import SignIn from "../../Auth/SignIn";
+import { SignInComponent } from "../../Auth/SignIn";
 
 export const CommentsSection = ({ post }: { post: PostSelect }) => {
   const [newComment, setNewComment] = useState("");
@@ -154,7 +154,7 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalContent>
           <ModalBody>
-            <SignIn cbUrl={currentUrl} />
+            <SignInComponent cbUrl={currentUrl} />
           </ModalBody>
         </ModalContent>
       </Modal>

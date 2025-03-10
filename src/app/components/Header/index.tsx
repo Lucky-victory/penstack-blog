@@ -172,7 +172,7 @@ const Header = () => {
               display={{ base: "none", xl: "flex" }}
               py={"6px"}
             >
-              <Link
+              {/* <Link
                 textTransform="capitalize"
                 fontWeight={500}
                 href={"/"}
@@ -189,7 +189,7 @@ const Header = () => {
                 }}
               >
                 Home
-              </Link>
+              </Link> */}
 
               {resources.map((resource) => (
                 <Link

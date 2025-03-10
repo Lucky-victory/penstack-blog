@@ -1,5 +1,5 @@
 "use client";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { Box, Button, HStack } from "@chakra-ui/react";
 import PageWrapper from "../../PageWrapper";
 import { PostsCards } from "@/src/themes/smooth-land/PostsCards";
@@ -10,6 +10,8 @@ import { CategoryItemList } from "../../CategoryItemList";
 import { FeaturedPost } from "@/src/themes/raised-land/FeaturedPost";
 import { FeaturedPostType, PostSelect } from "@/src/types";
 import { useSearchParams } from "next/navigation";
+import { useQueryState } from "nuqs";
+import isEmpty from "just-is-empty";
 
 interface FrontPageProps {
   featuredPost: FeaturedPostType;
@@ -22,20 +24,21 @@ const FrontPage: FC<FrontPageProps> = ({ featuredPost, posts }) => {
     posts: clientPosts,
     loading: isLoading,
   } = usePosts({ canFetch });
-  const [loading, setLoading] = useState(true);
+  const canFetchRef = useRef(false);
+  const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const [_posts, setPosts] = useState(posts);
-  const category = searchParams.get("category");
-  useEffect(() => {
-    setLoading(false);
-  }, [posts]);
+  // const [_posts, setPosts] = useState(posts);
+  const [category] = useQueryState("category");
+  useEffect(() => {}, []);
   useEffect(() => {
     if (category) {
       setCanFetch(true);
+
       setLoading(isLoading);
-      setPosts(clientPosts);
+      // setPosts(clientPosts);
     }
-  }, [category, clientPosts, isLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category]);
   return (
     <PageWrapper>
       <Box mb={12}>
@@ -53,7 +56,10 @@ const FrontPage: FC<FrontPageProps> = ({ featuredPost, posts }) => {
               />
             </Box>
 
-            <PostsCards posts={_posts} loading={loading} />
+            <PostsCards
+              posts={isEmpty(clientPosts) ? posts : clientPosts}
+              loading={loading}
+            />
             {!loading && (
               <HStack justify={"center"} my={8}>
                 <Button

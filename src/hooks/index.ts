@@ -54,7 +54,7 @@ interface UsePostsProps {
   access?: "dashboard";
   sortBy?: "created_at" | "published_at" | "recent" | "popular";
   sortOrder?: "desc" | "asc";
-  category?: string;canFetch?:boolean;
+  category?: string;canFetch?:boolean;initialData?:PostSelect[]
 }
 export function usePosts({
   status = "published",
@@ -62,7 +62,7 @@ export function usePosts({
   page = 1,
   sortBy,
   access,
-  sortOrder,
+  sortOrder,initialData,
   category,canFetch=true
 }: UsePostsProps = {}) {
   const [params, setParams] = useState({
@@ -81,7 +81,7 @@ export function usePosts({
     error,
     refetch,
   } = useQuery({
-    queryKey: ["posts", params],
+    queryKey: ["posts", params],initialData,
     queryFn: async () => {
       const { data } = await axios.get<{ data: PostSelect[] }>(
         `/api/posts?${objectToQueryParams(params)}`
