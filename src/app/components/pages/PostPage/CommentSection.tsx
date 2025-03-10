@@ -11,25 +11,34 @@ import {
   VStack,
   Divider,
   Text,
+  useDisclosure,
+  Modal,
+  ModalBody,
+  ModalContent,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LuMessageCircle } from "react-icons/lu";
 import { CommentCard } from "./CommentCard";
 import { PostSelect } from "@/src/types";
 import { sanitizeAndEncodeHtml } from "@/src/utils";
+import { useAuth } from "@/src/hooks/useAuth";
+import isEmpty from "just-is-empty";
+import SignIn from "../../Auth/SignIn";
 
 export const CommentsSection = ({ post }: { post: PostSelect }) => {
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
-
+  const { user } = useAuth();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const highlightColor = useColorModeValue("brand.50", "brand.900");
 
   // const bgColor = useColorModeValue("gray.50", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const bgColor = useColorModeValue("white", "gray.800");
+  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
   async function fetchComments() {
     try {
@@ -50,6 +59,11 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
 
   // Handle new comment submission
   const handleCommentSubmit = async () => {
+    if (isEmpty(user)) {
+      localStorage.setItem("penstack:comment", newComment);
+      onOpen();
+      return;
+    }
     if (!newComment.trim()) return;
 
     setIsSubmitting(true);
@@ -78,6 +92,14 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    const storedComment = localStorage.getItem("penstack:comment") || "";
+    if (storedComment) {
+      setNewComment(storedComment);
+      localStorage.removeItem("penstack:comment");
+    }
+  }, []);
   return (
     <Box
       mt={12}
@@ -128,6 +150,14 @@ export const CommentsSection = ({ post }: { post: PostSelect }) => {
           </Card>
         )
       )}
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalContent>
+          <ModalBody>
+            <SignIn cbUrl={currentUrl} />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

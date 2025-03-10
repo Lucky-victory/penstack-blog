@@ -33,7 +33,7 @@ import PageWrapper from "@/src/app/components/PageWrapper";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { Link } from "@chakra-ui/next-js";
 
-export default function SignIn() {
+export default function SignIn({ cbUrl }: { cbUrl?: string }) {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -41,7 +41,7 @@ export default function SignIn() {
   const toast = useToast();
   const dividerBg = useColorModeValue("white", "charcoalBlack");
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = cbUrl || searchParams.get("callbackUrl") || "/";
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
 
