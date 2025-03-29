@@ -39,17 +39,17 @@ export default function PostCard({
   const tagColor = useColorModeValue("gray.50", "gray.300");
   const bgColor = useColorModeValue("transparent", "gray.900");
   return (
-    <MotionPostCard
+    <Card
+      // initial={{ opacity: 0, y: 50 }}
+      // whileInView={{
+      //   opacity: 1,
+      //   y: 0,
+      //   transition: {
+      //     duration: 0.5,
+      //   },
+      //   }}
+      //   viewport={{ once: true, margin: "-50px" }}
       rounded={"xl"}
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-        transition: {
-          duration: 0.5,
-        },
-      }}
-      viewport={{ once: true, margin: "-50px" }}
       as={LinkBox}
       key={post?.id}
       bg={bgColor}
@@ -167,6 +167,6 @@ export default function PostCard({
           )}
         </Stack>
       </CardBody>
-    </MotionPostCard>
+    </Card>
   );
 }
