@@ -64,9 +64,7 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
             </BreadcrumbItem>
           )}
           <BreadcrumbItem isCurrentPage color={metaColor}>
-            <Text isTruncated maxW="300px">
-              {post?.title}
-            </Text>
+            <Text>{post?.title}</Text>
           </BreadcrumbItem>
         </Breadcrumb>
 
@@ -84,6 +82,8 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
                 avatar: post?.author?.avatar,
                 name: post?.author?.name,
                 category: post?.category?.name,
+                w: 1000,
+                h: 500,
               })}`
             }
             alt={post?.featured_image?.alt_text || post?.title || ""}
