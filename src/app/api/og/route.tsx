@@ -15,6 +15,8 @@ export async function GET(request: NextRequest) {
     const { searchParams, host } = new URL(request.url);
 
     const name = searchParams.get("name") || "";
+    const w = parseInt(searchParams.get("w") || "1200");
+    const h = parseInt(searchParams.get("h") || "630");
     const showImage = searchParams.get("showImage") === "true" || false;
     const avatar = searchParams.get("avatar") || "";
     const title = searchParams.get("title") || "";
@@ -22,7 +24,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category") || "";
     const date = searchParams.get("date") || new Date().toISOString();
     const readingTime = searchParams.get("readingTime");
-    const gradient = searchParams.get("gradient") || "emerald";
+    const gradient = searchParams.get("gradient");
 
     // Define a set of modern gradients
     const gradients = {
@@ -32,9 +34,14 @@ export async function GET(request: NextRequest) {
       blue: `rgba(3, 13, 33, 1) 0%, rgba(30, 64, 175, 0.8) 50%, rgba(0, 0, 0, 0.9) 100%`,
     };
 
+    const getRandomGradient = () => {
+      const keys = Object.keys(gradients);
+      const randomIndex = Math.floor(Math.random() * keys.length);
+      const randomKey = keys[randomIndex];
+      return gradients[randomKey as keyof typeof gradients];
+    };
     const selectedGradient =
-      gradients[gradient as keyof typeof gradients] || gradients["blue"];
-
+      gradients[gradient as keyof typeof gradients] || getRandomGradient();
     return new ImageResponse(
       (
         <div
@@ -205,8 +212,8 @@ export async function GET(request: NextRequest) {
         </div>
       ),
       {
-        width: 1200,
-        height: 630,
+        width: w,
+        height: h,
       }
     );
   } catch (e: any) {

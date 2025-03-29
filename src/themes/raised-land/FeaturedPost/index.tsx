@@ -52,7 +52,8 @@ export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
                       date: post?.published_at
                         ? post?.published_at
                         : post?.created_at,
-
+                      w: 800,
+                      h: 500,
                       category: post?.category?.name,
                       name: post?.author?.name,
                     })}`

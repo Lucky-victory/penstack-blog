@@ -83,6 +83,8 @@ export default function PostCard({
               username: post?.author?.username,
               // avatar: post?.author?.avatar,
               name: post?.author?.name,
+              w: 600,
+              h: 310,
               category: post?.category?.name,
               readingTime: post?.reading_time,
             })}`
