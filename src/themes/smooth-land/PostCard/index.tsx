@@ -53,7 +53,7 @@ export default function PostCard({
       as={LinkBox}
       key={post?.id}
       bg={bgColor}
-      maxW={{ base: "full", md: 350 }}
+      maxW={{ base: "full", md: 380 }}
       overflow="hidden"
       transition="all 0.3s"
       py={3}

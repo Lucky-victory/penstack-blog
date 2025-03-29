@@ -18,27 +18,27 @@ interface FrontPageProps {
   posts?: PostSelect[];
 }
 const FrontPage: FC<FrontPageProps> = ({ featuredPost, posts }) => {
-  const [canFetch, setCanFetch] = useState(false);
-  const {
-    updateParams,
-    posts: clientPosts,
-    loading: isLoading,
-  } = usePosts({ canFetch });
-  const canFetchRef = useRef(false);
-  const [loading, setLoading] = useState(false);
-  const searchParams = useSearchParams();
-  // const [_posts, setPosts] = useState(posts);
-  const [category] = useQueryState("category");
-  useEffect(() => {}, []);
-  useEffect(() => {
-    if (category) {
-      setCanFetch(true);
+  // const [loading, setLoading] = useState(false);
+  // const [canFetch, setCanFetch] = useState(false);
+  // const {
+  //   updateParams,
+  //   posts: clientPosts,
+  //   loading: isLoading,
+  // } = usePosts({ canFetch });
+  // const canFetchRef = useRef(false);
+  // const searchParams = useSearchParams();
+  // // const [_posts, setPosts] = useState(posts);
+  // const [category] = useQueryState("category");
+  // useEffect(() => {}, []);
+  // useEffect(() => {
+  //   if (category) {
+  //     setCanFetch(true);
 
-      setLoading(isLoading);
-      // setPosts(clientPosts);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category]);
+  //     setLoading(isLoading);
+  //     // setPosts(clientPosts);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [category]);
   return (
     <PageWrapper>
       <Box mb={12}>
@@ -50,29 +50,25 @@ const FrontPage: FC<FrontPageProps> = ({ featuredPost, posts }) => {
         >
           <Box px={{ base: 0, lg: 4 }}>
             <FeaturedPost post={featuredPost} />
-            <Box mt={0} mb={6}>
+            {/* <Box mt={0} mb={6}>
               <CategoryItemList
                 onChange={(category) => updateParams({ category })}
               />
-            </Box>
+            </Box> */}
 
-            <PostsCards
-              posts={isEmpty(clientPosts) ? posts : clientPosts}
-              loading={loading}
-            />
-            {!loading && (
-              <HStack justify={"center"} my={8}>
-                <Button
-                  as={Link}
-                  href={"/articles"}
-                  px={6}
-                  py={2}
-                  rightIcon={<LuArrowRight />}
-                >
-                  View all posts
-                </Button>
-              </HStack>
-            )}
+            <PostsCards posts={posts} loading={false} />
+
+            <HStack justify={"center"} my={8}>
+              <Button
+                as={Link}
+                href={"/articles"}
+                px={6}
+                py={2}
+                rightIcon={<LuArrowRight />}
+              >
+                View all posts
+              </Button>
+            </HStack>
           </Box>
         </Box>
       </Box>

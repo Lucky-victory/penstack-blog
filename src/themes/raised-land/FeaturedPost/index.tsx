@@ -25,7 +25,7 @@ export const FeaturedPost = ({ post }: { post: FeaturedPostType }) => {
   return (
     <Suspense fallback={<FeaturedPostSkeleton />}>
       {post && (
-        <LinkBox mb={6} mt={4}>
+        <LinkBox mb={8} mt={4}>
           <Card
             overflow="hidden"
             transition="all 0.2s"

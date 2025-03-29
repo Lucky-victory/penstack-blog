@@ -26,8 +26,6 @@ import {
   Divider,
   Link,
   Image,
-  useColorModeValue,
-  As,
 } from "@chakra-ui/react";
 import { PenstackCodeBlockRenderer } from "../PenstackCodeBlockRenderer";
 import PenstackBlockquoteRenderer from "../PenstackBlockquoteRenderer";
@@ -130,21 +128,21 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(
           }
           if (domNode.name === "ul") {
             return (
-              <UnorderedList my={4} spacing={0} pl={"1.75rem"}>
+              <UnorderedList my={4} spacing={0} pl={"1rem"}>
                 {domToReact(domNode.children as Element[], options)}
               </UnorderedList>
             );
           }
           if (domNode.name === "ol") {
             return (
-              <OrderedList my={4} spacing={3} pl={"1.75rem"}>
+              <OrderedList my={4} spacing={3} pl={"1rem"}>
                 {domToReact(domNode.children as Element[], options)}
               </OrderedList>
             );
           }
           if (domNode.name === "li") {
             return (
-              <ListItem>
+              <ListItem mb={"0.5rem"}>
                 {domToReact(domNode.children as Element[], options)}
               </ListItem>
             );

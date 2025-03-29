@@ -15,8 +15,6 @@ export async function GET(request: NextRequest) {
     const { searchParams, host } = new URL(request.url);
 
     const name = searchParams.get("name") || "";
-    const w = parseInt(searchParams.get("w") || "1200");
-    const h = parseInt(searchParams.get("h") || "630");
     const showImage = searchParams.get("showImage") === "true" || false;
     const avatar = searchParams.get("avatar") || "";
     const title = searchParams.get("title") || "";
@@ -212,8 +210,8 @@ export async function GET(request: NextRequest) {
         </div>
       ),
       {
-        width: w,
-        height: h,
+        width: 1200,
+        height: 630,
       }
     );
   } catch (e: any) {

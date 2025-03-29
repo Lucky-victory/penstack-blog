@@ -123,12 +123,12 @@ const PostPage: React.FC<{ post: PostSelect }> = ({ post }) => {
           {/* Sidebar */}
 
           {/* Article Content */}
-          <Box flex={1}>
+          {/* <Box> */}
             <ArticleContent post={post} />
             {/* <AuthorSection post={post} /> */}
 
             {/* Comments Section */}
-          </Box>
+          {/* </Box> */}
           <VStack
             w={sidebarWidth}
             position="sticky"

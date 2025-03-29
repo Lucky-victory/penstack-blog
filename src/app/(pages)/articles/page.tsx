@@ -11,12 +11,14 @@ export default function Posts() {
   return (
     <PageWrapper>
       <Box py={8} px={{ base: 3, lg: 4 }} maxW={"container.xl"} mx="auto">
-        <Box mt={0} mb={6}>
-          <CategoryItemList
-            onChange={(category) => updateParams({ category })}
-          />
+        <Box>
+          <Box mt={0} mb={6}>
+            <CategoryItemList
+              onChange={(category) => updateParams({ category })}
+            />
+          </Box>
+          <PostsCards posts={posts} loading={loading} />
         </Box>
-        <PostsCards posts={posts} loading={loading} />
       </Box>
     </PageWrapper>
   );
