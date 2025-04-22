@@ -41,7 +41,9 @@ export const users = mysqlTable("Users", {
   image: text("image"),
   username: varchar("username", { length: 255 }).unique(),
   display_username: text("display_username"),
-  role_id: int("role_id").notNull(),
+  role_id: int("role_id")
+    .notNull()
+    .references(() => roles.id, { onDelete: "cascade" }),
   created_at,
   updated_at,
 });
