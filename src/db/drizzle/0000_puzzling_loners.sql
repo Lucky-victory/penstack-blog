@@ -313,7 +313,7 @@ CREATE TABLE `UserSocials` (
 );
 --> statement-breakpoint
 CREATE TABLE `Users` (
-	`id` int AUTO_INCREMENT NOT NULL,
+	`id` varchar(36) NOT NULL,
 	`name` varchar(120) NOT NULL,
 	`email` varchar(255) NOT NULL,
 	`password` varchar(255),

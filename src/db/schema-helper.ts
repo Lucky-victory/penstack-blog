@@ -1,6 +1,9 @@
-import { int, timestamp } from "drizzle-orm/mysql-core";
+import { int, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { IdGenerator } from "../utils";
 
-export const id = int("id").autoincrement().primaryKey();
+export const id = varchar("id", { length: 36 })
+  .primaryKey()
+  .$defaultFn(() => IdGenerator.uuid());
 export const created_at = timestamp("created_at").defaultNow();
 export const updated_at = timestamp("updated_at").onUpdateNow();
 export const deleted_at = timestamp("deleted_at");

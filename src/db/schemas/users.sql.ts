@@ -4,6 +4,7 @@ import {
   int,
   mysqlEnum,
   mysqlTable,
+  text,
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
@@ -20,16 +21,13 @@ import {
 } from "../schema-helper";
 
 export const users = mysqlTable("Users", {
-  id,
-  name: varchar("name", { length: 120 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull(),
-  password: varchar("password", { length: 255 }),
+  id: varchar("id", { length: 36 }).primaryKey(),
   bio: varchar("bio", { length: 255 }),
   title: varchar("title", { length: 100 }),
-  username: varchar("username", { length: 255 }),
   avatar: varchar("avatar", { length: 255 }),
   social_id: int("social_id"),
   meta_id: int("meta_id"),
+
   account_status: varchar("account_status", {
     length: 30,
     enum: ["active", "deleted", "banned", "inactive"],
@@ -38,12 +36,11 @@ export const users = mysqlTable("Users", {
     IdGenerator.bigIntId()
   ),
   email_verified: boolean("email_verified").default(false),
-  auth_type: mysqlEnum("auth_type", [
-    "local",
-    "google",
-    "github",
-    "facebook",
-  ]).default("local"),
+  name: varchar("name", { length: 120 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  image: text("image"),
+  username: varchar("username", { length: 255 }).unique(),
+  display_username: text("display_username"),
   role_id: int("role_id").notNull(),
   created_at,
   updated_at,
@@ -145,8 +142,49 @@ export const RolePermissionRelations = relations(
     }),
   })
 );
+
+export const sessions = mysqlTable("sessions", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  expiresAt: timestamp("expires_at").notNull(),
+  token: varchar("token", { length: 255 }).notNull().unique(),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  userId: varchar("user_id", { length: 36 })
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+});
+
+export const accounts = mysqlTable("accounts", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  accountId: text("account_id").notNull(),
+  providerId: text("provider_id").notNull(),
+  userId: varchar("user_id", { length: 36 })
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  idToken: text("id_token"),
+  accessTokenExpiresAt: timestamp("access_token_expires_at"),
+  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+  scope: text("scope"),
+  password: text("password"),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+});
+
+export const verifications = mysqlTable("verifications", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at"),
+  updatedAt: timestamp("updated_at"),
+});
+
 export const userSocials = mysqlTable("UserSocials", {
-  id: int("id").primaryKey().autoincrement(),
+  id,
   user_id: varchar("user_id", { length: 100 }).notNull(),
   github: varchar("github", { length: 100 }),
   facebook: varchar("facebook", { length: 100 }),
