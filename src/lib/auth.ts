@@ -7,6 +7,7 @@ import { IdGenerator } from "../utils";
 import * as schema from "@/src/db/schemas";
 export const auth = betterAuth({
   appName: "Code With Vick",
+
   databaseHooks: {
     user: {
       create: {

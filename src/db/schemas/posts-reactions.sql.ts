@@ -23,7 +23,7 @@ export const postReactions = mysqlTable(
   "PostReactions",
   {
     id,
-    post_id: int("post_id").notNull(),
+    post_id: varchar("post_id",{length:36}).notNull(),
     user_id: varchar("user_id", { length: 100 }).notNull(),
     reaction_type_id: int("reaction_type_id").notNull(),
     created_at,
@@ -42,7 +42,7 @@ export const postReactions = mysqlTable(
 
 export const postShares = mysqlTable("PostShares", {
   id,
-  post_id: int("post_id").notNull(),
+  post_id: varchar("post_id",{length:36}).notNull(),
   user_id: varchar("user_id", { length: 100 }).notNull(),
   share_type: varchar("share_type", {
     length: 50,

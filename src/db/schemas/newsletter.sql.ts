@@ -70,8 +70,8 @@ export const newsletters = mysqlTable("NewsLetters", {
 // Optional: If you want to track which subscribers received which newsletters
 export const newsletterRecipients = mysqlTable("NewsLetterRecipients", {
   id,
-  newsletter_id: int("newsletter_id").notNull(),
-  subscriber_id: int("subscriber_id").notNull(),
+  newsletter_id: varchar("newsletter_id",{length:36}).notNull(),
+  subscriber_id: varchar("subscriber_id",{length:36}).notNull(),
   sent_at: timestamp("sent_at"),
   created_at,
 });
@@ -79,8 +79,8 @@ export const newsletterRecipients = mysqlTable("NewsLetterRecipients", {
 export const emailEvents = mysqlTable("EmailEvents", {
   id,
   email_id: varchar("email_id", { length: 255 }).notNull(),
-  newsletter_id: int("newsletter_id"),
-  subscriber_id: int("subscriber_id"),
+  newsletter_id: varchar("newsletter_id",{length:36}),
+  subscriber_id: varchar("subscriber_id",{length:36}),
   event_type: varchar("event_type", {
     length: 50,
     enum: emailEventsEnum,

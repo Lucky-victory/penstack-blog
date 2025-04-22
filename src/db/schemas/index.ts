@@ -6,4 +6,3 @@ export * from "./posts-analytics.sql";
 export * from "./posts-reactions.sql";
 export * from "./settings.sql";
 export * from "./contact.sql";
-export * from "./verification-tokens.sql";

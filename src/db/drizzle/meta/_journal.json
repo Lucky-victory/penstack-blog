@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1740778614830,
-      "tag": "0000_puzzling_loners",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1740781093393,
-      "tag": "0001_outgoing_darkhawk",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1745342030829,
-      "tag": "0002_foamy_roxanne_simpson",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1745343537523,
-      "tag": "0003_deep_rhino",
+      "when": 1745345833275,
+      "tag": "0000_tranquil_zeigeist",
       "breakpoints": true
     }
   ]

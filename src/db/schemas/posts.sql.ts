@@ -25,7 +25,7 @@ export const posts = mysqlTable(
     title: varchar("title", { length: 255 }),
     content: longtext("content"),
     summary: varchar("summary", { length: 500 }),
-    seo_meta_id: int("meta_id"),
+    seo_meta_id: varchar("meta_id",{length:36}),
     post_id: varchar("post_id", { length: 255 })
       .$defaultFn(() => IdGenerator.uuid())
       .unique()
@@ -96,7 +96,7 @@ export const postSeoMeta = mysqlTable(
   "PostSeoMeta",
   {
     id,
-    post_id: int("post_id").notNull(),
+    post_id: varchar("post_id",{length:36}).notNull(),
     title: varchar("title", { length: 150 }),
     canonical_url: varchar("canonical_url", { length: 255 }),
     description: varchar("description", { length: 255 }),
@@ -155,9 +155,11 @@ export const tagsRelations = relations(tags, ({ one, many }) => ({
 }));
 
 export const postTags = mysqlTable("PostTags", {
-  post_id: int("post_id").notNull(),
-  tag_id: int("tag_id").notNull(),
-});
+  post_id: varchar("post_id",{length:36}).notNull(),
+  tag_id: varchar("tag_id",{length:36}).notNull(),
+},((table)=>({
+  uniqueIndex: uniqueIndex("post_id_tag_id_unique_index").on(table.post_id,table.tag_id)
+})));
 
 export const postTagsRelations = relations(postTags, ({ one }) => ({
   post: one(posts, {
@@ -181,13 +183,14 @@ export const comments = mysqlTable(
       "disapproved",
       "deleted",
     ]).default("pending"),
-    post_id: int("post_id").notNull(),
+    post_id: varchar("post_id",{length:36}).notNull(),
     author_id: varchar("author_id", { length: 100 }).notNull(),
     created_at,
     updated_at,
   },
   (table) => ({
     idxStatus: index("idx_status").on(table.status),
+    idxPostId: index("idx-comments_post_id").on(table.post_id),
   })
 );
 
@@ -215,13 +218,14 @@ export const replies = mysqlTable(
       "deleted",
     ]).default("pending"),
 
-    comment_id: int("comment_id").notNull(),
+    comment_id: varchar("comment_id", { length: 36 }).notNull(),
     author_id: varchar("author_id", { length: 100 }).notNull(),
     created_at,
     updated_at,
   },
   (table) => ({
-    idxStatus: index("idx_status").on(table.status),
+    idxStatus: index("idx_replies_status").on(table.status),
+    idxCommentId: index("idx_replies_comment_id").on(table.comment_id),
   })
 );
 

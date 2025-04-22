@@ -25,8 +25,8 @@ export const users = mysqlTable("Users", {
   bio: varchar("bio", { length: 255 }),
   title: varchar("title", { length: 100 }),
   avatar: varchar("avatar", { length: 255 }),
-  social_id: int("social_id"),
-  meta_id: int("meta_id"),
+  social_id: varchar("social_id",{length:36}),
+  meta_id: varchar("meta_id",{length:36}),
 
   account_status: varchar("account_status", {
     length: 30,
@@ -51,7 +51,7 @@ export const users = mysqlTable("Users", {
 export const roles = mysqlTable(
   "Roles",
   {
-    id,
+    id:int("id").autoincrement().primaryKey(),
     name: mysqlEnum("name", rolesEnum)
       .notNull()
       .unique()
@@ -66,7 +66,7 @@ export const roles = mysqlTable(
 export const permissions = mysqlTable(
   "Permissions",
   {
-    id,
+    id:int("id").autoincrement().primaryKey(),
     name: mysqlEnum(
       "name",
 
@@ -84,7 +84,7 @@ export const permissions = mysqlTable(
 
 const userMeta = mysqlTable("UserMeta", {
   id,
-  user_id: int("user_id").notNull(),
+  user_id: varchar("user_id", { length: 36 }).notNull(),
   isProMember: boolean("is_pro_member").default(false),
   lastLogin: timestamp("last_login").default(sql`CURRENT_TIMESTAMP`),
   lastLoginIP: varchar("last_login_ip", { length: 50 }),
@@ -102,7 +102,7 @@ export const userMetaRelations = relations(userMeta, ({ one }) => ({
 }));
 export const userRoles = mysqlTable("UserRoles", {
   id,
-  user_id: int("user_id").notNull(),
+  user_id: varchar("user_id", { length: 36 }).notNull(),
   role_id: int("role_id").notNull(),
 });
 export const userRoleRelations = relations(userRoles, ({ one }) => ({

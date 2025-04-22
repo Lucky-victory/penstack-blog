@@ -13,7 +13,7 @@ export const userBookmarks = mysqlTable(
   "UserBookmarks",
   {
     user_id: varchar("user_id", { length: 100 }).notNull(),
-    post_id: int("post_id").notNull(),
+    post_id: varchar("post_id", { length: 36 }).notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => {

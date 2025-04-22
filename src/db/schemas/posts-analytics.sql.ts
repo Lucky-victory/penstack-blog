@@ -14,7 +14,7 @@ export const postViews = mysqlTable(
   "PostViews",
   {
     id,
-    post_id: int("post_id").notNull(),
+    post_id: varchar("post_id", { length: 36 }).notNull(),
     user_id: varchar("user_id", { length: 100 }), // Nullable for anonymous views
     ip_address: varchar("ip_address", { length: 45 }), // IPv6 compatible
     user_agent: varchar("user_agent", { length: 255 }),
@@ -35,7 +35,7 @@ export const postViewAnalytics = mysqlTable(
   "PostViewAnalytics",
   {
     id,
-    post_id: int("post_id").notNull(),
+    post_id: varchar("post_id", { length: 36 }).notNull(),
     user_id: varchar("user_id", { length: 100 }), // Nullable for anonymous users
     session_id: varchar("session_id", { length: 255 }),
     device_type: varchar("device_type", { length: 50 }), // mobile, tablet, desktop
@@ -62,7 +62,7 @@ export const postViewAnalytics = mysqlTable(
 // Real-time tracking (for active users/current viewers)
 export const activePostViewers = mysqlTable("ActivePostViewers", {
   id,
-  post_id: int("post_id").notNull(),
+  post_id: varchar("post_id", { length: 36 }).notNull(),
   user_id: varchar("user_id", { length: 100 }),
   session_id: varchar("session_id", { length: 255 }).notNull(),
   last_active: timestamp("last_active").onUpdateNow(),
